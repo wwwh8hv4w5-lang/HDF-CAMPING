@@ -5393,7 +5393,7 @@ function majJoueur(dt) { const P = PL, ouvert = UI.ouvert() || UI.dlgOuvert || E
   const veutCourir = !ouvert && (IN.keys.shift || IN.run || IN.grun) && l > .2 && !P.accroupi && BES.endurance > 2 && P.dansEau < .3;
   P.court = veutCourir; let v = P.accroupi ? VITESSE.accroupi : P.court ? VITESSE.course : VITESSE.marche;
   if (BES.faim < 15 || BES.soif < 15) v *= .8; if (BES.energie < 15) v *= .75; if (P.dansEau > .3) v = Math.min(v, VITESSE.eau);
-  const sy = Math.sin(P.yaw), cy = Math.cos(P.yaw); const dx = (sy * mz + cy * mx) * v, dz = (cy * mz - sy * mx) * v;
+  const sy = Math.sin(P.yaw), cy = Math.cos(P.yaw); const dx = (sy * mz - cy * mx) * v, dz = (cy * mz + sy * mx) * v;
   // saut
   if (!ouvert && IN.saut && P.auSol && BES.endurance > 8 && !P.accroupi) { P.vy = 4.6; P.auSol = false; BES.endurance -= 8; SON.pas(P.surPonton ? 'bois' : 'herbe', .5); }
   let nx = P.x + dx * dt, nz = P.z + dz * dt;
