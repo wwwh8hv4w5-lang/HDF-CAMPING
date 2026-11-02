@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HDF : CAMPING">
 <meta name="theme-color" content="#0b0f0a">
-<title>HDF : CAMPING — v0.6.1</title>
+<title>HDF : CAMPING — v0.6.3</title>
 <style>
 :root{--lin:#f3efe6;--ambre:#f2c66d;--mousse:#8fb37a;--nuit:#0b0f0a;--verre:rgba(10,14,10,.62);--rouge:#e0665a;--bleu:#7fb6d8;
   --sans:-apple-system,BlinkMacSystemFont,"Avenir Next","Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
@@ -170,7 +170,7 @@ body.cine #cine .bande{height:11vh}
 <div id="cine"><div class="bande h"></div><div class="bande b"></div></div>
 <button id="cinePasser" hidden>Passer ›</button>
 <div id="hud" hidden>
-  <div id="titreJeu">HDF : CAMPING · v0.6.1</div>
+  <div id="titreJeu">HDF : CAMPING · v0.6.3</div>
   <div id="marqueurs"></div>
   <canvas id="boussole" width="1120" height="108"></canvas>
   <div id="heureJour"><b id="hHeure">07:00</b><span id="hJour">Jour 1 · lundi</span></div>
@@ -204,14 +204,14 @@ body.cine #cine .bande{height:11vh}
 </div>
 <div id="fin" hidden><h2 id="finTitre">Fin de partie</h2><p id="finTexte"></p><div class="stats" id="finStats"></div><div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><button class="gros" id="finRejouer">Recommencer une partie</button><button class="gros discret" id="finMenu">Menu</button></div></div>
 <div id="menu" hidden>
-  <div class="version">v0.6.1 · FSM-3D 2.10</div>
+  <div class="version">v0.6.3 · FSM-3D 2.10</div>
   <h1><small>F.S.M GAME HOUSE</small>HDF : CAMPING</h1>
   <p class="accroche">Seul au bord d'un lac de montagne. Chaque jour, quelqu'un passe. Tenez le plus longtemps possible.</p>
   <div class="ligne"><input id="prenom" maxlength="16" placeholder="Votre prénom" autocomplete="off" spellcheck="false"></div>
   <div class="ligne"><button class="gros" id="bNouvelle">Nouvelle partie</button><button class="gros discret" id="bContinuer" hidden>Continuer</button></div>
   <div class="opts"><button id="oSon" class="on">Son</button><button id="oVoix" class="on">Voix des PNJ</button><button id="oQualite">Qualité : auto</button><button id="oTexte">Texte : grand</button><button id="oMarq" class="on">Marqueurs de collecte</button><button id="oPerf">Performances</button></div>
   <div class="aideCtrl" id="aideCtrl">Manette PS : <b>stick gauche</b> marcher · <b>stick droit</b> regarder · <b>✕</b> action / choisir · <b>○</b> s'accroupir / partir · <b>△</b> sauter · <b>□</b> sac à dos · <b>R2</b> courir · <b>L1</b> lampe · <b>OPTIONS</b> menu.<br>Tactile : stick à gauche, glisser à droite pour regarder, boutons à droite. Clavier : ZQSD / flèches, souris (clic pour viser), Espace, C, Maj, E, Tab, F, Échap.</div>
-  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.6.1</div>
+  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.6.3</div>
 </div>
 
 <script>
@@ -4992,7 +4992,7 @@ self.JOE_DATA = { animals: 'Z2xURgIAAAD8HQQAtNIBAEpTT057ImFzc2V0Ijp7InZlcnNpb24i
    ===================================================================================== */
 'use strict';
 // ==== CAMP : OUTILS ===================================================================
-const JEU = { nom: 'HDF : CAMPING', version: '0.6.1', cle: 'hdfc-' };
+const JEU = { nom: 'HDF : CAMPING', version: '0.6.3', cle: 'hdfc-' };
 const $ = id => document.getElementById(id);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, k) => a + (b - a) * k;
@@ -5081,24 +5081,31 @@ const SON = (() => {
 
 // ==== CAMP : VOIX (synthèse vocale, une seule voix à la fois, file d'attente) ===============
 const VOIX = (() => {
-  const V = { ok: 'speechSynthesis' in window, liste: [], file: [], enCours: null, fr: [] };
-  function charger() { if (!V.ok) return; V.liste = speechSynthesis.getVoices() || []; V.fr = V.liste.filter(x => /^fr/i.test(x.lang) && !/bad news|bells|bubbles|jester|organ|whisper|zarvox|trinoids|albert|bahh|boing|cellos|superstar|wobble|good news|junior|ralph|kathy|fred/i.test(x.name)); }
-  if (V.ok) { charger(); speechSynthesis.onvoiceschanged = charger; }
-  V.choisir = (genre, age) => { const L = V.fr.length ? V.fr : V.liste; if (!L.length) return null; const fem = L.filter(x => /am[ée]lie|audrey|aur[ée]lie|marie|julie|denise|c[ée]line|virginie|chantal|flo|female|femme/i.test(x.name)), hom = L.filter(x => /thomas|nicolas|daniel|jacques|olivier|henri|sebastien|male|homme/i.test(x.name));
+  const V = { ok: 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined', liste: [], file: [], enCours: null, fr: [], pret: false, nParle: 0, nFini: 0, nErr: 0, dernErr: '' };
+  const SS = () => window.speechSynthesis;
+  function charger() { if (!V.ok) return; try { V.liste = SS().getVoices() || []; } catch (e) { V.liste = []; } V.fr = V.liste.filter(x => /^fr/i.test(x.lang) && !/bad news|bells|bubbles|jester|organ|whisper|zarvox|trinoids|albert|bahh|boing|cellos|superstar|wobble|good news|junior|ralph|kathy|fred/i.test(x.name)); }
+  if (V.ok) { charger(); try { SS().addEventListener('voiceschanged', charger); } catch (e) { SS().onvoiceschanged = charger; } setTimeout(charger, 1500); setTimeout(charger, 5000); }
+  V.choisir = (genre, age) => { charger(); const L = V.fr.length ? V.fr : V.liste; if (!L.length) return null; const fem = L.filter(x => /am[ée]lie|audrey|aur[ée]lie|marie|julie|denise|c[ée]line|virginie|chantal|flo|female|femme/i.test(x.name)), hom = L.filter(x => /thomas|nicolas|daniel|jacques|olivier|henri|sebastien|male|homme/i.test(x.name));
     const P = genre === 'f' ? (fem.length ? fem : L) : (hom.length ? hom : L); return P[Math.floor(Math.random() * P.length)] || L[0]; };
   V.dire = (txt, p = {}) => { if (!V.ok || !OPT.voix) return; let t = String(txt || '').replace(/\([^)]*\)/g, ' ').replace(/[«»“”*_]/g, '').replace(/…/g, '...').replace(/\s+/g, ' ').trim(); if (t.length < 2) return; if (t.length > 400) t = t.slice(0, 400).replace(/[^.!?]*$/, '');
     V.file.push({ t, p }); if (!V.enCours) suivant(); };
-  function suivant() { const n = V.file.shift(); if (!n) { V.enCours = null; SON.ducker(1); return; } const u = new SpeechSynthesisUtterance(n.t); u.lang = 'fr-FR'; u.rate = n.p.rate || 1; u.pitch = n.p.pitch || 1; u.volume = 1; if (n.p.voix) u.voice = n.p.voix; else if (V.fr.length) u.voice = V.fr[0]; V.enCours = u; V.garde = u; SON.ducker(.35); if (!V.fr.length) charger();
-    const fin = () => { if (V.enCours === u) { V.enCours = null; setTimeout(suivant, 120); } }; u.onend = fin; u.onerror = fin; const attente = V.tCancel && performance.now() - V.tCancel < 300 ? 220 : 0; setTimeout(() => { if (V.enCours !== u) return; try { if (speechSynthesis.paused) speechSynthesis.resume(); speechSynthesis.speak(u); } catch (e) { fin(); } }, attente); setTimeout(() => { if (V.enCours === u && !speechSynthesis.speaking) fin(); }, 900 + n.t.length * 90); }
-  V.stop = () => { V.file.length = 0; V.enCours = null; try { speechSynthesis.cancel(); V.tCancel = performance.now(); } catch (e) {} SON.ducker(1); };
-  // iOS : la synthèse doit être débloquée par un appui de l'utilisateur (une phrase vide, muette, dans le geste) ; relance si Safari l'a mise en pause
-  V.debloquer = () => { if (!V.ok || V.pret) return; try { const u = new SpeechSynthesisUtterance('.'); u.volume = 0; u.rate = 2; speechSynthesis.speak(u); V.pret = true; charger(); } catch (e) {} };
-  V.veille = () => { if (!V.ok) return; try { if (speechSynthesis.paused) speechSynthesis.resume(); } catch (e) {} };
+  // iOS/Safari : speak() juste après cancel() est ignoré, « speaking » peut rester bloqué à true, onend peut ne jamais venir → file pilotée par minuterie, jamais bloquante
+  function suivant() { const n = V.file.shift(); if (!n) { V.enCours = null; SON.ducker(1); return; } const u = new SpeechSynthesisUtterance(n.t); u.rate = n.p.rate || 1; u.pitch = n.p.pitch || 1; u.volume = 1; charger();
+    { const L = V.liste || []; let vx = n.p.voix && L.includes(n.p.voix) ? n.p.voix : null; if (!vx) { vx = V.choisir(n.p.genre || 'h', n.p.morph); n.p.voix = vx; } if (vx) { u.voice = vx; u.lang = vx.lang || 'fr-FR'; } else u.lang = 'fr-FR'; }
+    V.enCours = u; V.garde = u; SON.ducker(.35); const duree = 1400 + n.t.length * 75;
+    const fin = () => { if (V.enCours === u) { V.enCours = null; setTimeout(suivant, 150); } }; u.onend = () => { V.nFini++; fin(); }; u.onerror = e => { V.nErr++; V.dernErr = e && e.error || 'erreur'; fin(); };
+    const lancer = () => { if (V.enCours !== u) return; try { const S = SS(); if (S.paused) S.resume(); if (S.speaking || S.pending) { S.cancel(); setTimeout(() => { if (V.enCours === u) { try { S.speak(u); V.nParle++; } catch (e) { fin(); } } }, 150); return; } S.speak(u); V.nParle++; } catch (e) { fin(); } };
+    const attente = V.tCancel && performance.now() - V.tCancel < 300 ? 250 : 0; setTimeout(lancer, attente); setTimeout(fin, attente + duree + 600); }
+  V.stop = () => { V.file.length = 0; V.enCours = null; try { SS().cancel(); V.tCancel = performance.now(); } catch (e) {} SON.ducker(1); };
+  // iOS : la synthèse doit être débloquée par un appui de l'utilisateur (phrase vide prononcée dans le geste) ; relance si Safari l'a mise en pause
+  V.debloquer = () => { if (!V.ok) return; charger(); if (V.pret) return; try { const S = SS(); if (S.paused) S.resume(); const u = new SpeechSynthesisUtterance(''); S.speak(u); V.pret = true; } catch (e) {} };
+  V.veille = () => { if (!V.ok) return; try { const S = SS(); if (S.paused) S.resume(); } catch (e) {} };
   for (const ev of ['pointerup', 'touchend', 'keydown', 'click']) addEventListener(ev, () => V.debloquer(), { passive: true });
+  // test audible (depuis un appui) et état pour le diagnostic
+  V.test = () => { if (!V.ok) { note('Synthèse vocale indisponible sur cet appareil.'); return; } V.debloquer(); charger(); V.stop(); V.dire('Voix activée. Bienvenue au lac.', { pitch: 1 }); setTimeout(() => note(`Voix : ${V.liste.length} installée${V.liste.length > 1 ? 's' : ''}, ${V.fr.length} en français · lancées ${V.nParle}, terminées ${V.nFini}, erreurs ${V.nErr}${V.dernErr ? ' (' + V.dernErr + ')' : ''}`, 6000), 3500); };
   V.parle = () => !!V.enCours;
   return V;
 })();
-
 // ==== CAMP : ENTRÉES (clavier, tactile, manette PlayStation) ===============================
 const IN = { keys: {}, stick: [0, 0], look: [0, 0], run: false, pads: 0, act: false, saut: false, accr: false, sac: false, menu: false, lampe: false, haut: false, bas: false, gauche: false, droite: false, dernier: 'tactile', gp: null, prev: [], tLook: null };
 addEventListener('keydown', e => { if (e.repeat) return; const k = e.key.toLowerCase(); IN.keys[k] = true; IN.dernier = 'clavier'; document.body.classList.add('souris');
@@ -5585,7 +5592,7 @@ function majMains(dt, P) { const nd = MAINS.nd; if (!nd) return; MAINS.t += dt;
   if (a === 'poser') { const s = Math.sin(Math.min(1, t / .8) * PI); oy = -.31 - s * .22; oz = -.5 - s * .25; rx = .15 + s * .5; }
   const M = M3.mul(M3.translate(P.eye[0], P.eye[1], P.eye[2]), M3.mul(M3.rotY(P.yaw + PI), M3.mul(M3.rotX(P.pitch), M3.mul(M3.translate(ox, oy, oz), M3.mul(M3.rotY(ry), M3.mul(M3.rotX(rx), M3.rotZ(rz)))))));
   nd.matrix = M; nd.local.set(M);
-  if (PL.lampe && MAINS.item === 'lampe') { const cp = Math.cos(P.pitch), f = [Math.sin(P.yaw) * cp, Math.sin(P.pitch), Math.cos(P.yaw) * cp]; const p = [P.eye[0] + f[0] * .7, P.eye[1] - .2, P.eye[2] + f[2] * .7]; A.addLight({ p, c: [1, .93, .75], i: 44, r: 28, dir: f, cone: [.8, .94] }); A.addLight({ p: [P.eye[0] + f[0] * 6, P.eye[1] + f[1] * 6 - .3, P.eye[2] + f[2] * 6], c: [1, .93, .75], i: 14, r: 10 }); if (MAINS.lampeLum) MAINS.lampeLum.visible = true; } else if (MAINS.lampeLum) MAINS.lampeLum.visible = false;
+  if (PL.lampe && MAINS.item === 'lampe') { const cp = Math.cos(P.pitch), f = [Math.sin(P.yaw) * cp, Math.sin(P.pitch), Math.cos(P.yaw) * cp]; const p = [P.eye[0] + f[0] * .7, P.eye[1] - .2, P.eye[2] + f[2] * .7]; A.addLight({ p, c: [1, .93, .75], i: 52, r: 30, dir: f, cone: [.8, .94] }); if (MAINS.lampeLum) MAINS.lampeLum.visible = true; } else if (MAINS.lampeLum) MAINS.lampeLum.visible = false;
 }
 
 // ==== CAMP : ÉTAT DE LA PARTIE, HORLOGE ======================================================
@@ -5945,7 +5952,8 @@ UI.fermer = () => { fermerPanneau(); if (UI.dlgOuvert) fermerDlg(); };
 function ouvrirPause() { UI.pauseOuvert = true; const L = [
   { nom: 'Reprendre', d: '', f: () => {} },
   { nom: 'Son : ' + (OPT.son ? 'activé' : 'coupé'), d: 'Ambiance et effets', garde: true, f: function () { OPT.son = !OPT.son; SON.volume(); sauverOptions(); this.nom = 'Son : ' + (OPT.son ? 'activé' : 'coupé'); } },
-  { nom: 'Voix des visiteurs : ' + (OPT.voix ? 'activées' : 'coupées'), d: 'Synthèse vocale', garde: true, f: function () { OPT.voix = !OPT.voix; if (!OPT.voix) VOIX.stop(); sauverOptions(); this.nom = 'Voix des visiteurs : ' + (OPT.voix ? 'activées' : 'coupées'); } },
+  { nom: 'Voix des visiteurs : ' + (OPT.voix ? 'activées' : 'coupées'), d: 'Synthèse vocale', garde: true, f: function () { OPT.voix = !OPT.voix; if (!OPT.voix) VOIX.stop(); else VOIX.test(); sauverOptions(); this.nom = 'Voix des visiteurs : ' + (OPT.voix ? 'activées' : 'coupées'); } },
+  { nom: 'Tester la voix', d: 'Dit une phrase et affiche l’état de la synthèse vocale', garde: true, f: () => { VOIX.test(); } },
   { nom: 'Qualité : ' + OPT.qualite, d: 'auto · basse · moyenne · haute · ultra (auto conseillé sur iPad)', garde: true, f: function () { const Q = ['auto', 'basse', 'moyenne', 'haute', 'ultra']; OPT.qualite = Q[(Q.indexOf(OPT.qualite) + 1) % Q.length]; if (OPT.qualite === 'auto') { A.autoQuality = true; } else { A.autoQuality = false; A.setQuality(OPT.qualite); } sauverOptions(); this.nom = 'Qualité : ' + OPT.qualite; } },
   { nom: 'Taille du texte : ' + OPT.texte, d: 'grand (manette, à distance) · normal', garde: true, f: function () { OPT.texte = OPT.texte === 'grand' ? 'normal' : 'grand'; appliquerTexte(); sauverOptions(); this.nom = 'Taille du texte : ' + OPT.texte; } },
   { nom: 'Marqueurs de collecte : ' + (OPT.marqueurs ? 'affichés' : 'masqués'), d: 'Baies, pommes, noisettes, eau et bois : à l’écran et sur la boussole', garde: true, f: function () { OPT.marqueurs = !OPT.marqueurs; sauverOptions(); this.nom = 'Marqueurs de collecte : ' + (OPT.marqueurs ? 'affichés' : 'masqués'); } },
@@ -6096,7 +6104,7 @@ VIS.arriver = T => { if (!joePack()) return; VIS.prochain = null; ETAT.visites++
   if (T.duree === 'nuit') C.duree = HORL.h < 9 ? 9 - HORL.h : 24 - HORL.h + 9; VIS.courant = C; VIS.vus.push(T.id); if (VIS.vus.length > 12) VIS.vus.shift(); historique('visite : ' + T.type);
   T.pnj.forEach((d, i) => { const ch = creerPNJ(d, i); if (!ch) return; const p = VIS.lieu(T.arrivee || 'sentier', i).p; ch.pos = [p[0], SOL(p[0], p[1]), p[1]]; ch.yaw = angleVers(CAMP.x - p[0], CAMP.z - p[1]); ch.visible = true; ch.play('Walk');
     const v = { d, ch, id: d.id, prenom: d.prenom, role: d.role || T.type, genre: d.genre || (d.morph === 'woman' ? 'f' : 'h'), voix: Object.assign({ pitch: d.morph === 'woman' ? 1.15 : d.morph === 'child' ? 1.4 : d.morph === 'elder' ? .9 : 1, rate: .98 }, d.voix || {}), danger: T.danger || 0, cible: null, clipFinal: 'Idle', etat: 'marche', parti: false, tAmb: rnd(20, 50), i, parle: d.parle !== false, vitesse: d.vitesse || (d.morph === 'child' ? 1.45 : d.morph === 'elder' ? .95 : 1.3), revele: false, chemin: [] };
-    v.voix.voix = VOIX.choisir(v.genre, d.morph); C.pnj.push(v); VIS.pnj.push(v);
+    v.voix.voix = VOIX.choisir(v.genre, d.morph); v.voix.genre = v.genre; v.voix.morph = d.morph; C.pnj.push(v); VIS.pnj.push(v);
     if (d.animal && JOE.pack.animals && JOE.pack.animals[d.animal]) { const an = new Joe.Animal(JOE.pack, d.animal, { coat: d.coat || 0, scale: d.animal === 'Dog' ? .9 : 1 }); an.pos = [p[0] + 1, SOL(p[0] + 1, p[1]), p[1]]; an.visible = true; an.play('Walk'); JOE.betes.push(an); v.animal = an; } });
   if ((ETAT.propre || 0) >= ETAT.jour) C.conf += 1;   // linge propre ou baignade du jour : on vous trouve plus avenant
   if (T.objets) for (const o of T.objets) VIS.poserObjet(o); VIS.routine(true); VIS.evenements('arrivee');
@@ -6208,7 +6216,7 @@ VIS.faire = (liste, v) => { const C = VIS.courant; if (!liste) return; for (cons
   case 'objectifFini': objectifFini('vis_' + a.id); break;
   case 'objet': VIS.poserObjet(a.o); break;
   case 'tenteV': if (a.on !== false) VIS.poserObjet('tenteV'); else { NOEUDS.tenteV.visible = false; VIS.tentes.length = 0; } VIS.slots = {}; break;
-  case 'feuV': ETAT.feuV = a.h || 5; break;
+  case 'feuV': ETAT.feuV = a.h || 5; VIS.campV(); break;   /* v0.6.3 : le foyer du visiteur apparaît avec son feu (sinon halo et flammes dans le vide) */
   case 'revele': if (C) C.pnj.forEach(p => p.revele = true); break;
   case 'cache': if (qui) { qui.cache = !!a.on; } break;
   case 'parle': if (qui) qui.parle = a.on !== false; break;
@@ -8541,8 +8549,7 @@ GARDE.actA = h => { if (!GARDE.plan) GARDE.plan = GARDE.faitPlan(); const hh = h
 GARDE.creer = () => { const J = joePack(); if (!J || GARDE.v) return; const d = { id: 'tod', prenom: 'Tod', role: 'garde forestier', genre: 'h', morph: 'man', tenue: 'villager', look: { parts: ['Backpack'], retire: ['Cap', 'Beanie', 'Satchel', 'Scarf', 'Hair_Buzz', 'Hair_Long', 'Hair_Bun', 'Hair_Ponytail', 'Hair_Curly', 'Hair_Bob'], colors: { top: '#2a5fae', top2: '#2a5fae', bottom: '#141416', shoes: '#2a2018', hair: '#4a2e18', skin: '#e3b89a', accent: '#1e2a1a' }, build: 'slim', height: 1.02 }, graine: 7,
     ambiant: ['Belle journée pour le secteur sept.', 'Rien à signaler, comme dirait mon frère.', 'Les forêts de Feral doivent être belles en ce moment…', 'Faut que je pense à appeler Node.', 'La radio grésille encore. Vieux matériel.', 'Ilona disait que les sapins parlent la nuit. Elle disait beaucoup de choses.'] };
   d.look.parts.push('Hair_Short'); const ch = creerPNJ(d, 0); if (!ch) return; const a = GARDE.actA(HORL.h); const L = VIS.lieu(a.lieu || 'pdg', 0, a.clip || 'Idle'); ch.pos = [L.p[0], 0, L.p[1]]; ch.yaw = L.yaw || PI / 2; ch.visible = true;
-  const v = { d, ch, id: 'tod', prenom: 'Tod', role: 'garde forestier', genre: 'h', voix: { pitch: 1.06, rate: 1.0 }, danger: 0, cible: null, clipFinal: a.clip || 'Idle', etat: 'pose', parti: false, tAmb: rnd(25, 50), i: 0, parle: true, vitesse: 1.4, revele: false, chemin: [], dialogue: GARDE.dialogue, garde: true, yawCible: L.yaw };
-  v.voix.voix = VOIX.choisir('h', 'man'); VIS.pnj.push(v); GARDE.v = v; GARDE.ch = ch; GARDE.act = null; GARDE.appliquer(a, true); };
+  const v = { d, ch, id: 'tod', prenom: 'Tod', role: 'garde forestier', genre: 'h', voix: { pitch: 1.06, rate: 1.0, genre: 'h', morph: 'man', voix: null }, danger: 0, cible: null, clipFinal: a.clip || 'Idle', etat: 'pose', parti: false, tAmb: rnd(25, 50), i: 0, parle: true, vitesse: 1.4, revele: false, chemin: [], dialogue: GARDE.dialogue, garde: true, yawCible: L.yaw }; VIS.pnj.push(v); GARDE.v = v; GARDE.ch = ch; GARDE.act = null; GARDE.appliquer(a, true); };
 GARDE.recaler = () => { const v = GARDE.v; if (!v) return; const a = GARDE.actA(HORL.h); GARDE.act = null; GARDE.appliquer(a, true); if (v.etat === 'marche' && v.cible) { v.ch.pos[0] = v.cible[0]; v.ch.pos[2] = v.cible[1]; VIS.arrive(v); v.ch.yaw = v.yawCible || v.ch.yaw; } };
 GARDE.props = (L) => { const ch = GARDE.ch; if (!ch) return; ch.extraProps = (L || []).map(pr => ({ prop: pr, socket: 'Socket_Hand_R', q: QHAND, t: [0, 0, 0] })); };
 GARDE.appliquer = (a, instant) => { const v = GARDE.v; if (!v || GARDE.act === a) return; GARDE.act = a; GARDE.etape = 0; GARDE.tEtape = 0; v.sfx = a.sfx || null; v.parle = !a.dort; v.regardeJoueur = false; GARDE.lampe = false; GARDE.panierOn(false); GARDE.props([]);
@@ -8560,7 +8567,7 @@ GARDE.maj = dt => { const v = GARDE.v; if (!v || !v.ch) return; const ch = v.ch,
   // au poste, assis au bureau la nuit : Tod dort ; le reste du temps il est abordable
   if (ch.visible && v.etat === 'pose' && (v.clipFinal === 'Fish_Wait') && Math.random() < dt * .04) VIS.jouer(v, 'Fish_Cast');
   // la lampe torche la nuit (patrouille) : faisceau dans la direction du regard
-  if (GARDE.lampe && ch.visible && A.nuit() > .1) { const hp = ch.handPos('R'), f = [Math.sin(ch.yaw), -.18, Math.cos(ch.yaw)]; A.addLight({ p: [hp[0] + f[0] * .3, hp[1], hp[2] + f[2] * .3], c: [1, .95, .8], i: 30, r: 26, dir: f, cone: [.8, .94] }); A.addLight({ p: [ch.pos[0] + f[0] * 5, ch.pos[1] + .6, ch.pos[2] + f[2] * 5], c: [1, .95, .8], i: 9, r: 8 }); }
+  if (GARDE.lampe && ch.visible && A.nuit() > .1) { const hp = ch.handPos('R'), f = [Math.sin(ch.yaw), -.18, Math.cos(ch.yaw)]; A.addLight({ p: [hp[0] + f[0] * .3, hp[1], hp[2] + f[2] * .3], c: [1, .95, .8], i: 38, r: 28, dir: f, cone: [.8, .94] }); }
   // lanterne du porche
   if (NOEUDS.pdgLanterne) { const nt = A.nuit(); NOEUDS.pdgLanterne.light.i = nt > .15 ? 8 * nt : 0; NOEUDS.pdgLanterne.parts[1].mat = nt > .15 ? 8 : 7; }
   if (NOEUDS.pdgDrapeau) NOEUDS.pdgDrapeau.rot[1] = -PI / 2 + Math.sin(A.time * 1.7) * .12 + Math.sin(A.time * .6) * .08;
@@ -8778,7 +8785,7 @@ function flammes(p, s, dt) { const F = A.fx, n = Math.random() < .5 ? 1 : 2; for
 function majFeu(dt) { const f = NOEUDS.feu; if (!f) return; const nuit = A.nuit(), t = A.time;
   if (ETAT.feu > 0) { const s = .9 + .2 * Math.sin(t * 7) + .1 * Math.sin(t * 13); if (Math.hypot(PL.x - f.pos[0], PL.z - f.pos[2]) < 90) { if (Math.random() < .55) flammes([f.pos[0], f.pos[1] - .2, f.pos[2]], .75, dt); A.fx.lights.length = Math.min(A.fx.lights.length, 4); if (Math.random() < .04) A.fx.emit('spark', [f.pos[0], f.pos[1] + .2, f.pos[2]], [rnd(-.6, .6), rnd(1.5, 3), rnd(-.6, .6)], rnd(.6, 1.2), .03, [1, .7, .3], 1); } f.light.i = 12 * s * (ETAT.feuBois < .5 ? ETAT.feuBois * 2 : 1); } else f.light.i = 0;
   if (NOEUDS.braises) { NOEUDS.braises.visible = ETAT.feu > 0; if (ETAT.feu > 0) { const k = .75 + .25 * Math.sin(t * 3.1); for (const p of NOEUDS.braises.parts) p.color = [1, .32 + .14 * k, .08]; } }
-  const fv = NOEUDS.feuV; if (fv) { if (ETAT.feuV > 0) { if (Math.hypot(PL.x - fv.pos[0], PL.z - fv.pos[2]) < 90 && Math.random() < .5) flammes([fv.pos[0], fv.pos[1] - .2, fv.pos[2]], .6, dt); fv.light.i = 9 * (.9 + .2 * Math.sin(t * 6.3)); } else fv.light.i = 0; }
+  const fv = NOEUDS.feuV; if (fv) { if (ETAT.feuV > 0 && !(VIS.courant)) ETAT.feuV = 0; if (ETAT.feuV > 0 && NOEUDS.foyerV && !NOEUDS.foyerV.visible) VIS.campV(); if (ETAT.feuV > 0) { if (Math.hypot(PL.x - fv.pos[0], PL.z - fv.pos[2]) < 90 && Math.random() < .5) flammes([fv.pos[0], fv.pos[1] - .2, fv.pos[2]], .6, dt); fv.light.i = 9 * (.9 + .2 * Math.sin(t * 6.3)); } else fv.light.i = 0; }
   if (NOEUDS.foyerV) NOEUDS.foyerV.visible = NOEUDS.tenteV.visible || ETAT.feuV > 0;
   // lanterne : allumée au crépuscule, flamme qui palpite, balancement au vent sur son crochet
   const lan = NOEUDS.lanterne; if (lan) { const on = lanterneAllumee(); lan.light.i = on ? 9 * Math.max(.35, Math.min(1, nuit * 1.4)) * (.94 + .06 * Math.sin(t * 11) + .03 * Math.sin(t * 23)) : 0; if (NOEUDS.lanVerre) { NOEUDS.lanVerre.mat = on ? 8 : 3; NOEUDS.lanVerre.color = on ? [1, .86, .6] : PAL.creme; } if (NOEUDS.lanFlamme) { NOEUDS.lanFlamme.mat = on ? 8 : 7; NOEUDS.lanFlamme.color = on ? [1, .8, .45] : [.25, .23, .2]; }
@@ -8814,7 +8821,7 @@ function initMenu() { montrerMenu();
   $('bContinuer').addEventListener('click', () => { SON.init(); SON.reprendre(); VOIX.debloquer(); if (!charger()) { note('Aucune partie à reprendre.'); return; } S_ui(); demarrerJeu(false); });
   $('prenom').addEventListener('keydown', e => { if (e.key === 'Enter') $('bNouvelle').click(); e.stopPropagation(); });
   const tog = (id, k, f) => { const b = $(id); const maj = () => { b.classList.toggle('on', !!OPT[k]); }; maj(); b.addEventListener('click', () => { OPT[k] = !OPT[k]; sauverOptions(); maj(); f && f(); }); };
-  tog('oSon', 'son', () => { SON.init(); SON.volume(); }); tog('oVoix', 'voix'); tog('oPerf', 'perf', () => { $('perf').hidden = !OPT.perf; });
+  tog('oSon', 'son', () => { SON.init(); SON.volume(); }); tog('oVoix', 'voix', () => { if (OPT.voix) VOIX.test(); else VOIX.stop(); }); tog('oPerf', 'perf', () => { $('perf').hidden = !OPT.perf; });
   $('oQualite').addEventListener('click', () => { const Q = ['auto', 'basse', 'moyenne', 'haute', 'ultra']; OPT.qualite = Q[(Q.indexOf(OPT.qualite) + 1) % Q.length]; $('oQualite').textContent = 'Qualité : ' + OPT.qualite; if (OPT.qualite === 'auto') A.autoQuality = true; else { A.autoQuality = false; A.setQuality(OPT.qualite); } sauverOptions(); }); $('oQualite').textContent = 'Qualité : ' + OPT.qualite;
   $('oTexte').addEventListener('click', () => { OPT.texte = OPT.texte === 'grand' ? 'normal' : 'grand'; $('oTexte').textContent = 'Texte : ' + OPT.texte; appliquerTexte(); sauverOptions(); }); $('oTexte').textContent = 'Texte : ' + OPT.texte;
   $('finRejouer').addEventListener('click', () => { location.reload(); }); $('finMenu').addEventListener('click', () => { location.reload(); });
@@ -8832,7 +8839,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 
 </script>
 <!--
-NOTE-INTERNE (Claude) · HDF : CAMPING v0.6.1 · F.S.M Game House · 2 nov. 2026
+NOTE-INTERNE (Claude) · HDF : CAMPING v0.6.3 · F.S.M Game House · 2 nov. 2026
 À lire avant de modifier ce fichier. Ne pas relire le fichier en entier : chercher les ancres « ==== CAMP : » (grep), puis ne lire que la section utile.
 
 STRUCTURE DU FICHIER
@@ -8891,6 +8898,11 @@ v0.6 — POSTE DE GARDE ET TOD (section « ==== CAMP : POSTE DE GARDE (PDG) » i
  - Hooks dans le reste du code : zoneJoueur, solJoueur, relief, ZONES_LIBRES, creerMonde (construirePDG), VIS.lieu, VIS.gros, VIS.maj (hauteur), VIS.parler (v.dialogue), VIS.noeud, VIS.cond (test, dortAilleurs), normaliser/faire (run, secours), tick (GARDE.tick), dormir (coucher), majSommeil (recaler, réveil au poste), sauver/charger, boucle (GARDE.maj), lancer (GARDE.creer), nouvellePartie (reset), ICONES.poste, MARQUEURS_FIXES, MARQ.sites.
 
 v0.6.1 — VOIX iOS : VOIX.debloquer() (phrase muette dans le geste utilisateur : boutons de lancement, tout appui, manette), speak() différé de 220 ms après un cancel() (Safari ignore un speak immédiat), resume() si la synthèse est en pause (VOIX.veille dans gardeAudio), voix française par défaut si aucune n'est choisie, référence gardée sur l'utterance (V.garde).
+
+v0.6.2 — VOIX DE TOD : la voix d'un PNJ est résolue dans suivant() au moment de parler (n.p.voix revalidée contre speechSynthesis.getVoices(), sinon VOIX.choisir(genre, morph)) ; Tod, créé au chargement avant la liste des voix iOS, recevait une voix invalide → muet.
+
+v0.6.3 — HALO : l'action « feuV » d'un scénario allumait le feu du visiteur (lumière + flammes) sans faire apparaître son foyer → VIS.campV() appelé ; feu du visiteur éteint sans visite en cours. Suppression des lumières ponctuelles « de remplissage » posées 5-6 m devant la lampe du joueur et la torche de Tod (halo au sol dans le vide) ; faisceaux un peu renforcés.
+v0.6.3 — VOIX (module VOIX réécrit) : file pilotée par minuterie (fin forcée après durée estimée, même si onend/onerror ne viennent jamais et si speechSynthesis.speaking reste bloqué), cancel() si speaking/pending juste avant speak (+150 ms), lang = celle de la voix choisie, déblocage iOS par phrase vide dans le geste, VOIX.test() (bouton « Voix des PNJ » du menu et « Tester la voix » dans la pause : phrase + état : voix installées / françaises / lancées / terminées / erreurs), compteurs nParle/nFini/nErr.
 
 À FAIRE / IDÉES v0.7 : sauvegarde du visiteur en cours ; pêche par le joueur ; météo visible (pluie déjà possible via A.meteo) ; deux emplacements de sauvegarde ; branchement History Sens pour les dialogues libres.
 
