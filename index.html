@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HDF : CAMPING">
 <meta name="theme-color" content="#0b0f0a">
-<title>HDF : CAMPING — v0.6.3</title>
+<title>HDF : CAMPING — v0.7</title>
 <style>
 :root{--lin:#f3efe6;--ambre:#f2c66d;--mousse:#8fb37a;--nuit:#0b0f0a;--verre:rgba(10,14,10,.62);--rouge:#e0665a;--bleu:#7fb6d8;
   --sans:-apple-system,BlinkMacSystemFont,"Avenir Next","Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
@@ -170,7 +170,7 @@ body.cine #cine .bande{height:11vh}
 <div id="cine"><div class="bande h"></div><div class="bande b"></div></div>
 <button id="cinePasser" hidden>Passer ›</button>
 <div id="hud" hidden>
-  <div id="titreJeu">HDF : CAMPING · v0.6.3</div>
+  <div id="titreJeu">HDF : CAMPING · v0.7</div>
   <div id="marqueurs"></div>
   <canvas id="boussole" width="1120" height="108"></canvas>
   <div id="heureJour"><b id="hHeure">07:00</b><span id="hJour">Jour 1 · lundi</span></div>
@@ -204,14 +204,14 @@ body.cine #cine .bande{height:11vh}
 </div>
 <div id="fin" hidden><h2 id="finTitre">Fin de partie</h2><p id="finTexte"></p><div class="stats" id="finStats"></div><div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><button class="gros" id="finRejouer">Recommencer une partie</button><button class="gros discret" id="finMenu">Menu</button></div></div>
 <div id="menu" hidden>
-  <div class="version">v0.6.3 · FSM-3D 2.10</div>
+  <div class="version">v0.7 · FSM-3D 2.10</div>
   <h1><small>F.S.M GAME HOUSE</small>HDF : CAMPING</h1>
   <p class="accroche">Seul au bord d'un lac de montagne. Chaque jour, quelqu'un passe. Tenez le plus longtemps possible.</p>
   <div class="ligne"><input id="prenom" maxlength="16" placeholder="Votre prénom" autocomplete="off" spellcheck="false"></div>
   <div class="ligne"><button class="gros" id="bNouvelle">Nouvelle partie</button><button class="gros discret" id="bContinuer" hidden>Continuer</button></div>
   <div class="opts"><button id="oSon" class="on">Son</button><button id="oVoix" class="on">Voix des PNJ</button><button id="oQualite">Qualité : auto</button><button id="oTexte">Texte : grand</button><button id="oMarq" class="on">Marqueurs de collecte</button><button id="oPerf">Performances</button></div>
   <div class="aideCtrl" id="aideCtrl">Manette PS : <b>stick gauche</b> marcher · <b>stick droit</b> regarder · <b>✕</b> action / choisir · <b>○</b> s'accroupir / partir · <b>△</b> sauter · <b>□</b> sac à dos · <b>R2</b> courir · <b>L1</b> lampe · <b>OPTIONS</b> menu.<br>Tactile : stick à gauche, glisser à droite pour regarder, boutons à droite. Clavier : ZQSD / flèches, souris (clic pour viser), Espace, C, Maj, E, Tab, F, Échap.</div>
-  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.6.3</div>
+  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.7</div>
 </div>
 
 <script>
@@ -4992,7 +4992,7 @@ self.JOE_DATA = { animals: 'Z2xURgIAAAD8HQQAtNIBAEpTT057ImFzc2V0Ijp7InZlcnNpb24i
    ===================================================================================== */
 'use strict';
 // ==== CAMP : OUTILS ===================================================================
-const JEU = { nom: 'HDF : CAMPING', version: '0.6.3', cle: 'hdfc-' };
+const JEU = { nom: 'HDF : CAMPING', version: '0.7', cle: 'hdfc-' };
 const $ = id => document.getElementById(id);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, k) => a + (b - a) * k;
@@ -5142,7 +5142,7 @@ function manette() { const gs = navigator.getGamepads ? navigator.getGamepads() 
   const lx = dz(g.axes[0] || 0), ly = dz(g.axes[1] || 0), rx = dz(g.axes[2] || 0), ry = dz(g.axes[3] || 0);
   if (Math.abs(lx) + Math.abs(ly) + Math.abs(rx) + Math.abs(ry) > 0 || g.buttons.some(x => x.pressed)) { if (IN.dernier !== 'manette') { IN.dernier = 'manette'; document.body.classList.add('manette'); } }
   if (g.buttons.some(x => x.pressed)) { SON.init(); SON.reprendre(); VOIX.debloquer(); GARDE_AUDIO.touche = performance.now(); }
-  IN.gstick = [lx, ly]; IN.glook = [rx, ry]; IN.grun = b(7) || b(5) || b(10);
+  IN.gstick = [lx, ly]; IN.glook = [rx, ry]; IN.gact = b(0); IN.grun = b(7) || b(5) || b(10);
   if (edge(0)) IN.act = true; if (edge(1)) IN.accr = true; if (edge(2)) IN.sac = true; if (edge(3)) IN.saut = true; if (edge(9)) IN.menu = true; if (edge(4)) IN.lampe = true;
   if (edge(12)) IN.haut = true; if (edge(13)) IN.bas = true; if (edge(14)) IN.gauche = true; if (edge(15)) IN.droite = true;
   // stick gauche dans les menus : navigation à répétition lente
@@ -5588,6 +5588,7 @@ function majMains(dt, P) { const nd = MAINS.nd; if (!nd) return; MAINS.t += dt;
   if (a === 'pomper') { const s = (Math.sin(t * 7) + 1) / 2; ox = .2; oy = -.3 + s * .05; oz = -.45; rx = .4 + s * .2; ry = -.3; }
   if (a === 'tenir') { rx = .05 + P.pitch * .05; }
   if (a === 'pecher' || a === 'touche' || a === 'ferrer') { ox = .2; oy = -.3 + Math.sin(A.time * 1.1) * .006; oz = -.42; rx = .25; ry = -.15; rz = -.05; if (a === 'touche') { rx += Math.sin(A.time * 38) * .035 + .08; oy -= .02; } if (a === 'ferrer') { const k = Math.sin(Math.min(1, t / .45) * PI); rx = .25 - k * .55; oy += k * .06; oz += k * .06; } }
+  { const q = PECHE.pose(a, t, P); if (q) [ox, oy, oz, rx, ry, rz] = q; }
   if (a === 'cueillir') { const s = Math.sin(Math.min(1, t / .7) * PI); oy = -.31 + s * .2; oz = -.5 - s * .12; ox = .2; rx = -.2 * s; }
   if (a === 'poser') { const s = Math.sin(Math.min(1, t / .8) * PI); oy = -.31 - s * .22; oz = -.5 - s * .25; rx = .15 + s * .5; }
   const M = M3.mul(M3.translate(P.eye[0], P.eye[1], P.eye[2]), M3.mul(M3.rotY(P.yaw + PI), M3.mul(M3.rotX(P.pitch), M3.mul(M3.translate(ox, oy, oz), M3.mul(M3.rotY(ry), M3.mul(M3.rotX(rx), M3.rotZ(rz)))))));
@@ -5928,7 +5929,7 @@ function majBoussole() { const c = $('boussole'); if (!BOUS.ctx) { BOUS.ctx = c.
 // --- invite d'action (objet le plus proche dans le champ)
 let INVITE = null;
 function majInvite() { const el = $('invite'); const kb = IN.dernier === 'clavier' || IN.dernier === 'souris';
-  if (ETAT.action && ETAT.action.nom === 'peche' && !UI.ouvert() && !UI.dlgOuvert) { INVITE = null; el.hidden = false; el.innerHTML = (ETAT.action.mord ? '<i class="ps x">✕</i> <b style="color:var(--ambre)">Ferrer !</b>' + (kb ? '<kbd>E</kbd>' : '') : '<span style="opacity:.8">Attendre la touche…</span>') + ' &nbsp; <i class="ps o">○</i> Ranger' + (kb ? '<kbd>C</kbd>' : ''); return; }
+  if (ETAT.action && ETAT.action.nom === 'peche' && !UI.ouvert() && !UI.dlgOuvert) { INVITE = null; el.hidden = false; PECHE.invite(el, kb); return; }
   if (UI.ouvert() || UI.dlgOuvert || ETAT.dort || UI.cineOn || ETAT.action) { el.hidden = true; INVITE = null; return; }
   let best = null, bd = 1e9; const sy = Math.sin(PL.yaw), cy = Math.cos(PL.yaw);
   const test = (x, z, r, nom, f, prio) => { const dx = x - PL.x, dz = z - PL.z, d = Math.hypot(dx, dz); if (d > r) return; const face = d < .8 ? 1 : (dx * sy + dz * cy) / d; if (face < .35) return; const sc = d - face * .6 - (prio || 0); if (sc < bd) { bd = sc; best = { nom, f, x, z }; } };
@@ -8741,6 +8742,190 @@ GARDE.dialogue = { debut: 'debut', retour: 'debut', apres: [], noeuds: {} };
 // --- dîner au camp : lors de la ronde de nuit, si invité et feu allumé, Tod s'assoit un moment
 GARDE.dinerCheck = () => { const v = GARDE.v; if (!v || !GARDE.act || GARDE.act.type !== 'patrouille' || !GARDE.act.nuit) return; if (ETAT.drapeaux.tod_invite === ETAT.jour && ETAT.feu > 0 && !GARDE.dinerFait) { GARDE.dinerFait = ETAT.jour; GARDE.etapes = [['feu', 'Sit_Ground', .6], ['pdg', 'Idle', 0]]; GARDE.etape = 0; GARDE.etapeSuivante(false); GARDE.plus(6, 'a dîné au camp'); objectifFini('tod_diner'); setTimeout(() => VIS.dire(v, 'Le feu est allumé. Alors je m’assieds. J’ai apporté du pain, pas de poisson, désolé.'), 1500); BES.faim = clamp(BES.faim + 12, 0, 100); } };
 
+// ==== CAMP : PÊCHE IMMERSIVE (v0.7) ==========================================================
+// Lancer chargé (✕ maintenu), flotteur + ligne, poissons visibles qui approchent, touches, ferrage, combat à la tension, prise en main, seau.
+// Remplace pecher / ferrer / majPeche / annulerAction. ETAT.action = { nom:'peche', phase:'viser'|'vol'|'attente'|'combat'|'prise', … }.
+const PECHE = { poissons: [], flotteur: null, ligne: null, seau: null, tTic: 0, angMan: 0, nSeau: -1 };
+const ESPECES = {   // L : taille (cm) ; poids ≈ a·L³ (kg) ; rare ; aube : bonus aube/crépuscule ; prof : bonus bout du ponton ; force : combat
+  truite: { nom: 'Truite fario', L: [22, 48], a: 1.1e-5, rare: 1, aube: 1.6, prof: 1.1, force: .55, dos: [.3, .32, .16], ventre: [.86, .76, .42], nage: [.42, .32, .14], pts: [.62, .14, .1] },
+  arcenciel: { nom: 'Truite arc-en-ciel', L: [25, 55], a: 1.15e-5, rare: .8, aube: 1.4, prof: 1.2, force: .7, dos: [.26, .36, .3], ventre: [.84, .82, .84], nage: [.5, .45, .4], pts: [.78, .32, .42] },
+  perche: { nom: 'Perche', L: [16, 34], a: 1.6e-5, rare: 1.1, aube: 1, prof: .9, force: .35, dos: [.3, .4, .18], ventre: [.82, .76, .5], nage: [.88, .42, .14], pts: [.1, .15, .08] },
+  gardon: { nom: 'Gardon', L: [14, 28], a: 1.2e-5, rare: 1.3, aube: .9, prof: .7, force: .2, dos: [.4, .48, .5], ventre: [.88, .88, .9], nage: [.82, .3, .25], pts: [.66, .68, .7] },
+  omble: { nom: 'Omble chevalier', L: [25, 52], a: 1.05e-5, rare: .5, aube: 1.8, prof: 1.5, force: .65, dos: [.16, .24, .26], ventre: [.92, .48, .22], nage: [.92, .44, .2], pts: [.95, .72, .42] },
+  brochet: { nom: 'Brochet', L: [40, 95], a: .55e-5, rare: .22, aube: 1.2, prof: 1.3, force: 1, dos: [.28, .36, .15], ventre: [.82, .82, .52], nage: [.5, .42, .15], pts: [.8, .76, .42] }
+};
+// --- maillages (corps fuselé tourné, nez vers -z, longueur 1)
+function meshPoisson() { if (PECHE.mesh) return PECHE.mesh; const prof = []; for (let i = 0; i <= 14; i++) { const t = i / 14, r = .09 * Math.sin(PI * Math.pow(t, .75)) * (1 - .5 * Math.pow(t, 2.5)) + .006; prof.push([t - .5, r]); }
+  PECHE.mesh = { corps: mk(GEO.lathe(prof, 12)), boite: mk(GEO.cube()), boule: mk(GEO.sphere(8, 6)) }; return PECHE.mesh; }   // y = -.5 (nez) → +.5 (queue)
+// pièces d'un poisson dans un nœud (L en m) ; sombre = silhouette sous l'eau
+function poserPoisson(nd, esp, L, sombre) { const E = ESPECES[esp] || ESPECES.truite, M = meshPoisson(), T = M3.translate, S = M3.scale, mul = M3.mul, RX = M3.rotX, RY = M3.rotY, RZ = M3.rotZ, k = sombre ? .38 : 1, c = v => v.map(x => x * k), o = { cast: false };
+  nd.parts.length = 0; const haut = esp === 'brochet' ? .7 : esp === 'perche' || esp === 'gardon' ? 1.25 : 1, larg = .62, corps = RX(-PI / 2);   // RX(-90°) : axe y du tour → -z (nez devant)
+  nd.addPart(M.corps, mul(S(L * larg, L * haut, L), corps), c(E.dos), 5, o);
+  nd.addPart(M.corps, mul(T(0, -L * .018, 0), mul(S(L * larg * .96, L * haut * .9, L * .97), corps)), c(E.ventre), 5, o);
+  nd.queue = nd.addPart(M.boite, mul(T(0, 0, L * .55), S(L * .012, L * .15 * haut, L * .12)), c(E.nage), 5, o);
+  nd.addPart(M.boite, mul(T(0, L * .085 * haut, L * .04), mul(RX(.4), S(L * .01, L * .07, L * .16))), c(E.nage), 5, o);                          // dorsale
+  if (esp === 'perche') nd.addPart(M.boite, mul(T(0, L * .09 * haut, -L * .12), mul(RX(.25), S(L * .01, L * .06, L * .14))), [.2 * k, .2 * k, .18 * k], 5, o);   // 1re dorsale épineuse
+  for (const s of [-1, 1]) nd.addPart(M.boite, mul(T(s * L * .05, -L * .035, -L * .18), mul(RZ(s * .9), mul(RY(s * .5), S(L * .008, L * .05, L * .08)))), c(E.nage), 5, o);   // pectorales
+  nd.addPart(M.boite, mul(T(0, -L * .07 * haut, L * .26), mul(RX(-.3), S(L * .008, L * .05, L * .08))), c(E.nage), 5, o);                       // anale
+  for (const s of [-1, 1]) { nd.addPart(M.boule, mul(T(s * L * .036, L * .012, -L * .37), S(L * .03, L * .03, L * .03)), sombre ? [.04, .04, .04] : [.92, .86, .6], 14, o); if (!sombre) nd.addPart(M.boule, mul(T(s * L * .048, L * .012, -L * .375), S(L * .015, L * .015, L * .015)), [.02, .02, .02], 7, o); }
+  if (!sombre) { for (let i = 0; i < 8; i++) for (const s of [-1, 1]) nd.addPart(M.boule, mul(T(s * L * (.046 - Math.abs(i - 3.5) * .002), L * (.035 - (i % 3) * .016) * haut, -L * .24 + i * L * .055), S(L * .002, L * .013, L * .013)), E.pts, 5, o);   // points / bandes
+    if (esp === 'arcenciel') for (const s of [-1, 1]) nd.addPart(M.boule, mul(T(s * L * .043, 0, 0), S(L * .006, L * .05 * haut, L * .55)), [.85, .42, .5], 5, o);     // bande irisée
+    if (esp === 'perche') for (let i = 0; i < 5; i++) for (const s of [-1, 1]) nd.addPart(M.boite, mul(T(s * L * .045, L * .03, -L * .2 + i * L * .09), S(L * .002, L * .08 * haut, L * .02)), [.12, .16, .08], 5, o);   // rayures
+    nd.addPart(M.boite, mul(T(0, -L * .004, -L * .44), S(L * .05, L * .006, L * .05)), [.35, .22, .2], 5, o); }                                    // bouche
+  nd.L = L; nd.esp = esp; nd.haut = haut; }
+function tailleEspece(esp) { const E = ESPECES[esp], u = Math.pow(Math.random(), 1.7), L = E.L[0] + (E.L[1] - E.L[0]) * u; return { L: Math.round(L), kg: +(E.a * Math.pow(L, 3)).toFixed(2) }; }
+function tirerEspece(prof, aube) { const L = []; for (const k in ESPECES) { const E = ESPECES[k]; L.push([k, E.rare * (prof ? E.prof : 1) * (aube ? E.aube : 1)]); } const tot = L.reduce((s, x) => s + x[1], 0); let r = Math.random() * tot; for (const [k, w] of L) { r -= w; if (r <= 0) return k; } return 'gardon'; }
+PECHE.nouveau = p => { const esp = tirerEspece(true, false), t = tailleEspece(esp); p.esp = esp; p.L = t.L; p.kg = t.kg; poserPoisson(p.nd, esp, t.L / 100, true); };
+// --- poissons : silhouettes qui nagent près de la grève et du ponton
+PECHE.creerPoissons = () => { meshPoisson(); const zones = [[-6, 72], [4, 80], [-15, 78], [12, 84], [-3, 86], [20, 76], [-24, 74]];
+  for (let i = 0; i < 10; i++) { const z0 = zones[i % zones.length], nd = new Node('poisson'); nd.pickable = false; nd.castShadow = false; const p = { nd, x: z0[0] + rnd(-5, 5), z: z0[1] + rnd(-4, 4), yaw: rnd(0, TAU), v: rnd(.35, .7), etat: 'nage', t: rnd(0, 9), prof: rnd(.4, .9), peur: 0 }; PECHE.nouveau(p); nd.visible = false; A.add(nd); PECHE.poissons.push(p); } };
+PECHE.majPoissons = dt => { const a = ETAT.action, pf = a && a.nom === 'peche' ? a : null, fl = pf && pf.phase === 'attente' ? pf.fl : null;
+  for (const p of PECHE.poissons) { p.t += dt; const nd = p.nd; if (p.etat === 'pris') { nd.visible = false; continue; }
+    let profV = p.prof;
+    if (p.peur > 0) { p.peur -= dt; p.v = lerp(p.v, 2.6, dt * 4); if (p.etat !== 'nage') p.etat = 'nage'; }
+    else if (p.etat === 'approche' && fl) { const dx = fl[0] - p.x, dz = fl[1] - p.z, d = Math.hypot(dx, dz); p.yaw += difAngle(angleVers(dx, dz), p.yaw) * Math.min(1, dt * 2.2); p.v = d > 1.5 ? .9 : .3; profV = .25; if (d < 1.1) { p.etat = 'rode'; p.tRode = rnd(2.5, 6); p.nMord = 0; } }
+    else if (p.etat === 'rode' && fl) { p.tRode -= dt; profV = .15; const dx = fl[0] - p.x, dz = fl[1] - p.z, d = Math.hypot(dx, dz), w = angleVers(dx, dz); p.yaw += difAngle(w + PI / 2, p.yaw) * dt * .9 + Math.sin(p.t * 1.3) * dt; if (d > 1.5) p.yaw += difAngle(w, p.yaw) * dt * 2.5; p.v = .32 + .1 * Math.sin(p.t * 2);
+      if (p.tRode <= 0) { if (Math.random() < .5 || p.nMord >= 2) { p.etat = 'mord'; pf.mord = pf.t; pf.poisson = p; pf.fenetre = 1.25 + (p.esp === 'brochet' ? .35 : 0); PECHE.touche(pf, true); } else { p.nMord++; p.tRode = rnd(1.5, 4); PECHE.touche(pf, false); } } }
+    else if (p.etat === 'mord' && fl) { profV = .05; const dx = fl[0] - p.x, dz = fl[1] - p.z, d = Math.hypot(dx, dz); p.yaw += difAngle(angleVers(dx, dz), p.yaw) * Math.min(1, dt * 6); p.v = d > .3 ? .5 : 0; }
+    else if (p.etat === 'combat' && pf && pf.phase === 'combat') { profV = .05; const ox = Math.sin(p.t * 3.1) * .35, oz = Math.cos(p.t * 2.3) * .35; p.x = pf.fl[0] + ox; p.z = pf.fl[1] + oz; p.yaw = angleVers(p.x - PL.x, p.z - PL.z) + Math.sin(p.t * 5) * .8; p.v = 1.6; }
+    else { if (p.etat !== 'nage') p.etat = 'nage'; p.v = lerp(p.v, .45, dt); if (Math.random() < dt * .25) p.yaw += rnd(-.9, .9); p.yaw += Math.sin(p.t * .7) * dt * .3;
+      const r = Math.hypot(p.x, p.z); if (r > 88 || SOL(p.x + Math.sin(p.yaw) * 2, p.z + Math.cos(p.yaw) * 2) > -.6) p.yaw += dt * 4; if (r < 50) p.yaw += difAngle(angleVers(p.x, p.z), p.yaw) * dt; }
+    if ((p.etat === 'approche' || p.etat === 'rode' || p.etat === 'mord') && (p.tRem = (p.tRem || 0) - dt) <= 0) { p.tRem = p.etat === 'approche' ? .7 : 1.1; PECHE.rond(p.x, p.z, .25, .25, 1); }
+    if (p.etat !== 'combat') { p.x += Math.sin(p.yaw) * p.v * dt; p.z += Math.cos(p.yaw) * p.v * dt; }
+    nd.visible = Math.hypot(p.x - PL.x, p.z - PL.z) < 40 && !ETAT.dort; if (!nd.visible) continue;
+    p.pv = lerp(p.pv === undefined ? profV : p.pv, profV, Math.min(1, dt * 1.5)); const surf = PECHE.surface(p.x, p.z), fond = SOL(p.x, p.z);
+    nd.pos = [p.x, Math.max(fond + .12, surf - .05 - p.pv * .5 + Math.sin(p.t * 1.1) * .03), p.z]; nd.rot = [0, p.yaw + PI, p.etat === 'combat' ? Math.sin(p.t * 9) * .5 : 0];
+    if (nd.queue) { const L = nd.L, w = Math.sin(p.t * (5 + p.v * 7)) * (.3 + p.v * .25); nd.queue.M.set(M3.mul(M3.translate(Math.sin(w) * L * .04, 0, L * .55), M3.mul(M3.rotY(w), M3.scale(L * .012, L * .15 * nd.haut, L * .12)))); } } };
+PECHE.gerbe = (p, v, life, size, alpha) => { const d = Math.hypot(p[0] - PL.x, p[2] - PL.z); if (d < 2.2) return; A.fx.emit('spray', p, v, life, size * clamp(d / 6, .4, 1), [.85, .9, .95], alpha); };
+PECHE.rond = (x, z, t, al, life = 1.2) => { const d = Math.hypot(x - PL.x, z - PL.z); A.fx.emit('ring', [x, PECHE.surface(x, z) + .015, z], [0, 0, 0], life, t * .25, [.9, .95, 1], al * clamp(d / 4, .25, 1) * .8, { grow: t * 1.4 }); };   // rond dans l'eau (taille t ≈ rayon atteint en 1 s)
+PECHE.surface = (x, z) => A.water ? A.water.heightAt(x, z) : 0;
+// point d'eau profonde devant le joueur, à la distance d (au plus)
+PECHE.pointEau = d => { const sy = Math.sin(PL.yaw), cy = Math.cos(PL.yaw); let best = null; for (let s = 2.5; s <= d; s += .5) { const x = PL.x + sy * s, z = PL.z + cy * s; if (SOL(x, z) < -.5) best = [x, z, s]; else if (best && s > 4) break; } return best; };
+// --- lancer
+pecher = function (ou) { if (ETAT.action) return; if (!aObjet('canne')) { note('Il faut la canne à pêche (posée près du ponton).'); return; }
+  const h = HORL.h, aube = (h > 5 && h < 9.5) || (h > 18 && h < 21.5), prof = ou === 'ponton' || PL.surPonton, k = (aube ? 1.6 : 1) * (prof ? 1.3 : .9) * (estNuit() ? .55 : 1) * (ETAT.meteo === 'pluie' || ETAT.meteo === 'couvert' ? 1.2 : 1);
+  if (!PECHE.pointEau(18)) { note('Pas d’eau assez profonde devant vous : tournez-vous vers le lac.', 2600); return; }
+  ETAT.action = { nom: 'peche', phase: 'viser', t: 0, k, puissance: 0, sens: 1, pret: false, x: PL.x, z: PL.z, ou, prof, aube, rates: 0, tension: 0, mord: 0 }; montrerMain('canne', 0, 'viser'); SON.tissu(); if (!PECHE.vu) { PECHE.vu = true; PECHE.flotteurOn(false); }
+  note('Visez le lac, maintenez ✕ pour armer le lancer, relâchez pour lancer. ○ : ranger la canne.' + (aube ? ' Belle heure : ça mord.' : ''), 4500); };
+PECHE.armer = a => { a.phase = 'viser'; a.puissance = 0; a.sens = 1; a.pret = false; a.charge = false; a.tension = 0; a.poisson = null; a.mord = 0; a.plonge = 0; a.tRamene = 0; PECHE.flotteurOn(false); montrerMain('canne', 0, 'viser'); };
+PECHE.lancer = a => { const pt = PECHE.pointEau(4 + a.puissance * 14) || PECHE.pointEau(18); if (!pt) { note('Rien que la rive devant : tournez-vous vers le lac.', 2000); PECHE.armer(a); return; }
+  a.phase = 'vol'; a.tVol = 0; a.dVol = .55 + pt[2] * .04; a.cible = [pt[0], pt[1]]; const tip = PECHE.boutCanne() || [PL.x, PL.eye[1] + .5, PL.z]; a.dep = [tip[0], tip[1], tip[2]]; a.fl = [tip[0], tip[2]]; a.flY = tip[1]; a.dist = pt[2];
+  MAINS.t = 0; MAINS.anim = 'lancer'; SON.cerfVolant(); PECHE.flotteurOn(true); };
+PECHE.boutCanne = () => { const it = MAINS.items && MAINS.items.canne; if (!it || !it.visible || !it.bout || !MAINS.nd.visible) return null; return M3.xform(it.world, it.bout); };
+// flotteur (rouge et blanc, antenne) et ligne (8 segments, ventre qui se tend en combat)
+PECHE.flotteurOn = on => { if (on && !PECHE.flotteur) { const nd = new Node('flotteur'); nd.pickable = false; nd.castShadow = false;
+    nd.addPart(MESH.sph, M3.mul(M3.translate(0, .02, 0), M3.scale(.045, .06, .045)), [.95, .16, .1], 5); nd.addPart(MESH.sph, M3.mul(M3.translate(0, -.025, 0), M3.scale(.042, .055, .042)), [.95, .95, .9], 5); nd.addPart(MESH.cyl6, M3.mul(M3.translate(0, .1, 0), M3.scale(.007, .09, .007)), [1, .5, .1], 8); nd.addPart(MESH.cyl6, M3.mul(M3.translate(0, -.08, 0), M3.scale(.006, .05, .006)), [.3, .3, .3], 7);
+    A.add(nd); PECHE.flotteur = nd; const lg = new Node('ligne'); lg.pickable = false; lg.castShadow = false; for (let i = 0; i < 8; i++) lg.addPart(MESH.cyl6, M3.identity(), [.9, .92, .88], 0, { cast: false }); A.add(lg); PECHE.ligne = lg; }
+  if (!on) { if (PECHE.flotteur) { A.remove(PECHE.flotteur); PECHE.flotteur = null; } if (PECHE.ligne) { A.remove(PECHE.ligne); PECHE.ligne = null; } } };
+PECHE.majLigne = a => { const lg = PECHE.ligne, fl = PECHE.flotteur; if (!lg || !fl) return; const tip = PECHE.boutCanne(); lg.visible = fl.visible = !!tip; if (!tip) return;
+  const fx = a.fl[0], fz = a.fl[1], fy = a.flY; fl.pos = [fx, fy, fz]; fl.rot = [a.phase === 'combat' ? .9 : (a.plonge || 0) * .5 + Math.sin(A.time * 1.7) * .05, 0, Math.sin(A.time * 1.3) * .05];
+  const n = lg.parts.length, D = Math.hypot(fx - tip[0], fz - tip[2]), sag = a.phase === 'combat' ? .01 : a.phase === 'vol' ? .03 : .06 + D * .012; let prev = tip;
+  for (let i = 0; i < n; i++) { const t = (i + 1) / n, q = [tip[0] + (fx - tip[0]) * t, tip[1] + (fy + .06 - tip[1]) * t - Math.sin(t * PI) * sag * D * (a.phase === 'vol' ? .2 : 1), tip[2] + (fz - tip[2]) * t]; if (a.phase !== 'vol') q[1] = Math.max(q[1], PECHE.surface(q[0], q[2]) + .005); lg.parts[i].M.set(matTube(prev, q, .0022)); prev = q; } };
+// touche : frémissement (le flotteur tremble) ou vraie touche (il plonge)
+PECHE.touche = (a, vraie) => { const [bx, bz] = a.fl, s = PECHE.surface(bx, bz);
+  if (vraie) { a.plonge = 1; MAINS.anim = 'touche'; MAINS.t = 0; note('Ça mord ! ✕ pour ferrer !', 1500); SON.plouf(.22); SON.tic(.25, 700, .08); for (let i = 0; i < 8; i++) PECHE.gerbe([bx, s + .04, bz], [rnd(-.7, .7), rnd(1, 2.2), rnd(-.7, .7)], rnd(.4, .7), rnd(.04, .09), .7); PECHE.rond(bx, bz, .5, .5, 1); }
+  else { a.plonge = Math.max(a.plonge || 0, .35); SON.tic(.1, 1300, .03); PECHE.rond(bx, bz, .25, .3, .9); if (!a.ditTouche) { a.ditTouche = true; note('Le flotteur frémit… attendez qu’il plonge.', 1800); } } };
+// ferrer : ✕ pendant la fenêtre → combat ; trop tôt → le poisson s'enfuit
+ferrer = function () { const a = ETAT.action; if (!a || a.nom !== 'peche' || a.phase !== 'attente') return; MAINS.t = 0; MAINS.anim = 'ferrer'; const p = a.poisson;
+  if (p && p.etat === 'mord' && a.t - a.mord < a.fenetre) { const E = ESPECES[p.esp]; a.phase = 'combat'; p.etat = 'combat'; a.dist = Math.hypot(a.fl[0] - PL.x, a.fl[1] - PL.z); a.tension = .3; a.energie = 1; a.tCombat = 0; a.course = 0; a.force = E.force * (.65 + p.L / E.L[1] * .6); a.plonge = 0;
+    SON.plouf(.35); for (let i = 0; i < 12; i++) PECHE.gerbe([a.fl[0], a.flY + .05, a.fl[1]], [rnd(-1, 1), rnd(1.5, 3), rnd(-1, 1)], rnd(.4, .8), rnd(.05, .12), .75);
+    setTimeout(() => { if (ETAT.action === a && a.phase === 'combat') MAINS.anim = 'combat'; }, 400); note('Ferré ! Maintenez ✕ pour mouliner, relâchez quand la ligne se tend trop.', 3500); return; }
+  if (p && p.etat !== 'nage') { p.etat = 'nage'; p.peur = 2.5; } a.poisson = null; a.mord = 0; a.rates++; note(p ? 'Trop tôt : il a eu peur.' : 'Rien au bout… patience.', 1600); setTimeout(() => { if (ETAT.action === a && a.phase === 'attente') MAINS.anim = 'pecher'; }, 600); };
+annulerAction = function () { const a = ETAT.action; if (!a) return; ETAT.action = null; if (a.nom === 'peche') { if (a.poisson && a.poisson.etat !== 'pris') { a.poisson.etat = 'nage'; a.poisson.peur = 3; } PECHE.flotteurOn(false); note(a.phase === 'combat' ? 'Vous coupez la ligne : le poisson s’en va.' : 'Vous rangez la canne.', 1600); SON.tissu(); } else note('Action interrompue.', 1500); montrerMain(PL.lampe ? 'lampe' : null, 0, 'tenir'); };
+PECHE.actTenu = () => !!(IN.keys.e || IN.keys[' '] || IN.xTenu || IN.gact);
+PECHE.tic = () => { PECHE.tTic -= A.dt || .016; if (PECHE.tTic <= 0) { PECHE.tTic = .085; SON.tic(.05, 1900 + Math.random() * 500, .014); } };
+majPeche = function (a, dt) { const tenu = PECHE.actTenu(); if (!tenu) a.pret = true;
+  if (Math.hypot(PL.x - a.x, PL.z - a.z) > 1.2 && a.phase !== 'prise') { annulerAction(); return; }
+  PECHE.majLigne(a);
+  if (a.phase === 'viser') { if (tenu && a.pret) { a.charge = true; a.puissance += a.sens * dt * .85; if (a.puissance >= 1) { a.puissance = 1; a.sens = -1; } if (a.puissance <= .12 && a.sens < 0) a.sens = 1; MAINS.anim = 'viser'; } else if (a.charge && !tenu) PECHE.lancer(a); return; }
+  if (a.phase === 'vol') { a.tVol += dt; const k = clamp(a.tVol / a.dVol, 0, 1), c = a.cible, ke = 1 - Math.pow(1 - k, 1.6); a.fl = [a.dep[0] + (c[0] - a.dep[0]) * ke, a.dep[2] + (c[1] - a.dep[2]) * ke]; a.flY = lerp(a.dep[1], PECHE.surface(c[0], c[1]), k) + Math.sin(k * PI) * (1 + a.puissance * 2.4);
+    if (k >= 1) { a.phase = 'attente'; a.tAttente = 0; a.prochain = rnd(3, 7); a.flY = PECHE.surface(c[0], c[1]); MAINS.anim = 'pecher'; SON.plouf(.2); for (let i = 0; i < 7; i++) PECHE.gerbe([c[0], a.flY + .03, c[1]], [rnd(-.6, .6), rnd(.8, 1.8), rnd(-.6, .6)], rnd(.4, .6), rnd(.04, .08), .7); PECHE.rond(c[0], c[1], .6, .4, 1.3); } return; }
+  if (a.phase === 'attente') { a.tAttente += dt; const s = PECHE.surface(a.fl[0], a.fl[1]), mordu = a.poisson && a.poisson.etat === 'mord'; if (a.plonge > 0) a.plonge = Math.max(0, a.plonge - dt * (mordu ? .15 : 1.3)); a.flY = s - a.plonge * .3 + Math.sin(a.t * 2.1) * .01 + (mordu ? Math.sin(a.t * 23) * .02 : 0);
+    a.tr = (a.tr || 0) - dt; if (a.tr <= 0) { a.tr = mordu ? .3 : rnd(2, 4); PECHE.rond(a.fl[0], a.fl[1], mordu ? .45 : .3, mordu ? .4 : .18, 1.1); }
+    if (mordu && a.t - a.mord > a.fenetre) { const p = a.poisson; p.etat = 'nage'; p.peur = 3; a.poisson = null; a.mord = 0; a.rates++; MAINS.anim = 'pecher'; note('Trop tard… il a recraché l’appât.', 1800); }
+    // un poisson repère l'appât (plus vite à l'aube, au bout du ponton, par temps couvert) ; un poisson lointain est rapproché hors de vue
+    if (!a.poisson && a.tAttente > a.prochain) { a.prochain = a.tAttente + rnd(4, 10) / a.k; if (Math.random() < .75) { const libres = PECHE.poissons.filter(p => p.etat === 'nage' && p.peur <= 0); if (libres.length) { libres.sort((u, v) => Math.hypot(u.x - a.fl[0], u.z - a.fl[1]) - Math.hypot(v.x - a.fl[0], v.z - a.fl[1])); const p = libres[0];
+        if (Math.hypot(p.x - a.fl[0], p.z - a.fl[1]) > 14) { for (let i = 0; i < 12; i++) { const an = rnd(0, TAU), r = rnd(7, 11), x = a.fl[0] + Math.sin(an) * r, z = a.fl[1] + Math.cos(an) * r; if (SOL(x, z) < -.8) { p.x = x; p.z = z; p.yaw = angleVers(a.fl[0] - x, a.fl[1] - z); if (Math.random() < .6) { const esp = tirerEspece(a.prof, a.aube), t = tailleEspece(esp); p.esp = esp; p.L = t.L; p.kg = t.kg; poserPoisson(p.nd, esp, t.L / 100, true); } break; } } }
+        if (Math.hypot(p.x - a.fl[0], p.z - a.fl[1]) <= 14) { p.etat = 'approche'; a.poisson = p; } } } }
+    if (a.tAttente > 90 && !a.poisson) { note('Rien ne mord ici. Relancez ailleurs, ou revenez à l’aube.', 3000); a.tAttente = 40; }
+    // ✕ maintenu sans touche : on ramène doucement la ligne (et on relance quand le flotteur est revenu)
+    if (tenu && a.pret && !mordu) { a.tRamene = (a.tRamene || 0) + dt; if (a.tRamene > .45) { const dx = PL.x - a.fl[0], dz = PL.z - a.fl[1], d = Math.hypot(dx, dz); PECHE.tic(); if (a.poisson) { a.poisson.etat = 'nage'; a.poisson.peur = 1.5; a.poisson = null; }
+        if (d > 3) { a.fl[0] += dx / d * dt * 1.8; a.fl[1] += dz / d * dt * 1.8; if (SOL(a.fl[0], a.fl[1]) > -.2) PECHE.armer(a); } else PECHE.armer(a); } } else a.tRamene = 0;
+    return; }
+  if (a.phase === 'combat') { const p = a.poisson, E = ESPECES[p.esp]; a.tCombat += dt;
+    if (a.course <= 0 && Math.random() < dt * (.35 + a.energie * .7)) { a.course = rnd(.6, 1.6) * (.4 + a.energie); a.sens2 = Math.random() < .5 ? -1 : 1; if (a.energie > .4) SON.tic(.12, 900, .2); }
+    const tire = a.course > 0 ? a.force * (.5 + a.energie) : .1 * a.energie; if (a.course > 0) a.course -= dt;
+    if (tenu) { a.dist = Math.max(0, a.dist - dt * Math.max(.25, 1.4 - tire * .9)); a.tension += dt * (tire * .75 + .1 - (a.course > 0 ? 0 : .25)); PECHE.tic(); } else { a.dist += dt * tire * 1.1; a.tension -= dt * .55; }
+    a.tension = clamp(a.tension, 0, 1.2); a.energie = Math.max(0, a.energie - dt * .055 * (tenu ? 1.4 : 1) * (.7 + a.tension));
+    const dx = a.fl[0] - PL.x, dz = a.fl[1] - PL.z, ang = angleVers(dx, dz) + (a.course > 0 ? a.sens2 * dt * .5 : 0); let nx = PL.x + Math.sin(ang) * a.dist, nz = PL.z + Math.cos(ang) * a.dist; if (SOL(nx, nz) > -.3 && a.dist > 1.2) { a.sens2 = -(a.sens2 || 1); nx = a.fl[0]; nz = a.fl[1]; } a.fl = [nx, nz];
+    a.flY = PECHE.surface(nx, nz) - .1 + Math.sin(a.tCombat * 9) * .04;
+    if (Math.random() < dt * (a.course > 0 ? 7 : 2)) { PECHE.gerbe([nx, a.flY + .12, nz], [rnd(-1, 1), rnd(1, 2.6), rnd(-1, 1)], rnd(.3, .6), rnd(.05, .11), .7); PECHE.rond(nx, nz, .3, .35, .9); if (Math.random() < .25) SON.plouf(.08); }
+    if (a.course > 0 && a.energie > .5 && Math.random() < dt * .25) { SON.plouf(.25); for (let i = 0; i < 10; i++) PECHE.gerbe([nx, a.flY + .2, nz], [rnd(-1.2, 1.2), rnd(2, 3.5), rnd(-1.2, 1.2)], rnd(.4, .7), rnd(.06, .13), .75); }   // saut / coup de queue
+    if (a.tension >= 1.15) { SON.tic(.5, 3000, .05); note(`Clac ! La ligne a cassé. ${E.nom} perdu${E.nom.startsWith('Truite') || E.nom === 'Perche' ? 'e' : ''}.`, 3000); p.etat = 'nage'; p.peur = 6; a.rates++; PECHE.armer(a); return; }
+    if (a.dist <= 1.3) PECHE.prendre(a, p); return; }
+  if (a.phase === 'prise') { a.tPrise += dt; if (a.tPrise > 3.3) PECHE.armer(a); } };
+// prise : poisson montré en main, journal, seau
+PECHE.prendre = (a, p) => { const E = ESPECES[p.esp]; a.phase = 'prise'; a.tPrise = 0; p.etat = 'pris'; PECHE.flotteurOn(false); SON.plouf(.35); setTimeout(() => SON.ui2(), 300);
+  const it = MAINS.items.poisson; if (it && it.pm) { poserPoisson(it.pm, p.esp, Math.min(.6, p.L / 100), false); } montrerMain('poisson', 3.2, 'prise');
+  SAC.poisson++; SAC.prises = SAC.prises || []; SAC.prises.push({ esp: p.esp, nom: E.nom, L: p.L, kg: p.kg, jour: ETAT.jour, h: +HORL.h.toFixed(1) }); if (SAC.prises.length > 20) SAC.prises.shift();
+  const rec = lire('recordPeche') || 0, record = p.kg > rec; if (record) ecrire('recordPeche', p.kg); ETAT.prisesTotal = (ETAT.prisesTotal || 0) + 1;
+  note(`${E.nom} · ${p.L} cm · ${p.kg.toFixed(2).replace('.', ',')} kg${record && rec ? ' — nouveau record !' : ''} → seau à poissons (${SAC.poisson}).`, 4500); historique(`a pêché : ${E.nom.toLowerCase()} de ${p.L} cm`);
+  setTimeout(() => { PECHE.nouveau(p); const an = rnd(0, TAU); p.x = PONTON.x + Math.sin(an) * 14; p.z = PONTON.z1 - 6 + Math.cos(an) * 5; p.etat = 'nage'; p.peur = 0; }, 25000); };
+// --- seau à poissons (sur la grève, près du porte-canne) : on voit les prises dedans ; consulter, relâcher
+PECHE.creerSeau = () => { const x = PONTON.x + 2.3, z = PONTON.z0 + 1.65, y = SOL(x, z), nd = new Node('seau'); nd.pickable = false; nd.pos = [x, y, z]; const T = M3.translate, S = M3.scale, mul = M3.mul;
+  nd.addPart(MESH.cyl, mul(T(0, .19, 0), S(.36, .38, .36)), [.6, .62, .64], 7); nd.addPart(MESH.cyl, mul(T(0, .38, 0), S(.385, .03, .385)), [.46, .47, .5], 7); nd.addPart(MESH.cyl, mul(T(0, .12, 0), S(.37, .02, .37)), [.5, .51, .54], 7); nd.addPart(MESH.cyl, mul(T(0, .26, 0), S(.373, .02, .373)), [.5, .51, .54], 7);
+  for (const s of [-1, 1]) nd.addPart(MESH.sph8, mul(T(s * .185, .35, 0), S(.03, .03, .03)), [.4, .4, .42], 7);
+  nd.anse = []; let prev = [-.185, .35, 0]; for (let i = 1; i <= 6; i++) { const an = PI - i / 6 * PI, q = [Math.cos(an) * .185, .35 + Math.sin(an) * .16, -.05 * Math.sin(an)]; nd.addPart(MESH.cyl6, matTube(prev, q, .006), [.35, .35, .37], 7); prev = q; }
+  nd.eau = nd.addPart(MESH.cyl, mul(T(0, .3, 0), S(.34, .01, .34)), [.16, .26, .28], 2, { cast: false }); A.add(nd); PECHE.seau = nd;
+  COLL.push({ x, z, r: .24 }); LIEUX.seau = [x, z]; OBJETS.push({ id: 'seau', x, z, r: 1.5, nom: 'Seau à poissons', f: () => PECHE.actionSeau() }); PECHE.majSeau(); };
+PECHE.majSeau = () => { const nd = PECHE.seau; if (!nd) return; for (const c of nd.children.slice()) nd.remove(c); const P = SAC.prises || [], n = Math.min(SAC.poisson, 6);
+  nd.eau.M.set(M3.mul(M3.translate(0, n ? .25 : .16, 0), M3.scale(.34, .01, .34)));
+  for (let i = 0; i < n; i++) { const pr = P[P.length - 1 - i] || { esp: 'truite', L: 28 }, f = new Node('pSeau'); f.pickable = false; f.castShadow = false; poserPoisson(f, pr.esp, Math.min(.3, pr.L / 100 * .7), false); const an = i * 2.1 + .3;
+    f.pos = [Math.cos(an) * .07, .3 + (i % 3) * .02, Math.sin(an) * .07]; f.rot = [.9 + (i % 2) * .35, an, (i % 2 ? .5 : -.4)]; nd.add(f); } PECHE.nSeau = SAC.poisson; };
+PECHE.actionSeau = () => { const L = (SAC.prises || []).slice().reverse(), rec = lire('recordPeche') || 0, kg = v => (+v).toFixed(2).replace('.', ',');
+  const liste = L.length ? L.slice(0, 8).map(p => `${p.nom} ${p.L} cm (${kg(p.kg)} kg)`).join(' · ') : '';
+  const txt = SAC.poisson ? `${SAC.poisson} poisson${SAC.poisson > 1 ? 's' : ''} dans le seau, à griller au feu ou à poêler au réchaud. ${liste}.${rec ? ` Record : ${kg(rec)} kg.` : ''}` : 'Le seau est vide. Ça mord mieux au bout du ponton, à l’aube et au crépuscule.' + (rec ? ` Record : ${kg(rec)} kg.` : '');
+  const ch = [{ t: 'Relâcher le plus petit', off: !SAC.poisson, f: () => { const P = SAC.prises || []; let r = null; if (P.length) { let i = 0; for (let k = 1; k < P.length; k++) if (P[k].kg < P[i].kg) i = k; r = P.splice(i, 1)[0]; } SAC.poisson = Math.max(0, SAC.poisson - 1); PECHE.majSeau(); SON.plouf(.2); note(r ? `${r.nom} de ${r.L} cm relâché dans le lac.` : 'Poisson relâché.', 2500); ETAT.relaches = (ETAT.relaches || 0) + 1; } }, { t: 'Laisser', fin: true }];
+  menuChoix('Seau à poissons', txt, ch); };
+PECHE.syncSeau = () => { const P = SAC.prises || (SAC.prises = []); while (P.length > SAC.poisson) { let i = 0; for (let k = 1; k < P.length; k++) if (P[k].kg < P[i].kg) i = k; P.splice(i, 1); } if (PECHE.nSeau !== SAC.poisson) PECHE.majSeau(); };   // poissons cuisinés → retirés du seau
+// --- canne en main : poignée liège, moulinet (manivelle qui tourne), brin en 6 segments qui plie, anneaux
+function plierCanne(it, k, ph) { const n = it.segs.length, L = 1.6 / n; let p = [0, .06, -.15], dir = V3.n([0, .3, -.95]);
+  for (let i = 0; i < n; i++) { const c = k * (.03 + i * .07) + Math.sin(ph * 6 + i) * k * .012; dir = V3.n([dir[0] + (it.lat || 0) * c * .4, dir[1] - c, dir[2]]); const q = [p[0] + dir[0] * L, p[1] + dir[1] * L, p[2] + dir[2] * L]; it.segs[i].M.set(matTube(p, q, .0095 - i * .0011)); if (i > 0) it.anneaux[i - 1].M.set(matTube([p[0], p[1] - .016, p[2]], [p[0], p[1] + .002, p[2]], .005)); p = q; } it.bout = p; }
+PECHE.construireCanne = () => { const it = MAINS.items && MAINS.items.canne; if (!it || it.segs) return; const nMain = 12; it.parts.length = nMain;   // garde la main (12 pièces), remplace la canne
+  it.addPart(MESH.cyl, matTube([0, -.01, .22], [0, .03, .06], .021), [.7, .58, .4], 13); it.addPart(MESH.cyl, matTube([0, .03, .06], [0, .06, -.15], .016), [.72, .6, .42], 13); it.addPart(MESH.cyl, matTube([0, .025, .07], [0, .035, .02], .019), PAL.noir, 7);
+  it.addPart(MESH.cyl6, matTube([0, .02, .045], [0, -.035, .045], .008), PAL.metal, 14); it.addPart(MESH.cyl, M3.mul(M3.translate(0, -.06, .045), M3.mul(M3.rotX(PI / 2), M3.scale(.07, .06, .07))), [.25, .26, .28], 22); it.addPart(MESH.cyl, M3.mul(M3.translate(0, -.06, .015), M3.mul(M3.rotX(PI / 2), M3.scale(.052, .02, .052))), [.75, .72, .62], 5);
+  it.addPart(MESH.cyl6, matTube([0, -.06, .085], [0, -.06, .1], .01), PAL.metal, 14); it.maniv = it.addPart(MESH.cyl6, M3.identity(), PAL.noir, 7); it.bouton = it.addPart(MESH.sph8, M3.identity(), [.15, .15, .16], 7);
+  it.segs = []; for (let i = 0; i < 6; i++) it.segs.push(it.addPart(MESH.cyl6, M3.identity(), i < 3 ? [.16, .2, .26] : [.2, .24, .3], 22)); it.anneaux = []; for (let i = 1; i < 6; i++) it.anneaux.push(it.addPart(MESH.cyl6, M3.identity(), PAL.metal, 14));
+  it.bobine = it.addPart(MESH.cyl6, matTube([0, .06, -.15], [0, -.03, .02], .0018), [.9, .92, .88], 0, { cast: false }); PECHE.manivelle(it, 0); plierCanne(it, 0, 0);
+  const pz = MAINS.items.poisson; if (pz && !pz.pm) { pz.parts.length = 12; const pm = new Node('poissonMain'); pm.pickable = false; pm.castShadow = false; pm.pos = [0, .03, -.06]; pm.rot = [.15, PI / 2 + .25, -.25]; pz.add(pm); pz.pm = pm; poserPoisson(pm, 'truite', .32, false); } };
+PECHE.manivelle = (it, an) => { const b = [0, -.06, .1], q = [.035 * Math.cos(an), -.06 + .035 * Math.sin(an), .11]; it.maniv.M.set(matTube(b, q, .004)); it.bouton.M.set(M3.mul(M3.translate(q[0], q[1], q[2] + .012), M3.scale(.014, .014, .022))); };
+PECHE.majCanne = (a, dt) => { const it = MAINS.items && MAINS.items.canne; if (!it || !it.segs || !it.visible) return; let k = .02, lat = 0;
+  if (a) { if (a.phase === 'combat') { k = .45 + a.tension * .8 + (a.course > 0 ? .15 : 0); lat = (a.sens2 || 0) * (a.course > 0 ? .6 : .2); } else if (a.phase === 'viser') k = a.puissance * .18; else if (a.phase === 'vol') k = MAINS.t < .3 ? .45 : .08; else if (a.phase === 'attente') k = .05 + (a.plonge || 0) * .35 + (a.tRamene > .45 ? .12 : 0); }
+  it.k = lerp(it.k || 0, k, Math.min(1, dt * 8)); it.lat = lerp(it.lat || 0, lat, Math.min(1, dt * 3)); plierCanne(it, it.k, A.time);
+  if (a && ((a.phase === 'combat' && PECHE.actTenu()) || (a.phase === 'attente' && a.tRamene > .45))) { PECHE.angMan += dt * (a.phase === 'combat' ? 11 : 8); PECHE.manivelle(it, PECHE.angMan); } };
+PECHE.pose = (a, t, P) => {   // retourne [ox, oy, oz, rx, ry, rz] pour l'animation des mains (null = pose par défaut)
+  const ac = ETAT.action, base = [.2, -.3 + Math.sin(A.time * 1.1) * .006, -.42, .25, -.15, -.05];
+  if (a === 'viser') { const p = ac && ac.nom === 'peche' ? ac.puissance : 0, e = p * p * (3 - 2 * p); return [.22 + e * .04, -.3 + e * .1, -.4 + e * .12, .25 - e * 1.05, -.15 - e * .1, -.05 - e * .15]; }
+  if (a === 'lancer') { const k = clamp(t / .38, 0, 1), e = 1 - Math.pow(1 - k, 3), r = clamp((t - .38) / .5, 0, 1); return [.2, -.26 - e * .06 + r * .02, -.34 - e * .14 + r * .06, lerp(-.8, .55, e) - r * .3, -.2 + e * .05, -.15 + e * .1]; }
+  if (a === 'combat') { const tn = ac && ac.tension || 0, tr = Math.sin(A.time * 31) * .012 * (.4 + tn), c = ac && ac.course > 0 ? Math.sin(A.time * 11) * .03 : 0; return [.18 + c, -.24 + tr, -.38, -.05 - tn * .25 + tr * 2, -.15 + (ac && ac.sens2 || 0) * .06 * (ac && ac.course > 0 ? 1 : .3), -.05 + c]; }
+  if (a === 'prise') { const k = clamp(t / .6, 0, 1), e = 1 - (1 - k) * (1 - k); return [lerp(.24, .08, e), lerp(-.4, -.14, e), lerp(-.5, -.36, e), .1 + Math.sin(A.time * 14) * .04 * (1 - k * .6), lerp(-.5, -.1, e), Math.sin(A.time * 9) * .05]; }
+  return null; };
+// --- invite à l'écran (phase, jauges de puissance / tension)
+PECHE.invite = (el, kb) => { const a = ETAT.action, X = '<i class="ps x">✕</i>', O = ' &nbsp; <i class="ps o">○</i> ' + (a.phase === 'combat' ? 'Couper' : 'Ranger') + (kb ? '<kbd>C</kbd>' : ''), KE = kb ? '<kbd>E</kbd>' : '';
+  const jauge = (v, coul, lab) => `<span style="display:inline-block;vertical-align:middle;width:9em;height:.7em;border-radius:.35em;background:rgba(255,255,255,.18);overflow:hidden;margin:0 .4em"><span style="display:block;height:100%;width:${Math.round(clamp(v, 0, 1) * 100)}%;background:${coul}"></span></span><span style="opacity:.8">${lab}</span>`;
+  let h = '';
+  if (a.phase === 'viser') h = a.charge ? `Lancer ${jauge(a.puissance, 'var(--ambre)', Math.round(4 + a.puissance * 14) + ' m')}` : `${X} maintenir : armer le lancer${KE}`;
+  else if (a.phase === 'vol') h = '<span style="opacity:.8">…</span>';
+  else if (a.phase === 'attente') h = a.poisson && a.poisson.etat === 'mord' ? `${X} <b style="color:var(--ambre)">Ferrer !</b>${KE}` : (a.tRamene > .45 ? '<span style="opacity:.8">Vous ramenez la ligne…</span>' : `<span style="opacity:.8">${a.poisson ? 'Un poisson rôde…' : 'Attendre la touche…'}</span> &nbsp; ${X} maintenir : ramener`);
+  else if (a.phase === 'combat') { const t = a.tension, c = t > .85 ? '#e0483c' : t > .6 ? 'var(--ambre)' : '#6fcf7a'; h = `${X} maintenir : mouliner${KE} ${jauge(t, c, t > .85 ? 'ça va casser !' : 'tension')} ${jauge(1 - a.energie, '#7fb4e0', Math.max(0, a.dist).toFixed(0) + ' m')}`; }
+  else if (a.phase === 'prise') h = '<b style="color:var(--ambre)">Belle prise !</b>';
+  el.innerHTML = h + (a.phase === 'prise' || a.phase === 'vol' ? '' : O); };
+PECHE.maj = dt => { if (!A || !A.water) return; if (!PECHE.poissons.length) { PECHE.creerPoissons(); PECHE.creerSeau(); } PECHE.construireCanne(); PECHE.majPoissons(dt); PECHE.syncSeau();
+  const a = ETAT.action && ETAT.action.nom === 'peche' ? ETAT.action : null; PECHE.majCanne(a, dt); if (!a && PECHE.flotteur) PECHE.flotteurOn(false); };
+// --- ✕ maintenu (bouton tactile) ; nouvelle partie : seau vide
+{ const el = $('bX'); if (el) { el.addEventListener('pointerdown', () => { IN.xTenu = true; }); for (const ev of ['pointerup', 'pointercancel', 'pointerleave', 'lostpointercapture']) el.addEventListener(ev, () => { IN.xTenu = false; }); } }
+{ const np = nouvellePartie; nouvellePartie = function () { const r = np.apply(this, arguments); SAC.prises = []; PECHE.majSeau(); return r; }; }
+
 // ==== CAMP : CINÉMATIQUES (randonnée d'ouverture, réveil) ======================================
 const CINE = { plans: [], t: 0, i: 0, on: false, marcheur: null, apres: null, cam: null };
 CINE.passer = () => { if (!CINE.on) return; CINE.finir(); };
@@ -8807,7 +8992,7 @@ function boucle(dt) { const now = performance.now(); manette(); gardeAudio(now, 
   const actif = !ETAT.pause && !ETAT.dort && !UI.ouvert() && !ETAT.mort;
   if (ETAT.dort) majSommeil(dt);
   else if (actif) { if (REVEIL.on) majReveil(dt); else if (!UI.cineOn) majJoueur(dt); if (!UI.dlgOuvert) { tick(dt * HORL.VITESSE / 3600); majAction(dt); } alertesBesoins(); }
-  if (!ETAT.pause && !ETAT.mort) { VIS.maj(dt); GARDE.maj(dt); majFaune(dt, PL); majFeu(dt); if (!ETAT.dort) majMains(dt, PL); if (VIS.dlg) VIS.majNom(); }
+  if (!ETAT.pause && !ETAT.mort) { VIS.maj(dt); GARDE.maj(dt); PECHE.maj(dt); majFaune(dt, PL); majFeu(dt); if (!ETAT.dort) majMains(dt, PL); if (VIS.dlg) VIS.majNom(); }
   majJauges(); majBoussole(); majInvite(); MARQ.maj(); majPerf(dt);
   objT += dt; if (objT > 2) { objT = 0; if (ETAT.drapeaux.alerte) {} } sauveT += dt; if (sauveT > 60) { sauveT = 0; sauver(); }
   consommerEntrees(); }
@@ -8839,7 +9024,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 
 </script>
 <!--
-NOTE-INTERNE (Claude) · HDF : CAMPING v0.6.3 · F.S.M Game House · 2 nov. 2026
+NOTE-INTERNE (Claude) · HDF : CAMPING v0.7 · F.S.M Game House · 3 nov. 2026
 À lire avant de modifier ce fichier. Ne pas relire le fichier en entier : chercher les ancres « ==== CAMP : » (grep), puis ne lire que la section utile.
 
 STRUCTURE DU FICHIER
@@ -8904,7 +9089,12 @@ v0.6.2 — VOIX DE TOD : la voix d'un PNJ est résolue dans suivant() au moment 
 v0.6.3 — HALO : l'action « feuV » d'un scénario allumait le feu du visiteur (lumière + flammes) sans faire apparaître son foyer → VIS.campV() appelé ; feu du visiteur éteint sans visite en cours. Suppression des lumières ponctuelles « de remplissage » posées 5-6 m devant la lampe du joueur et la torche de Tod (halo au sol dans le vide) ; faisceaux un peu renforcés.
 v0.6.3 — VOIX (module VOIX réécrit) : file pilotée par minuterie (fin forcée après durée estimée, même si onend/onerror ne viennent jamais et si speechSynthesis.speaking reste bloqué), cancel() si speaking/pending juste avant speak (+150 ms), lang = celle de la voix choisie, déblocage iOS par phrase vide dans le geste, VOIX.test() (bouton « Voix des PNJ » du menu et « Tester la voix » dans la pause : phrase + état : voix installées / françaises / lancées / terminées / erreurs), compteurs nParle/nFini/nErr.
 
-À FAIRE / IDÉES v0.7 : sauvegarde du visiteur en cours ; pêche par le joueur ; météo visible (pluie déjà possible via A.meteo) ; deux emplacements de sauvegarde ; branchement History Sens pour les dialogues libres.
+v0.7 — PÊCHE IMMERSIVE (section « ==== CAMP : PÊCHE IMMERSIVE », src/85_peche.js) : remplace pecher/ferrer/majPeche/annulerAction.
+  Phases ETAT.action.phase : viser (✕ maintenu = puissance 4-18 m, PECHE.actTenu = touche E/espace, IN.xTenu bouton tactile, IN.gact manette b(0) ; a.pret attend le relâchement) → vol (flotteur en cloche) → attente (poissons PECHE.poissons : nage/approche/rode/mord ; frémissements puis vraie touche, fenêtre 1,25 s ; ✕ maintenu = ramener) → combat (tension 0..1,15 = casse, énergie, distance, courses latérales) → prise (poisson en main 3,2 s puis réarmement).
+  ESPECES (6 : truite fario, arc-en-ciel, perche, gardon, omble, brochet ; taille/poids a·L³) ; poserPoisson(nd, esp, L, sombre) = modèle (corps tourné meshPoisson, nageoires, yeux, points/bandes). Canne en main reconstruite (PECHE.construireCanne : brin 6 segments plierCanne, anneaux, moulinet + manivelle) ; PECHE.pose = poses des mains (viser, lancer, combat, prise) appelée dans majMains.
+  Seau : PECHE.creerSeau près du porte-canne (OBJETS id 'seau', LIEUX.seau), prises visibles dedans (majSeau), SAC.prises (≤ 20, synchronisé avec SAC.poisson : poisson cuisiné = retiré), record localStorage 'recordPeche', relâcher. PECHE.maj(dt) appelé dans la boucle après GARDE.maj.
+
+À FAIRE / IDÉES v0.8 : sauvegarde du visiteur en cours ; météo visible (pluie déjà possible via A.meteo) ; deux emplacements de sauvegarde ; branchement History Sens pour les dialogues libres.
 
 -->
 </body></html>
