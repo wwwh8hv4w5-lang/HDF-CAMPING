@@ -5157,8 +5157,9 @@ const LIEUX = {
   camp: [0, 108.4], feu: [0, 105], tenteJ: [3.8, 112.4], porteTente: [3.8, 110.6], glaciere: [-2.7, 110.7], table: [-3.5, 108.4], chaise: [2.05, 106.75], bois: [6.3, 108.7], billot: [5.3, 106.9],
   lanterne: [1.3, 109.5], purif: [-2.9, 103.1], banc1: [-2.1, 105.6], banc2: [.3, 102.8], linge: [8.1, 114.3], sac: [2.2, 112.7],
   rive: [1.2, 92.9], ponton: [-6, 88], boutPonton: [-6, 81.2], plage: [11.5, 93.6], rocher: [-16, 101],
-  tenteV: [-14, 113], feuV: [-12, 108.4], baies1: [-30, 122], baies2: [26, 130], baies3: [-20, 142], pommier: [31, 111], noisetier: [-36, 102],
-  sentier: surSentier(172), sentierProche: surSentier(133), finSentier: surSentier(121), foret: [-52, 114], est: [72, 80], ouest: [-68, 86], nord: [90, 96], cache: [-24, 128], clairiere2: [38, 150]
+  tenteV: [-14, 113], feuV: [-12, 108.4], baies1: [-19, 119.5], baies2: [17.5, 121], baies3: [-7.5, 127.5], pommier: [21.5, 109.5], noisetier: [-22.5, 106],
+  // depuis la v0.2.1, le camp est enclos dans la forêt : le sentier est l'unique accès (joueur et visiteurs) ; « forêt », « est », « ouest »… sont des lisières intérieures
+  sentier: surSentier(172), sentierProche: surSentier(133), finSentier: surSentier(121), foret: [-23.5, 114], est: [20.5, 99.5], ouest: [-21.5, 97.5], nord: [14.5, 95.5], cache: [-21.5, 125.5], clairiere2: [SENTIER.x(152) - 1.2, 152]
 };
 const PONTON = { x: -6, z0: 93.8, z1: 80, w: 1.6, pz: 2.4, pw: 2.6, y: .5 };   // ponton : de la grève (z0) vers le large (z1), plate-forme au bout
 function surPonton(x, z) { const P = PONTON; if (z < P.z1 - .05 || z > P.z0 + .05) return false; const hw = z < P.z1 + P.pz ? P.pw / 2 : P.w / 2; return Math.abs(x - P.x) < hw - .05; }
@@ -5175,7 +5176,12 @@ function relief(N, x, z) {
   const dc = Math.hypot((x - CAMP.x) * .85, z - (CAMP.z - 2)), c = clamp(1 - (dc - 14) / 12, 0, 1), cc = c * c * (3 - 2 * c);
   return h * (1 - cc) + cible * cc;
 }
-function dansClairiere(x, z) { return Math.hypot(x - CAMP.x, z - CAMP.z) < CAMP.r; }
+// l'enclos : la clairière du camp (avec sa grève et le ponton), fermée par la forêt ; seul le sentier en sort
+const ENCLOS = { x: 0, z: 107, r: 28.5 };
+function dansEnclos(x, z) { return Math.hypot(x - ENCLOS.x, z - ENCLOS.z) < ENCLOS.r; }
+function surChemin(x, z) { return z > 115 && z < 262 && Math.abs(x - SENTIER.x(z)) < 2.4; }
+function zoneJoueur(x, z) { return dansEnclos(x, z) || surChemin(x, z); }
+function dansClairiere(x, z) { return Math.hypot(x - ENCLOS.x, z - ENCLOS.z) < ENCLOS.r + 1.5; }
 function creerMonde() {
   const cv = $('c');
   A = F.app(cv, { quality: OPT.qualite === 'auto' ? 'auto' : OPT.qualite, env: 'jour', autoStart: false, camera: { mode: 'fixed', fov: 68 * PI / 180, near: .12, far: 2600 }, dprMax: IOS ? 1.5 : 1.6 });
@@ -5207,6 +5213,7 @@ const SOL = (x, z) => A.groundAt(x, z);
 // Repères locaux des modèles : +z = l'avant de l'objet ; on oriente avec un « yaw » (0 = regarde +z, comme les PNJ).
 const MESH = {};            // maillages partagés
 const COLL = [];            // obstacles ronds {x, z, r}
+const SIEGES = [];          // places assises du joueur {id, p, yaw, h (hauteur de l'œil), nom}
 const OBJETS = [];          // points d'interaction {id, x, z, r, nom, f, cond}
 let NOEUDS = {};            // nœuds dynamiques (couvercle, feu, lanterne, linge…)
 const ANIM_CAMP = { couv: 0, couvCible: 0, porteV: 0 };
@@ -5282,7 +5289,7 @@ function construireCamp() { meshes(); const m = GEO.merger(), T = M3.translate, 
     const [sx, sz] = LIEUX.sac, L2 = repere(sx, y(sx, sz), sz, -PI / 2 + .25), tilt = RX(-.22);
     add(RB(.34, .52, .22, .06), L2.M(mul(T(0, .27, 0), tilt)), PAL.rouge, 4); add(RB(.3, .12, .2, .04), L2.M(mul(T(0, .55, -.04), tilt)), PAL.rouge, 4);
     add(RB(.26, .2, .07, .03), L2.M(mul(T(0, .2, .13), tilt)), PAL.metalSombre, 4); for (const ox of [-.09, .09]) add(RB(.04, .46, .03, .012), L2.M(mul(T(ox, .3, -.12), tilt)), PAL.noir, 4);
-    add(CYL, L2.M(mul(T(0, .66, -.06), mul(tilt, mul(RZ(PI / 2), S(.13, .4, .13))))), PAL.jaune, 4); COLL.push({ x: sx, z: sz, r: .25 }); }
+    add(CYL, L2.M(mul(T(0, .66, -.06), mul(tilt, mul(RZ(PI / 2), S(.13, .4, .13))))), PAL.jaune, 4); COLL.push({ x: sx, z: sz, r: .25 }); OBJETS.push({ id: 'sacados', x: sx, z: sz, r: 1.1, nom: 'Sac à dos', f: () => ouvrirSac() }); }
 
   // ---------------------------------------------------------------- foyer : cercle de pierres, lit de cendres, bûches en tipi, trépied et marmite
   { const [fx, fz] = LIEUX.feu, fy = y(fx, fz);
@@ -5303,14 +5310,15 @@ function construireCamp() { meshes(); const m = GEO.merger(), T = M3.translate, 
       for (const ox of [-.55, .55]) add(SOUCHE, L.M(mul(T(ox, 0, 0), S(.2, .2, .2))), PAL.ecorce2, 13);
       buche(L.p([-.78, .33, 0]), L.p([.78, .34, 0]), .15, PAL.ecorce); add(RB(1.4, .02, .17, .01), L.M(T(0, .478, 0)), PAL.boisClair, 13);
       NOEUDS.bancs = NOEUDS.bancs || []; for (const ox of [-.38, .38]) { const q = L.p([ox, 0, .02]); NOEUDS.bancs.push({ id: k + ox, p: [q[0], q[2]], yaw }); }
-      for (const ox of [-.5, 0, .5]) { const q = L.p([ox, 0, 0]); COLL.push({ x: q[0], z: q[2], r: .24 }); } }
+      for (const ox of [-.5, 0, .5]) { const q = L.p([ox, 0, 0]); COLL.push({ x: q[0], z: q[2], r: .24 }); }
+      const ids = []; for (const ox of [-.38, .38]) { const q = L.p([ox, 0, .02]); SIEGES.push({ id: k + ox, p: [q[0], q[2]], yaw, h: 1.16, nom: 'le banc' }); ids.push(k + ox); } OBJETS.push({ id: k, x: bx, z: bz, r: 1.5, nom: 'Banc · s’asseoir', f: () => sAsseoir(ids) }); }
     // chaise pliante face au feu (et au lac derrière lui)
     { const [cx, cz] = LIEUX.chaise, yaw = vers([cx, cz], [fx, fz]), L = repere(cx, y(cx, cz), cz, yaw); NOEUDS.chaiseYaw = yaw; const tb = (a, b, r = .012) => tube(L.p(a), L.p(b), r, PAL.metalSombre, 7);
       for (const sx of [-.25, .25]) { tb([sx, 0, .24], [sx, .44, -.2]); tb([sx, 0, -.22], [sx, .44, .22]); tb([sx, .44, -.2], [sx, .9, -.32]); tb([sx, .62, -.22], [sx, .62, .2]); add(RB(.07, .03, .42, .012), L.M(T(sx, .64, 0)), PAL.noir, 7); }
       tb([-.25, .44, .22], [.25, .44, .22], .01); tb([-.25, .44, -.2], [.25, .44, -.2], .01);
       add(RB(.5, .03, .44, .012), L.M(T(0, .43, .01)), PAL.rouge, 4); add(RB(.5, .46, .03, .012), L.M(mul(T(0, .67, -.26), RX(-.25))), PAL.rouge, 4);
       add(CYL, L.M(mul(T(.31, .6, .14), S(.085, .1, .085))), PAL.noir, 4); add(CYL, L.M(mul(T(.31, .66, .14), S(.07, .1, .07))), PAL.bleu2, 7);                         // porte-gobelet et tasse
-      COLL.push({ x: cx, z: cz, r: .36 }); }
+      COLL.push({ x: cx, z: cz, r: .36 }); SIEGES.push({ id: 'chaise', p: [cx, cz], yaw, h: 1.14, nom: 'la chaise' }); OBJETS.push({ id: 'chaise', x: cx, z: cz, r: 1.3, nom: 'Chaise pliante · s’asseoir', f: () => sAsseoir('chaise') }); }
   }
 
   // ---------------------------------------------------------------- glacière (dynamique : couvercle sur charnière, rangée dans la tente au besoin) et table de camp
@@ -5332,7 +5340,7 @@ function construireCamp() { meshes(); const m = GEO.merger(), T = M3.translate, 
     for (const [ox, oz, c] of [[.12, -.14, PAL.bleu2], [.2, -.06, PAL.creme]]) { add(CYL, L.M(mul(T(ox, .77, oz), S(.08, .1, .08))), c, 7); tube(L.p([ox + .04, .79, oz]), L.p([ox + .06, .75, oz]), .009, c, 7); }
     add(RB(.3, .02, .2, .008), L.M(mul(T(.24, .735, .12), RY(.2))), PAL.boisClair, 13); add(RB(.2, .006, .025, .003), L.M(mul(T(.24, .75, .12), RY(.5))), PAL.metal, 22);
     add(CYL, L.M(mul(T(.33, .83, -.15), S(.07, .22, .07))), PAL.bleu2, 3); add(CYL, L.M(mul(T(.33, .95, -.15), S(.035, .04, .035))), PAL.bleu, 7);
-    for (const sx of [-.42, .42]) { const q = L.p([sx, 0, 0]); COLL.push({ x: q[0], z: q[2], r: .32 }); } }
+    for (const sx of [-.42, .42]) { const q = L.p([sx, 0, 0]); COLL.push({ x: q[0], z: q[2], r: .32 }); } OBJETS.push({ id: 'table', x: bx, z: bz, r: 1.5, nom: 'Table · réchaud', f: () => actionRechaud() }); }
 
   // ---------------------------------------------------------------- réserve de bois : rangement entre piquets, billot et hache plantée, copeaux
   { const [bx, bz] = LIEUX.bois, by = y(bx, bz), yaw = vers([bx, bz], LIEUX.feu), L = repere(bx, by, bz, yaw);
@@ -5341,7 +5349,7 @@ function construireCamp() { meshes(); const m = GEO.merger(), T = M3.translate, 
     for (let row = 0; row < 3; row++) for (let i = 0; i < 6 - (row === 2 ? 2 : 0); i++) { const ox = -.48 + i * .19 + (row % 2) * .09 + (row === 2 ? .19 : 0), oy = .11 + row * .15, r = .068 + ((i + row) % 3) * .008;
       buche(L.p([ox, oy, -.26]), L.p([ox, oy, .26]), r, (i + row) % 2 ? PAL.ecorce : PAL.ecorce2); }
     const [kx, kz] = LIEUX.billot, ky = y(kx, kz), K = repere(kx, ky, kz, yaw + .6); add(SOUCHE, K.M(S(.28, .45, .28)), PAL.ecorce2, 13); add(DISQUE, K.M(mul(T(0, .452, 0), S(.26, 1, .26))), PAL.boisClair, 13);
-    tube(K.p([.02, .43, .02]), K.p([.32, .98, .3]), .018, PAL.bois, 13); add(RB(.05, .12, .2, .012), K.M(mul(T(.0, .44, -.03), RX(-.85))), PAL.metal, 22);                   // hache plantée
+    { const hx = new Node('hache'); hx.pickable = false; hx.addPart(MESH.cyl, matTube(K.p([.02, .43, .02]), K.p([.32, .98, .3]), .018), PAL.bois, 13); hx.addPart(MESH.rb, K.M(mul(T(.0, .44, -.03), mul(RX(-.85), S(.05, .12, .2)))), PAL.metal, 22); A.add(hx); NOEUDS.hache = hx; }   // hache plantée (on peut la prendre)
     buche(K.p([-.38, .07, .15]), K.p([-.38, .07, .55]), .07, PAL.ecorce); add(RB(.16, .07, .06, .02), K.M(mul(T(.4, .035, -.25), RY(.4))), PAL.boisClair, 13);
     for (let i = 0; i < 10; i++) { const a = i * 2.3, r = .4 + (i % 4) * .12, q = K.p([Math.cos(a) * r, 0, Math.sin(a) * r]); add(CUBE, mul(T(q[0], y(q[0], q[2]) + .006, q[2]), mul(RY(a * 1.7), S(.06, .012, .025))), PAL.boisClair, 13); }
     for (const sx of [-.4, 0, .4]) { const q = L.p([sx, 0, 0]); COLL.push({ x: q[0], z: q[2], r: .32 }); } COLL.push({ x: kx, z: kz, r: .3 });
@@ -5355,7 +5363,7 @@ function construireCamp() { meshes(); const m = GEO.merger(), T = M3.translate, 
     lan.addPart(MESH.cone, mul(T(0, -.14, 0), S(.16, .06, .16)), PAL.metalSombre, 7); NOEUDS.lanVerre = lan.addPart(MESH.cyl, mul(T(0, -.26, 0), S(.12, .18, .12)), PAL.creme, 3); lan.addPart(MESH.cyl, mul(T(0, -.36, 0), S(.15, .04, .15)), PAL.metalSombre, 7);
     for (let i = 0; i < 4; i++) { const a = i / 4 * TAU + .4; lan.addPart(MESH.cyl6, mul(T(Math.cos(a) * .065, -.26, Math.sin(a) * .065), S(.008, .18, .008)), PAL.metalSombre, 7); }
     NOEUDS.lanFlamme = lan.addPart(MESH.sph8, mul(T(0, -.26, 0), S(.05, .07, .05)), [1, .85, .55], 8, { cast: false });
-    lan.light = { c: [1, .8, .5], i: 0, r: 8 }; A.add(lan); NOEUDS.lanterne = lan; COLL.push({ x: lx, z: lz, r: .1 }); }
+    OBJETS.push({ id: 'lanterne', x: lx, z: lz, r: 1.3, nom: 'Lanterne', f: () => actionLanterne() }); lan.light = { c: [1, .8, .5], i: 0, r: 8 }; A.add(lan); NOEUDS.lanterne = lan; COLL.push({ x: lx, z: lz, r: .1 }); }
 
   // ---------------------------------------------------------------- coin eau : purificateur sur une souche, jerrican, gobelet
   { const [px, pz] = LIEUX.purif, py = y(px, pz), yaw = vers([px, pz], LIEUX.feu), L = repere(px, py, pz, yaw);
@@ -5363,7 +5371,7 @@ function construireCamp() { meshes(); const m = GEO.merger(), T = M3.translate, 
     add(CYL, L.M(mul(T(-.04, .55, 0), S(.075, .26, .075))), PAL.bleu2, 7); add(CYL, L.M(mul(T(-.04, .69, 0), S(.095, .03, .095))), PAL.metalSombre, 7); tube(L.p([-.04, .7, 0]), L.p([-.04, .8, 0]), .009, PAL.metal, 22); tube(L.p([-.04, .8, 0]), L.p([.1, .78, 0]), .008, PAL.noir, 7);
     tube(L.p([0, .5, .04]), L.p([.16, .43, .14]), .006, PAL.creme, 0); add(CYL, L.M(mul(T(.1, .47, -.06), S(.07, .08, .07))), PAL.orange, 7);
     const J = repere(...L.p([.42, 0, .1]), yaw - .4); add(RB(.2, .34, .3, .04), J.M(T(0, .17, 0)), PAL.bleu, 7); add(CYL, J.M(mul(T(0, .37, .09), S(.05, .04, .05))), PAL.noir, 7); add(RB(.04, .05, .16, .015), J.M(T(0, .36, -.05)), PAL.bleu, 7);
-    COLL.push({ x: px, z: pz, r: .3 }); { const q = L.p([.42, 0, .1]); COLL.push({ x: q[0], z: q[2], r: .2 }); } }
+    COLL.push({ x: px, z: pz, r: .3 }); OBJETS.push({ id: 'purif', x: px, z: pz, r: 1.5, nom: 'Coin eau · jerrican', f: () => actionCoinEau() }); { const q = L.p([.42, 0, .1]); COLL.push({ x: q[0], z: q[2], r: .2 }); } }
 
   // ---------------------------------------------------------------- corde à linge derrière la tente (le linge bouge au vent)
   { const [cx, cz] = LIEUX.linge, a = [cx - 1.55, cz + .35], b = [cx + 1.55, cz - .35], ya = y(a[0], a[1]), yb = y(b[0], b[1]);
@@ -5375,7 +5383,7 @@ function construireCamp() { meshes(); const m = GEO.merger(), T = M3.translate, 
       else nd.addPart(MESH.rb, mul(T(0, -h / 2, 0), S(w, h, .01)), c, 4);
       nd.addPart(MESH.cube, mul(T(-w * .35, 0, 0), S(.015, .05, .02)), PAL.boisClair, 13); if (w > .2) nd.addPart(MESH.cube, mul(T(w * .35, 0, 0), S(.015, .05, .02)), PAL.boisClair, 13);
       nd.ph = t * 7; A.add(nd); NOEUDS.linge.push(nd); }
-    COLL.push({ x: a[0], z: a[1], r: .08 }, { x: b[0], z: b[1], r: .08 }); }
+    COLL.push({ x: a[0], z: a[1], r: .08 }, { x: b[0], z: b[1], r: .08 }); OBJETS.push({ id: 'linge', x: cx, z: cz, r: 1.8, nom: 'Corde à linge', f: () => actionLinge() }); }
 
   // ---------------------------------------------------------------- ponton de pêche : longerons, planches espacées, pieux, plate-forme, bittes d'amarrage, échelle
   { const P = PONTON, gy0 = y(P.x, P.z0); P.y = Math.max(.5, gy0 + .06); const py = P.y;
@@ -5387,7 +5395,12 @@ function construireCamp() { meshes(); const m = GEO.merger(), T = M3.translate, 
     for (const sx of [-1, 1]) { const px = P.x + sx * (P.pw / 2 - .1); tube([px, py + .3, P.z1 + .1], [px, py + .3, P.z1 + P.pz - .1], .02, PAL.creme, 4); }
     for (const sx of [-1, 1]) tube([P.x + .5 + sx * .2, py, P.z1 - .05], [P.x + .5 + sx * .2, -.9, P.z1 - .25], .02, PAL.metal, 22); for (let i = 1; i < 4; i++) { const yy = py - i * .32, zz = P.z1 - .05 - i * .05; tube([P.x + .3, yy, zz], [P.x + .7, yy, zz], .014, PAL.metal, 22); }
     for (let i = 0; i < 3; i++) add(ROCHES[i + 2], mul(T(P.x + (i - 1) * .7, gy0 - .05, P.z0 + .25), S(.6, .25, .45)), PAL.pierre2, 12);
-    OBJETS.push({ id: 'ponton', x: P.x, z: P.z1 + 1.2, r: 1.7, nom: 'Bout du ponton', f: () => actionLac('ponton') }); }
+    OBJETS.push({ id: 'ponton', x: P.x, z: P.z1 + 1.2, r: 1.7, nom: 'Bout du ponton', f: () => actionLac('ponton') });
+    // porte-canne planté sur la grève, la canne à pêche posée dessus (on la prend une fois pour toutes)
+    const cx = P.x + 1.55, cz = P.z0 + .9, cy = y(cx, cz); tube([cx, cy - .1, cz], [cx, cy + .75, cz], .025, PAL.ecorce2, 13, CYL6); tube([cx - .08, cy + .75, cz], [cx + .08, cy + .78, cz], .02, PAL.ecorce2, 13, CYL6);
+    const cn = new Node('canne'); cn.pickable = false; const c0 = [cx + .25, cy + .02, cz + .55], c1 = [cx - .5, cy + 2.3, cz - 1.2]; cn.addPart(MESH.cyl, matTube(c0, c1, .014), [.22, .18, .14], 13); cn.addPart(MESH.cyl, matTube(c0, [c0[0] - .07, c0[1] + .35, c0[2] - .17], .028), PAL.noir, 7);
+    cn.addPart(MESH.cyl, M3.mul(M3.translate(c0[0] - .03, c0[1] + .22, c0[2] - .09), M3.mul(M3.rotZ(PI / 2), M3.scale(.07, .05, .07))), PAL.metal, 22); A.add(cn); NOEUDS.canne = cn; COLL.push({ x: cx, z: cz, r: .1 });
+    OBJETS.push({ id: 'canne', x: cx, z: cz, r: 1.4, nom: 'Canne à pêche · prendre', cond: () => !aObjet('canne'), f: () => prendreCanne() }); }
 
   // ---------------------------------------------------------------- rive : pierres plates jusqu'à l'eau (point d'eau), galets, roseaux, gros rocher plat
   { const [rx, rz] = LIEUX.rive; OBJETS.push({ id: 'rive', x: rx, z: rz, r: 2.4, nom: 'Rive du lac', f: () => actionLac('rive') });
@@ -5397,6 +5410,7 @@ function construireCamp() { meshes(); const m = GEO.merger(), T = M3.translate, 
       add(CYL6, matTube([px, py - .05, pz], [px + lx, py + hgt, pz + lz], .012), PAL.roseau, 20); if (g() < .4) add(CYL6, matTube([px + lx * .9, py + hgt * .88, pz + lz * .9], [px + lx, py + hgt + .02, pz + lz], .022), PAL.ecorce, 13); } };
     roseaux(-2.6, 91.6, 22); roseaux(4.6, 91.8, 18); roseaux(-9.8, 92.2, 26); roseaux(9, 92.3, 14);
     const [ox, oz] = LIEUX.rocher, oy = y(ox, oz); add(GEO.rock(77, 2, .2), mul(T(ox, oy + .18, oz), mul(RY(.4), S(2.7, .78, 2.1))), [.52, .5, .46], 12); add(GEO.rock(78, 1, .3), mul(T(ox + 1.3, oy + .05, oz + 1), S(.8, .4, .7)), PAL.pierre2, 12);
+    SIEGES.push({ id: 'rocher', p: [ox + .25, oz - .1], yaw: versLac(ox, oz), h: 1.3, nom: 'le rocher', haut: .5 }); OBJETS.push({ id: 'rocherJ', x: ox, z: oz, r: 2.3, nom: 'Rocher plat', f: () => actionRocher() });
     COLL.push({ x: ox, z: oz, r: 1.45 }, { x: ox + 1.3, z: oz + 1, r: .45 }); }
 
   // ---------------------------------------------------------------- cueillette : buissons à baies, pommier sauvage, noisetier (fruits dynamiques posés sur le feuillage, repoussent chaque jour)
@@ -5426,8 +5440,30 @@ function construireCamp() { meshes(); const m = GEO.merger(), T = M3.translate, 
   // ---------------------------------------------------------------- panneau au bout du sentier (deux flèches), souches éparses à la lisière
   { const [sx, sz] = LIEUX.finSentier, px = sx + 1.7, pz = sz, py = y(px, pz), L = repere(px, py, pz, -.3); tube(L.p([0, -.1, 0]), L.p([0, 1.75, 0]), .045, PAL.ecorce2, 13, CYL8);
     const fleche = GEO.slab([[-.42, -.09], [.3, -.09], [.44, 0], [.3, .09], [-.42, .09]], [.02, .02, .01, .02, .02], .035);
-    add(fleche, L.M(mul(T(.2, 1.5, .04), RY(0))), PAL.boisClair, 13); add(fleche, L.M(mul(T(-.2, 1.22, .04), RY(PI))), PAL.bois, 13); add(CYL, L.M(mul(T(0, 1.78, 0), S(.1, .03, .1))), PAL.ecorce, 13); COLL.push({ x: px, z: pz, r: .1 });
-    const g = graine(5); for (let i = 0; i < 6; i++) { const a = .3 + i * 1.05 + g() * .4, r = 20 + g() * 3, px2 = CAMP.x + Math.sin(a) * r, pz2 = CAMP.z + Math.cos(a) * r; if (pz2 < 99 || Math.hypot(px2 - LIEUX.finSentier[0], pz2 - LIEUX.finSentier[1]) < 4) continue; const py2 = y(px2, pz2); add(SOUCHE, mul(T(px2, py2, pz2), S(.32 + g() * .1, .35 + g() * .2, .32 + g() * .1)), PAL.ecorce2, 13); add(DISQUE, mul(T(px2, py2 + .36, pz2), S(.27, 1, .27)), PAL.boisClair, 13); COLL.push({ x: px2, z: pz2, r: .38 }); } }
+    add(fleche, L.M(mul(T(.2, 1.5, .04), RY(0))), PAL.boisClair, 13); add(fleche, L.M(mul(T(-.2, 1.22, .04), RY(PI))), PAL.bois, 13); add(CYL, L.M(mul(T(0, 1.78, 0), S(.1, .03, .1))), PAL.ecorce, 13); COLL.push({ x: px, z: pz, r: .1 }); OBJETS.push({ id: 'panneau', x: px, z: pz, r: 1.6, nom: 'Panneau du sentier', f: () => actionPanneau() });
+    const g = graine(5); for (let i = 0; i < 6; i++) { const a = .3 + i * 1.05 + g() * .4, r = 20 + g() * 3, px2 = CAMP.x + Math.sin(a) * r, pz2 = CAMP.z + Math.cos(a) * r; if (pz2 < 99 || Math.hypot(px2 - LIEUX.finSentier[0], pz2 - LIEUX.finSentier[1]) < 4 || OBJETS.some(o => Math.hypot(o.x - px2, o.z - pz2) < 3.5) || ['tenteV', 'feuV', 'cache', 'foret', 'est', 'ouest'].some(k => Math.hypot(LIEUX[k][0] - px2, LIEUX[k][1] - pz2) < 3)) continue; const py2 = y(px2, pz2), sr = .32 + g() * .1, sy = .38 + g() * .1; add(SOUCHE, mul(T(px2, py2, pz2), S(sr, sy, sr)), PAL.ecorce2, 13); add(DISQUE, mul(T(px2, py2 + sy + .003, pz2), S(sr * .9, 1, sr * .9)), PAL.boisClair, 13); COLL.push({ x: px2, z: pz2, r: .38 });
+      const id = 'souche' + i, yw = angleVers(LIEUX.feu[0] - px2, LIEUX.feu[1] - pz2); SIEGES.push({ id, p: [px2, pz2], yaw: yw, h: sy + .68, nom: 'la souche', haut: sy }); OBJETS.push({ id, x: px2, z: pz2, r: 1.1, nom: 'Souche · s’asseoir', f: () => sAsseoir(id) }); } }
+
+  // ---------------------------------------------------------------- forêt autour du camp : lisière dense (sous-bois, sapins, feuillus) qui ferme la clairière ;
+  // une seule trouée, le sentier, bordé d'arbres jusqu'à la forêt procédurale. Pas de collisions par tronc : l'enclos (zoneJoueur) borne le joueur, les visiteurs n'empruntent que le sentier.
+  { const mf = GEO.mergerLots(36, 1500), addF = (src, M, c, mat) => mf.add(src, M, c, mat), g = graine(2024);
+    const TRONC = GEO.cylinder(6, .32, .5), CONE = GEO.cylinder(9, 0, .5), BOULE = [0, 1, 2, 3].map(i => GEO.rock(400 + i, 1, .25)), BUIS = [0, 1, 2].map(i => GEO.rock(420 + i, 1, .3));
+    const SAPINS = [[.16, .27, .13], [.2, .31, .15], [.14, .24, .12]], FEUILLUS = [[.25, .38, .15], [.3, .42, .17], [.22, .34, .13]];
+    const libre = (x, z, marge) => !(Math.hypot(x - ENCLOS.x, z - ENCLOS.z) < ENCLOS.r + marge || (z > 110 && Math.abs(x - SENTIER.x(z)) < 3.5) || y(x, z) < .3);
+    const sapin = (x, z, h) => { const gy = y(x, z), c = SAPINS[(g() * 3) | 0], n = h > 11 ? 4 : 3; addF(TRONC, mul(T(x, gy + h * .12, z), S(h * .045, h * .3, h * .045)), PAL.ecorce, 13);
+      for (let i = 0; i < n; i++) { const k = i / n, r = (1 - k * .75) * h * .23, hh = h * .36 * (1 - k * .25); addF(CONE, mul(T(x, gy + h * .2 + k * h * .62 + hh / 2, z), mul(RY(g() * 6), S(r * 2, hh, r * 2))), c, 20); } };
+    const feuillu = (x, z, h) => { const gy = y(x, z), c = FEUILLUS[(g() * 3) | 0]; addF(TRONC, mul(T(x, gy + h * .28, z), S(h * .05, h * .6, h * .05)), PAL.ecorce2, 13);
+      for (let i = 0; i < 2; i++) { const a = g() * TAU, r = i ? h * .14 : 0, sc = h * (.5 - i * .1); addF(BOULE[(g() * 4) | 0], mul(T(x + Math.cos(a) * r, gy + h * .66 + i * h * .1, z + Math.sin(a) * r), S(sc, sc * .8, sc)), c, 20); } };
+    const buisson = (x, z, sc) => addF(BUIS[(g() * 3) | 0], mul(T(x, y(x, z) + sc * .3, z), S(sc * 1.35, sc, sc * 1.35)), FEUILLUS[(g() * 3) | 0], 20);
+    // anneaux successifs : lisière très serrée, puis futaie plus claire (au-delà, la forêt procédurale prend le relais)
+    for (let r = ENCLOS.r + 1.3, k = 0; r < 41; k++) { const pas = r < 35 ? 2.4 : 3.3, n = Math.floor(TAU * r / pas);
+      for (let i = 0; i < n; i++) { const a = i / n * TAU + k * .37 + (g() - .5) * pas / r * .6, rr = r + (g() - .5) * pas * .45, x = ENCLOS.x + Math.sin(a) * rr, z = ENCLOS.z + Math.cos(a) * rr; if (!libre(x, z, .6)) continue; const h = 7.5 + g() * 6.5; if (g() < .62) sapin(x, z, h); else feuillu(x, z, h * .8); }
+      r += pas * .85; }
+    // sous-bois : buissons entre les troncs de la lisière, à hauteur d'homme (on voit qu'on ne passe pas)
+    for (let i = 0; i < 230; i++) { const a = i / 230 * TAU + g() * .03, rr = ENCLOS.r + .7 + g() * 4, x = ENCLOS.x + Math.sin(a) * rr, z = ENCLOS.z + Math.cos(a) * rr; if (libre(x, z, .2)) buisson(x, z, .75 + g() * .7); }
+    // le sentier : arbres et buissons de bordure des deux côtés, de la clairière jusqu'à la grande forêt
+    for (let z = 117; z < 182; z += 2.7) for (const sd of [-1, 1]) { const x = SENTIER.x(z) + sd * (4 + g() * 2.4); if (!dansEnclos(x, z) && Math.hypot(x - ENCLOS.x, z - ENCLOS.z) > ENCLOS.r + .8) { if (g() < .55) sapin(x, z, 7 + g() * 6); else feuillu(x, z, 6 + g() * 4); } const bx = SENTIER.x(z + 1.3) + sd * (3 + g() * .7); if (!dansClairiere(bx, z + 1.3)) buisson(bx, z + 1.3, .6 + g() * .5); }
+    const nd = new Node('foret'); nd.pickable = false; for (const p of mf.build(mk)) nd.addPart(p.mesh, null, p.color, p.mat); A.add(nd); NOEUDS.foret = nd; }
 
   // fruits dynamiques : un nœud par site, reconstruit à chaque cueillette / repousse
   for (const o of OBJETS) if (o.fruits) { const nd = new Node('fruits-' + o.id); nd.pickable = false; nd.pos = [o.x, y(o.x, o.z), o.z]; A.add(nd); o.noeud = nd; o.max = o.fruits; majFruits(o); }
@@ -5475,8 +5511,8 @@ function construireFaune() { meshes(); const T = M3.translate, S = M3.scale, mul
     nd.pos = [x, 0, z]; nd.rot[1] = rnd(0, TAU); A.add(nd); return { nd, type: 'canard', t: rnd(0, 9), zone: [x, z], cap: rnd(0, TAU), vit: .25 }; };
   const renard = () => { if (!JOE || !JOE.pack.animals || !JOE.pack.animals.Dog) return null; const ch = new Joe.Animal(JOE.pack, 'Dog', { coat: 0, scale: .62 }); const pal = ['#c86a2a', '#f0e0c8', '#f0d8b0', '#1e1a18', '#f0f0f0', '#141414']; ch.palette = new Float32Array(36); pal.forEach((h, i) => { const n = parseInt(h.slice(1), 16); ch.palette.set([(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255], i * 3); });
     ch.pos = [-40, SOL(-40, 130), 130]; ch.yaw = 0; ch.visible = false; ch.renard = true; JOE.betes.push(ch); return { joe: ch, type: 'renard', etat: 'cache', t: 0, zone: [-40, 130] }; };
-  FAUNE.betes.push(cerf(-70, 150, 1), cerf(-66, 156, .78), cerf(90, 150, 1), lapin(-28, 126, 1), lapin(24, 134), lapin(-40, 100), canard(-20, 60), canard(-23, 63), canard(-17, 64), canard(30, -20));
-  const rn = renard(); if (rn) FAUNE.betes.push(rn);
+  FAUNE.betes.push(cerf(-70, 150, 1), cerf(-66, 156, .78), cerf(90, 150, 1), lapin(-16, 124, 1), lapin(14, 125), lapin(-21, 103), canard(-20, 60), canard(-23, 63), canard(-17, 64), canard(30, -20));
+  FAUNE.renard = renard;   // créé après le chargement du pack Joe (avant : appelé trop tôt, le renard n'existait jamais)
 }
 function majFaune(dt, P) { const h = HORL.h, nuit = h < 6 || h > 21;
   for (const b of FAUNE.betes) { b.t += dt;
@@ -5484,7 +5520,7 @@ function majFaune(dt, P) { const h = HORL.h, nuit = h < 6 || h > 21;
       if (d < fuite && b.etat !== 'fuit') { b.etat = 'fuit'; b.tFuite = 0; const a = angleVers(nd.pos[0] - P.x, nd.pos[2] - P.z); b.dir = a + rnd(-.5, .5); if (b.type === 'cerf' && Math.random() < .5) SON.cerf(); }
       if (b.etat === 'fuit') { b.tFuite += dt; const v = b.type === 'cerf' ? 7.5 : 5; nd.rot[1] = b.dir; nd.pos[0] += Math.sin(b.dir) * v * dt; nd.pos[2] += Math.cos(b.dir) * v * dt; b.vit = v; if (b.tFuite > (b.type === 'cerf' ? 7 : 3)) { b.etat = 'broute'; b.t = 0; } if (Math.hypot(nd.pos[0] - b.zone[0], nd.pos[2] - b.zone[1]) > 120) b.zone = [nd.pos[0], nd.pos[2]]; }
       else if (b.etat === 'marche') { const dx = b.cible[0] - nd.pos[0], dz = b.cible[1] - nd.pos[2], dd = Math.hypot(dx, dz); if (dd < .6) { b.etat = 'broute'; b.t = 0; b.vit = 0; } else { const a = angleVers(dx, dz); nd.rot[1] += difAngle(a, nd.rot[1]) * Math.min(1, dt * 3); const v = b.type === 'cerf' ? 1.1 : .9; nd.pos[0] += Math.sin(nd.rot[1]) * v * dt; nd.pos[2] += Math.cos(nd.rot[1]) * v * dt; b.vit = v; } }
-      else { b.vit = 0; if (b.t > rnd(6, 14)) { b.t = 0; b.etat = 'marche'; const a = rnd(0, TAU), r = rnd(4, 18); b.cible = [b.zone[0] + Math.cos(a) * r, b.zone[1] + Math.sin(a) * r]; if (dansClairiere(b.cible[0], b.cible[1]) || Math.hypot(b.cible[0], b.cible[1]) < LAC.r + 4) b.etat = 'broute'; } }
+      else { b.vit = 0; if (b.t > rnd(6, 14)) { b.t = 0; b.etat = 'marche'; const a = rnd(0, TAU), r = b.type === 'lapin' ? rnd(2, 7) : rnd(4, 18); b.cible = [b.zone[0] + Math.cos(a) * r, b.zone[1] + Math.sin(a) * r]; if ((b.type === 'cerf' ? dansClairiere(b.cible[0], b.cible[1]) : !dansEnclos(b.cible[0], b.cible[1]) || Math.hypot(b.cible[0] - LIEUX.feu[0], b.cible[1] - LIEUX.feu[1]) < 7) || Math.hypot(b.cible[0], b.cible[1]) < LAC.r + 4) b.etat = 'broute'; } }
       const g = SOL(nd.pos[0], nd.pos[2]); if (g < .2) { nd.pos[0] -= Math.sin(nd.rot[1]) * 3 * dt; nd.pos[2] -= Math.cos(nd.rot[1]) * 3 * dt; } nd.pos[1] = Math.max(.2, g);
       if (b.type === 'cerf') { const k = b.vit > 0 ? Math.sin(b.t * (b.vit > 3 ? 14 : 7)) * (b.vit > 3 ? .6 : .35) : 0; b.nd.pattes.forEach((p, i) => { p.rot[0] = k * (i % 3 === 0 ? 1 : -1); }); if (b.vit === 0) nd.rot[0] = 0; }
       else if (b.vit > 0) nd.pos[1] += Math.abs(Math.sin(b.t * 12)) * .18;
@@ -5492,7 +5528,7 @@ function majFaune(dt, P) { const h = HORL.h, nuit = h < 6 || h > 21;
     else if (b.type === 'canard') { const nd = b.nd; b.cap += Math.sin(b.t * .3 + b.zone[0]) * dt * .4; nd.rot[1] = b.cap; nd.pos[0] += Math.sin(b.cap) * b.vit * dt; nd.pos[2] += Math.cos(b.cap) * b.vit * dt; if (Math.hypot(nd.pos[0], nd.pos[2]) > LAC.r - 12 || SOL(nd.pos[0], nd.pos[2]) > -.6) { b.cap += PI; } nd.pos[1] = A.water ? A.water.heightAt(nd.pos[0], nd.pos[2]) - .03 : 0; const d = Math.hypot(P.x - nd.pos[0], P.z - nd.pos[2]); if (d < 9) { b.vit = 1.4; b.cap = angleVers(nd.pos[0] - P.x, nd.pos[2] - P.z); } else b.vit = lerp(b.vit, .3, dt); }
     else if (b.type === 'renard') { const c = b.joe; if (nuit && b.etat === 'cache' && Math.random() < dt * .02) { b.etat = 'rode'; c.visible = true; c.pos = [-45, SOL(-45, 125), 125]; c.play('Walk'); b.cible = [LIEUX.glaciere[0] - 6, LIEUX.glaciere[1] + 4]; }
       if (b.etat === 'rode') { const dx = b.cible[0] - c.pos[0], dz = b.cible[1] - c.pos[2], dd = Math.hypot(dx, dz), dP = Math.hypot(P.x - c.pos[0], P.z - c.pos[2]); if (dP < 7 || !nuit || (PL.lampe && dP < 16)) { b.etat = 'fuit'; b.cible = [-60, 130]; c.play('Run'); }
-        else if (dd < 1) { c.play('Sniff'); if (Math.random() < dt * .25) { b.etat = 'fuit'; b.cible = [-60, 130]; c.play('Run'); } } else { c.yaw = angleVers(dx, dz); c.pos[0] += Math.sin(c.yaw) * 1.1 * dt; c.pos[2] += Math.cos(c.yaw) * 1.1 * dt; if (c.clip !== 'Walk') c.play('Walk'); } }
+        else if (dd < 1) { c.play('Sniff'); const eclaire = lanterneAllumee() || ETAT.feu > 0; if (eclaire && Math.random() < dt * 1.5) { b.etat = 'fuit'; b.cible = [-60, 130]; c.play('Run'); } else if (!eclaire && Math.random() < dt * .25) { if (!ETAT.glaciereRangee && !ETAT.veille && ETAT.renardJour !== ETAT.jour && SAC.rations > 0) { SAC.rations--; ETAT.renardJour = ETAT.jour; ETAT.msgReveil = 'Des traces de renard autour de la glacière : il manque une ration. (Rangez-la dans la tente, ou laissez la lanterne allumée.)'; historique('un renard a volé une ration'); if (!ETAT.dort && Math.hypot(P.x - c.pos[0], P.z - c.pos[2]) < 30) note('Un renard file avec quelque chose dans la gueule… la glacière !', 4000); } b.etat = 'fuit'; b.cible = [-60, 130]; c.play('Run'); } } else { c.yaw = angleVers(dx, dz); c.pos[0] += Math.sin(c.yaw) * 1.1 * dt; c.pos[2] += Math.cos(c.yaw) * 1.1 * dt; if (c.clip !== 'Walk') c.play('Walk'); } }
       else if (b.etat === 'fuit') { const dx = b.cible[0] - c.pos[0], dz = b.cible[1] - c.pos[2], dd = Math.hypot(dx, dz); c.yaw = angleVers(dx, dz); c.pos[0] += Math.sin(c.yaw) * 4.5 * dt; c.pos[2] += Math.cos(c.yaw) * 4.5 * dt; if (dd < 2) { b.etat = 'cache'; c.visible = false; } }
       if (c.visible) { c.pos[1] = SOL(c.pos[0], c.pos[2]); c.update(dt); } }
   }
@@ -5525,6 +5561,8 @@ function construireMains() { meshes(); const T = M3.translate, S = M3.scale, mul
   item('lampe', n => { main(n); n.addPart(MESH.cyl, mul(T(0, .04, -.04), mul(RX(PI / 2), S(.044, .2, .044))), [.2, .2, .22], 7); n.addPart(MESH.cyl, mul(T(0, .04, -.15), mul(RX(PI / 2), S(.058, .035, .058))), [.3, .3, .32], 14); n.addPart(MESH.rb, mul(T(0, .065, .0), S(.015, .008, .025)), [.9, .2, .2], 7); const lum = new Node('lum'); lum.addPart(MESH.cyl, mul(T(0, .04, -.17), mul(RX(PI / 2), S(.05, .008, .05))), [1, .95, .8], 8); n.add(lum); MAINS.lampeLum = lum; });
   item('poisson', n => { main(n); n.addPart(MESH.sph, mul(T(0, .05, -.05), S(.06, .05, .22)), [.6, .68, .7], 14); n.addPart(MESH.rb, mul(T(0, .05, .07), S(.012, .07, .05)), [.5, .58, .6], 14); n.addPart(MESH.sph8, mul(T(.02, .06, -.13), S(.012, .012, .012)), [.05, .05, .05], 7); });
   item('mains', n => { main(n, -.26, .0, 0, .35); main(n, .26, .0, 0, -.35); });
+  item('canne', n => { main(n); n.addPart(MESH.cyl6, matTube([0, .01, .14], [0, .62, -1.55], .009), [.22, .18, .14], 13); n.addPart(MESH.cyl, matTube([0, .0, .2], [0, .04, -.02], .02), PAL.noir, 7); n.addPart(MESH.cyl, M3.mul(T(.035, -.025, .07), M3.mul(RZ(PI / 2), S(.06, .03, .06))), PAL.metal, 22); n.addPart(MESH.cyl6, matTube([.05, -.025, .07], [.08, -.06, .09], .004), PAL.noir, 7); n.addPart(MESH.cyl6, matTube([0, .62, -1.55], [0, -.4, -3.2], .0015), [.85, .85, .8], 0); });
+  item('tasse', n => { main(n); n.addPart(MESH.cyl, mul(T(0, .06, -.02), S(.075, .1, .075)), PAL.bleu2, 7); n.addPart(MESH.cyl, mul(T(0, .105, -.02), S(.062, .01, .062)), [.42, .26, .12], 5); n.addPart(MESH.cyl6, matTube([.04, .08, -.02], [.055, .04, -.02], .007), PAL.bleu2, 7); });
 }
 function montrerMain(nom, duree, anim) { for (const k in MAINS.items) MAINS.items[k].visible = k === nom; MAINS.item = nom; MAINS.t = 0; MAINS.duree = duree || 0; MAINS.anim = anim || 'leve'; }
 function majMains(dt, P) { const nd = MAINS.nd; if (!nd) return; MAINS.t += dt;
@@ -5537,6 +5575,7 @@ function majMains(dt, P) { const nd = MAINS.nd; if (!nd) return; MAINS.t += dt;
   if (a === 'manger') { const cyc = (t % 1.1) / 1.1, s = Math.sin(Math.min(1, cyc * 1.5) * PI); ox = lerp(.27, .06, s); oy = lerp(-.31, -.12, s); oz = lerp(-.5, -.3, s); rx = .15 + s * .5; ry = lerp(-.5, -.2, s); }
   if (a === 'pomper') { const s = (Math.sin(t * 7) + 1) / 2; ox = .2; oy = -.3 + s * .05; oz = -.45; rx = .4 + s * .2; ry = -.3; }
   if (a === 'tenir') { rx = .05 + P.pitch * .05; }
+  if (a === 'pecher' || a === 'touche' || a === 'ferrer') { ox = .2; oy = -.3 + Math.sin(A.time * 1.1) * .006; oz = -.42; rx = .25; ry = -.15; rz = -.05; if (a === 'touche') { rx += Math.sin(A.time * 38) * .035 + .08; oy -= .02; } if (a === 'ferrer') { const k = Math.sin(Math.min(1, t / .45) * PI); rx = .25 - k * .55; oy += k * .06; oz += k * .06; } }
   if (a === 'cueillir') { const s = Math.sin(Math.min(1, t / .7) * PI); oy = -.31 + s * .2; oz = -.5 - s * .12; ox = .2; rx = -.2 * s; }
   if (a === 'poser') { const s = Math.sin(Math.min(1, t / .8) * PI); oy = -.31 - s * .22; oz = -.5 - s * .25; rx = .15 + s * .5; }
   const M = M3.mul(M3.translate(P.eye[0], P.eye[1], P.eye[2]), M3.mul(M3.rotY(P.yaw + PI), M3.mul(M3.rotX(P.pitch), M3.mul(M3.translate(ox, oy, oz), M3.mul(M3.rotY(ry), M3.mul(M3.rotX(rx), M3.rotZ(rz)))))));
@@ -5546,10 +5585,10 @@ function majMains(dt, P) { const nd = MAINS.nd; if (!nd) return; MAINS.t += dt;
 
 // ==== CAMP : ÉTAT DE LA PARTIE, HORLOGE ======================================================
 const JOUEUR = { prenom: '' };
-const ETAT = { enJeu: false, jour: 1, dort: false, pause: false, mort: null, drapeaux: {}, historique: [], meteo: 'clair', veille: false, glaciereRangee: false, feu: 0, feuBois: 0, feuV: 0, visites: 0 };
+const ETAT = { enJeu: false, jour: 1, dort: false, pause: false, mort: null, drapeaux: {}, historique: [], meteo: 'clair', veille: false, glaciereRangee: false, feu: 0, feuBois: 0, feuV: 0, visites: 0, jerrican: 4, lanterne: 'auto', propre: 0, renardJour: 0, msgReveil: '' };
 const HORL = { h: 7, VITESSE: 24 };              // heure du jour (0-24) ; 24 s de jeu par seconde réelle (1 h = 2,5 min)
 const BES = { faim: 92, soif: 90, energie: 100, endurance: 100, sante: 100 };
-const SAC = { rations: 5, eau: 4, gourde: 3, gourdeMax: 3, baies: 0, pommes: 0, noisettes: 0, buches: 2, poisson: 0, poissonGrille: 0, objets: [] };
+const SAC = { rations: 5, eau: 4, gourde: 3, gourdeMax: 3, baies: 0, pommes: 0, noisettes: 0, buches: 2, poisson: 0, poissonGrille: 0, gaz: 6, objets: [] };
 function jourSemaine() { return SEMAINE[(ETAT.jour - 1) % 7]; }
 function estNuit() { return HORL.h < 6 || HORL.h >= 21.5; }
 function heureRepas() { return (HORL.h >= 11.5 && HORL.h < 14.5) || (HORL.h >= 18.5 && HORL.h < 22); }
@@ -5571,6 +5610,11 @@ function majJoueur(dt) { const P = PL, ouvert = UI.ouvert() || UI.dlgOuvert || E
   let lx = 0, ly = 0; const sens = OPT.sens || 1;
   if (!ouvert) { lx += IN.look[0] * .0032 * sens; ly += IN.look[1] * .0032 * sens; if (IN.glook) { lx += IN.glook[0] * dt * 2.6 * sens; ly += IN.glook[1] * dt * 2.0 * sens; } }
   IN.look[0] = IN.look[1] = 0; P.yaw -= lx; P.pitch = clamp(P.pitch - ly * (OPT.invY ? -1 : 1), -1.35, 1.35);
+  if (P.assis) { const S = P.assis, k = IN.keys, bouge = Math.hypot(IN.stick[0], IN.stick[1]) > .6 || (IN.gstick && Math.hypot(IN.gstick[0], IN.gstick[1]) > .6) || k.z || k.w || k.s || k.q || k.a || k.d || k.arrowup || k.arrowdown;
+    if (!ouvert && (IN.accr || IN.saut || bouge)) { IN.accr = false; IN.saut = false; seLever(); }
+    else { P.vit = 0; P.vy = 0; P.auSol = true; P.x = S.p[0]; P.z = S.p[1]; P.y = SOL(S.p[0], S.p[1]); P.hauteur = lerp(P.hauteur, S.h, Math.min(1, dt * 5)); P.eye = [P.x, P.y + P.hauteur + Math.sin(A.time * 1.2) * .004, P.z];
+      const cpa = Math.cos(P.pitch); A.camera.fixed.eye = P.eye.slice(); A.camera.fixed.look = [P.eye[0] + Math.sin(P.yaw) * cpa * 10, P.eye[1] + Math.sin(P.pitch) * 10, P.eye[2] + Math.cos(P.yaw) * cpa * 10];
+      BES.endurance = Math.min(enduranceMax(), BES.endurance + dt * 16); if (!ouvert && IN.lampe) { PL.lampe = !PL.lampe; S_ui(); $('bLampe').classList.toggle('on', PL.lampe); if (PL.lampe) montrerMain('lampe', 0, 'tenir'); else if (MAINS.item === 'lampe') montrerMain(null); } return; } }
   // déplacement
   let mx = 0, mz = 0; if (!ouvert) { const k = IN.keys; mz += (k.z || k.w || k.arrowup ? 1 : 0) - (k.s || k.arrowdown ? 1 : 0); mx += (k.d || k.arrowright ? 1 : 0) - (k.q || k.a || k.arrowleft ? 1 : 0); mx += IN.stick[0]; mz -= IN.stick[1]; if (IN.gstick) { mx += IN.gstick[0]; mz -= IN.gstick[1]; } }
   const l = Math.hypot(mx, mz); if (l > 1) { mx /= l; mz /= l; }
@@ -5586,7 +5630,9 @@ function majJoueur(dt) { const P = PL, ouvert = UI.ouvert() || UI.dlgOuvert || E
   const gN = solJoueur(nx, nz), dh = gN - solJoueur(P.x, P.z); if (dh > .9 * Math.max(.02, Math.hypot(dx, dz) * dt) + .45 && P.auSol) { nx = P.x; nz = P.z; }
   if (gN < -1.15) { nx = P.x; nz = P.z; if (l > .3) P.bloque += dt; } else P.bloque = 0;
   if (P.bloque > .6) { note('L’eau est glacée… pas plus loin.'); P.bloque = -4; }
-  const dLac = Math.hypot(nx - LAC.x, nz - LAC.z); if (dLac > 540) { nx = P.x; nz = P.z; if (l > .3 && Math.random() < dt * .5) note('Vous ne voulez pas trop vous éloigner du camp.'); }
+  if (!zoneJoueur(nx, nz)) { if (zoneJoueur(nx, P.z)) nz = P.z; else if (zoneJoueur(P.x, nz)) nx = P.x; else { nx = P.x; nz = P.z; } if (l > .3 && (P.tForet = (P.tForet || 0) + dt) > 1.2) { P.tForet = -6; note(surChemin(P.x, P.z) || P.z > 115 ? 'Le sentier est le seul passage : la forêt est trop dense de part et d’autre.' : P.z < 100 ? 'Les arbres descendent jusqu’à l’eau : impossible de longer la rive.' : 'La forêt est trop dense par ici. On ne passe que par le sentier.'); } }
+  else if (P.tForet > 0) P.tForet = 0;
+  if (surChemin(nx, nz) && nz > 255 && l > .3 && Math.random() < dt * .5) note('Vous ne voulez pas trop vous éloigner du camp.');
   const o = obstacles(nx, nz, .36); P.x = o.x; P.z = o.z;
   // gravité
   const g = solJoueur(P.x, P.z); P.vy -= 12 * dt; P.y += P.vy * dt; if (P.y <= g) { if (!P.auSol && P.vy < -3) SON.pas(P.surPonton ? 'bois' : g < .2 ? 'eau' : 'herbe', .7); P.y = g; P.vy = 0; P.auSol = true; }
@@ -5605,6 +5651,7 @@ function S_ui() { SON.ui(); }
 function enduranceMax() { let m = 100; if (BES.faim < 25) m -= 25; if (BES.soif < 25) m -= 25; if (BES.energie < 20) m -= 20; return Math.max(25, m); }
 // ==== CAMP : BESOINS (faim, soif, énergie, santé) ============================================
 function majBesoins(dtJeuH) { // dtJeuH : heures de jeu écoulées
+  if (PL.assis && !ETAT.dort) { const pres = ETAT.feu > 0 && Math.hypot(PL.x - LIEUX.feu[0], PL.z - LIEUX.feu[1]) < 3.5; BES.energie = clamp(BES.energie + (pres ? 10 : 6) * dtJeuH, 0, 100); }
   const k = PL.court ? 1.6 : 1; BES.faim = clamp(BES.faim - 6.4 * k * dtJeuH, 0, 100); BES.soif = clamp(BES.soif - (8.8 * k + (HORL.h > 11 && HORL.h < 17 ? 1.5 : 0)) * dtJeuH, 0, 100);
   const h = HORL.h, fatigue = h >= 22 || h < 5 ? 9 : h >= 19 ? 5.5 : 3.6; BES.energie = clamp(BES.energie - fatigue * dtJeuH * (ETAT.veille ? 1.4 : 1), 0, 100);
   if (BES.faim <= 0 || BES.soif <= 0) BES.sante = clamp(BES.sante - 55 * dtJeuH, 0, 100); else if (BES.sante < 100 && BES.faim > 30 && BES.soif > 30) BES.sante = clamp(BES.sante + 12 * dtJeuH, 0, 100);
@@ -5615,7 +5662,7 @@ function majBesoins(dtJeuH) { // dtJeuH : heures de jeu écoulées
 const JAUGES_ALERTE = {};
 function alertesBesoins() { for (const [k, nom, seuil] of [['faim', 'Vous avez faim.', 25], ['soif', 'Vous avez soif.', 25], ['energie', 'Vous tombez de fatigue.', 20]]) { const v = BES[k]; if (v < seuil && !JAUGES_ALERTE[k]) { JAUGES_ALERTE[k] = true; note(nom + (k === 'faim' ? ' Glacière (aux heures des repas) ou cueillette.' : k === 'soif' ? ' Gourde, bouteilles ou eau du lac purifiée.' : ' La tente vous attend.')); objectifAjouter(k, k === 'faim' ? 'Manger' : k === 'soif' ? 'Boire' : 'Dormir', k === 'faim' ? 'glaciere' : k === 'soif' ? 'rive' : 'tenteJ'); } if (v > seuil + 15 && JAUGES_ALERTE[k]) { JAUGES_ALERTE[k] = false; objectifFini(k); } } }
 // ==== CAMP : ACTIONS DU CAMP (tente, glacière, lac, feu, bois, cueillette) ====================
-function manger(quoi) { const V = { ration: [38, 6, 'ration', 'manger', 3.3], baies: [9, 4, 'baies', 'manger', 2.2], pommes: [16, 6, 'fruit', 'manger', 3.3], noisettes: [8, 0, 'noisettes', 'manger', 2.2], poissonGrille: [34, 0, 'poisson', 'manger', 3.3] }[quoi]; if (!V) return;
+function manger(quoi) { const V = { ration: [38, 6, 'ration', 'manger', 3.3], baies: [9, 4, 'baies', 'manger', 2.2], pommes: [16, 6, 'fruit', 'manger', 3.3], noisettes: [8, 0, 'noisettes', 'manger', 2.2], poissonGrille: [34, 0, 'poisson', 'manger', 3.3], compote: [34, 8, 'tasse', 'manger', 3.3], bouillie: [30, 4, 'tasse', 'manger', 3.3] }[quoi]; if (!V) return;
   BES.faim = clamp(BES.faim + V[0], 0, 100); BES.soif = clamp(BES.soif + V[1], 0, 100); montrerMain(V[2], V[4], V[3]); SON.manger(); setTimeout(() => SON.manger(), 1100); historique('a mangé : ' + quoi); }
 function boire(n = 25) { BES.soif = clamp(BES.soif + n, 0, 100); montrerMain('gourde', 2.8, 'boire'); setTimeout(() => SON.boire(), 350); }
 function actionTente() { const ch = []; const h = HORL.h, peutDormir = BES.energie < 70 || h >= 20 || h < 5;
@@ -5639,22 +5686,29 @@ function actionGlaciere() { const ch = [], rep = heureRepas();
 function actionLac(ou) { const ch = [];
   ch.push({ t: `Puiser et purifier de l’eau (gourde ${SAC.gourde}/${SAC.gourdeMax}) — 20 s`, off: SAC.gourde >= SAC.gourdeMax, f: () => purifier() });
   ch.push({ t: 'Boire à la gourde (' + SAC.gourde + ')', off: !SAC.gourde, f: () => { SAC.gourde--; boire(25); } });
+  ch.push({ t: `Remplir le jerrican d’eau du lac (${ETAT.jerrican}/${JERRICAN_MAX})`, off: ETAT.jerrican >= JERRICAN_MAX, f: () => remplirJerrican() });
+  ch.push({ t: aObjet('canne') ? 'Pêcher' + (ou === 'ponton' ? ' (bon coin)' : '') : 'Pêcher (il faut la canne, posée près du ponton)', off: !aObjet('canne'), f: () => pecher(ou) });
   ch.push({ t: 'Se rafraîchir le visage', f: () => { BES.energie = clamp(BES.energie + 4, 0, 100); SON.plouf(.2); note('L’eau est glacée. Ça réveille.'); } });
+  if (ou === 'ponton') ch.push({ t: estNuit() ? 'Se baigner (pas la nuit)' : 'Se baigner par l’échelle (eau glacée, 15 min)', off: estNuit() || BES.endurance < 25, f: () => { avancerTemps(.25); BES.energie = clamp(BES.energie + 14, 0, 100); BES.endurance = Math.max(0, BES.endurance - 25); ETAT.propre = Math.max(ETAT.propre || 0, ETAT.jour); SON.plouf(.4); setTimeout(() => SON.plouf(.25), 500); note('Un plongeon glacé ! Tout le corps se réveille. (Énergie +14, et vous voilà propre pour la journée.)', 4500); historique('s’est baigné'); } });
   ch.push({ t: 'Regarder le lac', fin: true });
   menuChoix(ou === 'ponton' ? 'Bout du ponton' : 'Rive du lac', 'L’eau est claire mais il faut la purifier avant de la boire.', ch); }
 function purifier() { if (ETAT.action) return; ETAT.action = { nom: 'purif', t: 0, duree: 20 }; montrerMain('purif', 21, 'pomper'); note('Pompage… restez près de l’eau.', 1500); }
 function majAction(dt) { const a = ETAT.action; if (!a) return; a.t += dt; if (a.nom === 'purif') { if (Math.floor(a.t * 2) !== Math.floor((a.t - dt) * 2)) SON.tic(.08, 700, .04); if (Math.hypot(PL.x - LAC.x, PL.z - LAC.z) > LAC.r + 9 && !PL.surPonton) { ETAT.action = null; montrerMain(null); note('Trop loin de l’eau : pompage interrompu.'); return; } if (a.t >= a.duree) { ETAT.action = null; SAC.gourde = SAC.gourdeMax; montrerMain('gourde', 1.5, 'leve'); SON.ui2(); note('Gourde pleine d’eau purifiée (' + SAC.gourdeMax + ' gorgées).'); objectifFini('eau'); } }
+  if (a.nom === 'purifJ') { if (Math.floor(a.t * 2) !== Math.floor((a.t - dt) * 2)) SON.tic(.08, 700, .04); if (Math.hypot(PL.x - LIEUX.purif[0], PL.z - LIEUX.purif[1]) > 2.6) { ETAT.action = null; montrerMain(null); note('Trop loin du coin eau : pompage interrompu.'); return; } if (a.t >= a.duree) { ETAT.action = null; const n = versGourde(SAC.gourdeMax); montrerMain('gourde', 1.5, 'leve'); SON.ui2(); note(`Gourde remplie d’eau purifiée (+${n}). Jerrican : ${ETAT.jerrican}/${JERRICAN_MAX}.`); objectifFini('eau'); } }
+  if (a.nom === 'peche') majPeche(a, dt);
   if (a.nom === 'griller') { if (a.t >= a.duree) { ETAT.action = null; SAC.poissonGrille += a.n; SAC.poisson -= a.n; SON.ui2(); note('Poisson grillé, prêt à manger (dans le sac).'); } } }
 function actionFeu() { const ch = [], allume = ETAT.feu > 0;
   ch.push({ t: allume ? `Ajouter une bûche (${SAC.buches})` : `Allumer le feu (${SAC.buches} bûches, en coûte 2)`, off: allume ? !SAC.buches : SAC.buches < 2, f: () => { if (allume) { SAC.buches--; ETAT.feuBois += 1.5; } else { SAC.buches -= 2; ETAT.feuBois = 3; ETAT.feu = 1; } montrerMain('buche', 1.2, 'poser'); SON.tic(.3, 1200, .06); setTimeout(() => SON.tic(.3, 900, .08), 300); note(allume ? 'Le feu reprend.' : 'Le feu prend. Il tiendra environ 3 h.'); } });
   if (allume) ch.push({ t: `Griller le poisson (${SAC.poisson})`, off: !SAC.poisson, f: () => { ETAT.action = { nom: 'griller', t: 0, duree: 12, n: SAC.poisson }; note('Le poisson grille sur les braises (12 s).'); } });
+  if (allume) ch.push({ t: 'Cuisiner à la marmite (eau, thé, plats)…', f: () => setTimeout(() => cuisine('feu'), 30) });
   if (allume) ch.push({ t: 'Éteindre le feu', f: () => { ETAT.feu = 0; ETAT.feuBois = 0; SON.tic(.5, 500, .3); note('Le feu est éteint.'); } });
   ch.push({ t: 'S’asseoir un moment près du feu', f: () => { BES.energie = clamp(BES.energie + (allume ? 3 : 1), 0, 100); avancerTemps(.25); note(allume ? 'La chaleur fait du bien.' : 'Le foyer est froid.'); } });
   ch.push({ t: 'Se relever', fin: true });
   menuChoix('Feu de camp', allume ? 'Le feu crépite. Il éclaire le camp et éloigne les bêtes.' : 'Un cercle de pierres et des cendres froides.', ch); }
 function actionBois() { const ch = []; ch.push({ t: `Prendre 2 bûches (${SAC.buches} dans le sac, ${ETAT.reserveBois} en réserve)`, off: ETAT.reserveBois < 2, f: () => { ETAT.reserveBois -= 2; SAC.buches += 2; montrerMain('buche', 1.5, 'leve'); SON.tic(.3, 800, .08); } });
   ch.push({ t: 'Fendre du bois (10 min, +3 bûches en réserve)', off: BES.endurance < 20, f: () => { ETAT.reserveBois += 3; BES.endurance -= 20; BES.faim -= 2; avancerTemps(1 / 6); for (let i = 0; i < 3; i++) setTimeout(() => SON.coup(), i * 500); note('Trois bûches de plus.'); } });
-  ch.push({ t: 'Laisser', fin: true }); menuChoix('Réserve de bois', 'Du bois sec, une hache.', ch); }
+  ch.push(aObjet('hache') ? { t: 'Replanter la hache dans le billot', f: () => reposerHache() } : { t: 'Prendre la hache (arme de défense)', f: () => prendreHache() });
+  ch.push({ t: 'Laisser', fin: true }); menuChoix('Réserve de bois', `Du bois sec. ${ETAT.reserveBois} bûches en réserve. ` + (aObjet('hache') ? 'Vous avez la hache sur vous.' : 'La hache est plantée dans le billot.'), ch); }
 ETAT.reserveBois = 6;
 function actionCueillir(id, quoi) { const o = OBJETS.find(x => x.id === id); if (!o || o.fruits <= 0) { note('Plus rien à cueillir ici aujourd’hui. Ça repousse demain.'); SON.non(); return; } o.fruits--; SAC[quoi]++; majFruits(o); montrerMain(quoi === 'pommes' ? 'fruit' : quoi, 1.6, 'cueillir'); SON.tic(.2, 1500, .04); setTimeout(() => SON.tic(.12, 2300, .03), 180); note(({ baies: 'Une poignée de baies', pommes: 'Une pomme', noisettes: 'Quelques noisettes' })[quoi] + ' → sac à dos (' + SAC[quoi] + ').' + (o.fruits ? '' : ' Le site est vide pour aujourd’hui.'), 1800); if (BES.faim < 35) objectifFini('faim_c'); MARQ.flash(id); }
 function repousser() { for (const o of OBJETS) if (o.max) { o.fruits = o.max; majFruits(o); } }
@@ -5669,30 +5723,114 @@ function ouvrirSac() { const L = [];
   if (SAC.poisson) L.push({ nom: 'Poisson frais', d: `${SAC.poisson} · à griller sur le feu`, off: true });
   if (SAC.poissonGrille) L.push({ nom: 'Poisson grillé', d: `${SAC.poissonGrille} · +34 faim`, f: () => { SAC.poissonGrille--; manger('poissonGrille'); } });
   L.push({ nom: 'Bûches', d: `${SAC.buches} · pour le feu`, off: true });
+  L.push({ nom: 'Jerrican', d: `${ETAT.jerrican}/${JERRICAN_MAX} gorgées d’eau du lac · à traiter au coin eau, au réchaud ou à la marmite`, off: true });
+  L.push({ nom: 'Cartouches de gaz', d: `${SAC.gaz} · pour le réchaud`, off: true });
   L.push({ nom: 'Lampe torche', d: PL.lampe ? 'allumée' : 'éteinte', f: () => { PL.lampe = !PL.lampe; $('bLampe').classList.toggle('on', PL.lampe); if (PL.lampe) montrerMain('lampe', 0, 'tenir'); else montrerMain(null); } });
   for (const o of SAC.objets) L.push({ nom: o.nom, d: o.d || '', off: !o.f, f: o.f });
   UI.panneau('sac', 'Sac à dos', L); }
+// ==== CAMP : ÉQUIPEMENTS (s'asseoir, pêche, eau du jerrican, réchaud et marmite, linge, lanterne, panneau, rocher, hache) ====
+const aObjet = k => SAC.objets.some(o => o[k]);
+const JERRICAN_MAX = 10;
+function majEquipements() { if (NOEUDS.hache) NOEUDS.hache.visible = !aObjet('hache'); if (NOEUDS.canne) NOEUDS.canne.visible = !aObjet('canne'); }
+function lanterneAllumee() { return ETAT.lanterne === 'on' || (ETAT.lanterne !== 'off' && A && A.nuit() > .18); }
+// --- s'asseoir (chaise, bancs, souches, rocher) : on regarde autour, le temps passe, on récupère ; on se relève avec ○ ou en marchant
+function siegeOccupe(id) { return VIS.pnj.some(w => !w.parti && !w.fini && (w.siege === id || (id === 'chaise' && w.cibleLieu === 'chaise' && w.clipFinal === 'Sit_Chair'))); }
+function sAsseoir(ids) { const L = (Array.isArray(ids) ? ids : [ids]).map(id => SIEGES.find(s => s.id === id)).filter(Boolean).filter(s => !siegeOccupe(s.id)); if (!L.length) { note('La place est prise.'); SON.non(); return; }
+  L.sort((a, b) => Math.hypot(a.p[0] - PL.x, a.p[1] - PL.z) - Math.hypot(b.p[0] - PL.x, b.p[1] - PL.z)); const S = L[0];
+  PL.assis = S; PL.accroupi = false; PL.x = S.p[0]; PL.z = S.p[1]; PL.yaw = S.yaw; PL.pitch = -.05; PL.vy = 0; if (MAINS.item && MAINS.item !== 'lampe') montrerMain(null); SON.tissu();
+  const pres = ETAT.feu > 0 && Math.hypot(S.p[0] - LIEUX.feu[0], S.p[1] - LIEUX.feu[1]) < 3.5; note('Assis sur ' + S.nom + '. ' + (pres ? 'La chaleur du feu vous détend : vous récupérez vite.' : 'Vous soufflez un peu : l’énergie remonte doucement.') + ' ○ pour vous lever.', 3500); }
+function seLever() { const S = PL.assis; if (!S) return; PL.assis = null; const f = [Math.sin(S.yaw), Math.cos(S.yaw)];
+  for (const k of [0, .6, -.6, 1.2, -1.2, PI]) { const a = S.yaw + k, x = S.p[0] + Math.sin(a) * .8, z = S.p[1] + Math.cos(a) * .8, o = obstacles(x, z, .38); if (Math.hypot(o.x - x, o.z - z) < .05 && zoneJoueur(x, z)) { PL.x = x; PL.z = z; break; } if (k === PI) { PL.x = o.x; PL.z = o.z; } }
+  PL.y = solJoueur(PL.x, PL.z); SON.tissu(); }
+// --- pêche : lancer, attendre la touche (meilleure à l'aube et au crépuscule, au bout du ponton), ferrer avec ✕ au bon moment
+function prendreCanne() { if (aObjet('canne')) return; SAC.objets.push({ nom: 'Canne à pêche', d: 'Pêcher au bout du ponton ou depuis la rive', canne: true }); majEquipements(); montrerMain('canne', 1.6, 'leve'); SON.tic(.2, 900, .05); note('Canne à pêche prise. On pêche au bout du ponton (meilleur) ou depuis la rive.', 4000); }
+function pecher(ou) { if (ETAT.action) return; const h = HORL.h, aube = (h > 5 && h < 9.5) || (h > 18 && h < 21.5), k = (aube ? .6 : 1) * (ou === 'ponton' ? .8 : 1.15) * (estNuit() ? 1.4 : 1);
+  const f = [Math.sin(PL.yaw), Math.cos(PL.yaw)]; let bx = PL.x + f[0] * 7, bz = PL.z + f[1] * 7; if (SOL(bx, bz) > -.3) { bx = PL.x + (LAC.x - PL.x) * .1; bz = PL.z + (LAC.z - PL.z) * .1; }
+  ETAT.action = { nom: 'peche', t: 0, k, touche: rnd(7, 24) * k, mord: 0, rates: 0, x: PL.x, z: PL.z, ou, b: [bx, bz] }; montrerMain('canne', 0, 'pecher'); SON.cerfVolant(); setTimeout(() => SON.plouf(.18), 600);
+  note('Ligne à l’eau. Attendez que ça morde, puis ✕ pour ferrer. ○ pour ranger la ligne.' + (aube ? ' Bonne heure pour pêcher.' : ''), 4500); }
+function ferrer() { const a = ETAT.action; if (!a || a.nom !== 'peche') return; MAINS.t = 0; MAINS.anim = 'ferrer';
+  if (!a.mord) { note('Trop tôt : le poisson a eu peur. Patience…', 2200); a.touche = a.t + rnd(6, 15) * a.k; setTimeout(() => { if (ETAT.action === a) MAINS.anim = 'pecher'; }, 700); return; }
+  if (Math.random() < .8) { SAC.poisson++; ETAT.action = null; SON.plouf(.3); SON.ui2(); montrerMain('poisson', 2.2, 'leve'); note(pick(['Une belle truite !', 'Un omble chevalier !', 'Une perche, petite mais charnue !']) + ` (${SAC.poisson} dans le sac) — à griller au feu ou à poêler au réchaud.`, 4200); historique('a pêché un poisson'); }
+  else { a.mord = 0; a.rates++; a.touche = a.t + rnd(8, 20) * a.k; note('Il s’est décroché au dernier moment…', 2500); setTimeout(() => { if (ETAT.action === a) MAINS.anim = 'pecher'; }, 700); } }
+function annulerAction() { const a = ETAT.action; if (!a) return; ETAT.action = null; if (a.nom === 'peche') { note('Vous rangez la ligne.', 1500); SON.tissu(); } else note('Action interrompue.', 1500); montrerMain(PL.lampe ? 'lampe' : null, 0, 'tenir'); }
+function majPeche(a, dt) { if (Math.hypot(PL.x - a.x, PL.z - a.z) > 1.2) { ETAT.action = null; montrerMain(null); note('Vous rangez la ligne pour bouger.', 1800); return; }
+  const [bx, bz] = a.b; a.tr = (a.tr || 0) - dt; if (a.tr <= 0) { a.tr = a.mord ? .25 : rnd(1.6, 3); A.fx.emit('ring', [bx, .02, bz], [0, 0, 0], 1.1, a.mord ? .45 : .22, [.9, .95, 1], a.mord ? .5 : .25); }
+  if (!a.mord && a.t >= a.touche) { a.mord = a.t; MAINS.anim = 'touche'; note('Ça mord ! ✕ pour ferrer !', 1800); SON.plouf(.22); for (let i = 0; i < 6; i++) A.fx.emit('spray', [bx, .05, bz], [rnd(-.6, .6), rnd(1.2, 2.4), rnd(-.6, .6)], rnd(.4, .7), rnd(.05, .1), [.85, .9, .95], .7); }
+  if (a.mord && a.t > a.mord + 2.3) { a.mord = 0; a.rates++; MAINS.anim = 'pecher'; if (a.rates >= 3) { ETAT.action = null; montrerMain(null); note('Plus rien ne mord ici pour l’instant. Réessayez plus tard, ou au bout du ponton.', 3500); return; } a.touche = a.t + rnd(8, 22) * a.k; note('Trop tard… il a filé.', 2000); } }
+// --- eau : le jerrican se remplit au lac (eau brute) ; au camp on la purifie (pompe), on la fait bouillir (réchaud ou marmite) ou on la boit à ses risques
+function remplirJerrican() { if (ETAT.jerrican >= JERRICAN_MAX) return; ETAT.jerrican = JERRICAN_MAX; SON.plouf(.25); setTimeout(() => SON.plouf(.18), 400); avancerTemps(1 / 20); note(`Jerrican rempli d’eau du lac (${JERRICAN_MAX} gorgées) et rapporté au coin eau. À purifier ou faire bouillir avant de boire.`, 4200); }
+function versGourde(n) { const v = Math.min(n, SAC.gourdeMax - SAC.gourde, ETAT.jerrican); ETAT.jerrican -= v; SAC.gourde += v; return v; }
+function actionCoinEau() { const ch = [], j = ETAT.jerrican;
+  ch.push({ t: `Purifier l’eau du jerrican dans la gourde (gourde ${SAC.gourde}/${SAC.gourdeMax}) — 20 s`, off: !j || SAC.gourde >= SAC.gourdeMax, f: () => { ETAT.action = { nom: 'purifJ', t: 0, duree: 20 }; montrerMain('purif', 21, 'pomper'); note('Pompage depuis le jerrican… restez au coin eau.', 1800); } });
+  ch.push({ t: 'Boire l’eau brute du jerrican (risqué)', off: !j, f: () => { ETAT.jerrican--; boire(20); if (Math.random() < .33) { ETAT.poison = Math.max(ETAT.poison || 0, 1.1); setTimeout(() => note('Votre ventre gargouille… cette eau n’était pas propre.', 4000), 9000); historique('a bu de l’eau non traitée'); } } });
+  ch.push({ t: 'Se laver les mains et le visage', off: !j, f: () => { ETAT.jerrican--; BES.energie = clamp(BES.energie + 3, 0, 100); SON.plouf(.12); note('Un peu d’eau fraîche : ça fait du bien.'); } });
+  ch.push({ t: 'Laisser', fin: true });
+  menuChoix('Coin eau', `Jerrican : ${j}/${JERRICAN_MAX} gorgées d’eau du lac (non traitée). Il se remplit à la rive ou au ponton.`, ch); }
+// --- cuisine : réchaud (cartouches de gaz) ou marmite sur le feu (bois) ; mêmes recettes
+function cuisine(source) { const gaz = source === 'rechaud', ok = gaz ? SAC.gaz > 0 : ETAT.feu > 0, ch = [], coute = () => { if (gaz) SAC.gaz--; }, fin = (t, h) => { avancerTemps(h); SON.tic(.2, 1100, .05); setTimeout(() => SON.ui2(), 500); note(t, 4200); };
+  ch.push({ t: `Faire bouillir l’eau du jerrican → gourde pleine (${gaz ? '1 cartouche, ' : ''}10 min)`, off: !ok || !ETAT.jerrican || SAC.gourde >= SAC.gourdeMax, f: () => { coute(); const n = versGourde(SAC.gourdeMax); fin(`L’eau a bouilli : ${n} gorgée${n > 1 ? 's' : ''} sûre${n > 1 ? 's' : ''} dans la gourde.`, 1 / 6); objectifFini('eau'); } });
+  ch.push({ t: `Thé chaud (+12 énergie, +12 soif${gaz ? ', 1 cartouche' : ''})`, off: !ok || !ETAT.jerrican, f: () => { coute(); ETAT.jerrican--; avancerTemps(1 / 12); BES.energie = clamp(BES.energie + 12, 0, 100); BES.soif = clamp(BES.soif + 12, 0, 100); montrerMain('tasse', 3.4, 'boire'); setTimeout(() => SON.boire(), 400); note('Un thé brûlant, les mains autour de la tasse.', 3000); } });
+  ch.push({ t: `Poêler un poisson (${SAC.poisson} frais${gaz ? ', 1 cartouche' : ''})`, off: !ok || !SAC.poisson, f: () => { coute(); SAC.poisson--; SAC.poissonGrille++; fin('Poisson cuit, doré, prêt à manger (dans le sac).', 1 / 6); } });
+  ch.push({ t: `Compote de pommes (2 pommes → +34 faim${gaz ? ', 1 cartouche' : ''})`, off: !ok || SAC.pommes < 2, f: () => { coute(); SAC.pommes -= 2; avancerTemps(1 / 6); manger('compote'); } });
+  ch.push({ t: `Bouillie baies-noisettes (2 + 2 → +30 faim${gaz ? ', 1 cartouche' : ''})`, off: !ok || SAC.baies < 2 || SAC.noisettes < 2, f: () => { coute(); SAC.baies -= 2; SAC.noisettes -= 2; avancerTemps(1 / 6); manger('bouillie'); } });
+  ch.push({ t: 'Laisser', fin: true });
+  menuChoix(gaz ? 'Réchaud' : 'Marmite sur le feu', (gaz ? `Cartouches de gaz : ${SAC.gaz}. ` : ETAT.feu > 0 ? 'Le feu chauffe la marmite. ' : 'Il faut d’abord allumer le feu. ') + `Jerrican : ${ETAT.jerrican}/${JERRICAN_MAX}.`, ch); }
+function actionRechaud() { cuisine('rechaud'); }
+// --- linge : propre jusqu'au lendemain soir → les visiteurs vous accueillent mieux
+function actionLinge() { const ch = [], propre = (ETAT.propre || 0) >= ETAT.jour + 1, pluie = ETAT.meteo === 'pluie';
+  ch.push({ t: pluie ? 'Laver le linge (il ne séchera pas sous la pluie)' : propre ? 'Linge déjà propre (jusqu’à demain soir)' : 'Laver ses vêtements et les étendre (30 min)', off: pluie || propre || estNuit(), f: () => { avancerTemps(.5); ETAT.propre = ETAT.jour + 1; BES.energie = clamp(BES.energie + 4, 0, 100); SON.plouf(.15); note('Linge lavé, il sèche au vent. Propre et net, vous ferez meilleure impression aux visiteurs (jusqu’à demain soir).', 4800); historique('a lavé son linge'); } });
+  ch.push({ t: 'Laisser', fin: true });
+  menuChoix('Corde à linge', (ETAT.propre || 0) >= ETAT.jour ? 'Vos affaires sentent le propre.' : 'Vos vêtements sentent la fumée et la sueur.', ch); }
+// --- lanterne : allumée la nuit, elle éclaire le camp et tient le renard à distance de la glacière
+function actionLanterne() { const ch = [], m = ETAT.lanterne || 'auto';
+  ch.push({ t: 'Allumer la lanterne', off: m === 'on', f: () => { ETAT.lanterne = 'on'; SON.tic(.15, 1600, .03); note('Lanterne allumée.'); } });
+  ch.push({ t: 'Éteindre la lanterne', off: m === 'off', f: () => { ETAT.lanterne = 'off'; SON.tic(.12, 900, .03); note('Lanterne éteinte. Le camp sera dans le noir.'); } });
+  ch.push({ t: 'Automatique (s’allume au crépuscule)', off: m === 'auto', f: () => { ETAT.lanterne = 'auto'; note('La lanterne s’allumera d’elle-même à la tombée de la nuit.'); } });
+  ch.push({ t: 'Laisser', fin: true });
+  menuChoix('Lanterne', (lanterneAllumee() ? 'Elle brûle. ' : 'Éteinte. ') + 'La nuit, une lanterne allumée (ou le feu) éloigne le renard de la glacière.', ch); }
+// --- panneau du sentier : directions, carnet de passage, traces fraîches (annonce la visite du jour)
+function tracesSentier() { const C = VIS.courant, P = VIS.prochain; if (C) return C.part ? 'Des traces fraîches remontent le sentier : vos visiteurs s’en vont.' : 'Des traces fraîches descendent jusqu’au camp : votre visiteur est déjà là.';
+  if (!P) return 'Rien de frais sur le sentier.'; const dh = (P.jour - ETAT.jour) * 24 + P.h - HORL.h;
+  if (dh < 0) return 'Quelqu’un approche, tout près.'; if (dh < 1.5) return 'Des voix au loin et des cailloux qui roulent : quelqu’un descend le sentier. Il sera là sous peu.';
+  if (P.jour === ETAT.jour) return 'Des branches cassées plus haut et l’herbe couchée : quelqu’un passera aujourd’hui, sans doute ' + (P.h < 12 ? 'dans la matinée.' : P.h < 15 ? 'vers le début d’après-midi.' : P.h < 19 ? 'dans l’après-midi.' : 'en soirée.');
+  return 'Rien de frais sur le sentier. Personne ne passera avant demain.'; }
+function actionPanneau() { const ch = [];
+  ch.push({ t: 'Lire le panneau', f: () => note('« Lac Vert, 1 840 m. ↑ Refuge du Clot : 2 jours. ↗ Lac Noir : 3 h. » Le sentier est le seul chemin jusqu’ici.', 5500) });
+  ch.push({ t: 'Examiner le sentier (traces)', f: () => { note(tracesSentier(), 5500); SON.tic(.1, 2400, .02); } });
+  ch.push({ t: 'Feuilleter le carnet de passage', f: () => { const L = ETAT.historique.filter(t => /visite :/.test(t)).slice(-12).reverse().map(t => ({ nom: t.replace(/ — visite : /, ' · '), d: '', off: true })); if (!L.length) L.push({ nom: 'Personne n’a encore signé.', d: 'Le carnet attend ses premiers noms.', off: true }); UI.panneau('sac', 'Carnet de passage', L); } });
+  ch.push({ t: 'Laisser', fin: true });
+  menuChoix('Panneau du sentier', 'Une planche gravée, une boîte en fer avec un carnet de passage.', ch); }
+// --- rocher plat : s'y asseoir face au lac, ou une sieste au soleil
+function actionRocher() { const ch = [], jour = HORL.h > 8 && HORL.h < 18.5 && ETAT.meteo !== 'pluie';
+  ch.push({ t: 'S’asseoir sur le rocher, face au lac', f: () => sAsseoir('rocher') });
+  ch.push({ t: jour ? 'Sieste au soleil (1 h)' : 'Sieste au soleil (pas de soleil)', off: !jour || BES.energie > 85, f: () => dormir(1) });
+  ch.push({ t: 'Laisser', fin: true }); menuChoix('Rocher plat', 'Une grande dalle tiède, polie par le temps.', ch); }
+// --- hache : plantée dans le billot, elle peut servir d'arme (combat plus favorable) ; il la faut pour fendre du bois
+function hacheDispo() { return true; }
+function prendreHache() { if (aObjet('hache')) return; SAC.objets.push({ nom: 'Hache', d: 'Arme de défense : vos chances en cas de bagarre augmentent', arme: true, hache: true }); majEquipements(); SON.tic(.25, 700, .06); note('Vous gardez la hache sur vous. Rassurant… ou inquiétant, selon qui vous regarde.', 4000); }
+function reposerHache() { const i = SAC.objets.findIndex(o => o.hache); if (i < 0) return; SAC.objets.splice(i, 1); majEquipements(); SON.coup(); note('La hache est replantée dans le billot.'); }
 // ==== CAMP : SOMMEIL ET TEMPS =================================================================
 function avancerTemps(h) { // avance l'horloge de h heures (actions longues), en simulant les besoins
   const pas = 1 / 12; for (let t = 0; t < h - 1e-6; t += pas) { tick(Math.min(pas, h - t)); } }
 function tick(dh) { const h0 = HORL.h; HORL.h += dh; majBesoins(dh); if (HORL.h >= 24) { HORL.h -= 24; nouveauJour(); } VIS.tickHeure(h0, HORL.h, dh); majFeuTemps(dh); }
 function majFeuTemps(dh) { if (ETAT.feu > 0) { ETAT.feuBois -= dh; if (ETAT.feuBois <= 0) { ETAT.feu = 0; ETAT.feuBois = 0; if (!ETAT.dort) note('Le feu s’est éteint.'); } } if (ETAT.feuV > 0) { ETAT.feuV -= dh; if (ETAT.feuV < 0) ETAT.feuV = 0; } }
 function nouveauJour() { ETAT.jour++; repousser(); ETAT.veille = false; ETAT.meteo = Math.random() < .55 ? 'clair' : Math.random() < .5 ? 'brume' : Math.random() < .7 ? 'couvert' : 'pluie'; VIS.nouveauJour(); sauver(); }
-function dormir(heures, evanoui) { if (ETAT.dort) return; UI.fermer(); const h = HORL.h; let cible = heures ? h + heures : (h >= 20 ? 24 + 7 : 7), duree = cible - h; if (heures) duree = heures; if (duree <= 0) duree += 24;
+function dormir(heures, evanoui) { if (ETAT.dort) return; UI.fermer(); if (PL.assis) seLever(); ETAT.action = null; const h = HORL.h; let cible = heures ? h + heures : (h >= 20 ? 24 + 7 : 7), duree = cible - h; if (heures) duree = heures; if (duree <= 0) duree += 24;
   ETAT.dort = { t: 0, duree, h0: h, evanoui, sieste: !!heures }; $('voile').classList.remove('off'); SON.zip(); VOIX.stop(); if (!heures) historique('s’est couché à ' + hm(h)); }
 function majSommeil(dt) { const D = ETAT.dort; if (!D) return; D.t += dt; const reel = D.sieste ? 3 : 8, k = clamp(D.t / reel, 0, 1), cible = D.duree * k; D.fait = D.fait || 0;
   // heures dormies comptées à part (avant : le passage de minuit faisait avancer l'horloge d'une journée entière en une image → mort de soif au réveil)
   while (D.fait < cible - 1e-6 && !ETAT.mort) { const dh = Math.min(1 / 6, cible - D.fait); tick(dh); D.fait += dh;
-    BES.energie = clamp(BES.energie + (D.evanoui ? 7 : ETAT.veille ? 8 : 12.5) * dh, 0, 100); BES.faim = clamp(BES.faim + 3.5 * dh, 0, 100); BES.soif = clamp(BES.soif + 5 * dh, 0, 100); }
+    if (estNuit() && ETAT.renardJour !== ETAT.jour && Math.random() < dh * .06 && !ETAT.glaciereRangee && !ETAT.veille && !lanterneAllumee() && ETAT.feu <= 0 && SAC.rations > 0) { SAC.rations--; ETAT.renardJour = ETAT.jour; ETAT.msgReveil = 'Des traces de renard autour de la glacière : il manque une ration. (Rangez-la dans la tente, ou laissez la lanterne allumée.)'; historique('un renard a volé une ration'); }   // le renard rôde aussi pendant votre sommeil
+    BES.energie = clamp(BES.energie + (D.evanoui ? 7 : ETAT.veille ? 8 : 12.5) * dh, 0, 100); BES.faim = clamp(BES.faim + 3.5 * dh, 0, 100); BES.soif = clamp(BES.soif + 5 * dh, 0, 100); BES.faim = Math.max(BES.faim, 6); BES.soif = Math.max(BES.soif, 6); /* on ne meurt pas de faim/soif pendant le sommeil : on se réveille affamé et assoiffé */ if (ETAT.mort) break; }
   $('hHeure').textContent = hm(HORL.h); $('sousTitre').textContent = (D.sieste ? 'Sieste… ' : D.evanoui ? 'Vous perdez connaissance… ' : 'Nuit… ') + hm(HORL.h); $('sousTitre').classList.add('on');
-  if (k >= 1 || ETAT.mort) { ETAT.dort = false; $('sousTitre').classList.remove('on'); if (ETAT.mort) return; VIS.recaler(); PL.pitch = 0; if (!D.sieste && !D.evanoui) reveilTente(null, true); else { $('voile').classList.add('off'); SON.zip(); } const r = VIS.reveil(); note((D.sieste ? 'Vous vous réveillez.' : D.evanoui ? 'Vous revenez à vous, courbatu.' : `Jour ${ETAT.jour}, ${jourSemaine()}. ` + ({ clair: 'Grand soleil sur le lac.', brume: 'Brume sur l’eau, le soleil perce.', couvert: 'Ciel couvert.', pluie: 'Il pleut.' })[ETAT.meteo]) + (r ? ' ' + r : ''), 5200); if (!D.sieste) appliquerMeteo(); sauver(); } }
+  if (k >= 1 || ETAT.mort) { ETAT.dort = false; $('sousTitre').classList.remove('on'); if (ETAT.mort) return; VIS.recaler(); PL.pitch = 0; if (!D.sieste && !D.evanoui) reveilTente(null, true); else { $('voile').classList.add('off'); SON.zip(); } const r = (VIS.reveil() + (ETAT.msgReveil ? ' ' + ETAT.msgReveil : '')).trim(); ETAT.msgReveil = ''; note((D.sieste ? 'Vous vous réveillez.' : D.evanoui ? 'Vous revenez à vous, courbatu.' : `Jour ${ETAT.jour}, ${jourSemaine()}. ` + ({ clair: 'Grand soleil sur le lac.', brume: 'Brume sur l’eau, le soleil perce.', couvert: 'Ciel couvert.', pluie: 'Il pleut.' })[ETAT.meteo]) + (r ? ' ' + r : ''), 5200); if (!D.sieste) appliquerMeteo(); sauver(); } }
 function appliquerMeteo() { const m = ETAT.meteo; if (m === 'brume') { A.meteo('brume', .8); setTimeout(() => A.meteo('clair', 1), 240000); } else if (m === 'couvert') A.meteo('brume', .35); else if (m === 'pluie') { A.meteo('pluie', .7); setTimeout(() => A.meteo('clair', 1), 420000); } else A.meteo('clair', 1); }
 // ==== CAMP : SAUVEGARDE DE LA PARTIE ============================================================
 function sauver() { if (!ETAT.enJeu || ETAT.mort) return; const fruits = {}; for (const o of OBJETS) if (o.max) fruits[o.id] = o.fruits; const P = VIS.prochain;
   ecrire('partie', { v: JEU.version, prenom: JOUEUR.prenom, jour: ETAT.jour, h: HORL.h, bes: BES, sac: SAC, pos: [PL.x, PL.z, PL.yaw], drapeaux: ETAT.drapeaux, historique: ETAT.historique.slice(-40), glaciereRangee: ETAT.glaciereRangee, reserveBois: ETAT.reserveBois, visites: ETAT.visites, vus: VIS.vus, meteo: ETAT.meteo, record: lire('record') || 0,
-    fruits, feu: ETAT.feu, feuBois: ETAT.feuBois, poison: ETAT.poison || 0, veille: !!ETAT.veille, jourVisite: VIS.jourVisite || 0, prochain: P && !VIS.courant ? { id: P.type.id, h: P.h, jour: P.jour } : null }); }
+    fruits, feu: ETAT.feu, feuBois: ETAT.feuBois, jerrican: ETAT.jerrican, lanterne: ETAT.lanterne, propre: ETAT.propre || 0, renardJour: ETAT.renardJour || 0, poison: ETAT.poison || 0, veille: !!ETAT.veille, jourVisite: VIS.jourVisite || 0, prochain: P && !VIS.courant ? { id: P.type.id, h: P.h, jour: P.jour } : null }); }
 function charger() { const s = lire('partie'); if (!s || !s.prenom) return false; JOUEUR.prenom = s.prenom; ETAT.jour = s.jour || 1; HORL.h = s.h === undefined ? 7 : s.h; Object.assign(BES, s.bes || {}); Object.assign(SAC, s.sac || {}); if (s.pos) { PL.x = s.pos[0]; PL.z = s.pos[1]; PL.yaw = s.pos[2]; } ETAT.drapeaux = s.drapeaux || {}; ETAT.historique = s.historique || []; ETAT.glaciereRangee = !!s.glaciereRangee; ETAT.reserveBois = s.reserveBois === undefined ? 6 : s.reserveBois; ETAT.visites = s.visites || 0; VIS.vus = s.vus || []; ETAT.meteo = s.meteo || 'clair';
-  for (const o of OBJETS) if (o.max) { o.fruits = s.fruits && s.fruits[o.id] !== undefined ? clamp(s.fruits[o.id] | 0, 0, o.max) : o.max; majFruits(o); } ETAT.feu = s.feu || 0; ETAT.feuBois = s.feuBois || 0; ETAT.poison = s.poison || 0; ETAT.veille = !!s.veille; VIS.jourVisite = s.jourVisite || 0;
+  for (const o of OBJETS) if (o.max) { o.fruits = s.fruits && s.fruits[o.id] !== undefined ? clamp(s.fruits[o.id] | 0, 0, o.max) : o.max; majFruits(o); } ETAT.feu = s.feu || 0; ETAT.feuBois = s.feuBois || 0; ETAT.jerrican = s.jerrican === undefined ? 4 : s.jerrican; ETAT.lanterne = s.lanterne || 'auto'; ETAT.propre = s.propre || 0; ETAT.renardJour = s.renardJour || 0; if (SAC.gaz === undefined) SAC.gaz = 6; PL.assis = null; majEquipements(); ETAT.poison = s.poison || 0; ETAT.veille = !!s.veille; VIS.jourVisite = s.jourVisite || 0;
   VIS.prochain = null; if (s.prochain) { const T = VISITEURS.find(v => v.id === s.prochain.id); if (T) VIS.prochain = { type: T, h: s.prochain.h, jour: s.prochain.jour }; }
   // position sûre : jamais dans un obstacle ni dans l'eau profonde
   const o = obstacles(PL.x, PL.z, .4); PL.x = o.x; PL.z = o.z; if (SOL(PL.x, PL.z) < -.6 && !surPonton(PL.x, PL.z)) { PL.x = LIEUX.porteTente[0]; PL.z = LIEUX.porteTente[1] - .6; } PL.y = solJoueur(PL.x, PL.z); return true; }
@@ -5774,13 +5912,16 @@ function majBoussole() { const c = $('boussole'); if (!BOUS.ctx) { BOUS.ctx = c.
 }
 // --- invite d'action (objet le plus proche dans le champ)
 let INVITE = null;
-function majInvite() { const el = $('invite'); if (UI.ouvert() || UI.dlgOuvert || ETAT.dort || UI.cineOn || ETAT.action) { el.hidden = true; INVITE = null; return; }
+function majInvite() { const el = $('invite'); const kb = IN.dernier === 'clavier' || IN.dernier === 'souris';
+  if (ETAT.action && ETAT.action.nom === 'peche' && !UI.ouvert() && !UI.dlgOuvert) { INVITE = null; el.hidden = false; el.innerHTML = (ETAT.action.mord ? '<i class="ps x">✕</i> <b style="color:var(--ambre)">Ferrer !</b>' + (kb ? '<kbd>E</kbd>' : '') : '<span style="opacity:.8">Attendre la touche…</span>') + ' &nbsp; <i class="ps o">○</i> Ranger' + (kb ? '<kbd>C</kbd>' : ''); return; }
+  if (UI.ouvert() || UI.dlgOuvert || ETAT.dort || UI.cineOn || ETAT.action) { el.hidden = true; INVITE = null; return; }
   let best = null, bd = 1e9; const sy = Math.sin(PL.yaw), cy = Math.cos(PL.yaw);
   const test = (x, z, r, nom, f, prio) => { const dx = x - PL.x, dz = z - PL.z, d = Math.hypot(dx, dz); if (d > r) return; const face = d < .8 ? 1 : (dx * sy + dz * cy) / d; if (face < .35) return; const sc = d - face * .6 - (prio || 0); if (sc < bd) { bd = sc; best = { nom, f, x, z }; } };
-  for (const o of OBJETS) { if (o.cond && !o.cond()) continue; test(o.x, o.z, o.r, o.nom, o.f, 0); }
+  if (!PL.assis) for (const o of OBJETS) { if (o.cond && !o.cond()) continue; test(o.x, o.z, o.r, o.nom, o.f, 0); }
   for (const v of VIS.pnj) if (v.ch && v.ch.visible && !v.parti && v.parle !== false) test(v.ch.pos[0], v.ch.pos[2], 3.2, 'Parler à ' + v.prenom, () => VIS.parler(v), .8);
   for (const o of VIS.objets) if (o.actif) test(o.x, o.z, o.r, o.nom, o.f, .3);
-  INVITE = best; if (!best) { el.hidden = true; return; } el.hidden = false; el.innerHTML = `<i class="ps x">✕</i> ${best.nom}` + (IN.dernier === 'clavier' || IN.dernier === 'souris' ? '<kbd>E</kbd>' : ''); }
+  INVITE = best; if (PL.assis) { el.hidden = false; el.innerHTML = (best ? `<i class="ps x">✕</i> ${best.nom}` + (kb ? '<kbd>E</kbd>' : '') + ' &nbsp; ' : '') + '<i class="ps o">○</i> Se lever' + (kb ? '<kbd>C</kbd>' : ''); return; }
+  if (!best) { el.hidden = true; return; } el.hidden = false; el.innerHTML = `<i class="ps x">✕</i> ${best.nom}` + (IN.dernier === 'clavier' || IN.dernier === 'souris' ? '<kbd>E</kbd>' : ''); }
 // --- menu de choix (actions sur les objets : même boîte que le dialogue)
 function menuChoix(titre, texte, choix) { UI.dlgOuvert = true; UI.dlgMode = 'menu'; UI.items = choix; UI.sel = Math.max(0, choix.findIndex(c => !c.off)); $('dlg').hidden = false; $('dlgNom').style.display = 'none'; $('dlgTexte').textContent = ''; $('dlgTexte').innerHTML = `<b style="color:var(--ambre)">${titre}</b><br><span style="font-size:.8em">${texte}</span>`; rendreChoix(); $('dlgPied').innerHTML = '<span><i class="ps x">✕</i> Choisir <kbd>Entrée</kbd></span><span><i class="ps o">○</i> Fermer <kbd>Échap</kbd></span>'; }
 function rendreChoix() { const ul = $('dlgChoix'); ul.innerHTML = ''; UI.items.forEach((c, i) => { const li = document.createElement('li'); li.textContent = c.t; if (c.off) li.classList.add('off'); if (i === UI.sel) li.classList.add('sel'); li.addEventListener('pointerup', e => { e.stopPropagation(); if (UI.sel === i) choisir(); else { UI.sel = i; rendreChoix(); SON.tic(.1, 2000, .02); } }); ul.appendChild(li); }); const s = ul.children[UI.sel]; if (s) s.scrollIntoView({ block: 'nearest' }); document.documentElement.style.setProperty('--dlgH', ($('dlgBoite').offsetHeight + 6) + 'px'); }
@@ -5814,6 +5955,7 @@ function majUI() {
   if (UI.dlgOuvert) { if (IN.haut) navChoix(-1); if (IN.bas) navChoix(1); if (IN.act) choisir(); if (IN.accr || IN.menu) { if (UI.dlgMode === 'dialogue') VIS.partir(); else fermerDlg(); } return; }
   if (ETAT.dort) return;
   if (IN.menu) { ouvrirPause(); return; } if (IN.sac) { ouvrirSac(); S_ui(); return; }
+  if (ETAT.action) { if (IN.act && ETAT.action.nom === 'peche') ferrer(); if (IN.accr) { IN.accr = false; annulerAction(); } return; }
   if (IN.act && INVITE) { INVITE.f(); }
 }
 // --- écrans : menu titre, fin
@@ -5902,9 +6044,9 @@ VIS.clipDialogue = v => { const c = v.clipFinal || ''; if (v.etat !== 'pose') re
 // envoyer un visiteur quelque part (routine, ordre « aller », départ)
 VIS.allerA = (v, ou, clip, o = {}) => { if (!v.ch) return; let L; clip = clip || 'Idle';
   // s'asseoir : sur la chaise ou un banc libre (clips « assis sur chaise »), sinon par terre — jamais assis dans le vide
-  const meta = (JOE && JOE.pack.clipMeta(clip)) || {}, surSiege = meta.seat === 'chair', parTerre = clip === 'Sit_Ground', libreSiege = id => !VIS.pnj.some(w => w !== v && !w.parti && !w.fini && w.siege === id);
+  const meta = (JOE && JOE.pack.clipMeta(clip)) || {}, surSiege = meta.seat === 'chair', parTerre = clip === 'Sit_Ground', libreSiege = id => !(PL.assis && PL.assis.id === id) && !VIS.pnj.some(w => w !== v && !w.parti && !w.fini && w.siege === id);
   let siege = null;
-  if (ou === 'chaise' && !VIS.pnj.some(w => w !== v && !w.parti && !w.fini && w.cibleLieu === 'chaise')) { L = VIS.lieu('chaise', 0, clip); if (!surSiege) clip = 'Sit_Chair'; }
+  if (ou === 'chaise' && !(PL.assis && PL.assis.id === 'chaise') && !VIS.pnj.some(w => w !== v && !w.parti && !w.fini && w.cibleLieu === 'chaise')) { L = VIS.lieu('chaise', 0, clip); if (!surSiege) clip = 'Sit_Chair'; }
   else if ((ou === 'feu' || ou === 'feuV' || ou === 'chaise') && (surSiege || parTerre || ou === 'chaise')) { const lieu = ou === 'chaise' ? 'feu' : ou, B = (lieu === 'feu' ? NOEUDS.bancs : NOEUDS.foyerV && NOEUDS.foyerV.visible ? NOEUDS.bancsV : null) || [], b = B.find(q => libreSiege(q.id));
     if (b) { L = { p: b.p.slice(), yaw: b.yaw, exact: true }; siege = b.id; if (!surSiege) clip = 'Sit_Chair'; } else { L = VIS.lieu(lieu, v.i, 'Sit_Ground'); clip = 'Sit_Ground'; } ou = lieu; }
   else { L = VIS.lieu(ou, v.i, clip); if (surSiege) clip = 'Sit_Ground'; }
@@ -5917,10 +6059,12 @@ VIS.arrive = v => { const ch = v.ch; v.etat = 'pose'; v.chemin = []; if (v.exact
   let y = v.yawFinal; if (y === undefined) { const c = v.clipFinal || ''; if (FACE_LAC.test(c)) y = versLac(ch.pos[0], ch.pos[2]); else if (Math.hypot(ch.pos[0] - LIEUX.feu[0], ch.pos[2] - LIEUX.feu[1]) < 7) y = angleVers(LIEUX.feu[0] - ch.pos[0], LIEUX.feu[1] - ch.pos[2]); else y = angleVers(PL.x - ch.pos[0], PL.z - ch.pos[2]); }
   v.yawCible = y; VIS.jouer(v, v.clipFinal || 'Idle');
   if (v.ditArrivee) { const dP = Math.hypot(PL.x - ch.pos[0], PL.z - ch.pos[2]); if (dP < 22 && !VIS.dlg) VIS.dire(v, v.ditArrivee); v.ditArrivee = null; } };
-VIS.choisirType = () => { const tard = ETAT.jour, dejaVus = VIS.vus.slice(-4); let L = VISITEURS.filter(v => (v.jourMin || 1) <= tard && (v.danger || 0) <= (tard <= 1 ? 1 : tard <= 3 ? 2 : 3) && !dejaVus.includes(v.id)); if (!L.length) L = VISITEURS.slice();
+VIS.choisirType = (ok) => { const tard = ETAT.jour, dejaVus = VIS.vus.slice(-4); let L = VISITEURS.filter(v => (v.jourMin || 1) <= tard && (v.danger || 0) <= (tard <= 1 ? 1 : tard <= 3 ? 2 : 3) && !dejaVus.includes(v.id)); if (!L.length) L = VISITEURS.slice(); if (ok) { const L2 = L.filter(ok); if (L2.length) L = L2; }
   const tot = L.reduce((s, v) => s + (v.poids || 1), 0); let r = Math.random() * tot; for (const v of L) { r -= (v.poids || 1); if (r <= 0) return v; } return L[L.length - 1]; };
 // planning : une visite par jour, jamais dans la minute qui suit le réveil du premier jour ; l'heure est absolue (jour + heure) pour passer minuit sans la manquer
-VIS.planifier = () => { if (VIS.courant) return; const T = VIS.choisirType(); const h0 = T.heure ? T.heure[0] : 9, h1 = T.heure ? T.heure[1] : 17; let jour = VIS.jourVisite === ETAT.jour ? ETAT.jour + 1 : ETAT.jour, h = rnd(h0, h1);
+VIS.planifier = () => { if (VIS.courant) return; const auj = VIS.jourVisite !== ETAT.jour, minH = HORL.h + (ETAT.jour === 1 && !ETAT.visites ? 1.4 : .6);
+  // aujourd'hui : on ne tire que parmi les visiteurs dont la plage horaire n'est pas déjà passée (sinon la journée restait sans visite)
+  const T = VIS.choisirType(auj ? v => (v.heure ? v.heure[1] : 17) > minH + .25 : null); const h0 = T.heure ? T.heure[0] : 9, h1 = T.heure ? T.heure[1] : 17; let jour = VIS.jourVisite === ETAT.jour ? ETAT.jour + 1 : ETAT.jour, h = rnd(h0, h1);
   if (jour === ETAT.jour) { const min = HORL.h + (ETAT.jour === 1 && !ETAT.visites ? 1.4 : .6); if (h < min) { if (h1 > min + .25) h = rnd(min, h1); else { jour++; h = rnd(h0, h1); } } }
   VIS.prochain = { type: T, h, jour }; };
 VIS.nouveauJour = () => { if (!VIS.courant) VIS.planifier(); };
@@ -5938,6 +6082,7 @@ VIS.arriver = T => { if (!joePack()) return; VIS.prochain = null; ETAT.visites++
     const v = { d, ch, id: d.id, prenom: d.prenom, role: d.role || T.type, genre: d.genre || (d.morph === 'woman' ? 'f' : 'h'), voix: Object.assign({ pitch: d.morph === 'woman' ? 1.15 : d.morph === 'child' ? 1.4 : d.morph === 'elder' ? .9 : 1, rate: .98 }, d.voix || {}), danger: T.danger || 0, cible: null, clipFinal: 'Idle', etat: 'marche', parti: false, tAmb: rnd(20, 50), i, parle: d.parle !== false, vitesse: d.vitesse || (d.morph === 'child' ? 1.45 : d.morph === 'elder' ? .95 : 1.3), revele: false, chemin: [] };
     v.voix.voix = VOIX.choisir(v.genre, d.morph); C.pnj.push(v); VIS.pnj.push(v);
     if (d.animal && JOE.pack.animals && JOE.pack.animals[d.animal]) { const an = new Joe.Animal(JOE.pack, d.animal, { coat: d.coat || 0, scale: d.animal === 'Dog' ? .9 : 1 }); an.pos = [p[0] + 1, SOL(p[0] + 1, p[1]), p[1]]; an.visible = true; an.play('Walk'); JOE.betes.push(an); v.animal = an; } });
+  if ((ETAT.propre || 0) >= ETAT.jour) C.conf += 1;   // linge propre ou baignade du jour : on vous trouve plus avenant
   if (T.objets) for (const o of T.objets) VIS.poserObjet(o); VIS.routine(true); VIS.evenements('arrivee');
   objectifAjouter('visite', 'Quelqu’un arrive…', T.arrivee && LIEUX[T.arrivee] ? T.arrivee : 'finSentier'); setTimeout(() => objectifRetirer('visite'), 60000); note(T.annonce || 'Du mouvement du côté du sentier…', 3500); };
 VIS.campV = () => { if (VIS.tentes.some(t => t.foyer)) return; const [vx, vz] = LIEUX.feuV; VIS.tentes.push({ x: vx, z: vz, r: .55, foyer: true }); if (NOEUDS.bancVColl) VIS.tentes.push(Object.assign({ foyer: true }, NOEUDS.bancVColl)); if (NOEUDS.foyerV) NOEUDS.foyerV.visible = true; VIS.slots = {}; };
@@ -6035,7 +6180,7 @@ VIS.faire = (liste, v) => { const C = VIS.courant; if (!liste) return; for (cons
   case 'mort': finPartie(a.raison || 'meurtre', texte(a.t)); break;
   case 'combat': { const force = a.force === undefined ? .5 : a.force; let ch = .35 + .4 * (BES.energie / 100) + .25 * (BES.endurance / 100) - force * .55 + (SAC.objets.some(o => o.arme) ? .25 : 0) + (ETAT.drapeaux.entraine ? .1 : 0); const gagne = Math.random() < ch; SON.coup(); setTimeout(() => SON.coup(), 400); if (qui && qui.ch) { qui.ch.play(gagne ? 'Hit_Front' : 'Punch_Cross'); qui.clipForce = true; setTimeout(() => { qui.clipForce = false; }, 1200); } BES.endurance = 0; VIS.faire(gagne ? a.gagne : a.perd, v); break; }
   case 'partir': if (C) { if (a.court) C.pnj.forEach(p => p.court = true); VIS.departir(); } break;
-  case 'partirPNJ': if (qui && !qui.parti) { qui.parti = true; qui.sfx = null; VIS.allerA(qui, a.ou || C.type.sortie || C.type.arrivee || 'sentier', 'Walk', { court: !!a.court }); } break;
+  case 'partirPNJ': if (qui && !qui.parti) { qui.parti = true; qui.sfx = null; VIS.allerA(qui, 'sentier', 'Walk', { court: !!a.court }); } break;   // un partant reprend toujours le sentier (seul accès au camp)
   case 'rester': if (C) { C.duree = Math.max(C.duree, (a.h || 10) + C.t); } break;
   case 'dire': if (qui) VIS.dire(qui, a.t); break;
   case 'clip': if (qui && qui.ch) { qui.clipPrec = qui.clipFinal; qui.clipFinal = a.clip; qui.etat = 'pose'; qui.chemin = []; VIS.jouer(qui, a.clip, { offset: 0 }); if (a.force) { qui.clipForce = true; setTimeout(() => { qui.clipForce = false; }, (a.ms || 2000)); } } break;
@@ -8208,6 +8353,19 @@ VISITEURS.push({
   depart: { texte: 'Julien s’éloigne vers la forêt, l’appareil au cou. Il ne s’est pas retourné.' }
 });
 
+// ==== CAMP : ACCÈS UNIQUE — tous les visiteurs arrivent et repartent par le sentier (le camp est enclos dans la forêt) ==========
+{ const ANN = { amical: 'Un chien déboule sur le sentier, suivi d’un grand gaillard qui siffle.', etrange: 'Une femme descend le sentier pieds nus, en murmurant quelque chose aux arbres.', voyeur: 'Un reflet brille un instant entre les arbres, du côté du sentier. Puis plus rien.',
+    pecheurs: 'Deux silhouettes descendent le sentier dans la brume, cannes sur l’épaule, sans un mot.', nageurs: 'Trois personnes en combinaison fine descendent le sentier au pas de course, serviettes sur l’épaule, et foncent vers la plage.',
+    tresor: 'Un sifflement électronique monte du sentier : quelqu’un balaie le sol avec un détecteur de métaux.', cryptozoologue: 'Un homme descend le sentier, courbé, une caméra dans une main et un carnet dans l’autre.',
+    andre: 'Quelqu’un se tient en haut du sentier, à la lisière des arbres. Immobile. Il vous regarde.', chasseurs: 'Un coup de feu claque dans la forêt, tout près. Puis des voix sur le sentier.',
+    braconniers: 'Des lampes descendent le sentier. Deux faisceaux qui balaient les arbres.', airsofteurs: 'Des cris et des claquements secs sur le sentier : « Contact gauche ! » Trois silhouettes en tenue militaire déboulent.',
+    tueur: 'Un homme descend le sentier, un appareil photo au cou, un grand sourire. Il vous fait signe de loin.' };
+  const DEP = { randonneurs: 'Les randonneurs reprennent le sentier vers les cols.', dangereux: 'Rudy remonte le sentier en marmonnant, et la forêt l’avale.', etrange: 'Léonie remonte le sentier en saluant chaque arbre au passage.',
+    pecheurs: 'Les deux pêcheurs remontent le sentier, aussi silencieux qu’à l’arrivée.', nageurs: 'Les nageurs remontent le sentier, serviettes sur les épaules, en se frottant les bras.', tresor: 'Gaston remonte le sentier, le détecteur sur l’épaule, en parlant tout seul.',
+    cryptozoologue: 'Bertrand remonte le sentier, le carnet serré contre lui, en se retournant tous les dix pas vers le lac.', andre: 'André recule jusqu’au sentier sans vous quitter des yeux, puis les arbres le prennent.',
+    chasseurs: 'Les chasseurs remontent le sentier, fusils à l’épaule.', braconniers: 'Les lampes remontent le sentier et s’éteignent. Dans les buissons, des collets sont restés.', tueur: 'Julien remonte le sentier, l’appareil au cou. Il ne s’est pas retourné.' };
+  for (const T of VISITEURS) { T.arrivee = 'sentier'; T.sortie = 'sentier'; if (ANN[T.id]) T.annonce = ANN[T.id]; if (DEP[T.id]) T.depart = Object.assign({}, T.depart || {}, { texte: DEP[T.id] }); } }
+
 // ==== CAMP : CINÉMATIQUES (randonnée d'ouverture, réveil) ======================================
 const CINE = { plans: [], t: 0, i: 0, on: false, marcheur: null, apres: null, cam: null };
 CINE.passer = () => { if (!CINE.on) return; CINE.finir(); };
@@ -8232,7 +8390,7 @@ CINE.finir = () => { if (!CINE.on) return; CINE.on = false; sousTitre(null); $('
   setTimeout(() => { if (CINE.marcheur && JOE) { const i = JOE.pnj.indexOf(CINE.marcheur); if (i >= 0) JOE.pnj.splice(i, 1); CINE.marcheur = null; } document.body.classList.remove('cine'); UI.cineOn = false; CINE.apres && CINE.apres(); }, 1400); };
 // réveil sous la tente : allongé, on ouvre les yeux sur la toile, on se redresse, on sort à quatre pattes par la porte, on se relève dehors
 const REVEIL = { on: false, t: 0, apres: null, cles: null };
-function reveilTente(apres, matin) { const [tx, tz] = LIEUX.tenteJ, ty = SOL(tx, tz); UI.cineOn = true; REVEIL.on = true; REVEIL.t = 0; REVEIL.apres = apres; REVEIL.matin = !!matin; $('hud').hidden = true;
+function reveilTente(apres, matin) { PL.assis = null; ETAT.action = null; const [tx, tz] = LIEUX.tenteJ, ty = SOL(tx, tz); UI.cineOn = true; REVEIL.on = true; REVEIL.t = 0; REVEIL.apres = apres; REVEIL.matin = !!matin; $('hud').hidden = true;
   // images clés dans le repère de la tente (porte vers -z) : [t, x, y, z, tangage]
   REVEIL.cles = [[0, .42, .27, .6, 1.12], [1.7, .41, .3, .57, 1.0], [3.1, .3, .8, .42, .06], [3.6, .22, .74, .26, -.1], [5.0, .02, .6, -.78, -.16], [5.9, 0, .66, -1.42, -.04], [7.0, 0, 1.68, -1.86, 0]];
   REVEIL.base = [tx, ty, tz]; PL.x = tx; PL.z = tz - 1.86; PL.yaw = PI; PL.pitch = 0; PL.y = ty; PL.accroupi = false; PL.vy = 0; PL.lampe = false; $('bLampe').classList.remove('on'); montrerMain(null);
@@ -8255,7 +8413,7 @@ function majFeu(dt) { const f = NOEUDS.feu; if (!f) return; const nuit = A.nuit(
   const fv = NOEUDS.feuV; if (fv) { if (ETAT.feuV > 0) { if (Math.hypot(PL.x - fv.pos[0], PL.z - fv.pos[2]) < 90 && Math.random() < .5) flammes([fv.pos[0], fv.pos[1] - .2, fv.pos[2]], .6, dt); fv.light.i = 9 * (.9 + .2 * Math.sin(t * 6.3)); } else fv.light.i = 0; }
   if (NOEUDS.foyerV) NOEUDS.foyerV.visible = NOEUDS.tenteV.visible || ETAT.feuV > 0;
   // lanterne : allumée au crépuscule, flamme qui palpite, balancement au vent sur son crochet
-  const lan = NOEUDS.lanterne; if (lan) { const on = nuit > .18; lan.light.i = on ? 9 * Math.min(1, nuit * 1.4) * (.94 + .06 * Math.sin(t * 11) + .03 * Math.sin(t * 23)) : 0; if (NOEUDS.lanVerre) { NOEUDS.lanVerre.mat = on ? 8 : 3; NOEUDS.lanVerre.color = on ? [1, .86, .6] : PAL.creme; } if (NOEUDS.lanFlamme) { NOEUDS.lanFlamme.mat = on ? 8 : 7; NOEUDS.lanFlamme.color = on ? [1, .8, .45] : [.25, .23, .2]; }
+  const lan = NOEUDS.lanterne; if (lan) { const on = lanterneAllumee(); lan.light.i = on ? 9 * Math.max(.35, Math.min(1, nuit * 1.4)) * (.94 + .06 * Math.sin(t * 11) + .03 * Math.sin(t * 23)) : 0; if (NOEUDS.lanVerre) { NOEUDS.lanVerre.mat = on ? 8 : 3; NOEUDS.lanVerre.color = on ? [1, .86, .6] : PAL.creme; } if (NOEUDS.lanFlamme) { NOEUDS.lanFlamme.mat = on ? 8 : 7; NOEUDS.lanFlamme.color = on ? [1, .8, .45] : [.25, .23, .2]; }
     const w = .5 + .5 * Math.sin(t * .23); lan.rot[0] = Math.sin(t * 1.35) * .035 * (.4 + w); lan.rot[2] = Math.sin(t * 1.05 + 1.3) * .045 * (.4 + w); }
   // linge : il flotte un peu, plus fort par rafales
   if (NOEUDS.linge) { const raf = .55 + .45 * Math.sin(t * .31) * Math.sin(t * .17 + 2); for (const nd of NOEUDS.linge) { nd.rot[0] = (Math.sin(t * 1.7 + nd.ph) * .14 + .1) * raf; nd.rot[2] = Math.sin(t * 1.15 + nd.ph * 1.7) * .04 * raf; } }
@@ -8279,7 +8437,7 @@ function boucle(dt) { const now = performance.now(); manette(); gardeAudio(now, 
   objT += dt; if (objT > 2) { objT = 0; if (ETAT.drapeaux.alerte) {} } sauveT += dt; if (sauveT > 60) { sauveT = 0; sauver(); }
   consommerEntrees(); }
 // ==== CAMP : LANCEMENT ===========================================================================
-function nouvellePartie(prenom) { JOUEUR.prenom = prenom; ETAT.jour = 1; HORL.h = 7.2; Object.assign(BES, { faim: 88, soif: 86, energie: 100, endurance: 100, sante: 100 }); Object.assign(SAC, { rations: 5, eau: 4, gourde: 2, gourdeMax: 3, baies: 0, pommes: 0, noisettes: 0, buches: 2, poisson: 0, poissonGrille: 0, objets: [] }); ETAT.drapeaux = {}; ETAT.historique = []; ETAT.glaciereRangee = false; ETAT.reserveBois = 6; ETAT.visites = 0; ETAT.feu = 0; ETAT.feuBois = 0; ETAT.feuV = 0; ETAT.poison = 0; ETAT.veille = false; ETAT.meteo = 'clair'; ETAT.mort = null; VIS.vus = []; VIS.prochain = null; VIS.jourVisite = 0; repousser(); effacer('partie'); }
+function nouvellePartie(prenom) { JOUEUR.prenom = prenom; ETAT.jour = 1; HORL.h = 7.2; Object.assign(BES, { faim: 88, soif: 86, energie: 100, endurance: 100, sante: 100 }); Object.assign(SAC, { rations: 5, eau: 4, gourde: 2, gourdeMax: 3, baies: 0, pommes: 0, noisettes: 0, buches: 2, poisson: 0, poissonGrille: 0, gaz: 6, objets: [] }); ETAT.drapeaux = {}; ETAT.jerrican = 4; ETAT.lanterne = 'auto'; ETAT.propre = 0; ETAT.renardJour = 0; ETAT.msgReveil = ''; PL.assis = null; ETAT.action = null; ETAT.historique = []; ETAT.glaciereRangee = false; ETAT.reserveBois = 6; ETAT.visites = 0; ETAT.feu = 0; ETAT.feuBois = 0; ETAT.feuV = 0; ETAT.poison = 0; ETAT.veille = false; ETAT.meteo = 'clair'; ETAT.mort = null; VIS.vus = []; VIS.prochain = null; VIS.jourVisite = 0; repousser(); majEquipements(); effacer('partie'); }
 function demarrerJeu(avecCine) { UI.menuOuvert = false; $('menu').hidden = true; ETAT.pause = false; SON.init(); SON.reprendre(); appliquerMeteo(); rangerGlaciere(); PL.lampe = false; if (!VIS.prochain) VIS.planifier(); PL.y = solJoueur(PL.x, PL.z);
   const go = () => { ETAT.enJeu = true; document.body.classList.toggle('manette', IN.dernier === 'manette'); if (avecCine) reveilTente(() => { note(`Jour 1. Bienvenue au lac, ${JOUEUR.prenom}. Repas à midi et le soir. Quelqu'un finira par passer…`, 6000); objectifAjouter('eau', 'Purifier de l’eau au lac', 'rive'); objectifAjouter('feu_bois', 'Préparer le feu pour ce soir', 'bois'); sauver(); }); else { $('hud').hidden = false; $('voile').classList.add('off'); note(`Jour ${ETAT.jour}, ${jourSemaine()}, ${hm(HORL.h)}. Bon retour, ${JOUEUR.prenom}.`, 4500); } };
   if (avecCine) CINE.demarrer(() => { HORL.h = 7.2; go(); }); else go(); }
@@ -8296,7 +8454,7 @@ function initMenu() { montrerMenu();
 function chargement(p, t) { $('chargeBarre').style.width = Math.round(p * 100) + '%'; if (t) $('chargeTexte').textContent = t; }
 async function lancer() { appliquerTexte(); addEventListener('resize', appliquerTexte); chargement(.05, 'Préparation du lac…'); await new Promise(r => setTimeout(r, 30));
   try { creerMonde(); } catch (e) { $('chargeTexte').textContent = 'Erreur 3D : ' + (e && e.message || e); console.error(e); return; }
-  chargement(.45, 'Les visiteurs se préparent…'); await new Promise(r => setTimeout(r, 30)); joePack(); chargement(.8, 'Dernières lumières…'); await new Promise(r => setTimeout(r, 30));
+  chargement(.45, 'Les visiteurs se préparent…'); await new Promise(r => setTimeout(r, 30)); joePack(); if (FAUNE.renard && !FAUNE.betes.some(b => b.type === 'renard')) { const rn = FAUNE.renard(); if (rn) FAUNE.betes.push(rn); } chargement(.8, 'Dernières lumières…'); await new Promise(r => setTimeout(r, 30));
   MARQ.init(); A.onUpdate(boucle); A.camera.fixed.eye = [6, 4.6, 116]; A.camera.fixed.look = [-2, 2.2, 92]; PL.eye = A.camera.fixed.eye.slice(); A.start();
   initMenu(); chargement(1); setTimeout(() => { $('chargement').hidden = true; $('voile').classList.add('off'); }, 250);
   addEventListener('pagehide', sauver); document.addEventListener('visibilitychange', () => { if (document.hidden) { sauver(); VOIX.stop(); } });
@@ -8349,6 +8507,10 @@ NOUVEAUTÉS v0.2 (modernisation du camp)
    Bugs corrigés : les partants retournaient à leur étape et disparaissaient sur place ; « aller » était annulé à l'image suivante ; feu/chaise/glacière/rocher/tentes inatteignables (PNJ bloqués, visite sans fin, plus aucune visite) ; PNJ « fini » qui réapparaissait ; réplique d'arrivée jamais dite.
  - Réveil sous la tente piloté par la boucle (REVEIL, majReveil) : aussi chaque matin après une vraie nuit ; ✕ pour l'abréger.
  - Tests : tools/sim.js (25 types, blocages), tools/bot.js (plusieurs jours, dialogues au hasard, sommeil), tools/scene.js et tools/fp.js (captures).
+
+v0.2.1 — CAMP ENCLOS : forêt dense tout autour (section « forêt autour du camp » dans construireCamp, GEO.mergerLots, sans collisions par tronc) ; ENCLOS {x:0,z:107,r:28,5}, surChemin(x,z), zoneJoueur(x,z) bornent le joueur (glisse le long de la lisière, message) ; dansClairiere = enclos + 1,5 m (pas de végétation procédurale). Sites de cueillette ramenés dans la clairière. Bloc « ACCÈS UNIQUE » : tous les VISITEURS arrivent/repartent par le sentier (annonces et départs réécrits) ; LIEUX foret/est/ouest/nord/cache/clairiere2 = lisières intérieures ou bord du sentier ; partirPNJ → sentier.
+
+v0.2.2 — CAMP FONCTIONNEL (section « ÉQUIPEMENTS ») : SIEGES + sAsseoir/seLever (chaise, bancs, souches, rocher ; PL.assis, récupération d'énergie, plus près d'un feu allumé ; places partagées avec les PNJ) ; pêche (canne sur son porte-canne près du ponton → SAC.objets canne ; pecher/ferrer/majPeche, touche plus fréquente à l'aube, au crépuscule et au bout du ponton) ; jerrican ETAT.jerrican (eau brute, rempli au lac) traité au coin eau (pompe 20 s), au réchaud (SAC.gaz) ou à la marmite (feu) via cuisine(source) : eau bouillie, thé, poisson poêlé, compote, bouillie ; corde à linge et baignade → ETAT.propre (confiance +1 à l'arrivée des visiteurs) ; lanterne ETAT.lanterne auto/on/off ; renard (enfin créé après le pack Joe) qui vole une ration la nuit si glacière dehors, sans lumière ni veille (aussi pendant le sommeil) ; panneau : directions, traces (annonce la visite du jour), carnet de passage ; rocher : s'asseoir, sieste au soleil ; hache prenable (arme). majEquipements() synchronise hache et canne visibles.
 
 À FAIRE / IDÉES v0.3 : sauvegarde du visiteur en cours ; pêche par le joueur ; météo visible (pluie déjà possible via A.meteo) ; deux emplacements de sauvegarde ; branchement History Sens pour les dialogues libres.
 
