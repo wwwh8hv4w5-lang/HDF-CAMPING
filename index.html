@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HDF : CAMPING">
 <meta name="theme-color" content="#0b0f0a">
-<title>HDF : CAMPING — v0.1</title>
+<title>HDF : CAMPING — v0.2</title>
 <style>
 :root{--lin:#f3efe6;--ambre:#f2c66d;--mousse:#8fb37a;--nuit:#0b0f0a;--verre:rgba(10,14,10,.62);--rouge:#e0665a;--bleu:#7fb6d8;
   --sans:-apple-system,BlinkMacSystemFont,"Avenir Next","Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
@@ -46,8 +46,19 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .ps.x{color:#8fb6ff}.ps.o{color:#ff8a8a}.ps.t{color:#7fe0b0}.ps.q{color:#f2a4e8}
 .ps.r{border-radius:6px;width:auto;padding:0 .4em;color:#ddd;font-size:.7em}
 kbd{font:inherit;font-size:.7em;border:1px solid rgba(255,255,255,.35);border-radius:6px;padding:1px 7px;color:#ddd;margin-left:4px}
-#toast{position:absolute;left:50%;top:calc(var(--sat) + 74px);transform:translateX(-50%);padding:10px 20px;font-size:.95em;max-width:min(680px,86vw);text-align:center;opacity:0;transition:opacity .3s;pointer-events:none}
-#toast.on{opacity:1}
+#toast{position:absolute;left:50%;top:calc(var(--sat) + 72px);transform:translate(-50%,-6px);padding:10px 20px;font-size:.95em;max-width:min(640px,72vw);text-align:center;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;line-height:1.35}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+/* ---- marqueurs persistants des lieux de collecte ---- */
+#marqueurs{position:absolute;inset:0;pointer-events:none!important;overflow:hidden}
+.mq{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:2px;opacity:0;will-change:transform,opacity;text-shadow:0 1px 3px #000,0 0 2px #000;transform-origin:50% 100%}
+.mq i{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(10,14,10,.62);border:1.5px solid currentColor;box-shadow:0 2px 10px rgba(0,0,0,.45)}
+.mq i svg{width:20px;height:20px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))}
+.mq b{font-size:.6em;font-weight:600;color:#f3efe6;white-space:nowrap;letter-spacing:.01em}
+.mq small{font-size:.54em;color:#cfd6c7;white-space:nowrap}
+.mq::after{content:"";width:2px;height:12px;margin-top:1px;background:linear-gradient(currentColor,transparent);opacity:.85}
+.mq.vide i{opacity:.6;border-style:dashed}.mq.vide b{color:#b9c3b2}
+.mq.loin b{display:none}
+.mq.flash i{animation:mqFlash .7s ease-out}@keyframes mqFlash{0%{transform:scale(1)}30%{transform:scale(1.28);box-shadow:0 0 18px currentColor}100%{transform:scale(1)}}
 #sousTitre{position:absolute;left:50%;bottom:calc(var(--sab) + 70px);transform:translateX(-50%);max-width:min(900px,88vw);text-align:center;font-family:var(--serif);font-size:1.25em;line-height:1.4;text-shadow:0 2px 6px #000,0 0 2px #000;pointer-events:none;opacity:0;transition:opacity .5s}
 #sousTitre.on{opacity:1}
 /* ---- dialogue (standard HDF) ---- */
@@ -73,7 +84,7 @@ kbd{font:inherit;font-size:.7em;border:1px solid rgba(255,255,255,.35);border-ra
 #boutons button small{position:absolute;left:50%;top:100%;transform:translateX(-50%);font-size:11px;font-weight:500;color:#cfd6c7;white-space:nowrap;margin-top:2px}
 #bCourir{position:absolute;right:calc(var(--sar) + 18px);bottom:calc(var(--sab) + 40px);padding:12px 18px;border-radius:999px;background:rgba(10,14,10,.55);border:2px solid rgba(255,255,255,.35);font-size:.85em;touch-action:none}
 #bCourir.on{background:rgba(143,179,122,.45);border-color:var(--mousse)}
-#bPause{position:absolute;left:50%;top:calc(var(--sat) + 68px);transform:translateX(-50%);padding:6px 16px;border-radius:999px;background:rgba(10,14,10,.45);border:1px solid rgba(255,255,255,.25);font-size:.8em;color:#cfd6c7}
+#bPause{position:absolute;left:calc(var(--sal) + 12px);top:calc(var(--sat) + 34px);padding:7px 16px;border-radius:999px;background:rgba(10,14,10,.5);border:1px solid rgba(255,255,255,.25);font-size:.78em;color:#e4e9dd;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 #bLampe{position:absolute;left:calc(var(--sal) + 36px);bottom:calc(var(--sab) + 318px);padding:10px 14px;border-radius:999px;background:rgba(10,14,10,.55);border:2px solid rgba(255,255,255,.35);font-size:.8em}
 #bLampe.on{border-color:var(--ambre);color:var(--ambre)}
 body.manette #stick,body.manette #boutons,body.manette #bCourir,body.manette #bLampe,body.souris #stick,body.souris #boutons,body.souris #bCourir,body.souris #bLampe{display:none}
@@ -159,7 +170,8 @@ body.cine #cine .bande{height:11vh}
 <div id="cine"><div class="bande h"></div><div class="bande b"></div></div>
 <button id="cinePasser" hidden>Passer ›</button>
 <div id="hud" hidden>
-  <div id="titreJeu">HDF : CAMPING · v0.1</div>
+  <div id="titreJeu">HDF : CAMPING · v0.2</div>
+  <div id="marqueurs"></div>
   <canvas id="boussole" width="1120" height="108"></canvas>
   <div id="heureJour"><b id="hHeure">07:00</b><span id="hJour">Jour 1 · lundi</span></div>
   <div id="objectifs"></div>
@@ -192,14 +204,14 @@ body.cine #cine .bande{height:11vh}
 </div>
 <div id="fin" hidden><h2 id="finTitre">Fin de partie</h2><p id="finTexte"></p><div class="stats" id="finStats"></div><div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><button class="gros" id="finRejouer">Recommencer une partie</button><button class="gros discret" id="finMenu">Menu</button></div></div>
 <div id="menu" hidden>
-  <div class="version">v0.1 · FSM-3D 2.10</div>
+  <div class="version">v0.2 · FSM-3D 2.10</div>
   <h1><small>F.S.M GAME HOUSE</small>HDF : CAMPING</h1>
   <p class="accroche">Seul au bord d'un lac de montagne. Chaque jour, quelqu'un passe. Tenez le plus longtemps possible.</p>
   <div class="ligne"><input id="prenom" maxlength="16" placeholder="Votre prénom" autocomplete="off" spellcheck="false"></div>
   <div class="ligne"><button class="gros" id="bNouvelle">Nouvelle partie</button><button class="gros discret" id="bContinuer" hidden>Continuer</button></div>
-  <div class="opts"><button id="oSon" class="on">Son</button><button id="oVoix" class="on">Voix des PNJ</button><button id="oQualite">Qualité : auto</button><button id="oTexte">Texte : grand</button><button id="oPerf">Performances</button></div>
+  <div class="opts"><button id="oSon" class="on">Son</button><button id="oVoix" class="on">Voix des PNJ</button><button id="oQualite">Qualité : auto</button><button id="oTexte">Texte : grand</button><button id="oMarq" class="on">Marqueurs de collecte</button><button id="oPerf">Performances</button></div>
   <div class="aideCtrl" id="aideCtrl">Manette PS : <b>stick gauche</b> marcher · <b>stick droit</b> regarder · <b>✕</b> action / choisir · <b>○</b> s'accroupir / partir · <b>△</b> sauter · <b>□</b> sac à dos · <b>R2</b> courir · <b>L1</b> lampe · <b>OPTIONS</b> menu.<br>Tactile : stick à gauche, glisser à droite pour regarder, boutons à droite. Clavier : ZQSD / flèches, souris (clic pour viser), Espace, C, Maj, E, Tab, F, Échap.</div>
-  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.1</div>
+  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.2</div>
 </div>
 
 <script>
@@ -1334,10 +1346,10 @@ function createTerrain(R,o={}){const gl=R.gl,noise=createNoise(o.seed||7),T={opt
   // route : {x:z=>x, width, shoulder} ou true (tracé sinueux par défaut)
   let road=o.road===true?{x:z=>22*Math.sin(z*.0035)+7*Math.sin(z*.0111+1.3)}:o.road||null;
   if(road){road.width=road.width||8;road.shoulder=road.shoulder||10;}
-  const rcache=new Map();const roadH=z=>{const k=Math.round(z/4);let h=rcache.get(k);if(h===undefined){const zz=k*4;h=0;for(let i=-3;i<=3;i++){const z2=zz+i*7;h+=H0(road.x(z2),z2);}h/=7;if(rcache.size>6000)rcache.clear();rcache.set(k,h);}return h;};
+  const rcache=new Map();const roadHk=k=>{let h=rcache.get(k);if(h===undefined){const zz=k*4;h=0;for(let i=-3;i<=3;i++){const z2=zz+i*7;h+=H0(road.x(z2),z2);}h/=7;if(rcache.size>6000)rcache.clear();rcache.set(k,h);}return h;};const roadH=z=>{const f=z/4,k=Math.floor(f),t=f-k,s=t*t*(3-2*t);return roadHk(k)*(1-s)+roadHk(k+1)*s;};/* HDF CAMPING : hauteur du sentier interpolée (avant : paliers de 4 m, marches d'escalier sur les pentes) */
   // rivière : {x:z=>x, largeur, profondeur} ; le lit est creusé dans le relief (CPU = GPU)
   const river=o.riviere?Object.assign({largeur:24,profondeur:4},o.riviere):null;T.river=river;
-  const gen=(x,z,out,i)=>{let h=H0(x,z),rm=0;if(river){const d=Math.abs(x-river.x(z)),w=river.largeur;const t=Math.min(1,Math.max(0,(d-w*.5)/(w*1.6)));h-=river.profondeur*(1-t*t*(3-2*t));}if(road){const d=Math.abs(x-road.x(z)),hw=road.width/2;const k=Math.min(1,Math.max(0,(d-hw)/road.shoulder));const s=k*k*(3-2*k);h=roadH(z)*(1-s)+h*s;rm=1-Math.min(1,Math.max(0,(d-hw+1.2)/2.4));}
+  const gen=(x,z,out,i)=>{let h=H0(x,z),rm=0;if(river){const d=Math.abs(x-river.x(z)),w=river.largeur;const t=Math.min(1,Math.max(0,(d-w*.5)/(w*1.6)));h-=river.profondeur*(1-t*t*(3-2*t));}if(road){const fz=road.force?road.force(z):1;if(fz>0){const d=Math.abs(x-road.x(z)),hw=road.width/2;const k=Math.min(1,Math.max(0,(d-hw)/road.shoulder));const s=1-(1-k*k*(3-2*k))*fz;h=roadH(z)*(1-s)+h*s;rm=(1-Math.min(1,Math.max(0,(d-hw+1.2)/2.4)))*fz;}}/* HDF CAMPING : road.force(z) 0..1 — le sentier peut commencer et finir */
     out[i]=h;out[i+1]=rm;};
   // fenêtre toroïdale
   function win(N,cell,unit,filt){const W={N,cell,data:new Float32Array(N*N*2),ox:0,oz:0,tex:gl.createTexture(),unit,init:false};const g4=new Float32Array(2);
@@ -4980,7 +4992,7 @@ self.JOE_DATA = { animals: 'Z2xURgIAAAD8HQQAtNIBAEpTT057ImFzc2V0Ijp7InZlcnNpb24i
    ===================================================================================== */
 'use strict';
 // ==== CAMP : OUTILS ===================================================================
-const JEU = { nom: 'HDF : CAMPING', version: '0.1', cle: 'hdfc-' };
+const JEU = { nom: 'HDF : CAMPING', version: '0.2', cle: 'hdfc-' };
 const $ = id => document.getElementById(id);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, k) => a + (b - a) * k;
@@ -4999,7 +5011,7 @@ function texte(t) { // remplace {JOUEUR} et {prenom}
   return String(t || '').replace(/\{JOUEUR\}/g, JOUEUR.prenom || 'vous').replace(/\{jour\}/g, String(ETAT.jour)); }
 
 // ==== CAMP : OPTIONS ET SAUVEGARDE ======================================================
-const OPT = Object.assign({ son: true, voix: true, qualite: 'auto', texte: 'grand', perf: false, invY: false }, lire('options') || {});
+const OPT = Object.assign({ son: true, voix: true, qualite: 'auto', texte: 'grand', perf: false, invY: false, marqueurs: true }, lire('options') || {});
 function lire(k) { try { return JSON.parse(localStorage.getItem(JEU.cle + k)); } catch (e) { return null; } }
 function ecrire(k, v) { try { localStorage.setItem(JEU.cle + k, JSON.stringify(v)); } catch (e) {} }
 function effacer(k) { try { localStorage.removeItem(JEU.cle + k); } catch (e) {} }
@@ -5136,32 +5148,42 @@ const F = FSM3D, M3 = F.math, GEO = F.geo, Node = F.Node, PI = Math.PI, TAU = PI
 let A = null;                                   // application FSM3D
 const LAC = { x: 0, z: 0, r: 95 };              // centre et rayon moyen du lac (niveau d'eau 0)
 const CAMP = { x: 0, z: 108, r: 24 };           // clairière du camp (plat, sans arbres)
-// lieux nommés (x, z) — repères pour les visiteurs, les objectifs et la boussole
+// sentier : descend de la montagne (sud, +z) et s'arrête à l'entrée du camp (z ≈ 120) ; force 0 au-delà : plus de tranchée jusqu'au lac
+const SENTIER = { x: z => { const k = clamp((70 - z) / 130, 0, 1), s = k * k * (3 - 2 * k); return 3 + 5 * Math.sin(z * .017) + 3 * Math.sin(z * .043 + 1) + 118 * s; }, width: 2.2, shoulder: 3.4,
+  force: z => { const k = clamp((z - 114) / 10, 0, 1); return k * k * (3 - 2 * k); } };
+const surSentier = z => [SENTIER.x(z), z];
+// lieux nommés (x, z) — repères pour les visiteurs, les objectifs, la boussole et les marqueurs
 const LIEUX = {
-  camp: [0, 108], feu: [0, 105.5], tenteJ: [3, 112.5], porteTente: [3, 110.2], glaciere: [-2.6, 110.5], chaise: [1.8, 103.2], bois: [5.5, 108.5], purif: [-2.2, 103.6],
-  rive: [0, 96.5], ponton: [-6, 88], boutPonton: [-6, 80], plage: [14, 97], rocher: [-16, 101],
-  tenteV: [-14, 113], feuV: [-13, 108.5], baies1: [-30, 122], baies2: [26, 130], baies3: [-20, 142], pommier: [31, 111], noisetier: [-36, 102],
-  sentier: [4, 175], sentierProche: [2, 138], foret: [-52, 114], est: [72, 80], ouest: [-68, 86], nord: [90, 96], cache: [-24, 128], clairiere2: [38, 150]
+  camp: [0, 108.4], feu: [0, 105], tenteJ: [3.8, 112.4], porteTente: [3.8, 110.6], glaciere: [-2.7, 110.7], table: [-3.5, 108.4], chaise: [2.05, 106.75], bois: [6.3, 108.7], billot: [5.3, 106.9],
+  lanterne: [1.3, 109.5], purif: [-2.9, 103.1], banc1: [-2.1, 105.6], banc2: [.3, 102.8], linge: [8.1, 114.3], sac: [2.2, 112.7],
+  rive: [1.2, 92.9], ponton: [-6, 88], boutPonton: [-6, 81.2], plage: [11.5, 93.6], rocher: [-16, 101],
+  tenteV: [-14, 113], feuV: [-12, 108.4], baies1: [-30, 122], baies2: [26, 130], baies3: [-20, 142], pommier: [31, 111], noisetier: [-36, 102],
+  sentier: surSentier(172), sentierProche: surSentier(133), finSentier: surSentier(121), foret: [-52, 114], est: [72, 80], ouest: [-68, 86], nord: [90, 96], cache: [-24, 128], clairiere2: [38, 150]
 };
+const PONTON = { x: -6, z0: 93.8, z1: 80, w: 1.6, pz: 2.4, pw: 2.6, y: .5 };   // ponton : de la grève (z0) vers le large (z1), plate-forme au bout
+function surPonton(x, z) { const P = PONTON; if (z < P.z1 - .05 || z > P.z0 + .05) return false; const hw = z < P.z1 + P.pz ? P.pw / 2 : P.w / 2; return Math.abs(x - P.x) < hw - .05; }
+// zones sans végétation procédurale : clairière, ponton, sites de cueillette (les arbres ne poussent pas dans les buissons)
+const ZONES_LIBRES = [];
 function relief(N, x, z) {
   const d = Math.hypot(x - LAC.x, z - LAC.z) + N.fbm(x * .011 + 3, z * .011, 2) * 16;
   const b = clamp((LAC.r + 10 - d) / 40, 0, 1), bol = -(b * b * (3 - 2 * b)) * 8.2;                       // cuvette du lac
   let h = 2.7 + N.fbm(x * .012, z * .012, 3) * 2.4 + N.fbm(x * .05, z * .05, 2) * .35 + bol;
   const r = clamp((d - 150) / 320, 0, 1); h += r * r * 60 * (.55 + N.fbm(x * .003, z * .003, 3));        // collines boisées
   const m = clamp((d - 400) / 520, 0, 1); h += m * m * (Math.pow(N.ridged(x * .0013, z * .0013, 4), 1.6) * 360 + 80); // montagnes
-  const dc = Math.hypot(x - CAMP.x, z - CAMP.z), c = clamp(1 - (dc - CAMP.r * .55) / (CAMP.r * .45), 0, 1), cc = c * c * (3 - 2 * c);
-  return h * (1 - cc) + (2.95 + N.fbm(x * .05, z * .05, 2) * .08) * cc;                                   // clairière plane
+  // camp : plateau plat au sud, puis pente douce et régulière jusqu'à une grève (eau vers z ≈ 92,4), sans marche ni tranchée
+  const plat = 2.95 + N.fbm(x * .05, z * .05, 2) * .08, t = clamp((z - 88.5) / 13.5, 0, 1), cible = -.75 + (plat + .75) * (t * t * (3 - 2 * t));
+  const dc = Math.hypot((x - CAMP.x) * .85, z - (CAMP.z - 2)), c = clamp(1 - (dc - 14) / 12, 0, 1), cc = c * c * (3 - 2 * c);
+  return h * (1 - cc) + cible * cc;
 }
-const SENTIER = { x: z => { const k = clamp((70 - z) / 130, 0, 1), s = k * k * (3 - 2 * k); return 3 + 5 * Math.sin(z * .017) + 3 * Math.sin(z * .043 + 1) + 118 * s; }, width: 2.2, shoulder: 3.2 };
 function dansClairiere(x, z) { return Math.hypot(x - CAMP.x, z - CAMP.z) < CAMP.r; }
 function creerMonde() {
   const cv = $('c');
-  A = F.app(cv, { quality: OPT.qualite === 'auto' ? 'auto' : OPT.qualite, env: 'jour', autoStart: false, camera: { mode: 'fixed', fov: 68 * PI / 180, near: .18, far: 2600 }, dprMax: IOS ? 1.5 : 1.6 });
+  A = F.app(cv, { quality: OPT.qualite === 'auto' ? 'auto' : OPT.qualite, env: 'jour', autoStart: false, camera: { mode: 'fixed', fov: 68 * PI / 180, near: .12, far: 2600 }, dprMax: IOS ? 1.5 : 1.6 });
   A.camera.controls = false; A.input.enabled = false; A.fpsMax = 60; A.resCtl = false;
   // ambiances adoucies pour la montagne (le soir doré sans poussière)
   Object.assign(F.ENVS['desert-soir'], { dust: 0, heat: 0, haze: .3, zenith: [.26, .42, .66], horizon: [.9, .78, .62], sunColor: [1, .82, .6], cloud: .22 });
   Object.assign(F.ENVS.jour, { cloud: .3, haze: .22 }); Object.assign(F.ENVS.nuit, { exposure: 1.15, zenith: [.02, .035, .08] });
-  A.setTerrain({ relief, biome: Object.assign({}, F.BIOMES.temperate, { a: [.3, .42, .17], b: [.38, .48, .2], beachH: .55, rock: [.48, .47, .44] }), seed: 11, water: 0, waves: 'lac', deep: [.05, .14, .18], shallow: [.16, .4, .36], road: SENTIER, cell: 2, x: CAMP.x, z: CAMP.z, density: 1 });
+  A.setTerrain({ relief, biome: Object.assign({}, F.BIOMES.temperate, { a: [.3, .42, .17], b: [.38, .48, .2], beachH: .5, beach: [.62, .58, .5], rock: [.48, .47, .44], road: [.4, .35, .29] }), seed: 11, water: 0, waves: 'lac', deep: [.05, .14, .18], shallow: [.16, .4, .36], road: SENTIER, cell: 2, x: CAMP.x, z: CAMP.z, density: 1 });
   // végétation de montagne : sapins dominants, feuillus, buissons, herbe, rochers — portées réduites (budget GPU iPad)
   const V = A.vegetation; V.rules = [
     ['grass', 16, 52, .8, 1.4, .45, .4, 180, .35, 0],
@@ -5170,7 +5192,8 @@ function creerMonde() {
     ['pine', .55, 300, .8, 1.5, .62, .7, 300, .6, 1],
     ['rock', .12, 180, .5, 1.8, .9, -1, 1e4, .5, 1]];
   V.palette = [[.22, .34, .14], [.28, .38, .16], [.2, .3, .13], [.3, .36, .15]]; V.chunks.clear();
-  const T = A.terrain, road0 = T.roadAt; T.roadAt = (x, z) => dansClairiere(x, z) || pontonZone(x, z) ? 1 : road0(x, z);
+  for (const k of ['baies1', 'baies2', 'baies3', 'pommier', 'noisetier', 'cache']) ZONES_LIBRES.push([LIEUX[k][0], LIEUX[k][1], k === 'pommier' ? 6 : 4.5]);
+  const T = A.terrain, road0 = T.roadAt; T.roadAt = (x, z) => { if (dansClairiere(x, z) || (z < PONTON.z0 + 2 && z > PONTON.z1 - 3 && Math.abs(x - PONTON.x) < 4)) return 1; for (const q of ZONES_LIBRES) if (Math.hypot(x - q[0], z - q[1]) < q[2]) return 1; return road0(x, z); };
   V.ARBRES = [2, 3];                                   // indices des règles « arbre » (collisions)
   A.meteo('clair', 1); A.setEnv('jour', true);
   // oiseaux
@@ -5178,102 +5201,264 @@ function creerMonde() {
   construireCamp(); construireFaune();
   return A;
 }
-function pontonZone(x, z) { return x > -8 && x < -4 && z > 78 && z < 92; }
 const SOL = (x, z) => A.groundAt(x, z);
-const PONTON = { y: .5 };
 // ==== CAMP : OBJETS DU CAMP ==============================================================
+// Tout est posé au sol réel (SOL), orienté vers le feu ou le lac, avec des collisions ajustées aux formes.
+// Repères locaux des modèles : +z = l'avant de l'objet ; on oriente avec un « yaw » (0 = regarde +z, comme les PNJ).
 const MESH = {};            // maillages partagés
-const COLL = [];            // obstacles ronds {x, z, r} et boîtes {x0,x1,z0,z1}
-const OBJETS = [];          // points d'interaction {id, x, z, r, y, nom, f, cond}
-let NOEUDS = {};            // nœuds dynamiques (couvercle, feu, porte…)
+const COLL = [];            // obstacles ronds {x, z, r}
+const OBJETS = [];          // points d'interaction {id, x, z, r, nom, f, cond}
+let NOEUDS = {};            // nœuds dynamiques (couvercle, feu, lanterne, linge…)
+const ANIM_CAMP = { couv: 0, couvCible: 0, porteV: 0 };
+const PAL = {               // palette resserrée : une couleur partagée = un seul lot de dessin
+  toile: [.24, .4, .22], toile2: [.17, .3, .17], toileSol: [.2, .21, .2], ourlet: [.85, .48, .16], arceau: [.12, .12, .13], hauban: [.92, .84, .5], sardine: [.66, .67, .7],
+  pierre: [.5, .48, .44], pierre2: [.42, .4, .37], cendre: [.14, .13, .12], charbon: [.1, .08, .07], braise: [1, .42, .12],
+  ecorce: [.36, .27, .18], ecorce2: [.44, .33, .21], boisClair: [.72, .58, .4], bois: [.55, .43, .29], planche: [.52, .42, .3], planche2: [.47, .38, .27],
+  metal: [.62, .63, .65], metalSombre: [.2, .2, .22], alu: [.78, .79, .8], noir: [.07, .07, .08],
+  rouge: [.72, .2, .16], orange: [.86, .42, .14], bleu: [.18, .36, .64], bleu2: [.24, .48, .78], blanc: [.92, .92, .9], creme: [.88, .84, .74], jaune: [.92, .75, .2], gris: [.45, .46, .47],
+  feuille: [.24, .38, .15], feuille2: [.3, .44, .18], feuille3: [.2, .32, .13], roseau: [.48, .52, .26], baie: [.72, .08, .14], pomme: [.78, .2, .14], noisette: [.58, .4, .2]
+};
 function mk(src) { return A.R.makeMesh(src); }
-function meshes() { if (MESH.cube) return; MESH.cube = mk(GEO.cube()); MESH.cyl = mk(GEO.cylinder(14)); MESH.cyl6 = mk(GEO.cylinder(6)); MESH.sph = mk(GEO.sphere(14, 9)); MESH.sph8 = mk(GEO.sphere(8, 6)); MESH.rb = mk(GEO.roundBox(1, 1, 1, .08, true)); }
-function construireCamp() { meshes(); const R = A.R, m = GEO.merger(), T = M3.translate, S = M3.scale, mul = M3.mul, RY = M3.rotY, RX = M3.rotX, RZ = M3.rotZ, trs = (p, r, s) => M3.trs(p, r, s);
-  const y = (x, z) => SOL(x, z), add = (src, M, c, mat) => m.add(src, M, c, mat);
-  const CUBE = GEO.cube(), CYL = GEO.cylinder(12), CYL6 = GEO.cylinder(6), SPH = GEO.sphere(12, 8), RB = (w, h, d, r) => GEO.roundBox(w, h, d, r);
-  // --- tente dôme du joueur (2,6 × 2,1 m, h 1,4) : toile verte, auvent, tapis de sol, haubans et sardines
-  { const [tx, tz] = LIEUX.tenteJ, ty = y(tx, tz), VERT = [.26, .42, .22], VERT2 = [.2, .33, .18], ORANGE = [.85, .5, .18];
-    const prof = []; for (let i = 0; i <= 10; i++) { const a = i / 10 * PI / 2; prof.push([Math.sin(a) * 1.4, Math.cos(a) * 1.04]); } prof.push([1.42, 0]);
-    const dome = GEO.lathe(prof.reverse(), 22);
-    add(dome, mul(T(tx, ty, tz), S(1.25, 1, 1)), VERT, 4);                                                  // toile (matériau tissu)
-    add(dome, mul(T(tx, ty - .02, tz), S(1.27, 1.005, 1.02)), VERT2, 4);                                     // double toit léger
-    // entrée (côté nord, vers le lac) : auvent demi-dôme + ouverture sombre
-    add(dome, mul(T(tx, ty, tz - .85), mul(S(.75, .62, .6), M3.identity())), ORANGE, 4);
-    add(CUBE, mul(T(tx, ty + .24, tz - 1.57), S(.8, .46, .05)), [.05, .06, .05], 10);                         // ouverture (logée dans l'auvent, ne dépasse plus du toit)
-    add(CUBE, mul(T(tx, ty + .01, tz), S(2.2, .025, 1.9)), [.16, .18, .16], 4);                               // tapis de sol (reste sous le dôme)
-    // intérieur visible depuis l'entrée : sac de couchage, oreiller, lampe
-    add(RB(.75, .22, 1.9, .1), T(tx + .35, ty + .13, tz + .2), [.2, .32, .6], 4); add(RB(.5, .14, .32, .06), T(tx + .35, ty + .32, tz - .55), [.9, .88, .82], 4);
-    add(RB(.75, .22, 1.9, .1), T(tx - .45, ty + .13, tz + .2), [.6, .25, .2], 4); add(RB(.5, .14, .32, .06), T(tx - .45, ty + .32, tz - .55), [.9, .88, .82], 4);
-    // haubans et sardines
-    for (const [dx, dz] of [[-1.9, -1.4], [1.9, -1.4], [-1.9, 1.6], [1.9, 1.6]]) { const px = tx + dx, pz = tz + dz, py = y(px, pz); add(CYL, mul(T(px, py + .06, pz), mul(RZ(.4 * Math.sign(dx)), S(.03, .3, .03))), [.6, .6, .62], 7);
-      const ax = tx + dx * .55, az = tz + dz * .55, ay = ty + .95, L = Math.hypot(px - ax, py - ay, pz - az); const mid = [(px + ax) / 2, (py + ay) / 2, (pz + az) / 2]; const yaw = Math.atan2(px - ax, pz - az), pitch = Math.atan2(py - ay, Math.hypot(px - ax, pz - az));
-      add(CYL6, mul(T(mid[0], mid[1], mid[2]), mul(RY(yaw), mul(RX(-PI / 2 - pitch), S(.012, L, .012)))), [.9, .85, .6], 7); }
-    COLL.push({ x: tx, z: tz + .2, r: 1.5 });
-    OBJETS.push({ id: 'tente', x: tx, z: tz - 1.3, r: 1.9, nom: 'Tente', f: () => actionTente() });
+function meshes() { if (MESH.cube) return; MESH.cube = mk(GEO.cube()); MESH.cyl = mk(GEO.cylinder(14)); MESH.cyl6 = mk(GEO.cylinder(6)); MESH.sph = mk(GEO.sphere(14, 9)); MESH.sph8 = mk(GEO.sphere(8, 6)); MESH.rb = mk(GEO.roundBox(1, 1, 1, .08, true)); MESH.cyl10 = mk(GEO.cylinder(10)); MESH.cone = mk(GEO.cylinder(12, .18, .5)); }
+// --- outils de construction (communs au camp, à la tente du visiteur et aux mains)
+const V3 = { sub: (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]], cr: (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]], n: v => { const l = Math.hypot(v[0], v[1], v[2]) || 1; return [v[0] / l, v[1] / l, v[2] / l]; } };
+// matrice qui étire un cylindre unité (axe y, rayon .5) entre a et b, rayon r
+function matTube(a, b, r) { const d = V3.sub(b, a), L = Math.hypot(d[0], d[1], d[2]) || 1e-6, Y = [d[0] / L, d[1] / L, d[2] / L]; const X = V3.n(Math.abs(Y[1]) < .98 ? V3.cr(Y, [0, 1, 0]) : V3.cr(Y, [1, 0, 0])), Z = V3.cr(X, Y);
+  return [X[0] * 2 * r, X[1] * 2 * r, X[2] * 2 * r, 0, Y[0] * L, Y[1] * L, Y[2] * L, 0, Z[0] * 2 * r, Z[1] * 2 * r, Z[2] * 2 * r, 0, (a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2, 1]; }
+// repère local posé : origine (x, y, z) et orientation yaw → transforme points et matrices locales
+function repere(x, y, z, yaw = 0) { const c = Math.cos(yaw), s = Math.sin(yaw), B = M3.mul(M3.translate(x, y, z), M3.rotY(yaw));
+  return { B, p: q => [x + q[0] * c + q[2] * s, y + q[1], z - q[0] * s + q[2] * c], M: L => M3.mul(B, L) }; }
+// coque de tente dôme : demi-ellipsoïde (rx, rz, h) creusée entre les arceaux diagonaux, porte en arche découpée vers -z
+function coqueTente(o) { const { rx, rz, h, n = 48, m = 14, ph0 = 0, ph1 = PI / 2, porte = null, k = 1 } = o, out = [];
+  const P = (i, j) => { const th = i / n * TAU, ph = ph0 + (ph1 - ph0) * j / m, c = Math.cos(ph), s = Math.sin(ph), sag = 1 - .055 * (1 + Math.cos(4 * th)) * .5 * c;
+    const x = rx * c * Math.cos(th) * sag * k, y = h * s * k, z = rz * c * Math.sin(th) * sag * k, nn = V3.n([x / (rx * rx), y / (h * h), z / (rz * rz)]); return [x, y, z, nn[0], nn[1], nn[2]]; };
+  const dansPorte = (x, y, z) => { if (!porte || z > 0) return false; if (y > porte.h) return false; const hw = porte.l / 2 * Math.sqrt(Math.max(0, 1 - Math.pow(y / porte.h, 3))); return Math.abs(x) < hw; };
+  for (let j = 0; j < m; j++) for (let i = 0; i < n; i++) { const a = P(i, j), b = P(i + 1, j), c = P(i + 1, j + 1), d = P(i, j + 1); const cx = (a[0] + b[0] + c[0] + d[0]) / 4, cy = (a[1] + b[1] + c[1] + d[1]) / 4, cz = (a[2] + b[2] + c[2] + d[2]) / 4;
+    if (dansPorte(cx, cy, cz)) continue; out.push(...a, ...b, ...c, ...a, ...c, ...d); }
+  return new Float32Array(out); }
+// point sur la coque (pour arceaux, fermeture éclair, haubans)
+function surCoque(rx, rz, h, th, ph, k = 1) { const c = Math.cos(ph), s = Math.sin(ph), sag = 1 - .055 * (1 + Math.cos(4 * th)) * .5 * c; return [rx * c * Math.cos(th) * sag * k, h * s * k, rz * c * Math.sin(th) * sag * k]; }
+// construit une tente complète dans un merger (repère local, porte vers -z) ; renvoie les dimensions utiles
+function bâtirTente(add, tube, L, o) { const { rx, rz, h, toile, toile2, ourlet, porteH = .98, porteL = .9, interieur = true } = o, CYL = GEO.cylinder(8), SPH = GEO.sphere(8, 6);
+  const sh = coqueTente({ rx, rz, h, ph0: .07, porte: { h: porteH, l: porteL } }); add(sh, L.B, toile, 4);
+  add(coqueTente({ rx, rz, h, ph0: 0, ph1: .075, n: 48, m: 1, porte: { h: porteH, l: porteL } }), L.B, PAL.toileSol, 4);          // baignoire de sol (bas de la tente)
+  add(coqueTente({ rx, rz, h, ph0: .62, k: 1.03, porte: { h: porteH + .04, l: porteL + .12 } }), L.B, toile2, 4);                   // double toit (haut)
+  // arceaux croisés sur les diagonales, légèrement au-dessus de la toile
+  for (const t0 of [PI / 4, 3 * PI / 4]) { const pts = []; for (let i = 0; i <= 12; i++) pts.push(surCoque(rx, rz, h, t0, i / 12 * PI / 2, 1.045)); for (let i = 11; i >= 0; i--) pts.push(surCoque(rx, rz, h, t0 + PI, i / 12 * PI / 2, 1.045));
+    for (let i = 0; i < pts.length - 1; i++) tube(L.p(pts[i]), L.p(pts[i + 1]), .011, PAL.arceau, 7);
+    for (const q of [pts[0], pts[pts.length - 1]]) add(SPH, L.M(M3.mul(M3.translate(q[0], .02, q[2]), M3.scale(.05, .04, .05))), PAL.arceau, 7); }
+  // fermeture éclair et rabat roulé au-dessus de la porte
+  const pointPorte = (sx, hw, yy, k) => { const ph = Math.asin(clamp(yy / h, 0, .999)); let a = 1.5 * PI, b = 2 * PI; for (let i = 0; i < 22; i++) { const mth = (a + b) / 2; if (surCoque(rx, rz, h, mth, ph)[0] < hw) a = mth; else b = mth; } const th = sx > 0 ? (a + b) / 2 : 3 * PI - (a + b) / 2; return surCoque(rx, rz, h, th, ph, k); };
+  const bord = []; for (let i = 0; i <= 10; i++) { const yy = porteH * i / 10; bord.push([porteL / 2 * Math.sqrt(Math.max(0, 1 - Math.pow(yy / porteH, 3))), yy]); }
+  for (const sx of [-1, 1]) for (let i = 0; i < 10; i++) tube(L.p(pointPorte(sx, bord[i][0], bord[i][1], 1.012)), L.p(pointPorte(sx, bord[i + 1][0], bord[i + 1][1], 1.012)), .012, ourlet, 4);
+  { const yy = porteH - .02, z = surCoque(rx, rz, h, 1.5 * PI, Math.asin(yy / h))[2] - .05; add(GEO.cylinder(10), L.M(M3.mul(M3.translate(0, yy + .02, z), M3.mul(M3.rotZ(PI / 2), M3.scale(.13, porteL * .78, .13)))), toile2, 4);
+    for (const sx of [-.22, .22]) tube(L.p([sx, yy + .1, z + .03]), L.p([sx, yy - .06, z - .04]), .008, PAL.creme, 4); }
+  // haubans : du milieu des arceaux à une sardine plantée 1 m plus loin
+  const sard = []; for (const t0 of [PI / 4, 3 * PI / 4, 5 * PI / 4, 7 * PI / 4]) { const a = surCoque(rx, rz, h, t0, .62, 1.05), g = [Math.cos(t0) * (rx + .95), 0, Math.sin(t0) * (rz + .95)];
+    const pa = L.p(a), pg = L.p(g); pg[1] = SOL(pg[0], pg[2]); tube(pa, [pg[0], pg[1] + .05, pg[2]], .005, PAL.hauban, 4);
+    const pd = L.p([g[0] * 1.03, 0, g[2] * 1.03]); pd[1] = SOL(pd[0], pd[2]); tube([pg[0], pg[1] - .1, pg[2]], [pd[0], pd[1] + .12, pd[2]], .009, PAL.sardine, 22); sard.push(pg); }
+  if (interieur) { const lit = (x, z, M) => L.M(M3.mul(M3.translate(x, 0, z), M));
+    add(GEO.roundBox(.56, .035, 1.7, .015), lit(.42, .05, M3.translate(0, .03, 0)), PAL.bleu, 4);                                                     // matelas
+    add(GEO.roundBox(.6, .13, 1.5, .06), lit(.42, .14, M3.translate(0, .11, 0)), PAL.orange, 4);                                                      // duvet
+    add(GEO.roundBox(.4, .09, .26, .045), lit(.42, .74, M3.translate(0, .12, 0)), PAL.creme, 4);                                                      // oreiller (au fond, la tête loin de la porte)
+    add(GEO.cylinder(12), lit(-.48, .3, M3.mul(M3.translate(0, .14, 0), M3.mul(M3.rotX(PI / 2), M3.scale(.28, .62, .28)))), PAL.gris, 4);             // sac de voyage
+    add(GEO.roundBox(.32, .05, .24, .02), lit(-.42, -.45, M3.translate(0, .03, 0)), PAL.rouge, 4);                                                     // polaire pliée
+    add(GEO.roundBox(.14, .03, .2, .01), lit(-.5, .8, M3.translate(0, .02, 0)), PAL.creme, 0); }                                                      // carnet
+  return { sard }; }
+function construireCamp() { meshes(); const m = GEO.merger(), T = M3.translate, S = M3.scale, mul = M3.mul, RY = M3.rotY, RX = M3.rotX, RZ = M3.rotZ;
+  const y = (x, z) => SOL(x, z), add = (src, M, c, mat) => m.add(src, M, c, mat), tube = (a, b, r, c, mat, src = CYL8) => add(src, matTube(a, b, r), c, mat);
+  const CUBE = GEO.cube(), CYL = GEO.cylinder(14), CYL8 = GEO.cylinder(8), CYL6 = GEO.cylinder(6), SPH = GEO.sphere(12, 8), RB = (w, h, d, r) => GEO.roundBox(w, h, d, r);
+  const DISQUE = GEO.lathe([[0, 1], [0, 0]], 20), SOUCHE = GEO.lathe([[0, 1.12], [.06, 1], [.8, .94], [1, .9], [1, 0]], 12), ROCHES = [1, 2, 3, 4, 5, 6, 7, 8].map(i => GEO.rock(i * 17 + 3, 1, .28));
+  const vers = (a, b) => angleVers(b[0] - a[0], b[1] - a[1]);
+  const buche = (a, b, r, col = PAL.ecorce) => { tube(a, b, r, col, 13, CYL8); for (const [q, o] of [[a, b], [b, a]]) { const d = V3.n(V3.sub(q, o)); tube(q, [q[0] + d[0] * .006, q[1] + d[1] * .006, q[2] + d[2] * .006], r * .9, PAL.boisClair, 13, CYL8); } };   // bûche : écorce + bois clair aux bouts
+
+  // ---------------------------------------------------------------- tente dôme du joueur (2,7 × 2,3 m, h 1,25), porte vers le feu et le lac
+  { const [tx, tz] = LIEUX.tenteJ, ty = y(tx, tz), L = repere(tx, ty, tz, 0), D = { rx: 1.35, rz: 1.15, h: 1.25 }; NOEUDS.tenteDim = D;
+    const r = bâtirTente(add, tube, L, Object.assign({ toile: PAL.toile, toile2: PAL.toile2, ourlet: PAL.ourlet }, D));
+    add(RB(2.9, .02, 2.5, .01), T(tx, ty + .006, tz + .05), PAL.toileSol, 4);                                                                     // tapis de sol qui dépasse un peu
+    COLL.push({ x: tx, z: tz + .05, r: 1.3 }, { x: tx - .75, z: tz + .3, r: .75 }, { x: tx + .75, z: tz + .3, r: .75 });
+    OBJETS.push({ id: 'tente', x: tx, z: tz - D.rz - .25, r: 1.7, nom: 'Tente', f: () => actionTente() });
+    // sac à dos appuyé contre la tente, matelas roulé dessus
+    const [sx, sz] = LIEUX.sac, L2 = repere(sx, y(sx, sz), sz, -PI / 2 + .25), tilt = RX(-.22);
+    add(RB(.34, .52, .22, .06), L2.M(mul(T(0, .27, 0), tilt)), PAL.rouge, 4); add(RB(.3, .12, .2, .04), L2.M(mul(T(0, .55, -.04), tilt)), PAL.rouge, 4);
+    add(RB(.26, .2, .07, .03), L2.M(mul(T(0, .2, .13), tilt)), PAL.metalSombre, 4); for (const ox of [-.09, .09]) add(RB(.04, .46, .03, .012), L2.M(mul(T(ox, .3, -.12), tilt)), PAL.noir, 4);
+    add(CYL, L2.M(mul(T(0, .66, -.06), mul(tilt, mul(RZ(PI / 2), S(.13, .4, .13))))), PAL.jaune, 4); COLL.push({ x: sx, z: sz, r: .25 }); }
+
+  // ---------------------------------------------------------------- foyer : cercle de pierres, lit de cendres, bûches en tipi, trépied et marmite
+  { const [fx, fz] = LIEUX.feu, fy = y(fx, fz);
+    for (let i = 0; i < 13; i++) { const a = i / 13 * TAU + .2, r = .66 + (i % 2) * .04, s = .22 + .07 * ((i * 7) % 3) / 2; add(ROCHES[i % 8], mul(T(fx + Math.cos(a) * r, fy + .06, fz + Math.sin(a) * r), mul(RY(-a), mul(RZ(.25), S(s * 1.15, s * .8, s)))), i % 3 ? PAL.pierre : PAL.pierre2, 12); }
+    add(DISQUE, mul(T(fx, fy + .025, fz), S(.62, 1, .62)), PAL.cendre, 12); add(ROCHES[3], mul(T(fx, fy, fz), S(1.1, .1, 1.1)), PAL.cendre, 12);
+    for (let i = 0; i < 5; i++) { const a = i / 5 * TAU + .4, b = [fx + Math.cos(a) * .38, fy + .05, fz + Math.sin(a) * .38], c = [fx + Math.cos(a) * .05, fy + .5, fz + Math.sin(a) * .05]; buche(b, c, .04 + (i % 2) * .008, i % 2 ? PAL.charbon : PAL.ecorce); }
+    for (let i = 0; i < 3; i++) { const a = i / 3 * TAU + .9, b = [fx + Math.cos(a) * .3, fy + .06, fz + Math.sin(a) * .3], c = [fx - Math.cos(a) * .25, fy + .07, fz - Math.sin(a) * .3]; tube(b, c, .035, PAL.charbon, 13, CYL8); }
+    // trépied de cuisine au-dessus du feu, chaîne et marmite
+    const top = [fx, fy + 1.32, fz]; for (let i = 0; i < 3; i++) { const a = i / 3 * TAU + .5, g = [fx + Math.cos(a) * 1.02, 0, fz + Math.sin(a) * 1.02]; g[1] = y(g[0], g[2]); tube([g[0], g[1] - .05, g[2]], top, .016, PAL.metalSombre, 7); COLL.push({ x: g[0], z: g[2], r: .08 }); }
+    add(SPH, mul(T(top[0], top[1], top[2]), S(.06, .05, .06)), PAL.metalSombre, 7); tube(top, [fx, fy + .78, fz], .006, PAL.metal, 22);
+    add(GEO.lathe([[0, 0], [.004, .1], [.09, .135], [.17, .14], [.18, .13]], 14), T(fx, fy + .56, fz), PAL.noir, 7); add(DISQUE, mul(T(fx, fy + .735, fz), S(.12, 1, .12)), PAL.metalSombre, 7);
+    { const pts = []; for (let i = 0; i <= 8; i++) { const a = i / 8 * PI; pts.push([fx + Math.cos(a) * .14, fy + .74 + Math.sin(a) * .05, fz]); } for (let i = 0; i < 8; i++) tube(pts[i], pts[i + 1], .004, PAL.metal, 22); }
+    COLL.push({ x: fx, z: fz, r: .82 }); OBJETS.push({ id: 'feu', x: fx, z: fz, r: 1.9, nom: 'Feu de camp', f: () => actionFeu() });
+    // braises (visibles feu allumé)
+    const br = new Node('braises'); br.pickable = false; br.castShadow = false; br.pos = [fx, fy, fz]; for (let i = 0; i < 9; i++) { const a = i * 2.4, r = .08 + (i % 4) * .07; br.addPart(MESH.sph8, mul(T(Math.cos(a) * r, .045, Math.sin(a) * r), S(.09, .05, .08)), PAL.braise, 8, { cast: false }); } br.visible = false; A.add(br); NOEUDS.braises = br;
+    // bancs-rondins sur deux souches, face au feu
+    for (const k of ['banc1', 'banc2']) { const [bx, bz] = LIEUX[k], yaw = vers([bx, bz], [fx, fz]), L = repere(bx, y(bx, bz), bz, yaw);
+      for (const ox of [-.55, .55]) add(SOUCHE, L.M(mul(T(ox, 0, 0), S(.2, .2, .2))), PAL.ecorce2, 13);
+      buche(L.p([-.78, .33, 0]), L.p([.78, .34, 0]), .15, PAL.ecorce); add(RB(1.4, .02, .17, .01), L.M(T(0, .478, 0)), PAL.boisClair, 13);
+      NOEUDS.bancs = NOEUDS.bancs || []; for (const ox of [-.38, .38]) { const q = L.p([ox, 0, .02]); NOEUDS.bancs.push({ id: k + ox, p: [q[0], q[2]], yaw }); }
+      for (const ox of [-.5, 0, .5]) { const q = L.p([ox, 0, 0]); COLL.push({ x: q[0], z: q[2], r: .24 }); } }
+    // chaise pliante face au feu (et au lac derrière lui)
+    { const [cx, cz] = LIEUX.chaise, yaw = vers([cx, cz], [fx, fz]), L = repere(cx, y(cx, cz), cz, yaw); NOEUDS.chaiseYaw = yaw; const tb = (a, b, r = .012) => tube(L.p(a), L.p(b), r, PAL.metalSombre, 7);
+      for (const sx of [-.25, .25]) { tb([sx, 0, .24], [sx, .44, -.2]); tb([sx, 0, -.22], [sx, .44, .22]); tb([sx, .44, -.2], [sx, .9, -.32]); tb([sx, .62, -.22], [sx, .62, .2]); add(RB(.07, .03, .42, .012), L.M(T(sx, .64, 0)), PAL.noir, 7); }
+      tb([-.25, .44, .22], [.25, .44, .22], .01); tb([-.25, .44, -.2], [.25, .44, -.2], .01);
+      add(RB(.5, .03, .44, .012), L.M(T(0, .43, .01)), PAL.rouge, 4); add(RB(.5, .46, .03, .012), L.M(mul(T(0, .67, -.26), RX(-.25))), PAL.rouge, 4);
+      add(CYL, L.M(mul(T(.31, .6, .14), S(.085, .1, .085))), PAL.noir, 4); add(CYL, L.M(mul(T(.31, .66, .14), S(.07, .1, .07))), PAL.bleu2, 7);                         // porte-gobelet et tasse
+      COLL.push({ x: cx, z: cz, r: .36 }); }
   }
-  // --- foyer : cercle de pierres, bûches, cendres ; le feu (particules + lumière) est dynamique
-  { const [fx, fz] = LIEUX.feu, fy = y(fx, fz); for (let i = 0; i < 12; i++) { const a = i / 12 * TAU, r = .62; add(GEO.rock(i + 3, 1, .3), mul(T(fx + Math.cos(a) * r, fy + .08, fz + Math.sin(a) * r), mul(RY(a), S(.26 + .06 * (i % 3), .18, .2))), [.48, .45, .4], 12); }
-    add(GEO.rock(40, 1, .2), mul(T(fx, fy + .02, fz), S(1, .08, 1)), [.12, .11, .1], 12);
-    for (let i = 0; i < 3; i++) add(CYL, mul(T(fx + (i - 1) * .12, fy + .16, fz + (i % 2) * .1 - .05), mul(RY(i * .9), mul(RZ(PI / 2 - .25 * (i - 1)), S(.09, .55, .09)))), [.3, .22, .14], 13);
-    COLL.push({ x: fx, z: fz, r: .85 }); OBJETS.push({ id: 'feu', x: fx, z: fz, r: 1.7, nom: 'Feu de camp', f: () => actionFeu() });
-    // rondin-banc et chaise de camping face au feu
-    add(CYL, mul(T(fx - 1.6, fy + .2, fz + 1.2), mul(RY(.5), mul(RZ(PI / 2), S(.2, 1.6, .2)))), [.42, .32, .2], 13);
-    const [cx, cz] = LIEUX.chaise, cy = y(cx, cz); for (const [dx, dz] of [[-.25, -.22], [.25, -.22], [-.25, .22], [.25, .22]]) add(CYL6, mul(T(cx + dx, cy + .22, cz + dz), S(.025, .44, .025)), [.2, .2, .22], 7);
-    add(RB(.56, .04, .5, .02), T(cx, cy + .44, cz), [.75, .3, .22], 4); add(RB(.56, .5, .05, .02), mul(T(cx, cy + .7, cz + .26), RX(-.12)), [.75, .3, .22], 4);
-    COLL.push({ x: cx, z: cz, r: .4 });
-  }
-  // --- glacière (bleu et blanc, couvercle) : le couvercle est un nœud dynamique
-  { const [gx, gz] = LIEUX.glaciere, gy = y(gx, gz); add(RB(.62, .42, .42, .04), T(gx, gy + .21, gz), [.2, .38, .66], 7); add(RB(.64, .05, .44, .02), T(gx, gy + .05, gz), [.9, .9, .9], 7);
-    const couv = new Node('couvercle'); couv.pos = [gx, gy + .42, gz + .21]; couv.addPart(MESH.rb, mul(T(0, .035, -.21), S(.64, .07, .44)), [.92, .92, .94], 7); couv.addPart(MESH.rb, mul(T(0, .08, -.21), S(.25, .04, .12)), [.2, .38, .66], 7); A.add(couv); NOEUDS.couvercle = couv;
-    COLL.push({ x: gx, z: gz, r: .45 }); OBJETS.push({ id: 'glaciere', x: gx, z: gz, r: 1.5, nom: 'Glacière', f: () => actionGlaciere() });
-  }
-  // --- réserve de bois, hache plantée, lanterne sur piquet, purificateur sur un rondin
-  { const [bx, bz] = LIEUX.bois, by = y(bx, bz); for (let i = 0; i < 7; i++) add(CYL, mul(T(bx + (i % 4) * .22 - .33, by + .11 + Math.floor(i / 4) * .2, bz + Math.floor(i / 4) * .06), mul(RX(PI / 2), S(.1, .6, .1))), [.44 + .05 * (i % 2), .33, .2], 13);
-    add(CYL, mul(T(bx + .55, by + .3, bz + .3), mul(RZ(-.5), S(.03, .7, .03))), [.5, .4, .28], 13); add(RB(.22, .12, .04, .01), mul(T(bx + .72, by + .58, bz + .3), RZ(-.5)), [.5, .52, .55], 14);
-    COLL.push({ x: bx, z: bz, r: .55 }); OBJETS.push({ id: 'bois', x: bx, z: bz, r: 1.5, nom: 'Réserve de bois', f: () => actionBois() });
-    const lx = 4.2, lz = 105.6, ly = y(lx, lz); add(CYL6, mul(T(lx, ly + .7, lz), S(.04, 1.4, .04)), [.35, .28, .2], 13); const lan = new Node('lanterne'); lan.pos = [lx, ly + 1.45, lz]; lan.addPart(MESH.cyl, mul(T(0, 0, 0), S(.14, .22, .14)), [.95, .9, .7], 8); lan.addPart(MESH.cyl, mul(T(0, .14, 0), S(.17, .05, .17)), [.2, .2, .2], 7); lan.addPart(MESH.cyl, mul(T(0, -.13, 0), S(.15, .04, .15)), [.2, .2, .2], 7); lan.light = { c: [1, .8, .5], i: 0, r: 7 }; A.add(lan); NOEUDS.lanterne = lan; COLL.push({ x: lx, z: lz, r: .12 });
-    const [px, pz] = LIEUX.purif, py = y(px, pz); add(CYL, mul(T(px, py + .18, pz), mul(RY(.8), mul(RZ(PI / 2), S(.18, .9, .18)))), [.4, .3, .18], 13);
-    add(CYL, mul(T(px + .1, py + .45, pz), S(.07, .24, .07)), [.25, .5, .8], 7); add(CYL, mul(T(px + .1, py + .58, pz), S(.09, .03, .09)), [.15, .15, .17], 7); add(CYL6, mul(T(px + .2, py + .5, pz + .1), mul(RZ(1), S(.015, .25, .015))), [.8, .8, .82], 7);
-    COLL.push({ x: px, z: pz, r: .45 });
-  }
-  // --- ponton de pêche en planches sur pilotis (vers le lac)
-  { const x0 = -6, z0 = 92, z1 = 79, w = 1.6; PONTON.y = Math.max(.5, y(x0, z0) + .12); const py = PONTON.y; for (let z = z0; z > z1; z -= .32) add(CUBE, mul(T(x0, py - .03 + Math.sin(z * 3) * .004, z - .16), S(w, .05, .3)), [.56, .46, .32], 1);
-    for (let z = z0 - .5; z > z1; z -= 2.2) for (const sx of [-1, 1]) { const px = x0 + sx * (w / 2 - .12), gy = Math.min(y(px, z), py - .2); add(CYL6, mul(T(px, (gy + py - .05) / 2, z), S(.12, py - .05 - gy + .05, .12)), [.4, .33, .24], 13); }
-    for (const sx of [-1, 1]) add(CUBE, mul(T(x0 + sx * (w / 2 - .05), py, (z0 + z1) / 2), S(.08, .06, z0 - z1)), [.5, .42, .3], 1);
-    add(CUBE, mul(T(x0, py - .02, z1 + .2), S(w + .1, .08, .4)), [.5, .42, .3], 1);
-    OBJETS.push({ id: 'ponton', x: x0, z: z1 + 1.2, r: 1.6, nom: 'Bout du ponton', f: () => actionLac('ponton') });
-  }
-  // --- rive : zone d'eau pour puiser (point d'eau), gros rocher plat, plage de galets
-  { OBJETS.push({ id: 'rive', x: 2, z: 95.5, r: 2.6, nom: 'Rive du lac', f: () => actionLac('rive') });
-    const [rx, rz] = LIEUX.rocher, ry = y(rx, rz); add(GEO.rock(77, 2, .22), mul(T(rx, ry + .3, rz), S(2.6, .9, 2)), [.52, .5, .46], 12); COLL.push({ x: rx, z: rz, r: 1.5 });
-    for (let i = 0; i < 40; i++) { const px = 8 + rnd(0, 14), pz = 95 + rnd(0, 4), py = y(px, pz); if (py < -.1) continue; add(GEO.rock(100 + i, 1, .3), mul(T(px, py + .04, pz), S(rnd(.08, .22), .06, rnd(.08, .2))), [.55 + rnd(-.1, .1), .52, .48], 12); }
-  }
-  // --- cueillette : buissons à baies (fruits rouges), pommier, noisetier — fruits dynamiques (repoussent chaque jour)
-  { for (const k of ['baies1', 'baies2', 'baies3']) { const [bx, bz] = LIEUX[k], by = y(bx, bz); for (let i = 0; i < 3; i++) add(GEO.rock(200 + i, 2, .2), mul(T(bx + Math.cos(i * 2.1) * .6, by + .45, bz + Math.sin(i * 2.1) * .6), S(1.1, .85, 1.1)), [.22, .36, .14], 20); COLL.push({ x: bx, z: bz, r: 1 });
-      OBJETS.push({ id: k, x: bx, z: bz, r: 2.2, nom: 'Buisson de baies', f: () => actionCueillir(k, 'baies'), fruits: 5 }); }
-    const [ax, az] = LIEUX.pommier, ay = y(ax, az); add(GEO.lathe([[0, .3], [.4, .22], [3.2, .17], [4.2, .12]], 10), T(ax, ay, az), [.38, .3, .22], 13); for (let i = 0; i < 4; i++) add(GEO.rock(210 + i, 2, .22), mul(T(ax + Math.cos(i * 1.7) * 1.2, ay + 4.6 + Math.sin(i) * .6, az + Math.sin(i * 1.7) * 1.2), S(3, 2.4, 3)), [.3, .44, .16], 20);
-    COLL.push({ x: ax, z: az, r: .45 }); OBJETS.push({ id: 'pommier', x: ax, z: az, r: 2.6, nom: 'Pommier sauvage', f: () => actionCueillir('pommier', 'pommes'), fruits: 6 });
-    const [nx, nz] = LIEUX.noisetier, ny = y(nx, nz); for (let i = 0; i < 5; i++) add(CYL6, mul(T(nx + Math.cos(i * 1.3) * .3, ny + 1.3, nz + Math.sin(i * 1.3) * .3), mul(RZ(Math.cos(i) * .18), S(.05, 2.6, .05))), [.35, .3, .22], 13); add(GEO.rock(220, 2, .22), mul(T(nx, ny + 2.4, nz), S(3.2, 2.2, 3.2)), [.28, .4, .15], 20);
-    COLL.push({ x: nx, z: nz, r: .6 }); OBJETS.push({ id: 'noisetier', x: nx, z: nz, r: 2.4, nom: 'Noisetier', f: () => actionCueillir('noisetier', 'noisettes'), fruits: 6 });
-  }
-  // --- panneau du sentier (planche gravée), souches, grosse souche-table
-  { const [sx, sz] = LIEUX.sentierProche, sy = y(sx, sz); add(CYL6, mul(T(sx + 2, sy + .8, sz), S(.07, 1.6, .07)), [.4, .32, .22], 13); add(RB(.9, .28, .05, .01), mul(T(sx + 2, sy + 1.45, sz), RY(.3)), [.55, .45, .3], 1);
-    for (let i = 0; i < 5; i++) { const px = -12 + i * 7 + Math.sin(i * 7) * 3, pz = 118 + Math.cos(i * 5) * 6, py = y(px, pz); if (dansClairiere(px, pz) && Math.hypot(px, pz - 108) < 10) continue; add(GEO.lathe([[0, .42], [.35, .4], [.4, .36]], 10), T(px, py, pz), [.45, .36, .25], 13); COLL.push({ x: px, z: pz, r: .45 }); }
-  }
-  // fruits dynamiques (petites sphères) : un nœud par site, pièces retirées à la cueillette
-  for (const o of OBJETS) if (o.fruits) { const nd = new Node('fruits-' + o.id); const col = o.id === 'pommier' ? [.8, .2, .15] : o.id === 'noisetier' ? [.6, .42, .2] : [.75, .1, .15], sz = o.id === 'pommier' ? .09 : .045, h = o.id === 'pommier' ? 4.3 : o.id === 'noisetier' ? 1.9 : .7;
-    nd.pos = [o.x, y(o.x, o.z), o.z]; for (let i = 0; i < o.fruits; i++) { const a = i * 2.39, r = o.id === 'pommier' ? 1.3 : .8; nd.addPart(MESH.sph8, mul(T(Math.cos(a) * r, h + Math.sin(i * 1.3) * .35, Math.sin(a) * r), S(sz, sz, sz)), col, 5, { cast: false }); } A.add(nd); o.noeud = nd; o.max = o.fruits; }
+
+  // ---------------------------------------------------------------- glacière (dynamique : couvercle sur charnière, rangée dans la tente au besoin) et table de camp
+  { const [gx, gz] = LIEUX.glaciere, gy = y(gx, gz), yaw = vers([gx, gz], LIEUX.camp) , W = .64, H = .4, D = .42;
+    const g = new Node('glaciere'); g.pickable = false; g.pos = [gx, gy, gz]; g.rot[1] = yaw;
+    g.addPart(MESH.rb, mul(T(0, H / 2, 0), S(W, H, D)), PAL.bleu, 7); g.addPart(MESH.rb, mul(T(0, .03, 0), S(W + .02, .06, D + .02)), PAL.blanc, 7);
+    for (const sx of [-1, 1]) { g.addPart(MESH.rb, mul(T(sx * (W / 2 + .02), H * .78, 0), S(.035, .05, .2)), PAL.blanc, 7); g.addPart(MESH.cyl, mul(T(sx * (W / 2 + .045), H * .78, 0), mul(RX(PI / 2), S(.025, .18, .025))), PAL.metalSombre, 7); }
+    g.addPart(MESH.cyl, mul(T(W * .32, .07, D / 2 + .005), mul(RX(PI / 2), S(.03, .02, .03))), PAL.blanc, 7); A.add(g); NOEUDS.glaciere = g;
+    const couv = new Node('couvercle'); couv.pickable = false; couv.pos = [0, H, -D / 2]; couv.addPart(MESH.rb, mul(T(0, .035, D / 2), S(W + .01, .07, D + .01)), PAL.blanc, 7); couv.addPart(MESH.rb, mul(T(0, .078, D / 2), S(W * .55, .02, D * .5)), PAL.bleu2, 7); couv.addPart(MESH.rb, mul(T(0, .02, D + .015), S(.12, .06, .025)), PAL.metalSombre, 7); g.add(couv); NOEUDS.couvercle = couv;
+    // glacière rangée : la même, sous l'auvent de la tente (visible quand on la range)
+    const [tx, tz] = LIEUX.tenteJ, g2 = new Node('glaciereTente'); g2.pickable = false; g2.pos = [tx - .62, y(tx - .62, tz - .55), tz - .55]; g2.rot[1] = .3; for (const p of g.parts) g2.addPart(p.mesh, p.M, p.color, p.mat); g2.addPart(MESH.rb, mul(T(0, H + .035, 0), S(W + .01, .07, D + .01)), PAL.blanc, 7); g2.visible = false; A.add(g2); NOEUDS.glaciereTente = g2;
+    COLL.push({ x: gx, z: gz, r: .42 }); OBJETS.push({ id: 'glaciere', x: gx, z: gz, r: 1.5, nom: 'Glacière', f: () => actionGlaciere() });
+    // table pliante en aluminium : réchaud et casserole, tasses, planche à découper
+    const [bx, bz] = LIEUX.table, L = repere(bx, y(bx, bz), bz, yaw + PI / 2), tb = (a, b, r = .011) => tube(L.p(a), L.p(b), r, PAL.alu, 22);
+    add(RB(.92, .025, .56, .01), L.M(T(0, .71, 0)), PAL.alu, 22); for (let i = 0; i < 6; i++) add(CUBE, L.M(mul(T(-.4 + i * .16, .725, 0), S(.005, .004, .54))), PAL.gris, 22);
+    for (const sx of [-.4, .4]) { tb([sx, 0, -.24], [sx, .7, .24]); tb([sx, 0, .24], [sx, .7, -.24]); tb([sx, .02, -.24], [sx, .02, .24], .008); }
+    add(CYL, L.M(mul(T(-.18, .76, 0), S(.22, .05, .22))), PAL.metalSombre, 7); add(CYL, L.M(mul(T(-.18, .79, 0), S(.08, .02, .08))), PAL.metal, 22);
+    add(GEO.lathe([[0, 0], [.002, .09], [.11, .1], [.12, .095]], 14), L.M(T(-.18, .8, 0)), PAL.metal, 22); tube(L.p([-.08, .89, 0]), L.p([.06, .9, .05]), .008, PAL.noir, 7);
+    for (const [ox, oz, c] of [[.12, -.14, PAL.bleu2], [.2, -.06, PAL.creme]]) { add(CYL, L.M(mul(T(ox, .77, oz), S(.08, .1, .08))), c, 7); tube(L.p([ox + .04, .79, oz]), L.p([ox + .06, .75, oz]), .009, c, 7); }
+    add(RB(.3, .02, .2, .008), L.M(mul(T(.24, .735, .12), RY(.2))), PAL.boisClair, 13); add(RB(.2, .006, .025, .003), L.M(mul(T(.24, .75, .12), RY(.5))), PAL.metal, 22);
+    add(CYL, L.M(mul(T(.33, .83, -.15), S(.07, .22, .07))), PAL.bleu2, 3); add(CYL, L.M(mul(T(.33, .95, -.15), S(.035, .04, .035))), PAL.bleu, 7);
+    for (const sx of [-.42, .42]) { const q = L.p([sx, 0, 0]); COLL.push({ x: q[0], z: q[2], r: .32 }); } }
+
+  // ---------------------------------------------------------------- réserve de bois : rangement entre piquets, billot et hache plantée, copeaux
+  { const [bx, bz] = LIEUX.bois, by = y(bx, bz), yaw = vers([bx, bz], LIEUX.feu), L = repere(bx, by, bz, yaw);
+    for (const sx of [-.62, .62]) for (const sz of [-.2, .2]) tube(L.p([sx, -.05, sz]), L.p([sx, .72, sz]), .03, PAL.ecorce2, 13, CYL6);
+    for (const sx of [-.62, .62]) add(CUBE, L.M(mul(T(sx, .02, 0), S(.08, .06, .55))), PAL.ecorce2, 13);
+    for (let row = 0; row < 3; row++) for (let i = 0; i < 6 - (row === 2 ? 2 : 0); i++) { const ox = -.48 + i * .19 + (row % 2) * .09 + (row === 2 ? .19 : 0), oy = .11 + row * .15, r = .068 + ((i + row) % 3) * .008;
+      buche(L.p([ox, oy, -.26]), L.p([ox, oy, .26]), r, (i + row) % 2 ? PAL.ecorce : PAL.ecorce2); }
+    const [kx, kz] = LIEUX.billot, ky = y(kx, kz), K = repere(kx, ky, kz, yaw + .6); add(SOUCHE, K.M(S(.28, .45, .28)), PAL.ecorce2, 13); add(DISQUE, K.M(mul(T(0, .452, 0), S(.26, 1, .26))), PAL.boisClair, 13);
+    tube(K.p([.02, .43, .02]), K.p([.32, .98, .3]), .018, PAL.bois, 13); add(RB(.05, .12, .2, .012), K.M(mul(T(.0, .44, -.03), RX(-.85))), PAL.metal, 22);                   // hache plantée
+    buche(K.p([-.38, .07, .15]), K.p([-.38, .07, .55]), .07, PAL.ecorce); add(RB(.16, .07, .06, .02), K.M(mul(T(.4, .035, -.25), RY(.4))), PAL.boisClair, 13);
+    for (let i = 0; i < 10; i++) { const a = i * 2.3, r = .4 + (i % 4) * .12, q = K.p([Math.cos(a) * r, 0, Math.sin(a) * r]); add(CUBE, mul(T(q[0], y(q[0], q[2]) + .006, q[2]), mul(RY(a * 1.7), S(.06, .012, .025))), PAL.boisClair, 13); }
+    for (const sx of [-.4, 0, .4]) { const q = L.p([sx, 0, 0]); COLL.push({ x: q[0], z: q[2], r: .32 }); } COLL.push({ x: kx, z: kz, r: .3 });
+    OBJETS.push({ id: 'bois', x: (bx + kx) / 2, z: (bz + kz) / 2, r: 1.8, nom: 'Réserve de bois', f: () => actionBois() }); }
+
+  // ---------------------------------------------------------------- lanterne suspendue à une canne de berger (elle se balance doucement)
+  { const [lx, lz] = LIEUX.lanterne, ly = y(lx, lz), yaw = vers([lx, lz], LIEUX.feu), L = repere(lx, ly, lz, yaw);
+    tube(L.p([0, -.15, 0]), L.p([0, 1.86, 0]), .016, PAL.metalSombre, 7); const crochet = []; for (let i = 0; i <= 8; i++) { const a = i / 8 * PI * 1.1; crochet.push(L.p([0, 1.86 + Math.sin(a) * .16, .16 - Math.cos(a) * .16])); } for (let i = 0; i < 8; i++) tube(crochet[i], crochet[i + 1], .012, PAL.metalSombre, 7);
+    const bout = L.p([0, 1.86, .32]); const lan = new Node('lanterne'); lan.pickable = false; lan.pos = [bout[0], bout[1] - .02, bout[2]]; lan.rot[1] = yaw;
+    lan.addPart(MESH.cyl6, mul(T(0, -.05, 0), S(.005, .1, .005)), PAL.metal, 22); { const anse = []; for (let i = 0; i <= 6; i++) { const a = i / 6 * PI; anse.push([Math.cos(a) * .07, -.1 - Math.sin(a) * .04 + .04, 0]); } for (let i = 0; i < 6; i++) lan.addPart(MESH.cyl6, matTube(anse[i], anse[i + 1], .004), PAL.metalSombre, 7); }
+    lan.addPart(MESH.cone, mul(T(0, -.14, 0), S(.16, .06, .16)), PAL.metalSombre, 7); NOEUDS.lanVerre = lan.addPart(MESH.cyl, mul(T(0, -.26, 0), S(.12, .18, .12)), PAL.creme, 3); lan.addPart(MESH.cyl, mul(T(0, -.36, 0), S(.15, .04, .15)), PAL.metalSombre, 7);
+    for (let i = 0; i < 4; i++) { const a = i / 4 * TAU + .4; lan.addPart(MESH.cyl6, mul(T(Math.cos(a) * .065, -.26, Math.sin(a) * .065), S(.008, .18, .008)), PAL.metalSombre, 7); }
+    NOEUDS.lanFlamme = lan.addPart(MESH.sph8, mul(T(0, -.26, 0), S(.05, .07, .05)), [1, .85, .55], 8, { cast: false });
+    lan.light = { c: [1, .8, .5], i: 0, r: 8 }; A.add(lan); NOEUDS.lanterne = lan; COLL.push({ x: lx, z: lz, r: .1 }); }
+
+  // ---------------------------------------------------------------- coin eau : purificateur sur une souche, jerrican, gobelet
+  { const [px, pz] = LIEUX.purif, py = y(px, pz), yaw = vers([px, pz], LIEUX.feu), L = repere(px, py, pz, yaw);
+    add(SOUCHE, L.M(S(.24, .42, .24)), PAL.ecorce2, 13); add(DISQUE, L.M(mul(T(0, .422, 0), S(.22, 1, .22))), PAL.boisClair, 13);
+    add(CYL, L.M(mul(T(-.04, .55, 0), S(.075, .26, .075))), PAL.bleu2, 7); add(CYL, L.M(mul(T(-.04, .69, 0), S(.095, .03, .095))), PAL.metalSombre, 7); tube(L.p([-.04, .7, 0]), L.p([-.04, .8, 0]), .009, PAL.metal, 22); tube(L.p([-.04, .8, 0]), L.p([.1, .78, 0]), .008, PAL.noir, 7);
+    tube(L.p([0, .5, .04]), L.p([.16, .43, .14]), .006, PAL.creme, 0); add(CYL, L.M(mul(T(.1, .47, -.06), S(.07, .08, .07))), PAL.orange, 7);
+    const J = repere(...L.p([.42, 0, .1]), yaw - .4); add(RB(.2, .34, .3, .04), J.M(T(0, .17, 0)), PAL.bleu, 7); add(CYL, J.M(mul(T(0, .37, .09), S(.05, .04, .05))), PAL.noir, 7); add(RB(.04, .05, .16, .015), J.M(T(0, .36, -.05)), PAL.bleu, 7);
+    COLL.push({ x: px, z: pz, r: .3 }); { const q = L.p([.42, 0, .1]); COLL.push({ x: q[0], z: q[2], r: .2 }); } }
+
+  // ---------------------------------------------------------------- corde à linge derrière la tente (le linge bouge au vent)
+  { const [cx, cz] = LIEUX.linge, a = [cx - 1.55, cz + .35], b = [cx + 1.55, cz - .35], ya = y(a[0], a[1]), yb = y(b[0], b[1]);
+    tube([a[0], ya - .1, a[1]], [a[0], ya + 1.75, a[1]], .025, PAL.ecorce2, 13, CYL6); tube([b[0], yb - .1, b[1]], [b[0], yb + 1.75, b[1]], .025, PAL.ecorce2, 13, CYL6);
+    const pt = t => [a[0] + (b[0] - a[0]) * t, ya + 1.7 + (yb - ya) * t - Math.sin(t * PI) * .12, a[1] + (b[1] - a[1]) * t]; for (let i = 0; i < 10; i++) tube(pt(i / 10), pt((i + 1) / 10), .004, PAL.creme, 4);
+    const lg = new Node('linge'); lg.pickable = false; const yaw = angleVers(b[0] - a[0], b[1] - a[1]) - PI / 2; NOEUDS.linge = [];
+    for (const [t, w, h, c] of [[.28, .5, .72, PAL.bleu2], [.55, .42, .5, PAL.creme], [.74, .1, .26, PAL.rouge], [.8, .1, .26, PAL.rouge]]) { const p = pt(t), nd = new Node('habit'); nd.pickable = false; nd.pos = p; nd.rot[1] = yaw;
+      if (w > .3 && h < .6) { nd.addPart(MESH.rb, mul(T(0, -h / 2, 0), S(w, h, .012)), c, 4); for (const sx of [-1, 1]) nd.addPart(MESH.rb, mul(T(sx * (w / 2 + .07), -.1, 0), mul(RZ(sx * .5), S(.16, .14, .012))), c, 4); }
+      else nd.addPart(MESH.rb, mul(T(0, -h / 2, 0), S(w, h, .01)), c, 4);
+      nd.addPart(MESH.cube, mul(T(-w * .35, 0, 0), S(.015, .05, .02)), PAL.boisClair, 13); if (w > .2) nd.addPart(MESH.cube, mul(T(w * .35, 0, 0), S(.015, .05, .02)), PAL.boisClair, 13);
+      nd.ph = t * 7; A.add(nd); NOEUDS.linge.push(nd); }
+    COLL.push({ x: a[0], z: a[1], r: .08 }, { x: b[0], z: b[1], r: .08 }); }
+
+  // ---------------------------------------------------------------- ponton de pêche : longerons, planches espacées, pieux, plate-forme, bittes d'amarrage, échelle
+  { const P = PONTON, gy0 = y(P.x, P.z0); P.y = Math.max(.5, gy0 + .06); const py = P.y;
+    for (const sx of [-.55, .55]) add(CUBE, mul(T(P.x + sx, py - .11, (P.z0 + P.z1) / 2), S(.1, .14, P.z0 - P.z1)), PAL.planche2, 13);
+    for (const sx of [-1.18, 1.18]) add(CUBE, mul(T(P.x + sx, py - .11, P.z1 + P.pz / 2), S(.1, .14, P.pz)), PAL.planche2, 13); add(CUBE, mul(T(P.x, py - .11, P.z1 + P.pz), S(P.pw, .14, .1)), PAL.planche2, 13);
+    let k = 0; for (let z = P.z0 - .08; z > P.z1 + .05; z -= .165, k++) { const plat = z < P.z1 + P.pz, w = plat ? P.pw : P.w; add(CUBE, mul(T(P.x + Math.sin(k * 3.1) * .01, py - .022, z), mul(RY(Math.sin(k * 1.7) * .012), S(w, .045, .145))), k % 3 ? PAL.planche : PAL.planche2, 13); }
+    for (let z = P.z0 - .4; z > P.z1 - .1; z -= 2.25) for (const sx of [-1, 1]) { const plat = z < P.z1 + P.pz + .2, px = P.x + sx * (plat ? P.pw / 2 - .1 : P.w / 2 - .06), gy = Math.min(y(px, z), py - .25), haut = plat ? py + .38 : py - .04;
+      tube([px, gy - .3, z], [px, haut, z], .075, PAL.ecorce2, 13, CYL8); if (plat) add(DISQUE, mul(T(px, haut + .002, z), S(.075, 1, .075)), PAL.boisClair, 13); }
+    for (const sx of [-1, 1]) { const px = P.x + sx * (P.pw / 2 - .1); tube([px, py + .3, P.z1 + .1], [px, py + .3, P.z1 + P.pz - .1], .02, PAL.creme, 4); }
+    for (const sx of [-1, 1]) tube([P.x + .5 + sx * .2, py, P.z1 - .05], [P.x + .5 + sx * .2, -.9, P.z1 - .25], .02, PAL.metal, 22); for (let i = 1; i < 4; i++) { const yy = py - i * .32, zz = P.z1 - .05 - i * .05; tube([P.x + .3, yy, zz], [P.x + .7, yy, zz], .014, PAL.metal, 22); }
+    for (let i = 0; i < 3; i++) add(ROCHES[i + 2], mul(T(P.x + (i - 1) * .7, gy0 - .05, P.z0 + .25), S(.6, .25, .45)), PAL.pierre2, 12);
+    OBJETS.push({ id: 'ponton', x: P.x, z: P.z1 + 1.2, r: 1.7, nom: 'Bout du ponton', f: () => actionLac('ponton') }); }
+
+  // ---------------------------------------------------------------- rive : pierres plates jusqu'à l'eau (point d'eau), galets, roseaux, gros rocher plat
+  { const [rx, rz] = LIEUX.rive; OBJETS.push({ id: 'rive', x: rx, z: rz, r: 2.4, nom: 'Rive du lac', f: () => actionLac('rive') });
+    for (let i = 0; i < 5; i++) { const px = rx - .1 + Math.sin(i * 2.1) * .25, pz = rz + 2.6 - i * .72, py = y(px, pz); add(ROCHES[i % 8], mul(T(px, Math.max(py, -.18) + .02, pz), mul(RY(i), S(.62, .1, .5))), PAL.pierre, 12); }
+    const g = graine(77); for (let i = 0; i < 70; i++) { const px = -3 + g() * 20, pz = 91.4 + g() * 3.2, py = y(px, pz); if (py < -.12 || py > .45 || Math.abs(px - PONTON.x) < 1.2) continue; const s = .05 + g() * .13; add(ROCHES[i % 8], mul(T(px, py + .015, pz), mul(RY(g() * 6), S(s * 1.3, s * .45, s))), g() < .5 ? PAL.pierre : PAL.pierre2, 12); }
+    const roseaux = (cx, cz, n) => { for (let i = 0; i < n; i++) { const a = g() * TAU, r = g() * .7, px = cx + Math.cos(a) * r, pz = cz + Math.sin(a) * r, py = Math.max(y(px, pz), -.25), hgt = .8 + g() * .7, lx = (g() - .5) * .3, lz = (g() - .5) * .3;
+      add(CYL6, matTube([px, py - .05, pz], [px + lx, py + hgt, pz + lz], .012), PAL.roseau, 20); if (g() < .4) add(CYL6, matTube([px + lx * .9, py + hgt * .88, pz + lz * .9], [px + lx, py + hgt + .02, pz + lz], .022), PAL.ecorce, 13); } };
+    roseaux(-2.6, 91.6, 22); roseaux(4.6, 91.8, 18); roseaux(-9.8, 92.2, 26); roseaux(9, 92.3, 14);
+    const [ox, oz] = LIEUX.rocher, oy = y(ox, oz); add(GEO.rock(77, 2, .2), mul(T(ox, oy + .18, oz), mul(RY(.4), S(2.7, .78, 2.1))), [.52, .5, .46], 12); add(GEO.rock(78, 1, .3), mul(T(ox + 1.3, oy + .05, oz + 1), S(.8, .4, .7)), PAL.pierre2, 12);
+    COLL.push({ x: ox, z: oz, r: 1.45 }, { x: ox + 1.3, z: oz + 1, r: .45 }); }
+
+  // ---------------------------------------------------------------- cueillette : buissons à baies, pommier sauvage, noisetier (fruits dynamiques posés sur le feuillage, repoussent chaque jour)
+  // chaque plante garde la liste de ses touffes de feuillage (centre, demi-axes) : les fruits sont posés sur leur surface extérieure
+  const touffe = (o, bx, by, bz, cx, cy, cz, s, col, seed) => { add(GEO.rock(seed, 2, .2), mul(T(bx + cx, by + cy, bz + cz), S(s[0], s[1], s[2])), col, 20); o.push({ c: [cx, cy, cz], r: [s[0] * .5, s[1] * .5, s[2] * .5] }); };
+  { for (const k of ['baies1', 'baies2', 'baies3']) { const [bx, bz] = LIEUX[k], by = y(bx, bz), g = graine(bx * 13 + bz), bl = [];
+      touffe(bl, bx, by, bz, 0, .62, 0, [1.25, 1.0, 1.2], PAL.feuille, 200 + (bx | 0));
+      for (let i = 0; i < 6; i++) { const a = i / 6 * TAU + g(), r = .5 + g() * .2, sc = .78 + g() * .3; touffe(bl, bx, by, bz, Math.cos(a) * r, .42 + g() * .18, Math.sin(a) * r, [sc * 1.05, sc * .85, sc * 1.05], [PAL.feuille2, PAL.feuille3, PAL.feuille][i % 3], 201 + i + (bx | 0)); }
+      for (let i = 0; i < 5; i++) { const a = i * 1.3; tube([bx + Math.cos(a) * .15, by - .02, bz + Math.sin(a) * .15], [bx + Math.cos(a) * .45, by + .35, bz + Math.sin(a) * .45], .025, PAL.ecorce, 13, CYL6); }
+      COLL.push({ x: bx, z: bz, r: .95 }); OBJETS.push({ id: k, x: bx, z: bz, r: 2.3, nom: 'Buisson de baies', f: () => actionCueillir(k, 'baies'), fruits: 5, sorte: 'baies', touffes: bl, yMin: .3 }); }
+    // pommier : tronc, charpentières, houppier arrondi en plusieurs touffes superposées
+    const [ax, az] = LIEUX.pommier, ay = y(ax, az), g = graine(31), bl = []; add(GEO.lathe([[0, .34], [.35, .25], [1.6, .2], [2.4, .16], [2.9, .12]], 12), T(ax, ay, az), PAL.ecorce, 13);
+    for (let i = 0; i < 5; i++) { const a = i / 5 * TAU + .3, b0 = [ax, ay + 1.9 + i * .18, az], b1 = [ax + Math.cos(a) * 1.25, ay + 3.1 + g() * .4, az + Math.sin(a) * 1.25]; tube(b0, b1, .085 - i * .008, PAL.ecorce, 13); tube(b1, [b1[0] + Math.cos(a + .6) * .6, b1[1] + .55, b1[2] + Math.sin(a + .6) * .6], .045, PAL.ecorce, 13); }
+    touffe(bl, ax, ay, az, 0, 4.25, 0, [2.6, 2.0, 2.6], PAL.feuille2, 210);
+    for (let i = 0; i < 6; i++) { const a = i / 6 * TAU + .4, sc = 1.7 + g() * .4; touffe(bl, ax, ay, az, Math.cos(a) * 1.25, 3.65 + g() * .35, Math.sin(a) * 1.25, [sc, sc * .8, sc], [PAL.feuille, PAL.feuille3, PAL.feuille2][i % 3], 211 + i); }
+    for (let i = 0; i < 3; i++) { const a = i / 3 * TAU + 1, sc = 1.5 + g() * .3; touffe(bl, ax, ay, az, Math.cos(a) * .7, 4.85, Math.sin(a) * .7, [sc, sc * .85, sc], PAL.feuille2, 218 + i); }
+    for (let i = 0; i < 5; i++) { const a = i * 1.9 + .5, r = .9 + g() * 1.3, px = ax + Math.cos(a) * r, pz = az + Math.sin(a) * r; add(SPH, mul(T(px, y(px, pz) + .04, pz), S(.13, .11, .13)), i % 2 ? PAL.pomme : [.55, .3, .12], 5); }
+    COLL.push({ x: ax, z: az, r: .4 }); OBJETS.push({ id: 'pommier', x: ax, z: az, r: 2.8, nom: 'Pommier sauvage', f: () => actionCueillir('pommier', 'pommes'), fruits: 6, sorte: 'pommes', touffes: bl.slice(1, 7), yMax: 3.9 });
+    // noisetier : cépée touffue dès le bas, quelques perches qui dépassent, noisettes en grappes dans leur collerette
+    const [nx, nz] = LIEUX.noisetier, ny = y(nx, nz), g2 = graine(36), bn = [];
+    for (let i = 0; i < 8; i++) { const a = i / 8 * TAU + g2() * .4, r1 = .45 + g2() * .25, h1 = 1.6 + g2() * .6, p0 = [nx + Math.cos(a) * .1, ny - .05, nz + Math.sin(a) * .1], p1 = [nx + Math.cos(a) * r1, ny + h1, nz + Math.sin(a) * r1], p2 = [nx + Math.cos(a) * (r1 + .3), ny + h1 + .9, nz + Math.sin(a) * (r1 + .3)]; tube(p0, p1, .035, PAL.ecorce2, 13, CYL6); tube(p1, p2, .022, PAL.ecorce2, 13, CYL6); }
+    for (let i = 0; i < 5; i++) { const a = i / 5 * TAU, sc = 1.15 + g2() * .3; touffe(bn, nx, ny, nz, Math.cos(a) * .75, .85 + g2() * .2, Math.sin(a) * .75, [sc, sc * .9, sc], [PAL.feuille, PAL.feuille3][i % 2], 220 + i); }
+    for (let i = 0; i < 5; i++) { const a = i / 5 * TAU + .6, sc = 1.25 + g2() * .3; touffe(bn, nx, ny, nz, Math.cos(a) * .85, 1.7 + g2() * .25, Math.sin(a) * .85, [sc, sc * .85, sc], [PAL.feuille2, PAL.feuille][i % 2], 226 + i); }
+    touffe(bn, nx, ny, nz, 0, 2.5, 0, [1.6, 1.1, 1.6], PAL.feuille3, 232); touffe(bn, nx, ny, nz, 0, 1.4, 0, [1.4, 1.6, 1.4], PAL.feuille, 233);
+    COLL.push({ x: nx, z: nz, r: .9 }); OBJETS.push({ id: 'noisetier', x: nx, z: nz, r: 2.6, nom: 'Noisetier', f: () => actionCueillir('noisetier', 'noisettes'), fruits: 6, sorte: 'noisettes', touffes: bn.slice(0, 10), yMin: .8 }); }
+
+  // ---------------------------------------------------------------- panneau au bout du sentier (deux flèches), souches éparses à la lisière
+  { const [sx, sz] = LIEUX.finSentier, px = sx + 1.7, pz = sz, py = y(px, pz), L = repere(px, py, pz, -.3); tube(L.p([0, -.1, 0]), L.p([0, 1.75, 0]), .045, PAL.ecorce2, 13, CYL8);
+    const fleche = GEO.slab([[-.42, -.09], [.3, -.09], [.44, 0], [.3, .09], [-.42, .09]], [.02, .02, .01, .02, .02], .035);
+    add(fleche, L.M(mul(T(.2, 1.5, .04), RY(0))), PAL.boisClair, 13); add(fleche, L.M(mul(T(-.2, 1.22, .04), RY(PI))), PAL.bois, 13); add(CYL, L.M(mul(T(0, 1.78, 0), S(.1, .03, .1))), PAL.ecorce, 13); COLL.push({ x: px, z: pz, r: .1 });
+    const g = graine(5); for (let i = 0; i < 6; i++) { const a = .3 + i * 1.05 + g() * .4, r = 20 + g() * 3, px2 = CAMP.x + Math.sin(a) * r, pz2 = CAMP.z + Math.cos(a) * r; if (pz2 < 99 || Math.hypot(px2 - LIEUX.finSentier[0], pz2 - LIEUX.finSentier[1]) < 4) continue; const py2 = y(px2, pz2); add(SOUCHE, mul(T(px2, py2, pz2), S(.32 + g() * .1, .35 + g() * .2, .32 + g() * .1)), PAL.ecorce2, 13); add(DISQUE, mul(T(px2, py2 + .36, pz2), S(.27, 1, .27)), PAL.boisClair, 13); COLL.push({ x: px2, z: pz2, r: .38 }); } }
+
+  // fruits dynamiques : un nœud par site, reconstruit à chaque cueillette / repousse
+  for (const o of OBJETS) if (o.fruits) { const nd = new Node('fruits-' + o.id); nd.pickable = false; nd.pos = [o.x, y(o.x, o.z), o.z]; A.add(nd); o.noeud = nd; o.max = o.fruits; majFruits(o); }
   const statique = new Node('camp'); statique.pickable = false; for (const p of m.build(mk)) statique.addPart(p.mesh, null, p.color, p.mat); A.add(statique); NOEUDS.camp = statique;
   // feu : lumière + particules gérées dans majFeu
   const feu = new Node('feu'); const [fx, fz] = LIEUX.feu; feu.pos = [fx, y(fx, fz) + .35, fz]; feu.light = { c: [1, .55, .22], i: 0, r: 14 }; A.add(feu); NOEUDS.feu = feu;
-  // tente du visiteur (cachée par défaut)
-  { const [tx, tz] = LIEUX.tenteV, ty = y(tx, tz), mv = GEO.merger(); const prof = []; for (let i = 0; i <= 10; i++) { const a = i / 10 * PI / 2; prof.push([Math.sin(a) * 1.25, Math.cos(a) * .95]); } prof.push([1.27, 0]); const dome = GEO.lathe(prof.reverse(), 20);
-    mv.add(dome, mul(T(0, 0, 0), S(1.2, 1, 1)), [.6, .22, .18], 4); mv.add(dome, mul(T(0, 0, .8), S(.7, .6, .55)), [.3, .3, .32], 4); mv.add(CUBE, mul(T(0, .45, .98), S(.8, .9, .08)), [.06, .05, .05], 10); mv.add(CUBE, mul(T(0, .01, .2), S(2.6, .02, 2.1)), [.2, .2, .2], 4);
-    const nd = new Node('tenteV'); nd.pos = [tx, ty, tz]; nd.rot[1] = PI; for (const p of mv.build(mk)) nd.addPart(p.mesh, null, p.color, p.mat); nd.visible = false; A.add(nd); NOEUDS.tenteV = nd;
-    const fv = new Node('feuV'); const [vx, vz] = LIEUX.feuV; fv.pos = [vx, y(vx, vz) + .3, vz]; fv.light = { c: [1, .55, .22], i: 0, r: 10 }; A.add(fv); NOEUDS.feuV = fv; }
+  // camp du visiteur (caché par défaut) : tente rouge, porte tournée vers le camp, petit foyer
+  { const [tx, tz] = LIEUX.tenteV, ty = y(tx, tz), yaw = angleVers(LIEUX.camp[0] - tx, LIEUX.camp[1] - tz) + PI, mv = GEO.merger(), addV = (src, M, c, mat) => mv.add(src, M, c, mat), tubeV = (a, b, r, c, mat) => mv.add(GEO.cylinder(8), matTube(a, b, r), c, mat);
+    const L = repere(tx, ty, tz, yaw), D = { rx: 1.2, rz: 1.05, h: 1.12 }; bâtirTente(addV, tubeV, L, Object.assign({ toile: [.66, .2, .16], toile2: [.36, .36, .38], ourlet: [.92, .9, .84], porteH: .9, porteL: .82, interieur: false }, D));
+    addV(GEO.roundBox(.56, .035, 1.6, .015), L.M(M3.translate(.38, .03, .05)), [.35, .55, .3], 4); addV(GEO.roundBox(.6, .13, 1.4, .06), L.M(M3.translate(.38, .11, .1)), [.24, .3, .5], 4);
+    const nd = new Node('tenteV'); nd.pickable = false; for (const p of mv.build(mk)) nd.addPart(p.mesh, null, p.color, p.mat); nd.visible = false; A.add(nd); NOEUDS.tenteV = nd;
+    const porte = L.p([0, 0, -D.rz - .75]); NOEUDS.tenteVInfo = { x: tx, z: tz, yaw, porte: [porte[0], porte[2]], r: 1.25 };
+    const [vx, vz] = LIEUX.feuV, vy = y(vx, vz), mf = GEO.merger(); for (let i = 0; i < 9; i++) { const a = i / 9 * TAU; mf.add(GEO.rock(i + 50, 1, .3), mul(T(vx + Math.cos(a) * .45, vy + .05, vz + Math.sin(a) * .45), mul(RY(-a), S(.2, .14, .17))), PAL.pierre, 12); }
+    mf.add(DISQUE, mul(T(vx, vy + .02, vz), S(.42, 1, .42)), PAL.cendre, 12); for (let i = 0; i < 4; i++) { const a = i / 4 * TAU + .3; mf.add(GEO.cylinder(8), matTube([vx + Math.cos(a) * .28, vy + .04, vz + Math.sin(a) * .28], [vx, vy + .36, vz], .035), PAL.ecorce, 13); }
+    { const yawB = angleVers(vx - (vx - 1.25), 0) , bx = vx - 1.3, bz = vz + .25, yb = angleVers(vx - bx, vz - bz), LB = repere(bx, y(bx, bz), bz, yb); for (const ox of [-.45, .45]) mf.add(GEO.lathe([[0, 1.12], [.06, 1], [.8, .94], [1, .9], [1, 0]], 12), LB.M(mul(T(ox, 0, 0), S(.18, .2, .18))), PAL.ecorce2, 13);
+      mf.add(GEO.cylinder(8), matTube(LB.p([-.65, .33, 0]), LB.p([.65, .34, 0]), .15), PAL.ecorce, 13); mf.add(GEO.roundBox(1.15, .02, .16, .01), LB.M(T(0, .478, 0)), PAL.boisClair, 13);
+      NOEUDS.bancsV = [-.3, .3].map(ox => { const q = LB.p([ox, 0, .02]); return { id: 'bancV' + ox, p: [q[0], q[2]], yaw: yb }; }); NOEUDS.bancVColl = { x: bx, z: bz, r: .5 }; }
+    const fp = new Node('foyerV'); fp.pickable = false; for (const p of mf.build(mk)) fp.addPart(p.mesh, null, p.color, p.mat); fp.visible = false; A.add(fp); NOEUDS.foyerV = fp;
+    const fv = new Node('feuV'); fv.pos = [vx, vy + .3, vz]; fv.light = { c: [1, .55, .22], i: 0, r: 10 }; A.add(fv); NOEUDS.feuV = fv; }
   // mains du joueur (objets à la première personne)
   construireMains();
 }
+// fruits : posés sur la surface extérieure des touffes de feuillage (jamais flottants ni enfouis), grappes pour les baies et les noisettes
+function majFruits(o) { const nd = o.noeud; if (!nd || !o.touffes) return; nd.parts.length = 0; const T = M3.translate, S = M3.scale, mul = M3.mul, g = graine((o.x * 31 + o.z * 7) | 0), L = o.touffes;
+  const col = o.sorte === 'pommes' ? PAL.pomme : o.sorte === 'noisettes' ? PAL.noisette : PAL.baie, sz = o.sorte === 'pommes' ? .15 : o.sorte === 'noisettes' ? .06 : .065, grappe = o.sorte === 'pommes' ? 1 : o.sorte === 'noisettes' ? 2 : 4;
+  for (let i = 0; i < o.max; i++) { const b = L[(i * 3 + 1) % L.length]; let n = [b.c[0] + (g() - .5) * .9 * b.r[0], 0, b.c[2] + (g() - .5) * .9 * b.r[2]]; const l = Math.hypot(n[0], n[2]) || 1; n = [n[0] / l, o.sorte === 'pommes' ? -.25 - g() * .45 : (g() - .25) * .9, n[2] / l]; const nl = Math.hypot(n[0], n[1], n[2]); n = n.map(v => v / nl);
+    let px = b.c[0] + n[0] * b.r[0] * .97, py = b.c[1] + n[1] * b.r[1] * .97, pz = b.c[2] + n[2] * b.r[2] * .97; if (o.yMin) py = Math.max(py, o.yMin); if (o.yMax) py = Math.min(py, o.yMax);
+    if (i >= o.fruits) continue;
+    for (let j = 0; j < grappe; j++) { const ox = j ? (g() - .5) * .09 : 0, oy = j ? -g() * .06 : 0, oz = j ? (g() - .5) * .09 : 0; nd.addPart(MESH.sph8, mul(T(px + ox + n[0] * .02, py + oy, pz + oz + n[2] * .02), S(sz, sz * (o.sorte === 'noisettes' ? 1.2 : o.sorte === 'pommes' ? .92 : 1), sz)), col, o.sorte === 'noisettes' ? 13 : 5, { cast: false }); }
+    if (o.sorte === 'noisettes') nd.addPart(MESH.sph8, mul(T(px + n[0] * .04, py + .04, pz + n[2] * .04), S(.11, .06, .11)), [.5, .62, .28], 20, { cast: false });
+    if (o.sorte === 'pommes') { nd.addPart(MESH.cyl6, mul(T(px, py + .1, pz), S(.012, .07, .012)), PAL.ecorce, 13, { cast: false }); nd.addPart(MESH.sph8, mul(T(px + .04, py + .13, pz), S(.07, .015, .04)), PAL.feuille2, 20, { cast: false }); } } }
 // ==== CAMP : FAUNE (cerfs, lapins, canards, renard de nuit, poissons) ======================
 const FAUNE = { betes: [], tSaut: 0 };
 function construireFaune() { meshes(); const T = M3.translate, S = M3.scale, mul = M3.mul, RY = M3.rotY, RZ = M3.rotZ, RX = M3.rotX;
@@ -5347,7 +5532,7 @@ function majMains(dt, P) { const nd = MAINS.nd; if (!nd) return; MAINS.t += dt;
   if (!MAINS.item) { nd.visible = false; return; } nd.visible = !UI.cineOn && !ETAT.dort;
   const bob = P.vit > .1 ? Math.sin(P.pas * TAU) * .012 * Math.min(1, P.vit / 3) : 0, bob2 = P.vit > .1 ? Math.abs(Math.cos(P.pas * TAU)) * .008 : 0, resp = Math.sin(A.time * 1.3) * .003;
   let ox = .24 + bob * .5, oy = -.33 + bob - bob2 + resp, oz = -.56, rx = .15, ry = -.5, rz = -.1; const t = MAINS.t, a = MAINS.anim;
-  if (a === 'leve') { const k = Math.min(1, t * 4), e = 1 - (1 - k) * (1 - k); oy += (1 - e) * -.3; }
+  { const kin = Math.min(1, t * (a === 'tenir' ? 3.5 : 4.5)), ein = 1 - (1 - kin) * (1 - kin), kout = MAINS.duree ? clamp((MAINS.duree - t) / .32, 0, 1) : 1, eout = kout * kout * (3 - 2 * kout); oy += (1 - ein) * -.32 + (1 - eout) * -.34; rx += (1 - eout) * .25; }   // la main monte à l'écran puis redescend avant de disparaître
   if (a === 'boire') { const w = (t0, d) => { const k = clamp((t - t0) / d, 0, 1); return Math.sin(k * PI); }; const s1 = w(.25, .9), s2 = t > 1.3 ? w(1.3, 1.3) : 0, s = Math.max(s1, s2); ox = lerp(.27, .05, s); oy = lerp(-.31, -.1, s); oz = lerp(-.5, -.3, s); rx = .15 + s * 1.05; ry = lerp(-.5, -.1, s); }
   if (a === 'manger') { const cyc = (t % 1.1) / 1.1, s = Math.sin(Math.min(1, cyc * 1.5) * PI); ox = lerp(.27, .06, s); oy = lerp(-.31, -.12, s); oz = lerp(-.5, -.3, s); rx = .15 + s * .5; ry = lerp(-.5, -.2, s); }
   if (a === 'pomper') { const s = (Math.sin(t * 7) + 1) / 2; ox = .2; oy = -.3 + s * .05; oz = -.45; rx = .4 + s * .2; ry = -.3; }
@@ -5376,11 +5561,11 @@ function obstacles(x, z, r) { // obstacles du camp + troncs d'arbres de la vég�
   let px = x, pz = z, hit = false;
   for (const o of COLL) { if (o.r !== undefined) { const dx = px - o.x, dz = pz - o.z, d = Math.hypot(dx, dz), m = o.r + r; if (d < m && d > 1e-4) { px = o.x + dx / d * m; pz = o.z + dz / d * m; hit = true; } } }
   const V = A.vegetation; if (V && V.ARBRES) { const C = V.chunk, cx = Math.floor(px / C), cz = Math.floor(pz / C); for (const li of V.ARBRES) for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) { const ch = V.chunks.get((cx + i) + ',' + (cz + j) + ',' + li); if (!ch) continue; for (const it of ch) { if (it.mat !== 13) continue; const M = it.M, tx = M[12], tz = M[14], s = Math.hypot(M[0], M[1], M[2]), tr = .32 * s + r, dx = px - tx, dz = pz - tz, d = Math.hypot(dx, dz); if (d < tr && d > 1e-4) { px = tx + dx / d * tr; pz = tz + dz / d * tr; hit = true; } } } }
-  for (const vt of VIS.tentes) { const dx = px - vt[0], dz = pz - vt[1], d = Math.hypot(dx, dz), m = 1.5 + r; if (d < m && d > 1e-4) { px = vt[0] + dx / d * m; pz = vt[1] + dz / d * m; hit = true; } }
+  for (const vt of VIS.tentes) { const dx = px - vt.x, dz = pz - vt.z, d = Math.hypot(dx, dz), m = vt.r + r; if (d < m && d > 1e-4) { px = vt.x + dx / d * m; pz = vt.z + dz / d * m; hit = true; } }
   return { x: px, z: pz, hit };
 }
 function solJoueur(x, z) { // hauteur du sol sous les pieds (ponton compris)
-  let g = SOL(x, z); if (x > -6.9 && x < -5.1 && z > 78.6 && z < 92.4 && g < PONTON.y + .6) { PL.surPonton = true; return PONTON.y; } PL.surPonton = false; return g; }
+  const g = SOL(x, z); if (surPonton(x, z) && g < PONTON.y + .5) { PL.surPonton = true; return PONTON.y; } PL.surPonton = false; return g; }
 function majJoueur(dt) { const P = PL, ouvert = UI.ouvert() || UI.dlgOuvert || ETAT.dort || UI.cineOn;
   // regard
   let lx = 0, ly = 0; const sens = OPT.sens || 1;
@@ -5434,15 +5619,15 @@ function manger(quoi) { const V = { ration: [38, 6, 'ration', 'manger', 3.3], ba
   BES.faim = clamp(BES.faim + V[0], 0, 100); BES.soif = clamp(BES.soif + V[1], 0, 100); montrerMain(V[2], V[4], V[3]); SON.manger(); setTimeout(() => SON.manger(), 1100); historique('a mangé : ' + quoi); }
 function boire(n = 25) { BES.soif = clamp(BES.soif + n, 0, 100); montrerMain('gourde', 2.8, 'boire'); setTimeout(() => SON.boire(), 350); }
 function actionTente() { const ch = []; const h = HORL.h, peutDormir = BES.energie < 70 || h >= 20 || h < 5;
-  ch.push({ t: peutDormir ? 'Dormir jusqu’au matin' : 'Dormir (pas sommeil pour l’instant)', off: !peutDormir, f: () => dormir(0) });
+  const nuitTombee = h >= 20 || h < 5; ch.push({ t: nuitTombee ? 'Dormir jusqu’au matin' : peutDormir ? 'Dormir 3 heures' : 'Dormir (pas sommeil pour l’instant)', off: !peutDormir, f: () => dormir(nuitTombee ? 0 : 3) });
   ch.push({ t: 'Faire une sieste (1 h)', off: BES.energie > 85, f: () => dormir(1) });
   ch.push({ t: ETAT.glaciereRangee ? 'Ressortir la glacière' : 'Ranger la glacière dans la tente (à l’abri des voleurs)', f: () => { ETAT.glaciereRangee = !ETAT.glaciereRangee; rangerGlaciere(); S_ui(); note(ETAT.glaciereRangee ? 'La glacière est dans la tente.' : 'La glacière est de nouveau dehors.'); } });
   ch.push({ t: ETAT.veille ? 'Ne plus veiller cette nuit' : 'Veiller cette nuit (dormir d’un œil : plus sûr, plus fatigant)', f: () => { ETAT.veille = !ETAT.veille; S_ui(); note(ETAT.veille ? 'Vous dormirez d’un œil cette nuit.' : 'Vous dormirez normalement.'); } });
   ch.push({ t: 'Fermer la tente', fin: true });
   menuChoix('Tente', 'Votre tente, votre sac de couchage, votre coin.', ch); }
-function rangerGlaciere() { const c = NOEUDS.couvercle; const [gx, gz] = LIEUX.glaciere; const o = OBJETS.find(o => o.id === 'glaciere'); if (ETAT.glaciereRangee) { o.x = LIEUX.tenteJ[0]; o.z = LIEUX.tenteJ[1] - 1.3; o.r = 1.9; c.visible = false; NOEUDS.camp.parts.forEach(p => { }); } else { o.x = gx; o.z = gz; o.r = 1.5; c.visible = true; } cacherGlaciere(ETAT.glaciereRangee); }
-function cacherGlaciere(cache) { // la glacière est fusionnée dans le décor statique : on la couvre d'une bâche quand elle est rangée
-  if (!NOEUDS.bache) { const nd = new Node('bache'); const [gx, gz] = LIEUX.glaciere; nd.pos = [gx, SOL(gx, gz) + .02, gz]; nd.addPart(MESH.rb, M3.mul(M3.translate(0, .06, 0), M3.scale(.9, .12, .7)), [.3, .34, .28], 4); nd.visible = false; A.add(nd); NOEUDS.bache = nd; } NOEUDS.bache.visible = cache; }
+function rangerGlaciere() { const o = OBJETS.find(o => o.id === 'glaciere'), [gx, gz] = LIEUX.glaciere, [tx, tz] = LIEUX.tenteJ; if (ETAT.glaciereRangee) { o.x = tx; o.z = tz - (NOEUDS.tenteDim ? NOEUDS.tenteDim.rz : 1.15) - .25; o.r = 1.7; o.nom = 'Glacière (dans la tente)'; } else { o.x = gx; o.z = gz; o.r = 1.5; o.nom = 'Glacière'; } cacherGlaciere(ETAT.glaciereRangee); }
+function cacherGlaciere(cache) { // la glacière passe sous l'auvent de la tente (et sort de la liste des obstacles)
+  if (NOEUDS.glaciere) NOEUDS.glaciere.visible = !cache; if (NOEUDS.glaciereTente) NOEUDS.glaciereTente.visible = cache; const c = COLL.find(c => c.glaciere) || COLL.find(c => Math.hypot(c.x - LIEUX.glaciere[0], c.z - LIEUX.glaciere[1]) < .01); if (c) { c.glaciere = true; c.r = cache ? 0 : .42; } }
 function actionGlaciere() { const ch = [], rep = heureRepas();
   ch.push({ t: `Manger un repas (${SAC.rations})` + (rep ? '' : ' — ce n’est pas l’heure du repas'), off: !SAC.rations || !rep, f: () => { SAC.rations--; manger('ration'); if (!SAC.rations) note('C’était la dernière ration. Il faudra cueillir.'); } });
   ch.push({ t: `Boire une bouteille d’eau (${SAC.eau})`, off: !SAC.eau, f: () => { SAC.eau--; boire(35); } });
@@ -5450,7 +5635,7 @@ function actionGlaciere() { const ch = [], rep = heureRepas();
   ch.push({ t: 'Inventaire du sac à dos', f: () => ouvrirSac() });
   ch.push({ t: 'Refermer', fin: true });
   const d = `Rations : ${SAC.rations} · Bouteilles : ${SAC.eau}. Repas servis de 11 h 30 à 14 h 30 et de 18 h 30 à 22 h.`;
-  menuChoix('Glacière', d, ch); NOEUDS.couvercle.rot[0] = -1.2; UI.onFerme = () => { NOEUDS.couvercle.rot[0] = 0; }; }
+  menuChoix(ETAT.glaciereRangee ? 'Glacière (dans la tente)' : 'Glacière', d, ch); if (!ETAT.glaciereRangee) { ANIM_CAMP.couvCible = 1; SON.tic(.12, 600, .06); UI.onFerme = () => { ANIM_CAMP.couvCible = 0; setTimeout(() => SON.tic(.18, 420, .05), 380); }; } }
 function actionLac(ou) { const ch = [];
   ch.push({ t: `Puiser et purifier de l’eau (gourde ${SAC.gourde}/${SAC.gourdeMax}) — 20 s`, off: SAC.gourde >= SAC.gourdeMax, f: () => purifier() });
   ch.push({ t: 'Boire à la gourde (' + SAC.gourde + ')', off: !SAC.gourde, f: () => { SAC.gourde--; boire(25); } });
@@ -5471,8 +5656,8 @@ function actionBois() { const ch = []; ch.push({ t: `Prendre 2 bûches (${SAC.bu
   ch.push({ t: 'Fendre du bois (10 min, +3 bûches en réserve)', off: BES.endurance < 20, f: () => { ETAT.reserveBois += 3; BES.endurance -= 20; BES.faim -= 2; avancerTemps(1 / 6); for (let i = 0; i < 3; i++) setTimeout(() => SON.coup(), i * 500); note('Trois bûches de plus.'); } });
   ch.push({ t: 'Laisser', fin: true }); menuChoix('Réserve de bois', 'Du bois sec, une hache.', ch); }
 ETAT.reserveBois = 6;
-function actionCueillir(id, quoi) { const o = OBJETS.find(x => x.id === id); if (!o || o.fruits <= 0) { note('Plus rien à cueillir ici aujourd’hui.'); return; } o.fruits--; SAC[quoi]++; if (o.noeud && o.noeud.parts.length) o.noeud.parts.pop(); montrerMain(quoi === 'pommes' ? 'fruit' : quoi, 1.6, 'cueillir'); SON.tic(.2, 1500, .04); note(({ baies: 'Une poignée de baies', pommes: 'Une pomme', noisettes: 'Quelques noisettes' })[quoi] + ' → sac à dos (' + SAC[quoi] + ').', 1600); if (BES.faim < 35) objectifFini('faim_c'); }
-function repousser() { for (const o of OBJETS) if (o.max) { o.fruits = o.max; const nd = o.noeud; if (nd) { nd.parts.length = 0; const col = o.id === 'pommier' ? [.8, .2, .15] : o.id === 'noisetier' ? [.6, .42, .2] : [.75, .1, .15], sz = o.id === 'pommier' ? .09 : .045, h = o.id === 'pommier' ? 4.3 : o.id === 'noisetier' ? 1.9 : .7; for (let i = 0; i < o.max; i++) { const a = i * 2.39, r = o.id === 'pommier' ? 1.3 : .8; nd.addPart(MESH.sph8, M3.mul(M3.translate(Math.cos(a) * r, h + Math.sin(i * 1.3) * .35, Math.sin(a) * r), M3.scale(sz, sz, sz)), col, 5, { cast: false }); } } } }
+function actionCueillir(id, quoi) { const o = OBJETS.find(x => x.id === id); if (!o || o.fruits <= 0) { note('Plus rien à cueillir ici aujourd’hui. Ça repousse demain.'); SON.non(); return; } o.fruits--; SAC[quoi]++; majFruits(o); montrerMain(quoi === 'pommes' ? 'fruit' : quoi, 1.6, 'cueillir'); SON.tic(.2, 1500, .04); setTimeout(() => SON.tic(.12, 2300, .03), 180); note(({ baies: 'Une poignée de baies', pommes: 'Une pomme', noisettes: 'Quelques noisettes' })[quoi] + ' → sac à dos (' + SAC[quoi] + ').' + (o.fruits ? '' : ' Le site est vide pour aujourd’hui.'), 1800); if (BES.faim < 35) objectifFini('faim_c'); MARQ.flash(id); }
+function repousser() { for (const o of OBJETS) if (o.max) { o.fruits = o.max; majFruits(o); } }
 // ==== CAMP : SAC À DOS =======================================================================
 function ouvrirSac() { const L = [];
   L.push({ nom: 'Gourde', d: `${SAC.gourde}/${SAC.gourdeMax} gorgées d’eau purifiée · +25 soif`, off: !SAC.gourde, f: () => { SAC.gourde--; boire(25); } });
@@ -5495,15 +5680,22 @@ function majFeuTemps(dh) { if (ETAT.feu > 0) { ETAT.feuBois -= dh; if (ETAT.feuB
 function nouveauJour() { ETAT.jour++; repousser(); ETAT.veille = false; ETAT.meteo = Math.random() < .55 ? 'clair' : Math.random() < .5 ? 'brume' : Math.random() < .7 ? 'couvert' : 'pluie'; VIS.nouveauJour(); sauver(); }
 function dormir(heures, evanoui) { if (ETAT.dort) return; UI.fermer(); const h = HORL.h; let cible = heures ? h + heures : (h >= 20 ? 24 + 7 : 7), duree = cible - h; if (heures) duree = heures; if (duree <= 0) duree += 24;
   ETAT.dort = { t: 0, duree, h0: h, evanoui, sieste: !!heures }; $('voile').classList.remove('off'); SON.zip(); VOIX.stop(); if (!heures) historique('s’est couché à ' + hm(h)); }
-function majSommeil(dt) { const D = ETAT.dort; if (!D) return; D.t += dt; const reel = D.sieste ? 3 : 8, k = clamp(D.t / reel, 0, 1), cibleH = D.h0 + D.duree * k;
-  while (HORL.h < cibleH - (HORL.h < D.h0 ? 24 : 0) - 1e-6 && !ETAT.mort) { const avant = HORL.h; const dh = Math.min(1 / 6, (cibleH - (HORL.h < D.h0 ? 24 : 0)) - HORL.h); if (dh <= 0) break; tick(dh); if (HORL.h < avant) D.h0 -= 24;
-    BES.energie = clamp(BES.energie + (D.evanoui ? 7 : ETAT.veille ? 8 : 12.5) * dh, 0, 100); BES.faim = clamp(BES.faim + 3.5 * dh, 0, 100); BES.soif = clamp(BES.soif + 5 * dh, 0, 100); BES.faim = Math.max(BES.faim, 6); BES.soif = Math.max(BES.soif, 6); /* on ne meurt pas de faim/soif pendant le sommeil : on se réveille affamé et assoiffé */ if (ETAT.mort) break; }
+function majSommeil(dt) { const D = ETAT.dort; if (!D) return; D.t += dt; const reel = D.sieste ? 3 : 8, k = clamp(D.t / reel, 0, 1), cible = D.duree * k; D.fait = D.fait || 0;
+  // heures dormies comptées à part (avant : le passage de minuit faisait avancer l'horloge d'une journée entière en une image → mort de soif au réveil)
+  while (D.fait < cible - 1e-6 && !ETAT.mort) { const dh = Math.min(1 / 6, cible - D.fait); tick(dh); D.fait += dh;
+    BES.energie = clamp(BES.energie + (D.evanoui ? 7 : ETAT.veille ? 8 : 12.5) * dh, 0, 100); BES.faim = clamp(BES.faim + 3.5 * dh, 0, 100); BES.soif = clamp(BES.soif + 5 * dh, 0, 100); }
   $('hHeure').textContent = hm(HORL.h); $('sousTitre').textContent = (D.sieste ? 'Sieste… ' : D.evanoui ? 'Vous perdez connaissance… ' : 'Nuit… ') + hm(HORL.h); $('sousTitre').classList.add('on');
-  if (k >= 1 || ETAT.mort) { ETAT.dort = false; $('sousTitre').classList.remove('on'); if (ETAT.mort) return; $('voile').classList.add('off'); SON.zip(); PL.pitch = 0; const r = VIS.reveil(); note((D.sieste ? 'Vous vous réveillez.' : D.evanoui ? 'Vous revenez à vous, courbatu.' : `Jour ${ETAT.jour}, ${jourSemaine()}. ` + ({ clair: 'Grand soleil sur le lac.', brume: 'Brume sur l’eau, le soleil perce.', couvert: 'Ciel couvert.', pluie: 'Il pleut.' })[ETAT.meteo]) + (r ? ' ' + r : ''), 5200); if (!D.sieste) appliquerMeteo(); sauver(); } }
+  if (k >= 1 || ETAT.mort) { ETAT.dort = false; $('sousTitre').classList.remove('on'); if (ETAT.mort) return; VIS.recaler(); PL.pitch = 0; if (!D.sieste && !D.evanoui) reveilTente(null, true); else { $('voile').classList.add('off'); SON.zip(); } const r = VIS.reveil(); note((D.sieste ? 'Vous vous réveillez.' : D.evanoui ? 'Vous revenez à vous, courbatu.' : `Jour ${ETAT.jour}, ${jourSemaine()}. ` + ({ clair: 'Grand soleil sur le lac.', brume: 'Brume sur l’eau, le soleil perce.', couvert: 'Ciel couvert.', pluie: 'Il pleut.' })[ETAT.meteo]) + (r ? ' ' + r : ''), 5200); if (!D.sieste) appliquerMeteo(); sauver(); } }
 function appliquerMeteo() { const m = ETAT.meteo; if (m === 'brume') { A.meteo('brume', .8); setTimeout(() => A.meteo('clair', 1), 240000); } else if (m === 'couvert') A.meteo('brume', .35); else if (m === 'pluie') { A.meteo('pluie', .7); setTimeout(() => A.meteo('clair', 1), 420000); } else A.meteo('clair', 1); }
 // ==== CAMP : SAUVEGARDE DE LA PARTIE ============================================================
-function sauver() { if (!ETAT.enJeu || ETAT.mort) return; ecrire('partie', { v: JEU.version, prenom: JOUEUR.prenom, jour: ETAT.jour, h: HORL.h, bes: BES, sac: SAC, pos: [PL.x, PL.z, PL.yaw], drapeaux: ETAT.drapeaux, historique: ETAT.historique.slice(-40), glaciereRangee: ETAT.glaciereRangee, reserveBois: ETAT.reserveBois, visites: ETAT.visites, vus: VIS.vus, meteo: ETAT.meteo, record: lire('record') || 0 }); }
-function charger() { const s = lire('partie'); if (!s || !s.prenom) return false; JOUEUR.prenom = s.prenom; ETAT.jour = s.jour || 1; HORL.h = s.h === undefined ? 7 : s.h; Object.assign(BES, s.bes || {}); Object.assign(SAC, s.sac || {}); if (s.pos) { PL.x = s.pos[0]; PL.z = s.pos[1]; PL.yaw = s.pos[2]; } ETAT.drapeaux = s.drapeaux || {}; ETAT.historique = s.historique || []; ETAT.glaciereRangee = !!s.glaciereRangee; ETAT.reserveBois = s.reserveBois === undefined ? 6 : s.reserveBois; ETAT.visites = s.visites || 0; VIS.vus = s.vus || []; ETAT.meteo = s.meteo || 'clair'; return true; }
+function sauver() { if (!ETAT.enJeu || ETAT.mort) return; const fruits = {}; for (const o of OBJETS) if (o.max) fruits[o.id] = o.fruits; const P = VIS.prochain;
+  ecrire('partie', { v: JEU.version, prenom: JOUEUR.prenom, jour: ETAT.jour, h: HORL.h, bes: BES, sac: SAC, pos: [PL.x, PL.z, PL.yaw], drapeaux: ETAT.drapeaux, historique: ETAT.historique.slice(-40), glaciereRangee: ETAT.glaciereRangee, reserveBois: ETAT.reserveBois, visites: ETAT.visites, vus: VIS.vus, meteo: ETAT.meteo, record: lire('record') || 0,
+    fruits, feu: ETAT.feu, feuBois: ETAT.feuBois, poison: ETAT.poison || 0, veille: !!ETAT.veille, jourVisite: VIS.jourVisite || 0, prochain: P && !VIS.courant ? { id: P.type.id, h: P.h, jour: P.jour } : null }); }
+function charger() { const s = lire('partie'); if (!s || !s.prenom) return false; JOUEUR.prenom = s.prenom; ETAT.jour = s.jour || 1; HORL.h = s.h === undefined ? 7 : s.h; Object.assign(BES, s.bes || {}); Object.assign(SAC, s.sac || {}); if (s.pos) { PL.x = s.pos[0]; PL.z = s.pos[1]; PL.yaw = s.pos[2]; } ETAT.drapeaux = s.drapeaux || {}; ETAT.historique = s.historique || []; ETAT.glaciereRangee = !!s.glaciereRangee; ETAT.reserveBois = s.reserveBois === undefined ? 6 : s.reserveBois; ETAT.visites = s.visites || 0; VIS.vus = s.vus || []; ETAT.meteo = s.meteo || 'clair';
+  for (const o of OBJETS) if (o.max) { o.fruits = s.fruits && s.fruits[o.id] !== undefined ? clamp(s.fruits[o.id] | 0, 0, o.max) : o.max; majFruits(o); } ETAT.feu = s.feu || 0; ETAT.feuBois = s.feuBois || 0; ETAT.poison = s.poison || 0; ETAT.veille = !!s.veille; VIS.jourVisite = s.jourVisite || 0;
+  VIS.prochain = null; if (s.prochain) { const T = VISITEURS.find(v => v.id === s.prochain.id); if (T) VIS.prochain = { type: T, h: s.prochain.h, jour: s.prochain.jour }; }
+  // position sûre : jamais dans un obstacle ni dans l'eau profonde
+  const o = obstacles(PL.x, PL.z, .4); PL.x = o.x; PL.z = o.z; if (SOL(PL.x, PL.z) < -.6 && !surPonton(PL.x, PL.z)) { PL.x = LIEUX.porteTente[0]; PL.z = LIEUX.porteTente[1] - .6; } PL.y = solJoueur(PL.x, PL.z); return true; }
 function historique(t) { ETAT.historique.push(`J${ETAT.jour} ${hm(HORL.h)} — ${t}`); }
 
 // ==== CAMP : HUD (toast, jauges, boussole, objectifs, invites, panneaux, dialogue) ===============
@@ -5521,22 +5713,64 @@ function objectifAjouter(id, t, lieu, prio) { if (OBJECTIFS.find(o => o.id === i
 function objectifFini(id) { const o = OBJECTIFS.find(o => o.id === id); if (!o || o.fait) return; o.fait = true; majObjectifs(); SON.ui2(); setTimeout(() => { const i = OBJECTIFS.indexOf(o); if (i >= 0) OBJECTIFS.splice(i, 1); majObjectifs(); }, 4000); }
 function objectifRetirer(id) { const i = OBJECTIFS.findIndex(o => o.id === id); if (i >= 0) { OBJECTIFS.splice(i, 1); majObjectifs(); } }
 function majObjectifs() { $('objectifs').innerHTML = OBJECTIFS.slice(0, 5).map(o => `<div class="${o.fait ? 'fait' : ''}">${o.t}</div>`).join(''); }
-// --- boussole (bandeau type Skyrim) : lettres N E S O, marqueurs des lieux clés et objectifs, visiteurs
+// --- icônes vectorielles partagées (boussole sur canvas via Path2D, marqueurs à l'écran en SVG)
+const cercle = (x, y, r) => `M${x - r} ${y}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0Z`;
+const ICONES = {
+  baies: { col: '#ef6a7d', d: cercle(8.4, 15.2, 3.7) + cercle(15.6, 15.2, 3.7) + cercle(12, 9, 3.7) + 'M11.2 5.6c.2-2 1.6-3.3 4.4-3.5-.3 2.4-1.8 3.4-4.4 3.5Z' },
+  pommes: { col: '#f08a5d', d: 'M12 7.2c-2.6-1.7-7.2-.8-7.2 4.7 0 4.1 2.7 8.6 5.1 8.6 1 0 1.4-.5 2.1-.5s1.1.5 2.1.5c2.4 0 5.1-4.5 5.1-8.6 0-5.5-4.6-6.4-7.2-4.7ZM12.1 6.9c0-2.1 1.1-3.8 3.6-4.2-.2 2.3-1.5 3.8-3.6 4.2Z' },
+  noisettes: { col: '#d9a35f', d: 'M12 3.6c-3.7 0-6.8 2.6-6.8 6.2h13.6c0-3.6-3.1-6.2-6.8-6.2ZM6.4 11.2c.2 4.6 2.7 9.2 5.6 9.2s5.4-4.6 5.6-9.2Z' },
+  eau: { col: '#7fc4ee', d: 'M12 2.8s6.4 7.3 6.4 11.6a6.4 6.4 0 0 1-12.8 0C5.6 10.1 12 2.8 12 2.8Z' },
+  bois: { col: '#d8b07a', d: 'M4.5 7.5h13a2.3 2.3 0 0 1 0 4.6h-13a2.3 2.3 0 0 1 0-4.6ZM6.5 13.9h13a2.3 2.3 0 0 1 0 4.6h-13a2.3 2.3 0 0 1 0-4.6Z' },
+  tente: { col: '#cfe3c2', d: 'M12 3.5 2.6 20h18.8ZM12 11.2 9.2 20h5.6Z' }
+};
+const PATH2D = {}; function icone2D(k) { return PATH2D[k] || (PATH2D[k] = new Path2D(ICONES[k].d)); }
+const svgIcone = k => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONES[k].d}" fill="currentColor" fill-rule="evenodd"/></svg>`;
+// --- marqueurs persistants des lieux de collecte : toujours en place (boussole + repères à l'écran), avec leur état du jour
+const MARQ = { el: null, items: [], flashs: {} };
+MARQ.sites = [
+  { id: 'baies1', ico: 'baies', nom: 'Baies', h: 1.7 }, { id: 'baies2', ico: 'baies', nom: 'Baies', h: 1.7 }, { id: 'baies3', ico: 'baies', nom: 'Baies', h: 1.7 },
+  { id: 'pommier', ico: 'pommes', nom: 'Pommes', h: 5.6 }, { id: 'noisetier', ico: 'noisettes', nom: 'Noisettes', h: 3.4 },
+  { id: 'rive', ico: 'eau', nom: 'Eau du lac', h: 1.3 }, { id: 'ponton', ico: 'eau', nom: 'Eau (ponton)', h: 1.9, loin: true }, { id: 'bois', ico: 'bois', nom: 'Bois', h: 1.6 }
+];
+MARQ.etat = m => { const o = OBJETS.find(x => x.id === m.id); if (!o) return { t: '', vide: false };
+  if (o.max) return o.fruits > 0 ? { t: o.fruits + '/' + o.max, vide: false } : { t: 'repousse demain', vide: true };
+  if (m.ico === 'eau') return { t: SAC.gourde < SAC.gourdeMax ? 'gourde ' + SAC.gourde + '/' + SAC.gourdeMax : 'gourde pleine', vide: false };
+  if (m.ico === 'bois') return ETAT.reserveBois >= 2 ? { t: ETAT.reserveBois + ' bûches', vide: false } : { t: 'à fendre', vide: true };
+  return { t: '', vide: false }; };
+MARQ.init = () => { const box = $('marqueurs'); MARQ.el = box; box.innerHTML = ''; MARQ.items = MARQ.sites.map(m => { const d = document.createElement('div'); d.className = 'mq'; d.style.color = ICONES[m.ico].col; d.innerHTML = `<i>${svgIcone(m.ico)}</i><b></b><small></small>`; box.appendChild(d); return { m, d, b: d.children[1], s: d.children[2], txt: '', dist: '' }; }); };
+MARQ.flash = id => { const it = MARQ.items.find(x => x.m.id === id); if (!it) return; it.d.classList.remove('flash'); void it.d.offsetWidth; it.d.classList.add('flash'); };
+MARQ.maj = () => { if (!MARQ.el) return; const cache = !OPT.marqueurs || UI.ouvert() || UI.dlgOuvert || ETAT.dort || UI.cineOn; MARQ.el.hidden = cache; if (cache) return; const W = innerWidth, H = innerHeight;
+  for (const it of MARQ.items) { const o = OBJETS.find(x => x.id === it.m.id); if (!o) { it.d.style.opacity = 0; continue; } const x = o.x, z = o.z, d = Math.hypot(x - PL.x, z - PL.z);
+    if (d < 3 || (it.m.loin && Math.hypot(LIEUX.rive[0] - PL.x, LIEUX.rive[1] - PL.z) < d && d > 25)) { it.a = 0; it.d.style.opacity = 0; continue; }
+    const s = A.project([x, SOL(x, z) + it.m.h, z]); if (!s || s[0] < -40 || s[0] > W + 40 || s[1] < 30 || s[1] > H - 20) { it.a = 0; it.d.style.opacity = 0; continue; }
+    const e = MARQ.etat(it.m), t = it.m.nom + (e.t ? ' · ' + e.t : ''), dd = d < 1000 ? Math.round(d) + ' m' : (d / 1000).toFixed(1) + ' km';
+    if (t !== it.txt) { it.txt = t; it.b.textContent = t; } if (dd !== it.dist) { it.dist = dd; it.s.textContent = dd; } it.d.classList.toggle('vide', e.vide); it.d.classList.toggle('loin', d > 70);
+    const k = clamp(1.08 - d / 260, .72, 1.08), a = clamp((d - 3) / 3, 0, 1) * (d > 420 ? 0 : 1); it.a = (it.a || 0) + (a - (it.a || 0)) * .25; it.d.style.opacity = it.a.toFixed(2); it.d.style.transform = `translate(${s[0].toFixed(1)}px,${s[1].toFixed(1)}px) translate(-50%,-100%) scale(${k.toFixed(3)})`; } };
+// --- boussole (bandeau) : lettres N E S O, lieux de collecte, objectifs, visiteurs
 const BOUS = { c: null, ctx: null };
-const MARQUEURS_FIXES = [{ lieu: 'tenteJ', ico: '▲', t: 'Tente' }, { lieu: 'rive', ico: '≈', t: 'Lac' }];
+const MARQUEURS_FIXES = [{ lieu: 'tenteJ', ico: 'tente', t: 'Tente' }];
 function majBoussole() { const c = $('boussole'); if (!BOUS.ctx) { BOUS.ctx = c.getContext('2d'); } const g = BOUS.ctx, W = c.width, H = c.height; g.clearRect(0, 0, W, H);
   // cadre
-  g.save(); g.globalAlpha = .82; g.fillStyle = 'rgba(8,10,8,.55)'; const r = 10; g.beginPath(); g.moveTo(40, 22); g.lineTo(W - 40, 22); g.lineTo(W - 10, H / 2); g.lineTo(W - 40, H - 22); g.lineTo(40, H - 22); g.lineTo(10, H / 2); g.closePath(); g.fill(); g.strokeStyle = 'rgba(243,239,230,.55)'; g.lineWidth = 2; g.stroke();
-  g.beginPath(); g.moveTo(W / 2, 22); g.lineTo(W / 2, H - 22); g.strokeStyle = 'rgba(243,239,230,.35)'; g.lineWidth = 2; g.stroke(); g.restore();
-  const champ = 1.9, yaw = PL.yaw, px = a => W / 2 + (difAngle(a, yaw) / champ) * (W / 2 - 50) * 2 / 2;
-  const dessine = (a, txt, col, taille, dist) => { const d = difAngle(a, yaw); if (Math.abs(d) > champ / 2 + .1) return; const x = px(a), k = 1 - Math.pow(Math.abs(d) / (champ / 2), 3); g.globalAlpha = clamp(k * 1.4, 0, 1); g.fillStyle = col; g.font = `${taille}px -apple-system, "Avenir Next", Helvetica, Arial`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(txt, x, H / 2 - 3); if (dist !== undefined) { g.font = `22px -apple-system, Helvetica, Arial`; g.fillStyle = 'rgba(230,235,225,.9)'; g.fillText(dist < 1000 ? Math.round(dist) + ' m' : (dist / 1000).toFixed(1) + ' km', x, H / 2 + 30); } g.globalAlpha = 1; };
-  // yaw 0 = +z. Points cardinaux : nord = -z (vers le lac depuis le camp)… nous définissons N = -z, S = +z, E = +x, O = -x
-  for (const [a, t] of [[PI, 'N'], [0, 'S'], [PI / 2, 'E'], [-PI / 2, 'O'], [PI * .75, '·'], [PI * .25, '·'], [-PI * .25, '·'], [-PI * .75, '·']]) dessine(a, t, t === 'N' ? '#f2c66d' : '#f3efe6', t === '·' ? 30 : 40);
+  g.save(); g.fillStyle = 'rgba(8,10,8,.5)'; g.beginPath(); g.moveTo(44, 20); g.lineTo(W - 44, 20); g.lineTo(W - 12, H / 2); g.lineTo(W - 44, H - 20); g.lineTo(44, H - 20); g.lineTo(12, H / 2); g.closePath(); g.fill(); g.strokeStyle = 'rgba(243,239,230,.42)'; g.lineWidth = 2; g.stroke();
+  g.beginPath(); g.moveTo(W / 2, 14); g.lineTo(W / 2 - 9, 4); g.lineTo(W / 2 + 9, 4); g.closePath(); g.fillStyle = 'rgba(242,198,109,.95)'; g.fill(); g.restore();
+  const champ = 1.9, yaw = PL.yaw, px = a => W / 2 + (difAngle(a, yaw) / champ) * (W - 100);
+  const alpha = a => { const d = Math.abs(difAngle(a, yaw)); if (d > champ / 2 + .05) return 0; return clamp((1 - Math.pow(d / (champ / 2), 3)) * 1.4, 0, 1); };
+  const texteA = (a, txt, col, taille) => { const k = alpha(a); if (!k) return; g.globalAlpha = k; g.fillStyle = col; g.font = `600 ${taille}px -apple-system, "Avenir Next", Helvetica, Arial`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(txt, px(a), H / 2); g.globalAlpha = 1; };
+  for (let i = 0; i < 24; i++) { const a = i / 24 * TAU, k = alpha(a); if (!k || i % 6 === 0 || i % 3 === 0) continue; g.globalAlpha = k * .55; g.fillStyle = '#f3efe6'; g.fillRect(px(a) - 1, H / 2 - 7, 2, 14); g.globalAlpha = 1; }
+  // yaw 0 = +z. Points cardinaux : nord = -z (vers le lac depuis le camp), S = +z, E = +x, O = -x
+  for (const [a, t] of [[PI, 'N'], [0, 'S'], [PI / 2, 'E'], [-PI / 2, 'O'], [PI * .75, 'NE'], [PI * .25, 'SE'], [-PI * .25, 'SO'], [-PI * .75, 'NO']]) texteA(a, t, t === 'N' ? '#f2c66d' : '#f3efe6', t.length > 1 ? 24 : 38);
   const P = PL, marq = [];
-  for (const m of MARQUEURS_FIXES) { const l = LIEUX[m.lieu]; marq.push({ x: l[0], z: l[1], ico: m.ico, col: '#cfe3c2' }); }
-  for (const o of OBJECTIFS) if (!o.fait && o.lieu) { const l = typeof o.lieu === 'string' ? LIEUX[o.lieu] : o.lieu; if (l) marq.push({ x: l[0], z: l[1], ico: '◆', col: '#f2c66d' }); }
-  for (const v of VIS.pnj) if (v.ch && v.ch.visible && !v.parti) marq.push({ x: v.ch.pos[0], z: v.ch.pos[2], ico: v.hostile ? '●' : '●', col: v.danger >= 2 && v.revele ? '#e0665a' : '#7fb6d8' });
-  for (const m of marq) { const dx = m.x - P.x, dz = m.z - P.z, d = Math.hypot(dx, dz); if (d < 1.5) continue; dessine(angleVers(dx, dz), m.ico, m.col, 34, d > 6 ? d : undefined); }
+  for (const m of MARQUEURS_FIXES) { const l = LIEUX[m.lieu]; marq.push({ x: l[0], z: l[1], ico: m.ico, col: ICONES[m.ico].col, k: .9 }); }
+  if (OPT.marqueurs) for (const m of MARQ.sites) { if (m.loin) continue; const o = OBJETS.find(x => x.id === m.id); if (!o) continue; const e = MARQ.etat(m); marq.push({ x: o.x, z: o.z, ico: m.ico, col: ICONES[m.ico].col, k: .8, vide: e.vide }); }
+  for (const o of OBJECTIFS) if (!o.fait && o.lieu) { const l = typeof o.lieu === 'string' ? LIEUX[o.lieu] : o.lieu; if (l) marq.push({ x: l[0], z: l[1], txt: '◆', col: '#f2c66d', k: 1, prio: 1 }); }
+  for (const v of VIS.pnj) if (v.ch && v.ch.visible && !v.parti) marq.push({ x: v.ch.pos[0], z: v.ch.pos[2], txt: '●', col: v.danger >= 2 && v.revele ? '#e0665a' : '#7fb6d8', k: 1, prio: 2 });
+  marq.sort((a, b) => (a.prio || 0) - (b.prio || 0)); let centre = null, dc = 70; for (const m of marq) { if (m.prio) continue; const d = Math.abs(px(angleVers(m.x - P.x, m.z - P.z)) - W / 2); if (d < dc && alpha(angleVers(m.x - P.x, m.z - P.z))) { dc = d; centre = m; } }
+  for (const m of marq) { const dx = m.x - P.x, dz = m.z - P.z, d = Math.hypot(dx, dz); if (d < 2) continue; const a = angleVers(dx, dz), k = alpha(a); if (!k) continue; const x = px(a);
+    g.globalAlpha = k * (m.vide ? .45 : 1);
+    if (m.ico) { const s = 1.55 * m.k; g.save(); g.translate(x - 12 * s, H / 2 - 12 * s - 2); g.scale(s, s); g.fillStyle = 'rgba(0,0,0,.55)'; g.translate(.6, .9); g.fill(icone2D(m.ico), 'evenodd'); g.translate(-.6, -.9); g.fillStyle = m.col; g.fill(icone2D(m.ico), 'evenodd'); g.restore(); }
+    else { g.fillStyle = m.col; g.font = '34px -apple-system, Helvetica, Arial'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(m.txt, x, H / 2 - 2); }
+    if (d > 6 && (m.prio || m === centre)) { g.font = '600 20px -apple-system, Helvetica, Arial'; g.fillStyle = 'rgba(235,240,230,.92)'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(d < 1000 ? Math.round(d) + ' m' : (d / 1000).toFixed(1) + ' km', x, H - 8); }
+    g.globalAlpha = 1; }
 }
 // --- invite d'action (objet le plus proche dans le champ)
 let INVITE = null;
@@ -5565,6 +5799,7 @@ function ouvrirPause() { UI.pauseOuvert = true; const L = [
   { nom: 'Voix des visiteurs : ' + (OPT.voix ? 'activées' : 'coupées'), d: 'Synthèse vocale', garde: true, f: function () { OPT.voix = !OPT.voix; if (!OPT.voix) VOIX.stop(); sauverOptions(); this.nom = 'Voix des visiteurs : ' + (OPT.voix ? 'activées' : 'coupées'); } },
   { nom: 'Qualité : ' + OPT.qualite, d: 'auto · basse · moyenne · haute · ultra (auto conseillé sur iPad)', garde: true, f: function () { const Q = ['auto', 'basse', 'moyenne', 'haute', 'ultra']; OPT.qualite = Q[(Q.indexOf(OPT.qualite) + 1) % Q.length]; if (OPT.qualite === 'auto') { A.autoQuality = true; } else { A.autoQuality = false; A.setQuality(OPT.qualite); } sauverOptions(); this.nom = 'Qualité : ' + OPT.qualite; } },
   { nom: 'Taille du texte : ' + OPT.texte, d: 'grand (manette, à distance) · normal', garde: true, f: function () { OPT.texte = OPT.texte === 'grand' ? 'normal' : 'grand'; appliquerTexte(); sauverOptions(); this.nom = 'Taille du texte : ' + OPT.texte; } },
+  { nom: 'Marqueurs de collecte : ' + (OPT.marqueurs ? 'affichés' : 'masqués'), d: 'Baies, pommes, noisettes, eau et bois : à l’écran et sur la boussole', garde: true, f: function () { OPT.marqueurs = !OPT.marqueurs; sauverOptions(); this.nom = 'Marqueurs de collecte : ' + (OPT.marqueurs ? 'affichés' : 'masqués'); } },
   { nom: 'Inverser l’axe vertical : ' + (OPT.invY ? 'oui' : 'non'), d: 'Regard', garde: true, f: function () { OPT.invY = !OPT.invY; sauverOptions(); this.nom = 'Inverser l’axe vertical : ' + (OPT.invY ? 'oui' : 'non'); } },
   { nom: 'Affichage des performances : ' + (OPT.perf ? 'oui' : 'non'), d: 'ips, triangles par image, qualité', garde: true, f: function () { OPT.perf = !OPT.perf; $('perf').hidden = !OPT.perf; sauverOptions(); this.nom = 'Affichage des performances : ' + (OPT.perf ? 'oui' : 'non'); } },
   { nom: 'Journal de la partie', d: (ETAT.historique.slice(-4).join(' · ') || 'rien encore'), off: true },
@@ -5574,7 +5809,7 @@ function ouvrirPause() { UI.pauseOuvert = true; const L = [
 function majUI() {
   if (ETAT.mort) { if (IN.act) $('finRejouer').click(); return; }
   if (UI.menuOuvert) { if (IN.act) { const b = $('bContinuer').hidden ? $('bNouvelle') : (UI.menuSel === 1 ? $('bContinuer') : $('bNouvelle')); b.click(); } if ((IN.gauche || IN.droite || IN.haut || IN.bas) && !$('bContinuer').hidden) { UI.menuSel = UI.menuSel === 1 ? 0 : 1; $('bNouvelle').classList.toggle('sel', UI.menuSel !== 1); $('bContinuer').classList.toggle('sel', UI.menuSel === 1); } return; }
-  if (UI.cineOn) { if (IN.act || IN.accr || IN.menu) CINE.passer(); return; }
+  if (UI.cineOn) { if (IN.act || IN.accr || IN.menu) { if (CINE.on) CINE.passer(); else if (REVEIL.on && REVEIL.t < 5.6) REVEIL.t = 5.6; } return; }
   if (UI.panneauOuvert) { if (IN.haut) { UI.sel = (UI.sel - 1 + UI.items.length) % UI.items.length; rendrePanneau(); SON.tic(.1, 2000, .02); } if (IN.bas) { UI.sel = (UI.sel + 1) % UI.items.length; rendrePanneau(); SON.tic(.1, 2000, .02); } if (IN.act) activerPanneau(); if (IN.accr || IN.menu || IN.sac) { fermerPanneau(); ETAT.pause = false; S_ui(); } return; }
   if (UI.dlgOuvert) { if (IN.haut) navChoix(-1); if (IN.bas) navChoix(1); if (IN.act) choisir(); if (IN.accr || IN.menu) { if (UI.dlgMode === 'dialogue') VIS.partir(); else fermerDlg(); } return; }
   if (ETAT.dort) return;
@@ -5608,16 +5843,88 @@ function lookJoe(cat, outfit, morph, seed) { let sd = (seed * 7919 + 13) % 21474
 const QHAND = [-0.080822, 0.04304, 0.778913, 0.620411];   // orientation « épée en main » du pack, réutilisée pour les objets tenus
 function creerPNJ(d, i) { const J = joePack(); if (!J) return null; const base = lookJoe(J.pack.catalog, d.tenue || 'villager', d.morph || 'man', (d.graine || (i + 1) * 37 + ETAT.jour * 101) >>> 0);
   if (d.look) { if (d.look.parts) { for (const p of d.look.parts) if (!base.parts.includes(p)) base.parts.push(p); } if (d.look.retire) base.parts = base.parts.filter(p => !d.look.retire.includes(p)); if (d.look.colors) Object.assign(base.colors, d.look.colors); if (d.look.build) base.build = d.look.build; if (d.look.height) base.height = d.look.height; }
+  for (const k in base.colors) { const c = base.colors[k]; if (typeof c === 'string' && /^#[0-9a-f]{3}$/i.test(c)) base.colors[k] = '#' + c[1] + c[1] + c[2] + c[2] + c[3] + c[3]; }   // « #333 » → « #333333 » (sinon couleur NaN : tache lumineuse sur le PNJ)
   const ch = new Joe.Character(J.pack, base); ch.extraProps = (d.props || []).map(p => typeof p === 'string' ? { prop: p, socket: 'Socket_Hand_R', q: QHAND, t: [0, 0, 0] } : Object.assign({ socket: 'Socket_Hand_R', q: QHAND, t: [0, 0, 0] }, p)); ch.hideClipProps = !!d.sansObjetsClip; ch.visible = false; J.pnj.push(ch); return ch; }
 // ==== CAMP : VISITEURS (moteur) ==================================================================
-const VIS = { pnj: [], objets: [], tentes: [], vus: [], courant: null, prochain: null, dlg: null, tDlg: 0, faits: {} };
-VIS.lieu = (ou, i = 0) => { const p = Array.isArray(ou) ? ou : LIEUX[ou] || LIEUX.camp; const a = i * 2.1, r = i ? .9 + .3 * i : 0; return [p[0] + Math.cos(a) * r, p[1] + Math.sin(a) * r]; };
+const VIS = { pnj: [], objets: [], tentes: [], vus: [], courant: null, prochain: null, dlg: null, tDlg: 0, faits: {}, jourVisite: 0, slots: {} };
+const CLIPS_COUCHE = /^(Sleep_Lie|Lie_Back|Beach_Lie)$/, CLIPS_ASSIS = /^(Sit_Ground|Sit_Idle|Sit_Talk|Read_Sit|Play_Guitar)$/, FACE_LAC = /^(Fish_|Swim)/;
+// --- points d'approche : chaque lieu nommé donne une place libre (jamais dans un obstacle), une orientation naturelle et, au besoin, un passage (porte de tente)
+VIS.libre = (x, z, r = .42) => { for (let k = 0; k < 3; k++) { const o = obstacles(x, z, r); x = o.x; z = o.z; } return [x, z]; };
+VIS.anneau = (cle, c, r, pref) => { if (VIS.slots[cle]) return VIS.slots[cle]; const L = [];
+  for (let k = 0; k < 24; k++) { const a = k / 24 * TAU, x = c[0] + Math.sin(a) * r, z = c[1] + Math.cos(a) * r, o = obstacles(x, z, .38); if (Math.hypot(o.x - x, o.z - z) < .03 && SOL(x, z) > .05) L.push({ a, p: [x, z] }); }
+  L.sort((u, v) => Math.abs(difAngle(u.a, pref)) - Math.abs(difAngle(v.a, pref))); const out = []; for (const s of L) if (out.every(q => Math.hypot(q.p[0] - s.p[0], q.p[1] - s.p[1]) > .95)) out.push(s);
+  if (!out.length) out.push({ a: pref, p: VIS.libre(c[0] + Math.sin(pref) * (r + .6), c[1] + Math.cos(pref) * (r + .6)) }); VIS.slots[cle] = out; return out; };
+const versLac = (x, z) => angleVers(LAC.x - x, LAC.z - z);
+// le long de la grève : point le plus haut encore « au bord de l'eau » (sol entre .05 et .35 m) sur la ligne x, en partant du camp
+VIS.bordEau = (x, zDepart, fond = false) => { let z = zDepart; for (let k = 0; k < 80; k++, z -= .25) { const g = SOL(x, z); if (fond ? g < -.85 : g < .22) break; } return [x, z]; };
+VIS.lieu = (ou, i = 0, clip = '') => {
+  if (Array.isArray(ou)) { const nage = clip === 'Swim' || SOL(ou[0], ou[1]) < -.2; return { p: nage ? ou.slice() : VIS.libre(ou[0] + (i ? Math.cos(i * 2.1) * .9 : 0), ou[1] + (i ? Math.sin(i * 2.1) * .9 : 0)), yaw: FACE_LAC.test(clip) ? versLac(ou[0], ou[1]) : undefined }; }
+  const L = LIEUX[ou] || LIEUX.camp, cote = i ? (i % 2 ? 1 : -1) * Math.ceil(i / 2) : 0;
+  switch (ou) {
+    case 'feu': case 'feuV': { const c = LIEUX[ou], S = VIS.anneau(ou, c, ou === 'feu' ? 1.55 : 1.2, angleVers(LIEUX.camp[0] - c[0], LIEUX.camp[1] + 2 - c[1]) + (ou === 'feu' ? -.9 : 0)), s = S[i % S.length]; return { p: s.p.slice(), yaw: angleVers(c[0] - s.p[0], c[1] - s.p[1]) }; }
+    case 'chaise': return { p: LIEUX.chaise.slice(), yaw: NOEUDS.chaiseYaw || 0, exact: true };
+    case 'glaciere': { if (ETAT.glaciereRangee) return VIS.lieu('porteTente', i, clip); const g = NOEUDS.glaciere, y0 = g ? g.rot[1] : 0, p = VIS.libre(L[0] + Math.sin(y0) * .82 + cote * .7, L[1] + Math.cos(y0) * .82); return { p, yaw: angleVers(L[0] - p[0], L[1] - p[1]) }; }
+    case 'bois': { const c = LIEUX.billot, y0 = angleVers(LIEUX.feu[0] - c[0], LIEUX.feu[1] - c[1]), p = VIS.libre(c[0] + Math.sin(y0) * .75 + cote * .7, c[1] + Math.cos(y0) * .75); return { p, yaw: angleVers(c[0] - p[0], c[1] - p[1]) }; }
+    case 'porteTente': case 'tenteJ': { const [tx, tz] = LIEUX.tenteJ, rz = NOEUDS.tenteDim ? NOEUDS.tenteDim.rz : 1.15, p = VIS.libre(tx + cote * .8, tz - rz - .75); return { p, yaw: 0 }; }
+    case 'tenteV': { const I = NOEUDS.tenteVInfo; if (!I) break; const fx = Math.cos(I.yaw), fz = -Math.sin(I.yaw);   // fx,fz : axe latéral de la tente
+      if (CLIPS_COUCHE.test(clip)) return { p: [I.x + fx * (i % 2 ? -.35 : .35), I.z + fz * (i % 2 ? -.35 : .35)], yaw: I.yaw + PI / 2, exact: true, porte: I.porte, dedans: true };
+      const p = VIS.libre(I.porte[0] + fx * cote * .8, I.porte[1] + fz * cote * .8); return { p, yaw: angleVers(I.x - p[0], I.z - p[1]) }; }
+    case 'rocher': { const S = VIS.anneau('rocher', L, 2.05, versLac(L[0], L[1])), s = S[i % S.length]; return { p: s.p.slice(), yaw: versLac(s.p[0], s.p[1]) }; }
+    case 'rive': { if (clip === 'Swim') return { p: VIS.bordEau(L[0] + cote * 1.4, 95, true), yaw: PI }; return { p: VIS.bordEau(L[0] + cote * 1.3, 96.5), yaw: PI }; }
+    case 'plage': { const x = L[0] + cote * 1.6; if (clip === 'Swim') return { p: VIS.bordEau(x, 97, true), yaw: PI }; const q = VIS.bordEau(x, 98); q[1] += CLIPS_COUCHE.test(clip) ? 1.6 : .4; return { p: q, yaw: CLIPS_COUCHE.test(clip) ? PI / 2 : PI }; }
+    case 'boutPonton': return { p: [PONTON.x + [0, -.75, .75][i % 3], PONTON.z1 + .5 + Math.floor(i / 3) * .7], yaw: PI };
+    case 'ponton': return { p: [PONTON.x + (i % 2 ? .35 : -.35), 88.5 - i * 1.4], yaw: i % 2 ? PI / 2 : -PI / 2 };
+    case 'pommier': case 'noisetier': case 'baies1': case 'baies2': case 'baies3': { const o = OBJETS.find(x => x.id === ou), c = COLL.find(q => Math.hypot(q.x - L[0], q.z - L[1]) < .05), r = (c ? c.r : .8) + .6, S = VIS.anneau(ou, L, r, angleVers(LIEUX.camp[0] - L[0], LIEUX.camp[1] - L[1])), s = S[i % S.length]; return { p: s.p.slice(), yaw: angleVers(L[0] - s.p[0], L[1] - s.p[1]) }; }
+    case 'sentier': case 'sentierProche': case 'finSentier': { const z = L[1] + i * 1.6; return { p: [SENTIER.x(z), z] }; }
+  }
+  const a = i * 2.1, r = i ? .9 + .3 * i : 0; return { p: VIS.libre(L[0] + Math.cos(a) * r, L[1] + Math.sin(a) * r) }; };
+// grands obstacles pour l'itinéraire (contourner la tente, le rocher, la table… plutôt que de s'y cogner)
+VIS.gros = () => { const G = [{ x: LIEUX.tenteJ[0], z: LIEUX.tenteJ[1] + .1, r: 1.75 }, { x: LIEUX.rocher[0], z: LIEUX.rocher[1], r: 1.9 }, { x: LIEUX.feu[0], z: LIEUX.feu[1], r: 1.15 }, { x: LIEUX.bois[0], z: LIEUX.bois[1], r: .9 }, { x: LIEUX.table[0], z: LIEUX.table[1], r: .8 }]; for (const t of VIS.tentes) G.push({ x: t.x, z: t.z, r: t.r + .45 }); return G; };
+VIS.contourner = (a, b, out) => { let pts = [a, b]; for (let pass = 0; pass < 3; pass++) { let ajout = false; const nv = [pts[0]];
+    for (let k = 0; k < pts.length - 1; k++) { const p = pts[k], q = pts[k + 1], dx = q[0] - p[0], dz = q[1] - p[1], L2 = dx * dx + dz * dz || 1e-6; let pire = null;
+      for (const o of VIS.gros()) { if (Math.hypot(q[0] - o.x, q[1] - o.z) < o.r + .2 || Math.hypot(p[0] - o.x, p[1] - o.z) < o.r + .2) continue; const t = clamp(((o.x - p[0]) * dx + (o.z - p[1]) * dz) / L2, 0, 1), cx = p[0] + dx * t, cz = p[1] + dz * t, d = Math.hypot(o.x - cx, o.z - cz); if (t > .02 && t < .98 && d < o.r + .35 && (!pire || d < pire.d)) pire = { o, d, cx, cz }; }
+      if (pire) { const o = pire.o; let nx = pire.cx - o.x, nz = pire.cz - o.z, l = Math.hypot(nx, nz); if (l < .05) { nx = -dz; nz = dx; l = Math.hypot(nx, nz); } nv.push(VIS.libre(o.x + nx / l * (o.r + .75), o.z + nz / l * (o.r + .75))); ajout = true; }
+      nv.push(q); }
+    pts = nv; if (!ajout) break; }
+  for (let k = 1; k < pts.length; k++) out.push([pts[k][0], pts[k][1], 0]); };
+// itinéraire : par le sentier quand on vient de la montagne ou qu'on y retourne, puis contournement des grands obstacles du camp
+VIS.itineraire = (de, vers, porte) => { const pts = [], fin = LIEUX.finSentier, surS = q => q[1] > 118 && Math.abs(q[0] - SENTIER.x(q[1])) < 9;
+  let a = de; if (surS(de) && !surS(vers)) { for (let z = Math.floor((de[1] - 2) / 6) * 6; z > fin[1] + 2; z -= 6) pts.push([SENTIER.x(z), z, 0]); pts.push([fin[0], fin[1], 0]); a = fin; }
+  if (!surS(de) && surS(vers)) { VIS.contourner(a, fin, pts); for (let z = Math.ceil((fin[1] + 4) / 6) * 6; z < vers[1] - 2; z += 6) pts.push([SENTIER.x(z), z, 0]); pts.push([vers[0], vers[1], 0]); return pts; }
+  if (surS(de) && surS(vers)) { const s = Math.sign(vers[1] - de[1]); for (let z = de[1] + s * 6; s > 0 ? z < vers[1] - 2 : z > vers[1] + 2; z += s * 6) pts.push([SENTIER.x(z), z, 0]); pts.push([vers[0], vers[1], 0]); return pts; }
+  if (porte) { VIS.contourner(a, porte, pts); pts[pts.length - 1][2] = 1; pts.push([vers[0], vers[1], 0]); return pts; }   // 1 : le dernier segment entre dans la tente (sans collision)
+  VIS.contourner(a, vers, pts); return pts; };
+// jouer un clip : les gestes ponctuels (saluer, montrer, s'étirer…) reviennent ensuite à une attente naturelle au lieu de rester figés
+VIS.jouer = (v, clip, o = {}) => { const ch = v.ch; if (!ch || !JOE) return; const c = JOE.pack.joeClips[clip]; if (!c) clip = 'Idle'; const fade = CLIPS_ASSIS.test(clip) || CLIPS_COUCHE.test(clip) || clip === 'Sit_Chair' ? .5 : .3;
+  if (c && !c.loop) { v.unique = clip; ch.play(clip, { restart: true, fade, onEnd: () => { if (v.unique !== clip) return; v.unique = null; if (v.clipFinal === clip) v.clipFinal = v.apres || (CLIPS_ASSIS.test(v.clipPrec || '') ? v.clipPrec : 'Idle'); if (!VIS.dlg || VIS.dlg.v !== v) ch.play(v.clipFinal, { fade: .4 }); } }); }
+  else { v.unique = null; ch.play(clip, { offset: o.offset !== undefined ? o.offset : Math.random() * 2, fade }); } };
+VIS.clipDialogue = v => { const c = v.clipFinal || ''; if (v.etat !== 'pose') return 'Talk'; const m = (JOE && JOE.pack.clipMeta(c)) || {}; if (m.seat === 'chair') return 'Sit_Talk'; if (c === 'Sit_Ground' || c === 'Play_Guitar' || CLIPS_COUCHE.test(c) || c === 'Swim' || c.startsWith('Fish_') || c === 'Crouch_Idle' || c === 'Dig_Spade') return c; return 'Talk'; };
+// envoyer un visiteur quelque part (routine, ordre « aller », départ)
+VIS.allerA = (v, ou, clip, o = {}) => { if (!v.ch) return; let L; clip = clip || 'Idle';
+  // s'asseoir : sur la chaise ou un banc libre (clips « assis sur chaise »), sinon par terre — jamais assis dans le vide
+  const meta = (JOE && JOE.pack.clipMeta(clip)) || {}, surSiege = meta.seat === 'chair', parTerre = clip === 'Sit_Ground', libreSiege = id => !VIS.pnj.some(w => w !== v && !w.parti && !w.fini && w.siege === id);
+  let siege = null;
+  if (ou === 'chaise' && !VIS.pnj.some(w => w !== v && !w.parti && !w.fini && w.cibleLieu === 'chaise')) { L = VIS.lieu('chaise', 0, clip); if (!surSiege) clip = 'Sit_Chair'; }
+  else if ((ou === 'feu' || ou === 'feuV' || ou === 'chaise') && (surSiege || parTerre || ou === 'chaise')) { const lieu = ou === 'chaise' ? 'feu' : ou, B = (lieu === 'feu' ? NOEUDS.bancs : NOEUDS.foyerV && NOEUDS.foyerV.visible ? NOEUDS.bancsV : null) || [], b = B.find(q => libreSiege(q.id));
+    if (b) { L = { p: b.p.slice(), yaw: b.yaw, exact: true }; siege = b.id; if (!surSiege) clip = 'Sit_Chair'; } else { L = VIS.lieu(lieu, v.i, 'Sit_Ground'); clip = 'Sit_Ground'; } ou = lieu; }
+  else { L = VIS.lieu(ou, v.i, clip); if (surSiege) clip = 'Sit_Ground'; }
+  v.siege = siege;
+  v.cibleLieu = typeof ou === 'string' ? ou : null; v.cible = L.p; v.yawFinal = o.yaw !== undefined ? o.yaw : L.yaw; v.exact = !!L.exact; v.dedans = !!L.dedans;
+  v.clipPrec = v.clipFinal; v.clipFinal = clip || 'Idle'; v.etat = 'marche'; v.court = !!o.court; v.bloque = 0; v.evite = 0; v.nEvite = 0; v.tAttente = 0; v.libreSeg = false; v.tMarche = 0;
+  v.chemin = VIS.itineraire([v.ch.pos[0], v.ch.pos[2]], L.p, L.porte); };
+VIS.arrive = v => { const ch = v.ch; v.etat = 'pose'; v.chemin = []; if (v.exact) { ch.pos[0] = v.cible[0]; ch.pos[2] = v.cible[1]; }
+  if (v.parti) { ch.visible = false; v.fini = true; return; }
+  let y = v.yawFinal; if (y === undefined) { const c = v.clipFinal || ''; if (FACE_LAC.test(c)) y = versLac(ch.pos[0], ch.pos[2]); else if (Math.hypot(ch.pos[0] - LIEUX.feu[0], ch.pos[2] - LIEUX.feu[1]) < 7) y = angleVers(LIEUX.feu[0] - ch.pos[0], LIEUX.feu[1] - ch.pos[2]); else y = angleVers(PL.x - ch.pos[0], PL.z - ch.pos[2]); }
+  v.yawCible = y; VIS.jouer(v, v.clipFinal || 'Idle');
+  if (v.ditArrivee) { const dP = Math.hypot(PL.x - ch.pos[0], PL.z - ch.pos[2]); if (dP < 22 && !VIS.dlg) VIS.dire(v, v.ditArrivee); v.ditArrivee = null; } };
 VIS.choisirType = () => { const tard = ETAT.jour, dejaVus = VIS.vus.slice(-4); let L = VISITEURS.filter(v => (v.jourMin || 1) <= tard && (v.danger || 0) <= (tard <= 1 ? 1 : tard <= 3 ? 2 : 3) && !dejaVus.includes(v.id)); if (!L.length) L = VISITEURS.slice();
   const tot = L.reduce((s, v) => s + (v.poids || 1), 0); let r = Math.random() * tot; for (const v of L) { r -= (v.poids || 1); if (r <= 0) return v; } return L[L.length - 1]; };
-VIS.planifier = () => { if (VIS.courant) return; const T = VIS.choisirType(); const h0 = T.heure ? T.heure[0] : 9, h1 = T.heure ? T.heure[1] : 17; let h = rnd(h0, h1), jour = VIS.jourVisite === ETAT.jour ? ETAT.jour + 1 : ETAT.jour;
-  if (jour === ETAT.jour && h < HORL.h + .5) { if (h1 > HORL.h + .6) h = rnd(HORL.h + .6, h1); else jour = ETAT.jour + 1; } VIS.prochain = { type: T, h, jour }; };
+// planning : une visite par jour, jamais dans la minute qui suit le réveil du premier jour ; l'heure est absolue (jour + heure) pour passer minuit sans la manquer
+VIS.planifier = () => { if (VIS.courant) return; const T = VIS.choisirType(); const h0 = T.heure ? T.heure[0] : 9, h1 = T.heure ? T.heure[1] : 17; let jour = VIS.jourVisite === ETAT.jour ? ETAT.jour + 1 : ETAT.jour, h = rnd(h0, h1);
+  if (jour === ETAT.jour) { const min = HORL.h + (ETAT.jour === 1 && !ETAT.visites ? 1.4 : .6); if (h < min) { if (h1 > min + .25) h = rnd(min, h1); else { jour++; h = rnd(h0, h1); } } }
+  VIS.prochain = { type: T, h, jour }; };
 VIS.nouveauJour = () => { if (!VIS.courant) VIS.planifier(); };
-VIS.tickHeure = (h0, h1, dh) => { const P = VIS.prochain; if (P && !VIS.courant && ETAT.jour >= (P.jour || 0) && h0 <= P.h && h1 >= P.h) VIS.arriver(P.type);
+VIS.tickHeure = (h0, h1, dh) => { const P = VIS.prochain; if (P && !VIS.courant) { const now = (ETAT.jour - 1) * 24 + HORL.h, cible = (P.jour - 1) * 24 + P.h; if (now >= cible) { if (now - cible < 4) VIS.arriver(P.type); else { VIS.prochain = null; VIS.planifier(); } } }
   const C = VIS.courant; if (!C) return; C.t += dh; const frac = C.duree ? C.t / C.duree : 0; C.frac = frac;
   if (!C.milieu && frac >= .5) { C.milieu = true; VIS.evenements('milieu'); }
   if (!C.nuitFaite && ((h0 < 1.2 && h1 >= 1.2) || (h0 > h1 && h1 >= 1.2))) { C.nuitFaite = true; VIS.evenements('nuit'); }
@@ -5625,45 +5932,75 @@ VIS.tickHeure = (h0, h1, dh) => { const P = VIS.prochain; if (P && !VIS.courant 
   if (frac >= 1 && !C.part && !UI.dlgOuvert) VIS.departir();
   // absence du joueur : loin du camp pendant que le visiteur est là
   const loin = Math.hypot(PL.x - CAMP.x, PL.z - CAMP.z) > 55; C.absence = loin ? (C.absence || 0) + dh : 0; if (C.absence > .3 && !C.absenceFaite) { C.absenceFaite = true; VIS.evenements('absence'); } };
-VIS.arriver = T => { if (!joePack()) return; VIS.prochain = null; ETAT.visites++; VIS.jourVisite = ETAT.jour; const C = { type: T, t: 0, duree: T.duree === 'nuit' ? (24 + 9 - HORL.h) % 24 + (HORL.h > 9 ? 0 : 0) : T.jours ? T.jours * 24 - 2 : rnd(T.duree[0], T.duree[1]), conf: 0, hostile: 0, flags: {}, pnj: [], part: false, hArrivee: HORL.h };
+VIS.arriver = T => { if (!joePack()) return; VIS.prochain = null; ETAT.visites++; VIS.jourVisite = ETAT.jour; const C = { type: T, t: 0, duree: T.duree === 'nuit' ? 1 : T.jours ? T.jours * 24 - 2 : rnd(T.duree[0], T.duree[1]), conf: 0, hostile: 0, flags: {}, pnj: [], part: false, hArrivee: HORL.h };
   if (T.duree === 'nuit') C.duree = HORL.h < 9 ? 9 - HORL.h : 24 - HORL.h + 9; VIS.courant = C; VIS.vus.push(T.id); if (VIS.vus.length > 12) VIS.vus.shift(); historique('visite : ' + T.type);
-  const dep = VIS.lieu(T.arrivee || 'sentier'); T.pnj.forEach((d, i) => { const ch = creerPNJ(d, i); if (!ch) return; const p = VIS.lieu(T.arrivee || 'sentier', i); ch.pos = [p[0], SOL(p[0], p[1]), p[1]]; ch.yaw = angleVers(CAMP.x - p[0], CAMP.z - p[1]); ch.visible = true; ch.play('Walk');
-    const v = { d, ch, id: d.id, prenom: d.prenom, role: d.role || T.type, genre: d.genre || (d.morph === 'woman' ? 'f' : 'h'), voix: Object.assign({ pitch: d.morph === 'woman' ? 1.15 : d.morph === 'child' ? 1.4 : d.morph === 'elder' ? .9 : 1, rate: .98 }, d.voix || {}), danger: T.danger || 0, cible: null, clip: 'Idle', etat: 'marche', parti: false, tAmb: rnd(20, 50), i, parle: d.parle !== false, vitesse: d.vitesse || (d.morph === 'child' ? 1.5 : d.morph === 'elder' ? .9 : 1.3), revele: false };
+  T.pnj.forEach((d, i) => { const ch = creerPNJ(d, i); if (!ch) return; const p = VIS.lieu(T.arrivee || 'sentier', i).p; ch.pos = [p[0], SOL(p[0], p[1]), p[1]]; ch.yaw = angleVers(CAMP.x - p[0], CAMP.z - p[1]); ch.visible = true; ch.play('Walk');
+    const v = { d, ch, id: d.id, prenom: d.prenom, role: d.role || T.type, genre: d.genre || (d.morph === 'woman' ? 'f' : 'h'), voix: Object.assign({ pitch: d.morph === 'woman' ? 1.15 : d.morph === 'child' ? 1.4 : d.morph === 'elder' ? .9 : 1, rate: .98 }, d.voix || {}), danger: T.danger || 0, cible: null, clipFinal: 'Idle', etat: 'marche', parti: false, tAmb: rnd(20, 50), i, parle: d.parle !== false, vitesse: d.vitesse || (d.morph === 'child' ? 1.45 : d.morph === 'elder' ? .95 : 1.3), revele: false, chemin: [] };
     v.voix.voix = VOIX.choisir(v.genre, d.morph); C.pnj.push(v); VIS.pnj.push(v);
     if (d.animal && JOE.pack.animals && JOE.pack.animals[d.animal]) { const an = new Joe.Animal(JOE.pack, d.animal, { coat: d.coat || 0, scale: d.animal === 'Dog' ? .9 : 1 }); an.pos = [p[0] + 1, SOL(p[0] + 1, p[1]), p[1]]; an.visible = true; an.play('Walk'); JOE.betes.push(an); v.animal = an; } });
-  if (T.objets) for (const o of T.objets) VIS.poserObjet(o); if (T.jourMin > 3 || T.danger >= 2) {} VIS.routine(true); VIS.evenements('arrivee');
-  objectifAjouter('visite', 'Quelqu’un arrive…', T.arrivee && LIEUX[T.arrivee] ? T.arrivee : 'sentier'); setTimeout(() => objectifRetirer('visite'), 60000); note(T.annonce || 'Du mouvement du côté du sentier…', 3500); };
-VIS.poserObjet = o => { const T = M3.translate, S = M3.scale, mul = M3.mul; if (o === 'tenteV') { NOEUDS.tenteV.visible = true; VIS.tentes.push(LIEUX.tenteV); } else if (o === 'feuV') { ETAT.feuV = 6; } else if (o === 'cerfVolant') { const nd = new Node('cerfVolant'); nd.pickable = false; nd.addPart(MESH.rb, mul(M3.rotZ(PI / 4), S(1.6, .03, 1.6)), [.9, .2, .2], 4); nd.addPart(MESH.rb, mul(M3.rotZ(PI / 4), mul(T(.5, 0, -.5), S(.7, .035, .7))), [.95, .8, .2], 4); for (let i = 0; i < 6; i++) nd.addPart(MESH.rb, mul(T(0, -.6 - i * .35, 0), S(.14, .1, .02)), i % 2 ? [.9, .2, .2] : [.95, .8, .2], 4); const [x, z] = LIEUX.plage; nd.pos = [x, 14, z]; A.add(nd); VIS.noeuds = VIS.noeuds || []; VIS.noeuds.push(nd); VIS.kite = nd; }
-  else if (o === 'canne') { const nd = new Node('canne'); const [x, z] = LIEUX.boutPonton; nd.pos = [x + .6, PONTON.y, z + .3]; nd.addPart(MESH.cyl6, mul(T(0, .9, -.4), mul(M3.rotX(-.5), S(.02, 2.2, .02))), [.25, .2, .15], 13); A.add(nd); VIS.noeuds = VIS.noeuds || []; VIS.noeuds.push(nd); }
-  else if (o === 'sacs') { const nd = new Node('sacs'); const [x, z] = LIEUX.rocher; nd.pos = [x + 2.2, SOL(x + 2.2, z + 1), z + 1]; nd.addPart(MESH.rb, mul(T(0, .3, 0), S(.5, .6, .35)), [.2, .25, .5], 4); nd.addPart(MESH.rb, mul(T(.7, .25, .2), S(.45, .5, .32)), [.5, .25, .15], 4); A.add(nd); VIS.noeuds = VIS.noeuds || []; VIS.noeuds.push(nd); }
-  else if (o === 'serviettes') { const nd = new Node('serviettes'); const [x, z] = LIEUX.plage; nd.pos = [x, SOL(x, z) + .02, z]; nd.addPart(MESH.rb, mul(T(0, 0, 0), S(.8, .02, 1.8)), [.9, .3, .3], 4); nd.addPart(MESH.rb, mul(T(1.2, 0, .3), mul(M3.rotY(.3), S(.8, .02, 1.8))), [.3, .5, .9], 4); A.add(nd); VIS.noeuds = VIS.noeuds || []; VIS.noeuds.push(nd); }
-  else if (o === 'detecteur') { const nd = new Node('trou'); const [x, z] = LIEUX.cache; nd.pos = [x, SOL(x, z), z]; nd.addPart(MESH.cyl, mul(T(0, -.05, 0), S(1.2, .1, 1.2)), [.25, .18, .1], 17); nd.addPart(GEO.rock ? mk(GEO.rock(300, 1, .3)) : MESH.sph8, mul(T(.9, .15, .4), S(.6, .3, .6)), [.3, .22, .12], 17); A.add(nd); VIS.noeuds = VIS.noeuds || []; VIS.noeuds.push(nd); }
-  else if (o === 'pancarte') { const nd = new Node('pancarte'); const [x, z] = LIEUX.sentierProche; nd.pos = [x - 2, SOL(x - 2, z), z]; nd.addPart(MESH.cyl6, mul(T(0, .7, 0), S(.05, 1.4, .05)), [.4, .32, .22], 13); nd.addPart(MESH.rb, mul(T(0, 1.3, 0), S(1, .5, .04)), [.9, .85, .7], 4); A.add(nd); VIS.noeuds = VIS.noeuds || []; VIS.noeuds.push(nd); } };
-VIS.routine = (init) => { const C = VIS.courant; if (!C) return; const R = C.type.routine || []; for (const v of C.pnj) { let step = null; for (const s of R) if (s.qui === v.id && (s.des || 0) <= (C.frac || 0)) step = s; if (!step) continue; if (v.step !== step) { v.step = step; const p = VIS.lieu(step.ou || 'camp', v.i); v.cible = p; v.clipFinal = step.clip || 'Idle'; v.etat = 'marche'; v.yawFinal = step.yaw; if (step.dit && !init) VIS.dire(v, step.dit); if (step.sfx) v.sfx = step.sfx; else v.sfx = null; if (step.objectif) objectifAjouter('vis_' + step.objectif.id, step.objectif.t, step.objectif.lieu || step.ou); } } };
+  if (T.objets) for (const o of T.objets) VIS.poserObjet(o); VIS.routine(true); VIS.evenements('arrivee');
+  objectifAjouter('visite', 'Quelqu’un arrive…', T.arrivee && LIEUX[T.arrivee] ? T.arrivee : 'finSentier'); setTimeout(() => objectifRetirer('visite'), 60000); note(T.annonce || 'Du mouvement du côté du sentier…', 3500); };
+VIS.campV = () => { if (VIS.tentes.some(t => t.foyer)) return; const [vx, vz] = LIEUX.feuV; VIS.tentes.push({ x: vx, z: vz, r: .55, foyer: true }); if (NOEUDS.bancVColl) VIS.tentes.push(Object.assign({ foyer: true }, NOEUDS.bancVColl)); if (NOEUDS.foyerV) NOEUDS.foyerV.visible = true; VIS.slots = {}; };
+VIS.poserObjet = o => { const T = M3.translate, S = M3.scale, mul = M3.mul; VIS.noeuds = VIS.noeuds || [];
+  if (o === 'tenteV') { NOEUDS.tenteV.visible = true; if (!VIS.tentes.some(t => t.tente)) { const I = NOEUDS.tenteVInfo; VIS.tentes.push({ x: I.x, z: I.z, r: I.r, tente: true }); } VIS.campV(); }
+  else if (o === 'feuV') { ETAT.feuV = 6; VIS.campV(); }
+  else if (o === 'cerfVolant') { const nd = new Node('cerfVolant'); nd.pickable = false; nd.addPart(MESH.rb, mul(M3.rotZ(PI / 4), S(1.1, .02, 1.1)), [.9, .2, .2], 4); nd.addPart(MESH.rb, mul(M3.rotZ(PI / 4), mul(T(.35, 0, -.35), S(.5, .025, .5))), [.95, .8, .2], 4); nd.addPart(MESH.cyl6, mul(T(0, 0, 0), mul(M3.rotZ(PI / 4), S(.012, 1.5, .012))), [.3, .25, .2], 13); for (let i = 0; i < 7; i++) nd.addPart(MESH.rb, mul(T(Math.sin(i * .9) * .08, -.6 - i * .32, 0), S(.13, .09, .015)), i % 2 ? [.9, .2, .2] : [.95, .8, .2], 4); const [x, z] = LIEUX.plage; nd.pos = [x, 14, z]; A.add(nd); VIS.noeuds.push(nd); VIS.kite = nd; }
+  else if (o === 'canne') { const nd = new Node('canne'); nd.pickable = false; nd.pos = [PONTON.x + 1.05, PONTON.y, PONTON.z1 + .7]; nd.addPart(MESH.cyl6, mul(T(0, .55, -.55), mul(M3.rotX(-.85), S(.018, 1.9, .018))), [.25, .2, .15], 13); nd.addPart(MESH.cyl, mul(T(0, .12, .02), mul(M3.rotZ(PI / 2), S(.05, .04, .05))), [.2, .2, .22], 7); nd.addPart(MESH.rb, mul(T(.25, .09, .15), S(.3, .18, .2)), [.3, .4, .3], 4); A.add(nd); VIS.noeuds.push(nd); }
+  else if (o === 'sacs') { const nd = new Node('sacs'); nd.pickable = false; const [x, z] = LIEUX.rocher, p = VIS.libre(x + 2.3, z + 1.4, .6); nd.pos = [p[0], SOL(p[0], p[1]), p[1]]; nd.addPart(MESH.rb, mul(T(0, .3, 0), mul(M3.rotX(-.15), S(.42, .6, .3))), [.2, .25, .5], 4); nd.addPart(MESH.rb, mul(T(.6, .26, .2), mul(M3.rotZ(.2), S(.4, .52, .28))), [.5, .25, .15], 4); nd.addPart(MESH.cyl, mul(T(0, .66, -.05), mul(M3.rotZ(PI / 2), S(.12, .38, .12))), [.25, .45, .3], 4); A.add(nd); VIS.noeuds.push(nd); }
+  else if (o === 'serviettes') { const nd = new Node('serviettes'); nd.pickable = false; const q = VIS.lieu('plage', 0, 'Beach_Lie').p; nd.pos = [q[0], SOL(q[0], q[1]) + .012, q[1]]; nd.rot[1] = PI / 2; nd.addPart(MESH.rb, S(.8, .015, 1.8), [.9, .3, .3], 4); nd.addPart(MESH.rb, mul(T(0, 0, 1.75), S(.8, .015, 1.8)), [.3, .5, .9], 4); A.add(nd); VIS.noeuds.push(nd); }
+  else if (o === 'detecteur') { const nd = new Node('trou'); nd.pickable = false; const [x, z] = LIEUX.cache; nd.pos = [x, SOL(x, z), z]; nd.addPart(MESH.cyl, mul(T(0, -.03, 0), S(1.1, .08, 1.1)), [.25, .18, .1], 17); nd.addPart(mk(GEO.rock(300, 1, .3)), mul(T(.95, .1, .35), S(.7, .28, .6)), [.3, .22, .12], 17); A.add(nd); VIS.noeuds.push(nd); }
+  else if (o === 'pancarte') { const nd = new Node('pancarte'); nd.pickable = false; const [x, z] = LIEUX.finSentier; nd.pos = [x - 1.9, SOL(x - 1.9, z), z]; nd.rot[1] = .4; nd.addPart(MESH.cyl6, mul(T(0, .7, 0), S(.05, 1.4, .05)), [.4, .32, .22], 13); nd.addPart(MESH.rb, mul(T(0, 1.3, .03), S(.9, .5, .03)), [.9, .85, .7], 4); A.add(nd); VIS.noeuds.push(nd); } };
+// routine : l'étape en cours de chaque visiteur (selon l'avancement de la visite) ; un ordre « aller » tient jusqu'à l'étape suivante, un départ n'est jamais annulé
+VIS.routine = (init) => { const C = VIS.courant; if (!C) return; const R = C.type.routine || [];
+  for (const v of C.pnj) { if (v.parti || v.fini) continue; let step = null, premier = null; for (const s of R) { if (s.qui !== v.id) continue; if (!premier) premier = s; if ((s.des || 0) <= (C.frac || 0)) step = s; }
+    if (!step && init && premier) { v.stepRoutine = 'attente'; VIS.allerA(v, premier.ou || 'camp', 'Idle_LookAround'); continue; }
+    if (!step && init && !premier) { v.stepRoutine = 'attente'; VIS.allerA(v, 'camp', 'Idle_LookAround'); continue; }
+    if (!step || v.stepRoutine === step) continue; v.stepRoutine = step; VIS.allerA(v, step.ou || 'camp', step.clip || 'Idle', { yaw: step.yaw, court: step.court });
+    if (step.dit) { const dP = Math.hypot(PL.x - v.ch.pos[0], PL.z - v.ch.pos[2]); if (dP < 14 && !init) VIS.dire(v, step.dit); else v.ditArrivee = step.dit; }
+    v.sfx = step.sfx || null; if (step.objectif) objectifAjouter('vis_' + step.objectif.id, step.objectif.t, step.objectif.lieu || step.ou); } };
 VIS.dire = (v, t) => { if (!v || !t) return; VOIX.dire(texte(t), v.voix); v.bulle = { t: texte(t), fin: performance.now() + 2600 + t.length * 55 }; };
+// déplacement d'un visiteur vers son point : itinéraire, contournement local, attente polie si le joueur bloque, pas d'enlisement
+VIS.marcher = (v, dt, dP) => { const ch = v.ch, x = ch.pos[0], z = ch.pos[2]; if (!v.chemin || !v.chemin.length) v.chemin = [[v.cible[0], v.cible[1], 0]]; v.tMarche = (v.tMarche || 0) + dt;
+  const wp = v.chemin[0], dernier = v.chemin.length === 1, dx = wp[0] - x, dz = wp[1] - z, d = Math.hypot(dx, dz), tol = dernier ? (v.exact ? .1 : .32) : .75;
+  if (d < tol) { if (!dernier) { v.libreSeg = wp[2] === 1; v.chemin.shift(); v.nEvite = 0; } else VIS.arrive(v); return; }
+  let a = angleVers(dx, dz); if (v.evite > 0) { v.evite -= dt; a += v.eviteSens * 1.2; }
+  ch.yaw += difAngle(a, ch.yaw) * Math.min(1, dt * (d < 1.2 ? 9 : 6)); const vit = (v.court ? 4.2 : v.vitesse) * (dernier ? clamp(d / .9, .5, 1) : 1);
+  const dirx = Math.sin(ch.yaw), dirz = Math.cos(ch.yaw); let nx = x + dirx * vit * dt, nz = z + dirz * vit * dt;
+  if (!((dernier && v.exact && d < 1.5) || v.libreSeg)) { const o = obstacles(nx, nz, .3); nx = o.x; nz = o.z; }
+  const dj = Math.hypot(nx - PL.x, nz - PL.z); if (dj < .78 && !v.parti) { v.tAttente += dt; if (v.tAttente < .9) { nx = x; nz = z; } else if (v.evite <= 0) { v.evite = 1.1; v.eviteSens = ((PL.x - x) * dirz - (PL.z - z) * dirx) > 0 ? 1 : -1; } } else v.tAttente = Math.max(0, v.tAttente - dt);
+  for (const w of VIS.pnj) { if (w === v || !w.ch || w.fini) continue; const ex = nx - w.ch.pos[0], ez = nz - w.ch.pos[2], e = Math.hypot(ex, ez); if (e < .62 && e > 1e-3 && !(dernier && v.exact && d < 1)) { nx = w.ch.pos[0] + ex / e * .62; nz = w.ch.pos[2] + ez / e * .62; } }
+  const prog = ((nx - x) * dx + (nz - z) * dz) / d; if (prog < vit * dt * .3 && v.tAttente <= 0) v.bloque += dt; else v.bloque = Math.max(0, v.bloque - dt * 2);
+  if (v.bloque > .45 && v.evite <= 0) { v.bloque = 0; v.nEvite++; v.evite = .7 + Math.random() * .7; v.eviteSens = v.nEvite % 2 ? 1 : -1; if (v.nEvite > 2) v.eviteSens = Math.random() < .5 ? 1 : -1; }
+  if (dernier && !v.exact && d < 1.7 && v.nEvite >= 3) { VIS.arrive(v); return; }                                          // assez près : on s'installe là
+  if (v.nEvite >= 10 && dP > 30) { const q = VIS.libre(wp[0], wp[1]); nx = q[0]; nz = q[1]; v.nEvite = 0; }                // coincé hors de vue : on le dégage
+  ch.pos[0] = nx; ch.pos[2] = nz; const cl = v.court ? 'Run' : 'Walk'; if (ch.clip !== cl) ch.play(cl, { fade: .25 }); ch.player.rate = v.court ? 1 : clamp(vit / 1.3, .6, 1.25); };
 VIS.maj = dt => { const C = VIS.courant; if (C) VIS.routine(false);
-  for (const v of VIS.pnj) { const ch = v.ch; if (!ch) continue; const dP = Math.hypot(PL.x - ch.pos[0], PL.z - ch.pos[2]); ch.visible = dP < 75 && !v.cache;
-    if (VIS.dlg && VIS.dlg.v === v) { const a = angleVers(PL.x - ch.pos[0], PL.z - ch.pos[2]); ch.yaw += difAngle(a, ch.yaw) * Math.min(1, dt * 5); if (ch.clip !== 'Talk' && !v.clipForce) ch.play('Talk'); }
-    else if (v.etat === 'marche' && v.cible) { const dx = v.cible[0] - ch.pos[0], dz = v.cible[1] - ch.pos[2], d = Math.hypot(dx, dz); if (d < .35) { v.etat = 'pose'; if (v.yawFinal !== undefined) ch.yaw = v.yawFinal; else if (v.clipFinal !== 'Walk') { const f = angleVers(LIEUX.feu[0] - ch.pos[0], LIEUX.feu[1] - ch.pos[2]); ch.yaw = v.clipFinal.startsWith('Fish') || v.clipFinal === 'Swim' ? angleVers(LAC.x - ch.pos[0], LAC.z - ch.pos[2]) : f; } ch.play(v.clipFinal || 'Idle', { offset: Math.random() }); if (v.parti) { ch.visible = false; v.fini = true; } }
-      else { const a = angleVers(dx, dz); ch.yaw += difAngle(a, ch.yaw) * Math.min(1, dt * 6); const vit = v.court ? 4.2 : v.vitesse; let nx = ch.pos[0] + Math.sin(ch.yaw) * vit * dt, nz = ch.pos[2] + Math.cos(ch.yaw) * vit * dt; const o = obstacles(nx, nz, .3); const dj = Math.hypot(o.x - PL.x, o.z - PL.z); if (dj < .7 && !v.parti) { /* le joueur bloque : on attend */ } else { ch.pos[0] = o.x; ch.pos[2] = o.z; } const cl = v.court ? 'Run' : 'Walk'; if (ch.clip !== cl) ch.play(cl); } }
-    else if (v.etat === 'pose' && v.clipFinal && ch.clip !== v.clipFinal && !v.clipForce) ch.play(v.clipFinal, { offset: Math.random() });
+  for (const v of VIS.pnj) { const ch = v.ch; if (!ch) continue; const dP = Math.hypot(PL.x - ch.pos[0], PL.z - ch.pos[2]); if (v.fini) { ch.visible = false; if (v.animal) v.animal.visible = false; continue; }
+    ch.visible = dP < 80 && !v.cache;
+    if (VIS.dlg && VIS.dlg.v === v) { const dc = VIS.clipDialogue(v); if (dc === 'Talk') { const a = angleVers(PL.x - ch.pos[0], PL.z - ch.pos[2]); ch.yaw += difAngle(a, ch.yaw) * Math.min(1, dt * 5); } if (ch.clip !== dc && !v.clipForce) { ch.play(dc, { fade: .35 }); ch.player.rate = 1; } }
+    else if (v.etat === 'marche' && v.cible) { VIS.marcher(v, dt, dP); if (v.parti && dP > 60 && !v.fini) { v.fini = true; ch.visible = false; } }
+    else if (v.etat === 'pose') { ch.player.rate = 1; if (v.yawCible !== undefined && !(v.regardeJoueur && dP < 10)) ch.yaw += difAngle(v.yawCible, ch.yaw) * Math.min(1, dt * 4.5);
+      if (v.clipFinal && ch.clip !== v.clipFinal && !v.clipForce && !v.unique) VIS.jouer(v, v.clipFinal); }
     if (v.etat === 'pose' && v.regardeJoueur && dP < 10) { const a = angleVers(PL.x - ch.pos[0], PL.z - ch.pos[2]); ch.yaw += difAngle(a, ch.yaw) * Math.min(1, dt * 3); }
-    { const surP = ch.pos[0] > -6.9 && ch.pos[0] < -5.1 && ch.pos[2] > 78.6 && ch.pos[2] < 92.4, g = SOL(ch.pos[0], ch.pos[2]); ch.pos[1] = surP ? PONTON.y : (v.clipFinal === 'Swim' && v.etat === 'pose') ? -.35 : Math.max(g, g < -.3 ? -.3 : g); }
+    { const g = SOL(ch.pos[0], ch.pos[2]), nage = v.clipFinal === 'Swim' && v.etat === 'pose', yc = surPonton(ch.pos[0], ch.pos[2]) && g < PONTON.y + .4 ? PONTON.y : nage ? -.35 : Math.max(g, -.3); ch.pos[1] += (yc - ch.pos[1]) * Math.min(1, dt * 12); if (Math.abs(yc - ch.pos[1]) > .6) ch.pos[1] = yc; }
     if (ch.visible) ch.update(dt); else ch.tick(dt);
-    if (v.animal) { const an = v.animal, dx = ch.pos[0] - an.pos[0], dz = ch.pos[2] - an.pos[2], d = Math.hypot(dx, dz); if (d > 1.8) { an.yaw = angleVers(dx, dz); an.pos[0] += Math.sin(an.yaw) * Math.min(d, 2.2) * dt; an.pos[2] += Math.cos(an.yaw) * Math.min(d, 2.2) * dt; if (an.clip !== 'Walk') an.play('Walk'); } else if (an.clip === 'Walk') an.play(Math.random() < .5 ? 'Sit' : 'Sniff'); an.pos[1] = SOL(an.pos[0], an.pos[2]); an.visible = ch.visible; if (an.visible) an.update(dt); if (dP < 6 && Math.random() < dt * .08) SON.aboie(); }
+    if (v.animal) { const an = v.animal, dx = ch.pos[0] - an.pos[0], dz = ch.pos[2] - an.pos[2], d = Math.hypot(dx, dz); if (d > 1.8) { an.yaw += difAngle(angleVers(dx, dz), an.yaw) * Math.min(1, dt * 6); const sp = Math.min(d * 1.2, v.court ? 4.5 : 2.2); an.pos[0] += Math.sin(an.yaw) * sp * dt; an.pos[2] += Math.cos(an.yaw) * sp * dt; const ac = sp > 3 ? 'Run' : 'Walk'; if (an.clip !== ac) an.play(ac); } else if (an.clip === 'Walk' || an.clip === 'Run') an.play(Math.random() < .5 ? 'Sit' : 'Sniff'); an.pos[1] = SOL(an.pos[0], an.pos[2]); an.visible = ch.visible; if (an.visible) an.update(dt); if (dP < 6 && Math.random() < dt * .08) SON.aboie(); }
     // bruitages liés à l'activité
-    if (v.sfx && ch.visible && v.etat === 'pose' && dP < 40) { v.tSfx = (v.tSfx || 0) - dt; if (v.tSfx <= 0) { v.tSfx = v.sfx === 'djembe' ? rnd(.25, .5) : v.sfx === 'guitare' ? rnd(.5, 1.4) : v.sfx === 'cerfVolant' ? rnd(3, 7) : v.sfx === 'coupFeu' ? rnd(6, 20) : rnd(2, 6); if (SON[v.sfx]) SON[v.sfx](v.sfx === 'djembe' ? Math.random() < .4 : undefined); } }
+    if (v.sfx && ch.visible && v.etat === 'pose' && dP < 40) { v.tSfx = (v.tSfx || 0) - dt; if (v.tSfx <= 0) { v.tSfx = v.sfx === 'djembe' ? rnd(.25, .5) : v.sfx === 'guitare' ? rnd(.5, 1.4) : v.sfx === 'cerfVolant' ? rnd(3, 7) : v.sfx === 'coupFeu' ? rnd(6, 20) : v.sfx === 'plouf' ? rnd(4, 9) : rnd(2, 6); if (SON[v.sfx]) SON[v.sfx](v.sfx === 'djembe' ? Math.random() < .4 : v.sfx === 'plouf' ? .12 * clamp(1 - dP / 40, 0, 1) : undefined); } }
     // répliques spontanées
     if (v.d.ambiant && !VIS.dlg && dP < 9 && ch.visible && !v.parti) { v.tAmb -= dt; if (v.tAmb <= 0) { v.tAmb = rnd(35, 70); if (!VOIX.parle()) VIS.dire(v, pick(v.d.ambiant)); } } }
-  // cerf-volant : flotte au vent
-  if (VIS.kite) { const k = VIS.kite, t = A.time; k.pos[0] = LIEUX.plage[0] + Math.sin(t * .5) * 3; k.pos[1] = 12 + Math.sin(t * .8) * 1.5; k.pos[2] = LIEUX.plage[1] - 8 + Math.cos(t * .37) * 2; k.rot[2] = Math.sin(t * .9) * .3; k.rot[0] = .6; }
+  // cerf-volant : flotte au vent au-dessus de la plage
+  if (VIS.kite) { const k = VIS.kite, t = A.time; k.pos[0] = LIEUX.plage[0] + Math.sin(t * .5) * 3; k.pos[1] = 12 + Math.sin(t * .8) * 1.5; k.pos[2] = LIEUX.plage[1] - 9 + Math.cos(t * .37) * 2; k.rot[2] = Math.sin(t * .9) * .3; k.rot[0] = .6; }
   // nettoyage des visiteurs partis
   if (C && C.part && C.pnj.every(v => v.fini || !v.ch)) VIS.finVisite();
   // bulle de texte (sous-titre du PNJ)
   if (!UI.dlgOuvert) { const b = VIS.pnj.map(v => v.bulle).filter(b => b && b.fin > performance.now())[0]; if (b) { sousTitre(b.t); VIS.bulleOn = true; } else if (VIS.bulleOn) { sousTitre(null); VIS.bulleOn = false; } }
 };
-VIS.departir = () => { const C = VIS.courant; if (!C || C.part) return; C.part = true; VIS.evenements('depart'); if (C.type.depart && C.type.depart.texte) note(texte(C.type.depart.texte), 4500); const dep = C.type.sortie || C.type.arrivee || 'sentier'; C.pnj.forEach((v, i) => { if (v.fini) return; v.parti = true; v.cible = VIS.lieu(dep, i); v.etat = 'marche'; v.clipFinal = 'Walk'; v.step = { ou: dep }; v.sfx = null; }); if (VIS.dlg) fermerDlg(); };
-VIS.finVisite = () => { const C = VIS.courant; if (!C) return; for (const v of C.pnj) { if (v.ch) { const i = JOE.pnj.indexOf(v.ch); if (i >= 0) JOE.pnj.splice(i, 1); } if (v.animal) { const i = JOE.betes.indexOf(v.animal); if (i >= 0) JOE.betes.splice(i, 1); } } VIS.pnj = VIS.pnj.filter(v => !C.pnj.includes(v)); for (const nd of (VIS.noeuds || [])) A.remove(nd); VIS.noeuds = []; VIS.kite = null; NOEUDS.tenteV.visible = false; VIS.tentes.length = 0; ETAT.feuV = 0; VIS.objets.length = 0; for (const o of OBJECTIFS.slice()) if (o.id.startsWith('vis_')) objectifRetirer(o.id); VIS.courant = null; VIS.planifier(); };
+VIS.departir = () => { const C = VIS.courant; if (!C || C.part) return; C.part = true; VIS.evenements('depart'); if (C.type.depart && C.type.depart.texte) note(texte(C.type.depart.texte), 4500); const dep = C.type.sortie || C.type.arrivee || 'sentier';
+  C.pnj.forEach(v => { if (v.fini) return; v.parti = true; v.sfx = null; v.clipForce = false; VIS.allerA(v, dep, 'Walk', { court: v.court }); }); if (VIS.dlg) fermerDlg(); };
+VIS.finVisite = () => { const C = VIS.courant; if (!C) return; for (const v of C.pnj) { if (v.ch) { const i = JOE.pnj.indexOf(v.ch); if (i >= 0) JOE.pnj.splice(i, 1); } if (v.animal) { const i = JOE.betes.indexOf(v.animal); if (i >= 0) JOE.betes.splice(i, 1); } } VIS.pnj = VIS.pnj.filter(v => !C.pnj.includes(v)); for (const nd of (VIS.noeuds || [])) A.remove(nd); VIS.noeuds = []; VIS.kite = null; NOEUDS.tenteV.visible = false; VIS.tentes.length = 0; VIS.slots = {}; ETAT.feuV = 0; VIS.objets.length = 0; for (const o of OBJECTIFS.slice()) if (o.id.startsWith('vis_') || o.id === 'visite') objectifRetirer(o.id); VIS.courant = null; VIS.planifier(); };
+// au réveil (ou après une longue ellipse) : chacun est déjà là où il devait aller ; ceux qui partaient sont partis
+VIS.recaler = () => { const C = VIS.courant; if (!C) return; VIS.routine(false); for (const v of C.pnj) { if (v.fini || !v.ch) continue; if (v.parti) { v.fini = true; v.ch.visible = false; continue; } if (v.etat === 'marche' && v.cible) { v.ch.pos[0] = v.cible[0]; v.ch.pos[2] = v.cible[1]; v.ch.pos[1] = SOL(v.cible[0], v.cible[1]); VIS.arrive(v); v.ch.yaw = v.yawCible; } if (v.animal) { v.animal.pos = [v.ch.pos[0] + .9, SOL(v.ch.pos[0] + .9, v.ch.pos[2] + .4), v.ch.pos[2] + .4]; } } };
 VIS.reveil = () => { const C = VIS.courant; if (!C) return ''; return C.msgReveil || ''; };
 // --- conditions et effets
 VIS.cond = si => { const C = VIS.courant; if (!si) return true; const fl = k => !!(C && C.flags[k]) || !!ETAT.drapeaux[k];
@@ -5698,22 +6035,22 @@ VIS.faire = (liste, v) => { const C = VIS.courant; if (!liste) return; for (cons
   case 'mort': finPartie(a.raison || 'meurtre', texte(a.t)); break;
   case 'combat': { const force = a.force === undefined ? .5 : a.force; let ch = .35 + .4 * (BES.energie / 100) + .25 * (BES.endurance / 100) - force * .55 + (SAC.objets.some(o => o.arme) ? .25 : 0) + (ETAT.drapeaux.entraine ? .1 : 0); const gagne = Math.random() < ch; SON.coup(); setTimeout(() => SON.coup(), 400); if (qui && qui.ch) { qui.ch.play(gagne ? 'Hit_Front' : 'Punch_Cross'); qui.clipForce = true; setTimeout(() => { qui.clipForce = false; }, 1200); } BES.endurance = 0; VIS.faire(gagne ? a.gagne : a.perd, v); break; }
   case 'partir': if (C) { if (a.court) C.pnj.forEach(p => p.court = true); VIS.departir(); } break;
-  case 'partirPNJ': if (qui && !qui.parti) { qui.parti = true; qui.cible = VIS.lieu(a.ou || C.type.sortie || C.type.arrivee || 'sentier'); qui.etat = 'marche'; qui.clipFinal = 'Walk'; qui.step = { ou: 'x' }; qui.court = !!a.court; } break;
+  case 'partirPNJ': if (qui && !qui.parti) { qui.parti = true; qui.sfx = null; VIS.allerA(qui, a.ou || C.type.sortie || C.type.arrivee || 'sentier', 'Walk', { court: !!a.court }); } break;
   case 'rester': if (C) { C.duree = Math.max(C.duree, (a.h || 10) + C.t); } break;
   case 'dire': if (qui) VIS.dire(qui, a.t); break;
-  case 'clip': if (qui && qui.ch) { qui.clipFinal = a.clip; qui.etat = 'pose'; qui.ch.play(a.clip, { offset: 0 }); if (a.force) { qui.clipForce = true; setTimeout(() => { qui.clipForce = false; }, (a.ms || 2000)); } } break;
-  case 'aller': if (qui) { qui.cible = VIS.lieu(a.ou, qui.i); qui.etat = 'marche'; qui.clipFinal = a.clip || 'Idle'; qui.court = !!a.court; qui.step = { ou: a.ou }; } break;
+  case 'clip': if (qui && qui.ch) { qui.clipPrec = qui.clipFinal; qui.clipFinal = a.clip; qui.etat = 'pose'; qui.chemin = []; VIS.jouer(qui, a.clip, { offset: 0 }); if (a.force) { qui.clipForce = true; setTimeout(() => { qui.clipForce = false; }, (a.ms || 2000)); } } break;
+  case 'aller': if (qui && !qui.parti) VIS.allerA(qui, a.ou, a.clip || 'Idle', { court: !!a.court }); break;
   case 'regarde': if (qui) qui.regardeJoueur = a.on !== false; break;
   case 'sfx': if (SON[a.s]) SON[a.s](); break;
   case 'objectif': objectifAjouter('vis_' + a.id, texte(a.t), a.lieu); break;
   case 'objectifFini': objectifFini('vis_' + a.id); break;
   case 'objet': VIS.poserObjet(a.o); break;
-  case 'tenteV': NOEUDS.tenteV.visible = a.on !== false; if (a.on !== false) VIS.tentes.push(LIEUX.tenteV); else VIS.tentes.length = 0; break;
+  case 'tenteV': if (a.on !== false) VIS.poserObjet('tenteV'); else { NOEUDS.tenteV.visible = false; VIS.tentes.length = 0; } VIS.slots = {}; break;
   case 'feuV': ETAT.feuV = a.h || 5; break;
   case 'revele': if (C) C.pnj.forEach(p => p.revele = true); break;
   case 'cache': if (qui) { qui.cache = !!a.on; } break;
   case 'parle': if (qui) qui.parle = a.on !== false; break;
-  case 'interaction': VIS.objets.push({ id: a.id, x: a.lieu ? VIS.lieu(a.lieu)[0] : a.x, z: a.lieu ? VIS.lieu(a.lieu)[1] : a.z, r: a.r || 2, nom: texte(a.nom), actif: true, f: () => { const o = VIS.objets.find(x => x.id === a.id); if (o) o.actif = false; VIS.faire(a.faire, v); } }); break;
+  case 'interaction': VIS.objets.push({ id: a.id, x: a.lieu ? (LIEUX[a.lieu] || VIS.lieu(a.lieu).p)[0] : a.x, z: a.lieu ? (LIEUX[a.lieu] || VIS.lieu(a.lieu).p)[1] : a.z, r: a.r || 2, nom: texte(a.nom), actif: true, f: () => { const o = VIS.objets.find(x => x.id === a.id); if (o) o.actif = false; VIS.faire(a.faire, v); } }); break;
   case 'dormirInterdit': ETAT.drapeaux.alerte = a.on !== false; break;
   case 'go': if (VIS.dlg && a.n) VIS.noeud(a.n); break;
   case 'fin': if (VIS.dlg) fermerDlg(); break;
@@ -5732,7 +6069,7 @@ VIS.noeud = id => { const G = VIS.dlg; if (!G) return; const n = G.D.noeuds[id];
   if (n.auto) { G.autoT = setTimeout(() => { if (VIS.dlg === G && G.id === id) VIS.noeud(n.auto); }, Math.max(2500, t.length * 70)); } };
 VIS.choix = c => { const G = VIS.dlg; if (!G) return; clearTimeout(G.autoT); if (c.eff) VIS.faire(c.eff, G.v); if (ETAT.mort) return; if (c.fin || (!c.go && !VIS.dlg)) { fermerDlg(); return; } if (!VIS.dlg) return; if (c.go) VIS.noeud(c.go); else fermerDlg(); };
 VIS.partir = () => { const G = VIS.dlg; if (!G) return; const n = G.courant; if (n && n.pasPartir) { SON.non(); return; } fermerDlg(); };
-VIS.finDialogue = () => { const G = VIS.dlg; VIS.dlg = null; if (!G) return; clearTimeout(G.autoT); VOIX.stop(); const v = G.v; if (v.ch && v.etat === 'pose' && v.clipFinal) v.ch.play(v.clipFinal); const D = G.D; if (D.apres) VIS.faire(D.apres, v); };
+VIS.finDialogue = () => { const G = VIS.dlg; VIS.dlg = null; if (!G) return; clearTimeout(G.autoT); VOIX.stop(); const v = G.v; if (v.ch && v.etat === 'pose' && v.clipFinal) VIS.jouer(v, v.clipFinal); const D = G.D; if (D.apres) VIS.faire(D.apres, v); };
 // --- position du nom au-dessus du PNJ (écran)
 VIS.majNom = () => { const G = VIS.dlg; if (!G || !G.v.ch) return; const q = VIS.courant && VIS.courant.pnj.find(p => p.prenom === $('dlgNom').querySelector('b').textContent) || G.v; const ch = q.ch, s = A.project([ch.pos[0], ch.pos[1] + 2.05 * (ch.rootScale || 1), ch.pos[2]]); const el = $('dlgNom'); if (!s) { el.style.opacity = 0; return; } el.style.opacity = 1; el.style.left = clamp(s[0] + 40, 80, innerWidth - 120) + 'px'; el.style.top = clamp(s[1], 60, innerHeight * .45) + 'px'; };
 
@@ -7885,7 +8222,7 @@ CINE.demarrer = (apres) => { CINE.apres = apres; CINE.on = true; UI.cineOn = tru
     { d: 8, txt: 'Du moins, c’est ce que je croyais.', cam: (p, t) => [[p[0] + 14 - t * 1.1, p[1] + 2.4, p[2] - 5], [p[0], p[1] + 1.3, p[2]]] }];
   setTimeout(() => $('voile').classList.add('off'), 300); SON.init(); };
 CINE.maj = dt => { if (!CINE.on) return; CINE.t += dt; const ch = CINE.marcheur; let p;
-  if (ch) { CINE.z -= dt * 1.35; const x = SENTIER.x(CINE.z); const dx = x - ch.pos[0], dz = CINE.z - ch.pos[2]; ch.yaw = angleVers(dx, dz); ch.pos = [x, SOL(x, CINE.z), CINE.z]; ch.update(dt); p = ch.pos; if (Math.floor(CINE.t * 1.7) !== Math.floor((CINE.t - dt) * 1.7)) SON.pas('cailloux', .35); } else p = [SENTIER.x(CINE.z), SOL(SENTIER.x(CINE.z), CINE.z), CINE.z];
+  if (ch) { CINE.z -= dt * 1.3; const x = SENTIER.x(CINE.z); const dx = x - ch.pos[0], dz = CINE.z - ch.pos[2]; if (Math.hypot(dx, dz) > 1e-4) ch.yaw += difAngle(angleVers(dx, dz), ch.yaw) * Math.min(1, dt * 4); ch.pos = [x, SOL(x, CINE.z), CINE.z]; ch.player.rate = 1; ch.update(dt); p = ch.pos; if (Math.floor(CINE.t * 1.7) !== Math.floor((CINE.t - dt) * 1.7)) SON.pas('cailloux', .35); } else p = [SENTIER.x(CINE.z), SOL(SENTIER.x(CINE.z), CINE.z), CINE.z];
   let acc = 0, i = 0; for (; i < CINE.plans.length; i++) { if (CINE.t < acc + CINE.plans[i].d) break; acc += CINE.plans[i].d; }
   if (i >= CINE.plans.length) { CINE.finir(); return; }
   const P = CINE.plans[i], lt = CINE.t - acc; if (CINE.i !== i) { CINE.i = i; sousTitre(P.txt); CINE.cam = null; if (i > 0) { $('voile').classList.remove('off'); setTimeout(() => $('voile').classList.add('off'), 250); } }
@@ -7893,18 +8230,37 @@ CINE.maj = dt => { if (!CINE.on) return; CINE.t += dt; const ch = CINE.marcheur;
   if (lt > P.d - 1.2) sousTitre(null); };
 CINE.finir = () => { if (!CINE.on) return; CINE.on = false; sousTitre(null); $('cinePasser').hidden = true; $('voile').classList.remove('off'); VOIX.stop();
   setTimeout(() => { if (CINE.marcheur && JOE) { const i = JOE.pnj.indexOf(CINE.marcheur); if (i >= 0) JOE.pnj.splice(i, 1); CINE.marcheur = null; } document.body.classList.remove('cine'); UI.cineOn = false; CINE.apres && CINE.apres(); }, 1400); };
-// réveil sous la tente : la caméra se redresse et sort par l'entrée, puis le joueur prend la main
-function reveilTente(apres) { const [tx, tz] = LIEUX.tenteJ, ty = SOL(tx, tz); UI.cineOn = true; $('hud').hidden = false; const T0 = performance.now(); let fini = false;
-  PL.x = tx; PL.z = tz - 1.9; PL.yaw = PI; PL.pitch = 0; PL.y = ty; PL.accroupi = false;
-  const anim = () => { if (fini) return; const t = (performance.now() - T0) / 1000; const k = clamp((t - .8) / 2.6, 0, 1), s = k * k * (3 - 2 * k); const eye = [tx + .35 * (1 - s) + 0, ty + .45 + s * .9, tz + .2 - s * 2.1], pitch = 1.25 * (1 - s) + (1 - s) * Math.sin(t * 1.1) * .03; A.camera.fixed.eye = eye; A.camera.fixed.look = [eye[0], eye[1] + Math.sin(pitch) * 10, eye[2] - Math.cos(pitch) * 10]; PL.eye = eye; PL.pitch = pitch;
-    if (t > .6 && !anim.zip) { anim.zip = true; SON.zip(); } if (t < 3.8) requestAnimationFrame(anim); else { fini = true; UI.cineOn = false; PL.pitch = 0; PL.hauteur = 1.68; apres && apres(); } };
-  $('voile').classList.add('off'); SON.tissu(); requestAnimationFrame(anim); }
+// réveil sous la tente : allongé, on ouvre les yeux sur la toile, on se redresse, on sort à quatre pattes par la porte, on se relève dehors
+const REVEIL = { on: false, t: 0, apres: null, cles: null };
+function reveilTente(apres, matin) { const [tx, tz] = LIEUX.tenteJ, ty = SOL(tx, tz); UI.cineOn = true; REVEIL.on = true; REVEIL.t = 0; REVEIL.apres = apres; REVEIL.matin = !!matin; $('hud').hidden = true;
+  // images clés dans le repère de la tente (porte vers -z) : [t, x, y, z, tangage]
+  REVEIL.cles = [[0, .42, .27, .6, 1.12], [1.7, .41, .3, .57, 1.0], [3.1, .3, .8, .42, .06], [3.6, .22, .74, .26, -.1], [5.0, .02, .6, -.78, -.16], [5.9, 0, .66, -1.42, -.04], [7.0, 0, 1.68, -1.86, 0]];
+  REVEIL.base = [tx, ty, tz]; PL.x = tx; PL.z = tz - 1.86; PL.yaw = PI; PL.pitch = 0; PL.y = ty; PL.accroupi = false; PL.vy = 0; PL.lampe = false; $('bLampe').classList.remove('on'); montrerMain(null);
+  $('voile').classList.add('off'); SON.tissu(); }
+function majReveil(dt) { if (!REVEIL.on) return; const R = REVEIL, K = R.cles; R.t += dt; const t = R.t; let i = 0; while (i < K.length - 2 && t > K[i + 1][0]) i++;
+  const a = K[i], b = K[i + 1], k = clamp((t - a[0]) / (b[0] - a[0]), 0, 1), s = k * k * (3 - 2 * k), L = (j) => a[j] + (b[j] - a[j]) * s;
+  const ramp = i === 3 || i === 4 ? Math.sin(t * 7.5) * .025 : 0, resp = i < 2 ? Math.sin(t * 1.4) * .012 : 0;   // balancement à quatre pattes, respiration allongé
+  const eye = [R.base[0] + L(1), R.base[1] + L(2) + ramp + resp, R.base[2] + L(3)], pitch = L(4), yaw = PI + (i < 2 ? Math.sin(t * .6) * .05 : 0);
+  const cp = Math.cos(pitch); A.camera.fixed.eye = eye; A.camera.fixed.look = [eye[0] + Math.sin(yaw) * cp * 10, eye[1] + Math.sin(pitch) * 10, eye[2] + Math.cos(yaw) * cp * 10]; PL.eye = eye; PL.pitch = pitch;
+  if (t > 3.15 && !R.zip) { R.zip = true; SON.zip(); } if (t > 3.6 && t < 5.9 && Math.floor(t * 2.6) !== Math.floor((t - dt) * 2.6)) SON.tissu();
+  if (t >= K[K.length - 1][0]) { R.on = false; R.zip = false; UI.cineOn = false; PL.pitch = 0; PL.hauteur = 1.68; PL.eye = eye; $('hud').hidden = false; const f = R.apres; R.apres = null; f && f(); } }
 
 // ==== CAMP : FEU, LUMIÈRES, PERFORMANCES ==========================================================
-function majFeu(dt) { const f = NOEUDS.feu; if (!f) return; const nuit = A.nuit();
-  if (ETAT.feu > 0) { const s = .9 + .2 * Math.sin(A.time * 7) + .1 * Math.sin(A.time * 13); if (Math.hypot(PL.x - f.pos[0], PL.z - f.pos[2]) < 90) { if (Math.random() < .3) A.fx.fire([f.pos[0] + rnd(-.12, .12), f.pos[1] - .15, f.pos[2] + rnd(-.12, .12)], .32); A.fx.lights.length = Math.min(A.fx.lights.length, 4); if (Math.random() < .04) A.fx.emit('spark', [f.pos[0], f.pos[1] + .2, f.pos[2]], [rnd(-.6, .6), rnd(1.5, 3), rnd(-.6, .6)], rnd(.6, 1.2), .03, [1, .7, .3], 1); } f.light.i = 12 * s * (ETAT.feuBois < .5 ? ETAT.feuBois * 2 : 1); } else f.light.i = 0;
-  const fv = NOEUDS.feuV; if (fv) { if (ETAT.feuV > 0) { if (Math.hypot(PL.x - fv.pos[0], PL.z - fv.pos[2]) < 90 && Math.random() < .3) A.fx.fire([fv.pos[0], fv.pos[1] - .15, fv.pos[2]], .3); fv.light.i = 9 * (.9 + .2 * Math.sin(A.time * 6.3)); } else fv.light.i = 0; }
-  const lan = NOEUDS.lanterne; if (lan) { lan.light.i = nuit > .2 ? 9 * nuit : 0; lan.parts[0].mat = nuit > .2 ? 8 : 7; }
+// flammes de camp : langues de feu + fumée claire et légère (l'émetteur générique du moteur fait une colonne noire d'incendie)
+function flammes(p, s, dt) { const F = A.fx, n = Math.random() < .5 ? 1 : 2; for (let i = 0; i < n; i++) F.emit('fire', [p[0] + rnd(-.18, .18) * s, p[1], p[2] + rnd(-.18, .18) * s], [rnd(-.15, .15), rnd(1.1, 2.1) * s, rnd(-.15, .15)], rnd(.35, .65), rnd(.3, .55) * s, [1, .58, .2], .9, { ramp: 1 });
+  if (Math.random() < dt * 2.2) F.emit('smoke', [p[0] + rnd(-.1, .1), p[1] + .7 * s, p[2] + rnd(-.1, .1)], [rnd(-.15, .15) + .12, rnd(.6, 1.1), rnd(-.15, .15)], rnd(4, 7), rnd(.35, .6) * s, [.62, .61, .6], .22); }
+function majFeu(dt) { const f = NOEUDS.feu; if (!f) return; const nuit = A.nuit(), t = A.time;
+  if (ETAT.feu > 0) { const s = .9 + .2 * Math.sin(t * 7) + .1 * Math.sin(t * 13); if (Math.hypot(PL.x - f.pos[0], PL.z - f.pos[2]) < 90) { if (Math.random() < .55) flammes([f.pos[0], f.pos[1] - .2, f.pos[2]], .75, dt); A.fx.lights.length = Math.min(A.fx.lights.length, 4); if (Math.random() < .04) A.fx.emit('spark', [f.pos[0], f.pos[1] + .2, f.pos[2]], [rnd(-.6, .6), rnd(1.5, 3), rnd(-.6, .6)], rnd(.6, 1.2), .03, [1, .7, .3], 1); } f.light.i = 12 * s * (ETAT.feuBois < .5 ? ETAT.feuBois * 2 : 1); } else f.light.i = 0;
+  if (NOEUDS.braises) { NOEUDS.braises.visible = ETAT.feu > 0; if (ETAT.feu > 0) { const k = .75 + .25 * Math.sin(t * 3.1); for (const p of NOEUDS.braises.parts) p.color = [1, .32 + .14 * k, .08]; } }
+  const fv = NOEUDS.feuV; if (fv) { if (ETAT.feuV > 0) { if (Math.hypot(PL.x - fv.pos[0], PL.z - fv.pos[2]) < 90 && Math.random() < .5) flammes([fv.pos[0], fv.pos[1] - .2, fv.pos[2]], .6, dt); fv.light.i = 9 * (.9 + .2 * Math.sin(t * 6.3)); } else fv.light.i = 0; }
+  if (NOEUDS.foyerV) NOEUDS.foyerV.visible = NOEUDS.tenteV.visible || ETAT.feuV > 0;
+  // lanterne : allumée au crépuscule, flamme qui palpite, balancement au vent sur son crochet
+  const lan = NOEUDS.lanterne; if (lan) { const on = nuit > .18; lan.light.i = on ? 9 * Math.min(1, nuit * 1.4) * (.94 + .06 * Math.sin(t * 11) + .03 * Math.sin(t * 23)) : 0; if (NOEUDS.lanVerre) { NOEUDS.lanVerre.mat = on ? 8 : 3; NOEUDS.lanVerre.color = on ? [1, .86, .6] : PAL.creme; } if (NOEUDS.lanFlamme) { NOEUDS.lanFlamme.mat = on ? 8 : 7; NOEUDS.lanFlamme.color = on ? [1, .8, .45] : [.25, .23, .2]; }
+    const w = .5 + .5 * Math.sin(t * .23); lan.rot[0] = Math.sin(t * 1.35) * .035 * (.4 + w); lan.rot[2] = Math.sin(t * 1.05 + 1.3) * .045 * (.4 + w); }
+  // linge : il flotte un peu, plus fort par rafales
+  if (NOEUDS.linge) { const raf = .55 + .45 * Math.sin(t * .31) * Math.sin(t * .17 + 2); for (const nd of NOEUDS.linge) { nd.rot[0] = (Math.sin(t * 1.7 + nd.ph) * .14 + .1) * raf; nd.rot[2] = Math.sin(t * 1.15 + nd.ph * 1.7) * .04 * raf; } }
+  // couvercle de la glacière : s'ouvre et se referme sur sa charnière (accélération puis amorti)
+  const cv = NOEUDS.couvercle; if (cv) { const A0 = ANIM_CAMP; A0.couv += clamp(A0.couvCible - A0.couv, -dt * 2.6, dt * 2.6); const e = A0.couv < .5 ? 2 * A0.couv * A0.couv : 1 - Math.pow(-2 * A0.couv + 2, 2) / 2; cv.rot[0] = -1.38 * e; }
   SON.ambiance(dt, HORL.h, Math.max(0, Math.hypot(PL.x - LAC.x, PL.z - LAC.z) - LAC.r), ETAT.feu > 0 ? clamp(1 - Math.hypot(PL.x - f.pos[0], PL.z - f.pos[2]) / 14, 0, 1) : 0, false, ETAT.pause || UI.menuOuvert); }
 let perfT = 0;
 function majPerf(dt) { if (!OPT.perf) return; perfT += dt; if (perfT < .5) return; perfT = 0; const s = A.stats; $('perf').textContent = `${s.fps} ips · ${(s.tris / 1000) | 0} k tri · ${s.draws} dessins · ${s.quality} · ×${(s.scale || 1).toFixed(2)} · ${IN.dernier}${IN.gp ? ' · ' + IN.gp.id.slice(0, 18) : ''}`; }
@@ -7917,16 +8273,16 @@ function boucle(dt) { const now = performance.now(); manette(); gardeAudio(now, 
   majUI();
   const actif = !ETAT.pause && !ETAT.dort && !UI.ouvert() && !ETAT.mort;
   if (ETAT.dort) majSommeil(dt);
-  else if (actif) { if (!UI.cineOn) majJoueur(dt); if (!UI.dlgOuvert) { tick(dt * HORL.VITESSE / 3600); majAction(dt); } alertesBesoins(); }
+  else if (actif) { if (REVEIL.on) majReveil(dt); else if (!UI.cineOn) majJoueur(dt); if (!UI.dlgOuvert) { tick(dt * HORL.VITESSE / 3600); majAction(dt); } alertesBesoins(); }
   if (!ETAT.pause && !ETAT.mort) { VIS.maj(dt); majFaune(dt, PL); majFeu(dt); if (!ETAT.dort) majMains(dt, PL); if (VIS.dlg) VIS.majNom(); }
-  majJauges(); majBoussole(); majInvite(); majPerf(dt);
+  majJauges(); majBoussole(); majInvite(); MARQ.maj(); majPerf(dt);
   objT += dt; if (objT > 2) { objT = 0; if (ETAT.drapeaux.alerte) {} } sauveT += dt; if (sauveT > 60) { sauveT = 0; sauver(); }
   consommerEntrees(); }
 // ==== CAMP : LANCEMENT ===========================================================================
-function nouvellePartie(prenom) { JOUEUR.prenom = prenom; ETAT.jour = 1; HORL.h = 7.2; Object.assign(BES, { faim: 88, soif: 86, energie: 100, endurance: 100, sante: 100 }); Object.assign(SAC, { rations: 5, eau: 4, gourde: 2, gourdeMax: 3, baies: 0, pommes: 0, noisettes: 0, buches: 2, poisson: 0, poissonGrille: 0, objets: [] }); ETAT.drapeaux = {}; ETAT.historique = []; ETAT.glaciereRangee = false; ETAT.reserveBois = 6; ETAT.visites = 0; ETAT.feu = 0; ETAT.feuBois = 0; ETAT.feuV = 0; ETAT.poison = 0; ETAT.meteo = 'clair'; ETAT.mort = null; VIS.vus = []; effacer('partie'); }
-function demarrerJeu(avecCine) { UI.menuOuvert = false; $('menu').hidden = true; ETAT.pause = false; SON.init(); SON.reprendre(); appliquerMeteo(); rangerGlaciere(); PL.lampe = false; VIS.planifier();
-  const go = () => { ETAT.enJeu = true; $('hud').hidden = false; document.body.classList.toggle('manette', IN.dernier === 'manette'); if (avecCine) reveilTente(() => { note(`Jour 1. Bienvenue au lac, ${JOUEUR.prenom}. Repas à midi et le soir. Quelqu'un finira par passer…`, 6000); objectifAjouter('eau', 'Purifier de l’eau au lac', 'rive'); objectifAjouter('feu_bois', 'Préparer le feu pour ce soir', 'bois'); sauver(); }); else { $('voile').classList.add('off'); note(`Jour ${ETAT.jour}, ${jourSemaine()}, ${hm(HORL.h)}. Bon retour, ${JOUEUR.prenom}.`, 4500); } };
-  if (avecCine) CINE.demarrer(() => { HORL.h = 7.2; PL.x = 3; PL.z = 110; go(); }); else go(); }
+function nouvellePartie(prenom) { JOUEUR.prenom = prenom; ETAT.jour = 1; HORL.h = 7.2; Object.assign(BES, { faim: 88, soif: 86, energie: 100, endurance: 100, sante: 100 }); Object.assign(SAC, { rations: 5, eau: 4, gourde: 2, gourdeMax: 3, baies: 0, pommes: 0, noisettes: 0, buches: 2, poisson: 0, poissonGrille: 0, objets: [] }); ETAT.drapeaux = {}; ETAT.historique = []; ETAT.glaciereRangee = false; ETAT.reserveBois = 6; ETAT.visites = 0; ETAT.feu = 0; ETAT.feuBois = 0; ETAT.feuV = 0; ETAT.poison = 0; ETAT.veille = false; ETAT.meteo = 'clair'; ETAT.mort = null; VIS.vus = []; VIS.prochain = null; VIS.jourVisite = 0; repousser(); effacer('partie'); }
+function demarrerJeu(avecCine) { UI.menuOuvert = false; $('menu').hidden = true; ETAT.pause = false; SON.init(); SON.reprendre(); appliquerMeteo(); rangerGlaciere(); PL.lampe = false; if (!VIS.prochain) VIS.planifier(); PL.y = solJoueur(PL.x, PL.z);
+  const go = () => { ETAT.enJeu = true; document.body.classList.toggle('manette', IN.dernier === 'manette'); if (avecCine) reveilTente(() => { note(`Jour 1. Bienvenue au lac, ${JOUEUR.prenom}. Repas à midi et le soir. Quelqu'un finira par passer…`, 6000); objectifAjouter('eau', 'Purifier de l’eau au lac', 'rive'); objectifAjouter('feu_bois', 'Préparer le feu pour ce soir', 'bois'); sauver(); }); else { $('hud').hidden = false; $('voile').classList.add('off'); note(`Jour ${ETAT.jour}, ${jourSemaine()}, ${hm(HORL.h)}. Bon retour, ${JOUEUR.prenom}.`, 4500); } };
+  if (avecCine) CINE.demarrer(() => { HORL.h = 7.2; go(); }); else go(); }
 function initMenu() { montrerMenu();
   $('bNouvelle').addEventListener('click', () => { SON.init(); SON.reprendre(); const p = ($('prenom').value || '').trim() || 'Camille'; nouvellePartie(p); S_ui(); demarrerJeu(true); });
   $('bContinuer').addEventListener('click', () => { SON.init(); SON.reprendre(); if (!charger()) { note('Aucune partie à reprendre.'); return; } S_ui(); demarrerJeu(false); });
@@ -7936,28 +8292,28 @@ function initMenu() { montrerMenu();
   $('oQualite').addEventListener('click', () => { const Q = ['auto', 'basse', 'moyenne', 'haute', 'ultra']; OPT.qualite = Q[(Q.indexOf(OPT.qualite) + 1) % Q.length]; $('oQualite').textContent = 'Qualité : ' + OPT.qualite; if (OPT.qualite === 'auto') A.autoQuality = true; else { A.autoQuality = false; A.setQuality(OPT.qualite); } sauverOptions(); }); $('oQualite').textContent = 'Qualité : ' + OPT.qualite;
   $('oTexte').addEventListener('click', () => { OPT.texte = OPT.texte === 'grand' ? 'normal' : 'grand'; $('oTexte').textContent = 'Texte : ' + OPT.texte; appliquerTexte(); sauverOptions(); }); $('oTexte').textContent = 'Texte : ' + OPT.texte;
   $('finRejouer').addEventListener('click', () => { location.reload(); }); $('finMenu').addEventListener('click', () => { location.reload(); });
-  $('cinePasser').addEventListener('click', () => CINE.passer()); $('perf').hidden = !OPT.perf; }
+  $('cinePasser').addEventListener('click', () => CINE.passer()); $('perf').hidden = !OPT.perf; tog('oMarq', 'marqueurs'); }
 function chargement(p, t) { $('chargeBarre').style.width = Math.round(p * 100) + '%'; if (t) $('chargeTexte').textContent = t; }
 async function lancer() { appliquerTexte(); addEventListener('resize', appliquerTexte); chargement(.05, 'Préparation du lac…'); await new Promise(r => setTimeout(r, 30));
   try { creerMonde(); } catch (e) { $('chargeTexte').textContent = 'Erreur 3D : ' + (e && e.message || e); console.error(e); return; }
   chargement(.45, 'Les visiteurs se préparent…'); await new Promise(r => setTimeout(r, 30)); joePack(); chargement(.8, 'Dernières lumières…'); await new Promise(r => setTimeout(r, 30));
-  A.onUpdate(boucle); A.camera.fixed.eye = [3, 3.5, 112]; A.camera.fixed.look = [0, 1, 60]; PL.eye = A.camera.fixed.eye.slice(); A.start();
+  MARQ.init(); A.onUpdate(boucle); A.camera.fixed.eye = [6, 4.6, 116]; A.camera.fixed.look = [-2, 2.2, 92]; PL.eye = A.camera.fixed.eye.slice(); A.start();
   initMenu(); chargement(1); setTimeout(() => { $('chargement').hidden = true; $('voile').classList.add('off'); }, 250);
   addEventListener('pagehide', sauver); document.addEventListener('visibilitychange', () => { if (document.hidden) { sauver(); VOIX.stop(); } });
-  self.HDF_CAMP = { A, ETAT, BES, SAC, PL, VIS, HORL, OBJETS, LIEUX, note, demarrerJeu, nouvellePartie, finPartie, dormir, VISITEURS };
+  self.HDF_CAMP = { A, ETAT, BES, SAC, PL, VIS, HORL, OBJETS, LIEUX, COLL, NOEUDS, MARQ, note, demarrerJeu, nouvellePartie, finPartie, dormir, VISITEURS, reveilTente };
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', lancer); else lancer();
 
 </script>
 <!--
-NOTE-INTERNE (Claude) · HDF : CAMPING v0.1 · F.S.M Game House · 2 nov. 2026
+NOTE-INTERNE (Claude) · HDF : CAMPING v0.2 · F.S.M Game House · 2 nov. 2026
 À lire avant de modifier ce fichier. Ne pas relire le fichier en entier : chercher les ancres « ==== CAMP : » (grep), puis ne lire que la section utile.
 
 STRUCTURE DU FICHIER
  1. <head> + <style> : HUD (boussole #boussole canvas, jauges #jauges, objectifs, invite ✕, dialogue #dlg = #dlgNom flottant + #dlgTexte + #dlgBoite/#dlgChoix + #dlgPied), commandes tactiles (#stick, #boutons ✕○△□, #bCourir, #bLampe, #bPause), panneaux (.panneau : #sac, #pause), #menu (titre), #fin, #cine, #voile, #chargement, #perf.
     Taille des textes : variable --fs (20 px « grand » / 17 px « normal », moins sur petit écran) ; body.manette et body.souris cachent les commandes tactiles.
  2. <div id="fsmIntro"> : cinématique du studio (copiée telle quelle de La fille v2.5, auto-fermeture 4,8 s).
- 3. <script> FSM3D 2.10 (moteur copié de HDF The Life — Toile nette v1.2, inchangé sauf : compteur A.stats.tris qui inclut la végétation, marqué « HDF CAMPING »).
+ 3. <script> FSM3D 2.10 (moteur copié de HDF The Life — Toile nette v1.2, inchangé sauf, marqués « HDF CAMPING » : compteur A.stats.tris qui inclut la végétation ; terrain : hauteur du sentier interpolée (plus de marches) et road.force(z) pour faire commencer/finir un sentier).
  4. <script> Joe Engine + self.JOE_DATA (pack PNJ/animaux/objets, inchangé).
  5. <script> jeu (sections, dans l'ordre) :
     OUTILS (JEU.version, $, clamp, rnd, pick, angleVers, difAngle, hm, texte({JOUEUR})) · OPTIONS/SAUVEGARDE (OPT, lire/ecrire clés « hdfc-… ») ·
@@ -7984,7 +8340,17 @@ REPÈRES
  - Performances : A.stats.tris inclut la végétation ; vues mesurées (ultra, Chromium) 160-310 k triangles ; sur iPad la qualité « basse » du moteur réduit densités/portées (×.35, ×.6). Bandeau : Options → Affichage des performances.
  - Pièges : GEO.roundBox(w,h,d,r,unit=true) renvoie une boîte UNITAIRE (à mettre à l'échelle) ; sans unit, biseau < 3,5 cm = boîte simple. Les PNJ Joe ne projettent pas d'ombre. Les `let`/`const` du script ne sont pas des propriétés de window : utiliser HDF_CAMP.
 
-À FAIRE / IDÉES v0.2 : sauvegarde du visiteur en cours ; pêche par le joueur ; météo visible (pluie déjà possible via A.meteo) ; deux emplacements de sauvegarde ; branchement History Sens pour les dialogues libres.
+NOUVEAUTÉS v0.2 (modernisation du camp)
+ - Terrain : plateau du camp + pente douce régulière jusqu'à la grève (eau vers z 92,4) ; le sentier s'arrête à l'entrée du camp (SENTIER.force), plus de tranchée jusqu'au lac.
+ - Camp refait (OBJETS DU CAMP) : outils repere(x,y,z,yaw) / matTube(a,b,r) / coqueTente / bâtirTente ; palette PAL (une couleur = un lot de dessin). Tente avec vraie porte découpée (la caméra du réveil passe par la porte), arceaux, double toit, haubans, intérieur ; foyer + trépied/marmite + braises (NOEUDS.braises) ; 2 bancs (NOEUDS.bancs : sièges exacts des PNJ, assise 0,48 m) ; chaise pliante (NOEUDS.chaiseYaw) ; glacière dynamique (NOEUDS.glaciere, couvercle animé ANIM_CAMP.couv, NOEUDS.glaciereTente quand rangée) ; table, réserve de bois + billot, lanterne suspendue qui se balance, coin eau, corde à linge animée (NOEUDS.linge), ponton (PONTON, surPonton(x,z)), grève (pierres plates, galets, roseaux), panneau du sentier, camp du visiteur (tenteV, foyerV, NOEUDS.bancsV).
+ - Plantes de cueillette : touffes de feuillage enregistrées (o.touffes) ; majFruits(o) pose les fruits sur leur surface ; fruits du jour sauvegardés.
+ - Marqueurs persistants (MARQ) : icônes vectorielles ICONES (SVG à l'écran, Path2D sur la boussole), état du jour (« 4/5 », « repousse demain », « gourde 1/3 », « 6 bûches »), option OPT.marqueurs (menu titre + pause).
+ - Visiteurs : VIS.lieu(ou,i,clip) → {p,yaw,exact,porte} toujours hors obstacle (anneaux VIS.anneau autour du feu, du rocher, des plantes) ; VIS.allerA (sièges : chaise/bancs pour les clips « seat: chair », sinon Sit_Ground) ; VIS.itineraire (sentier + contournement des grands obstacles) ; VIS.marcher (contournement local, attente polie si le joueur bloque, dégagement hors de vue) ; VIS.jouer (gestes ponctuels → retour à l'attente) ; VIS.routine ne reprend jamais un partant et un ordre « aller » tient jusqu'à l'étape suivante ; VIS.recaler au réveil ; planning absolu (jour + heure) sauvegardé.
+   Bugs corrigés : les partants retournaient à leur étape et disparaissaient sur place ; « aller » était annulé à l'image suivante ; feu/chaise/glacière/rocher/tentes inatteignables (PNJ bloqués, visite sans fin, plus aucune visite) ; PNJ « fini » qui réapparaissait ; réplique d'arrivée jamais dite.
+ - Réveil sous la tente piloté par la boucle (REVEIL, majReveil) : aussi chaque matin après une vraie nuit ; ✕ pour l'abréger.
+ - Tests : tools/sim.js (25 types, blocages), tools/bot.js (plusieurs jours, dialogues au hasard, sommeil), tools/scene.js et tools/fp.js (captures).
+
+À FAIRE / IDÉES v0.3 : sauvegarde du visiteur en cours ; pêche par le joueur ; météo visible (pluie déjà possible via A.meteo) ; deux emplacements de sauvegarde ; branchement History Sens pour les dialogues libres.
 
 -->
 </body></html>
