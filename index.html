@@ -5199,11 +5199,11 @@ function construireCamp() { meshes(); const R = A.R, m = GEO.merger(), T = M3.tr
     add(dome, mul(T(tx, ty - .02, tz), S(1.27, 1.005, 1.02)), VERT2, 4);                                     // double toit léger
     // entrée (côté nord, vers le lac) : auvent demi-dôme + ouverture sombre
     add(dome, mul(T(tx, ty, tz - .85), mul(S(.75, .62, .6), M3.identity())), ORANGE, 4);
-    add(CUBE, mul(T(tx, ty + .5, tz - 1.02), S(.9, 1, .08)), [.05, .06, .05], 10);                           // ouverture
-    add(CUBE, mul(T(tx, ty + .01, tz - .3), S(2.8, .025, 2.2)), [.16, .18, .16], 4);                          // tapis de sol
+    add(CUBE, mul(T(tx, ty + .24, tz - 1.57), S(.8, .46, .05)), [.05, .06, .05], 10);                         // ouverture (logée dans l'auvent, ne dépasse plus du toit)
+    add(CUBE, mul(T(tx, ty + .01, tz), S(2.2, .025, 1.9)), [.16, .18, .16], 4);                               // tapis de sol (reste sous le dôme)
     // intérieur visible depuis l'entrée : sac de couchage, oreiller, lampe
     add(RB(.75, .22, 1.9, .1), T(tx + .35, ty + .13, tz + .2), [.2, .32, .6], 4); add(RB(.5, .14, .32, .06), T(tx + .35, ty + .32, tz - .55), [.9, .88, .82], 4);
-    add(RB(.75, .22, 1.9, .1), T(tx - .45, ty + .13, tz + .2), [.6, .25, .2], 4);
+    add(RB(.75, .22, 1.9, .1), T(tx - .45, ty + .13, tz + .2), [.6, .25, .2], 4); add(RB(.5, .14, .32, .06), T(tx - .45, ty + .32, tz - .55), [.9, .88, .82], 4);
     // haubans et sardines
     for (const [dx, dz] of [[-1.9, -1.4], [1.9, -1.4], [-1.9, 1.6], [1.9, 1.6]]) { const px = tx + dx, pz = tz + dz, py = y(px, pz); add(CYL, mul(T(px, py + .06, pz), mul(RZ(.4 * Math.sign(dx)), S(.03, .3, .03))), [.6, .6, .62], 7);
       const ax = tx + dx * .55, az = tz + dz * .55, ay = ty + .95, L = Math.hypot(px - ax, py - ay, pz - az); const mid = [(px + ax) / 2, (py + ay) / 2, (pz + az) / 2]; const yaw = Math.atan2(px - ax, pz - az), pitch = Math.atan2(py - ay, Math.hypot(px - ax, pz - az));
