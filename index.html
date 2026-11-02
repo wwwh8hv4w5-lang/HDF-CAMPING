@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HDF : CAMPING">
 <meta name="theme-color" content="#0b0f0a">
-<title>HDF : CAMPING — v0.6</title>
+<title>HDF : CAMPING — v0.6.1</title>
 <style>
 :root{--lin:#f3efe6;--ambre:#f2c66d;--mousse:#8fb37a;--nuit:#0b0f0a;--verre:rgba(10,14,10,.62);--rouge:#e0665a;--bleu:#7fb6d8;
   --sans:-apple-system,BlinkMacSystemFont,"Avenir Next","Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
@@ -170,7 +170,7 @@ body.cine #cine .bande{height:11vh}
 <div id="cine"><div class="bande h"></div><div class="bande b"></div></div>
 <button id="cinePasser" hidden>Passer ›</button>
 <div id="hud" hidden>
-  <div id="titreJeu">HDF : CAMPING · v0.6</div>
+  <div id="titreJeu">HDF : CAMPING · v0.6.1</div>
   <div id="marqueurs"></div>
   <canvas id="boussole" width="1120" height="108"></canvas>
   <div id="heureJour"><b id="hHeure">07:00</b><span id="hJour">Jour 1 · lundi</span></div>
@@ -204,14 +204,14 @@ body.cine #cine .bande{height:11vh}
 </div>
 <div id="fin" hidden><h2 id="finTitre">Fin de partie</h2><p id="finTexte"></p><div class="stats" id="finStats"></div><div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><button class="gros" id="finRejouer">Recommencer une partie</button><button class="gros discret" id="finMenu">Menu</button></div></div>
 <div id="menu" hidden>
-  <div class="version">v0.6 · FSM-3D 2.10</div>
+  <div class="version">v0.6.1 · FSM-3D 2.10</div>
   <h1><small>F.S.M GAME HOUSE</small>HDF : CAMPING</h1>
   <p class="accroche">Seul au bord d'un lac de montagne. Chaque jour, quelqu'un passe. Tenez le plus longtemps possible.</p>
   <div class="ligne"><input id="prenom" maxlength="16" placeholder="Votre prénom" autocomplete="off" spellcheck="false"></div>
   <div class="ligne"><button class="gros" id="bNouvelle">Nouvelle partie</button><button class="gros discret" id="bContinuer" hidden>Continuer</button></div>
   <div class="opts"><button id="oSon" class="on">Son</button><button id="oVoix" class="on">Voix des PNJ</button><button id="oQualite">Qualité : auto</button><button id="oTexte">Texte : grand</button><button id="oMarq" class="on">Marqueurs de collecte</button><button id="oPerf">Performances</button></div>
   <div class="aideCtrl" id="aideCtrl">Manette PS : <b>stick gauche</b> marcher · <b>stick droit</b> regarder · <b>✕</b> action / choisir · <b>○</b> s'accroupir / partir · <b>△</b> sauter · <b>□</b> sac à dos · <b>R2</b> courir · <b>L1</b> lampe · <b>OPTIONS</b> menu.<br>Tactile : stick à gauche, glisser à droite pour regarder, boutons à droite. Clavier : ZQSD / flèches, souris (clic pour viser), Espace, C, Maj, E, Tab, F, Échap.</div>
-  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.6</div>
+  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.6.1</div>
 </div>
 
 <script>
@@ -4992,7 +4992,7 @@ self.JOE_DATA = { animals: 'Z2xURgIAAAD8HQQAtNIBAEpTT057ImFzc2V0Ijp7InZlcnNpb24i
    ===================================================================================== */
 'use strict';
 // ==== CAMP : OUTILS ===================================================================
-const JEU = { nom: 'HDF : CAMPING', version: '0.6', cle: 'hdfc-' };
+const JEU = { nom: 'HDF : CAMPING', version: '0.6.1', cle: 'hdfc-' };
 const $ = id => document.getElementById(id);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, k) => a + (b - a) * k;
@@ -5088,9 +5088,13 @@ const VOIX = (() => {
     const P = genre === 'f' ? (fem.length ? fem : L) : (hom.length ? hom : L); return P[Math.floor(Math.random() * P.length)] || L[0]; };
   V.dire = (txt, p = {}) => { if (!V.ok || !OPT.voix) return; let t = String(txt || '').replace(/\([^)]*\)/g, ' ').replace(/[«»“”*_]/g, '').replace(/…/g, '...').replace(/\s+/g, ' ').trim(); if (t.length < 2) return; if (t.length > 400) t = t.slice(0, 400).replace(/[^.!?]*$/, '');
     V.file.push({ t, p }); if (!V.enCours) suivant(); };
-  function suivant() { const n = V.file.shift(); if (!n) { V.enCours = null; SON.ducker(1); return; } const u = new SpeechSynthesisUtterance(n.t); u.lang = 'fr-FR'; u.rate = n.p.rate || 1; u.pitch = n.p.pitch || 1; u.volume = 1; if (n.p.voix) u.voice = n.p.voix; V.enCours = u; SON.ducker(.35);
-    const fin = () => { if (V.enCours === u) { V.enCours = null; setTimeout(suivant, 120); } }; u.onend = fin; u.onerror = fin; try { speechSynthesis.speak(u); } catch (e) { fin(); } setTimeout(() => { if (V.enCours === u && !speechSynthesis.speaking) fin(); }, 900 + n.t.length * 90); }
-  V.stop = () => { V.file.length = 0; V.enCours = null; try { speechSynthesis.cancel(); } catch (e) {} SON.ducker(1); };
+  function suivant() { const n = V.file.shift(); if (!n) { V.enCours = null; SON.ducker(1); return; } const u = new SpeechSynthesisUtterance(n.t); u.lang = 'fr-FR'; u.rate = n.p.rate || 1; u.pitch = n.p.pitch || 1; u.volume = 1; if (n.p.voix) u.voice = n.p.voix; else if (V.fr.length) u.voice = V.fr[0]; V.enCours = u; V.garde = u; SON.ducker(.35); if (!V.fr.length) charger();
+    const fin = () => { if (V.enCours === u) { V.enCours = null; setTimeout(suivant, 120); } }; u.onend = fin; u.onerror = fin; const attente = V.tCancel && performance.now() - V.tCancel < 300 ? 220 : 0; setTimeout(() => { if (V.enCours !== u) return; try { if (speechSynthesis.paused) speechSynthesis.resume(); speechSynthesis.speak(u); } catch (e) { fin(); } }, attente); setTimeout(() => { if (V.enCours === u && !speechSynthesis.speaking) fin(); }, 900 + n.t.length * 90); }
+  V.stop = () => { V.file.length = 0; V.enCours = null; try { speechSynthesis.cancel(); V.tCancel = performance.now(); } catch (e) {} SON.ducker(1); };
+  // iOS : la synthèse doit être débloquée par un appui de l'utilisateur (une phrase vide, muette, dans le geste) ; relance si Safari l'a mise en pause
+  V.debloquer = () => { if (!V.ok || V.pret) return; try { const u = new SpeechSynthesisUtterance('.'); u.volume = 0; u.rate = 2; speechSynthesis.speak(u); V.pret = true; charger(); } catch (e) {} };
+  V.veille = () => { if (!V.ok) return; try { if (speechSynthesis.paused) speechSynthesis.resume(); } catch (e) {} };
+  for (const ev of ['pointerup', 'touchend', 'keydown', 'click']) addEventListener(ev, () => V.debloquer(), { passive: true });
   V.parle = () => !!V.enCours;
   return V;
 })();
@@ -5130,7 +5134,7 @@ function manette() { const gs = navigator.getGamepads ? navigator.getGamepads() 
   const dz = v => Math.abs(v) < .14 ? 0 : (v - Math.sign(v) * .14) / .86, b = i => !!(g.buttons[i] && g.buttons[i].pressed), edge = i => b(i) && !IN.prev[i];
   const lx = dz(g.axes[0] || 0), ly = dz(g.axes[1] || 0), rx = dz(g.axes[2] || 0), ry = dz(g.axes[3] || 0);
   if (Math.abs(lx) + Math.abs(ly) + Math.abs(rx) + Math.abs(ry) > 0 || g.buttons.some(x => x.pressed)) { if (IN.dernier !== 'manette') { IN.dernier = 'manette'; document.body.classList.add('manette'); } }
-  if (g.buttons.some(x => x.pressed)) { SON.init(); SON.reprendre(); GARDE_AUDIO.touche = performance.now(); }
+  if (g.buttons.some(x => x.pressed)) { SON.init(); SON.reprendre(); VOIX.debloquer(); GARDE_AUDIO.touche = performance.now(); }
   IN.gstick = [lx, ly]; IN.glook = [rx, ry]; IN.grun = b(7) || b(5) || b(10);
   if (edge(0)) IN.act = true; if (edge(1)) IN.accr = true; if (edge(2)) IN.sac = true; if (edge(3)) IN.saut = true; if (edge(9)) IN.menu = true; if (edge(4)) IN.lampe = true;
   if (edge(12)) IN.haut = true; if (edge(13)) IN.bas = true; if (edge(14)) IN.gauche = true; if (edge(15)) IN.droite = true;
@@ -5140,7 +5144,7 @@ function manette() { const gs = navigator.getGamepads ? navigator.getGamepads() 
 addEventListener('gamepadconnected', () => { document.body.classList.add('manette'); IN.dernier = 'manette'; });
 // garde audio : relance l'audio coupé à chaque appui manette et toutes les 1,5 s (sauf en pause)
 const GARDE_AUDIO = { touche: 0, t: 0 };
-function gardeAudio(now, pause) { if (!SON.ok || pause) return; if (now - GARDE_AUDIO.t > 1500 || now - GARDE_AUDIO.touche < 50) { GARDE_AUDIO.t = now; SON.reprendre(); } }
+function gardeAudio(now, pause) { if (pause) return; if (now - GARDE_AUDIO.t > 1500 || now - GARDE_AUDIO.touche < 50) { GARDE_AUDIO.t = now; if (SON.ok) SON.reprendre(); VOIX.veille(); } }
 function consommerEntrees() { IN.act = IN.saut = IN.accr = IN.sac = IN.menu = IN.lampe = IN.haut = IN.bas = IN.gauche = IN.droite = false; IN.tap = null; }
 
 // ==== CAMP : MONDE (terrain, lac, végétation, lumière du jour) ==============================
@@ -8804,8 +8808,8 @@ function demarrerJeu(avecCine) { UI.menuOuvert = false; $('menu').hidden = true;
   const go = () => { ETAT.enJeu = true; document.body.classList.toggle('manette', IN.dernier === 'manette'); if (avecCine) reveilTente(() => { note(`Jour 1. Bienvenue au lac, ${JOUEUR.prenom}. Repas à midi et le soir. Quelqu'un finira par passer…`, 6000); objectifAjouter('eau', 'Purifier de l’eau au lac', 'rive'); objectifAjouter('feu_bois', 'Préparer le feu pour ce soir', 'bois'); sauver(); }); else { $('hud').hidden = false; $('voile').classList.add('off'); note(`Jour ${ETAT.jour}, ${jourSemaine()}, ${hm(HORL.h)}. Bon retour, ${JOUEUR.prenom}.`, 4500); } };
   if (avecCine) CINE.demarrer(() => { HORL.h = 7.2; go(); }); else go(); }
 function initMenu() { montrerMenu();
-  $('bNouvelle').addEventListener('click', () => { SON.init(); SON.reprendre(); const p = ($('prenom').value || '').trim() || 'Camille'; nouvellePartie(p); S_ui(); demarrerJeu(true); });
-  $('bContinuer').addEventListener('click', () => { SON.init(); SON.reprendre(); if (!charger()) { note('Aucune partie à reprendre.'); return; } S_ui(); demarrerJeu(false); });
+  $('bNouvelle').addEventListener('click', () => { SON.init(); SON.reprendre(); VOIX.debloquer(); const p = ($('prenom').value || '').trim() || 'Camille'; nouvellePartie(p); S_ui(); demarrerJeu(true); });
+  $('bContinuer').addEventListener('click', () => { SON.init(); SON.reprendre(); VOIX.debloquer(); if (!charger()) { note('Aucune partie à reprendre.'); return; } S_ui(); demarrerJeu(false); });
   $('prenom').addEventListener('keydown', e => { if (e.key === 'Enter') $('bNouvelle').click(); e.stopPropagation(); });
   const tog = (id, k, f) => { const b = $(id); const maj = () => { b.classList.toggle('on', !!OPT[k]); }; maj(); b.addEventListener('click', () => { OPT[k] = !OPT[k]; sauverOptions(); maj(); f && f(); }); };
   tog('oSon', 'son', () => { SON.init(); SON.volume(); }); tog('oVoix', 'voix'); tog('oPerf', 'perf', () => { $('perf').hidden = !OPT.perf; });
@@ -8826,7 +8830,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 
 </script>
 <!--
-NOTE-INTERNE (Claude) · HDF : CAMPING v0.6 · F.S.M Game House · 2 nov. 2026
+NOTE-INTERNE (Claude) · HDF : CAMPING v0.6.1 · F.S.M Game House · 2 nov. 2026
 À lire avant de modifier ce fichier. Ne pas relire le fichier en entier : chercher les ancres « ==== CAMP : » (grep), puis ne lire que la section utile.
 
 STRUCTURE DU FICHIER
@@ -8883,6 +8887,8 @@ v0.6 — POSTE DE GARDE ET TOD (section « ==== CAMP : POSTE DE GARDE (PDG) » i
  - Équipements : actionEau, actionRegistre (notes générées : notesRegistre), actionRadio (météo de demain ETAT.meteoDemain, annonce du prochain visiteur si bon voisin), actionLit (dormir au poste si ami : ETAT.dortAilleurs → les événements de nuit « dort » des visiteurs ne se déclenchent pas), actionPharma, actionCarte, actionTableau.
  - Dialogue : nœuds JS (dit en fonctions, si.test, eff.run) : debut contextuel (poste, patrouille, pique-nique, pêche, nuit, tutoiement si ami), qui/engager/handram/ilona/reine/quitter, node/node2/node3, feral/partir, tableau/lettre (FSM SHOPY), savoir/apprendre, endroit, cava/cafe/seul, conseils/promesse, louches/reconnaitre, aide (eau, ration 1/j, gaz, soins), don (max 2/j), journee, moi (origine, métier, raison), peche/pecheEnsemble, piqueOui, inviter.
  - Hooks dans le reste du code : zoneJoueur, solJoueur, relief, ZONES_LIBRES, creerMonde (construirePDG), VIS.lieu, VIS.gros, VIS.maj (hauteur), VIS.parler (v.dialogue), VIS.noeud, VIS.cond (test, dortAilleurs), normaliser/faire (run, secours), tick (GARDE.tick), dormir (coucher), majSommeil (recaler, réveil au poste), sauver/charger, boucle (GARDE.maj), lancer (GARDE.creer), nouvellePartie (reset), ICONES.poste, MARQUEURS_FIXES, MARQ.sites.
+
+v0.6.1 — VOIX iOS : VOIX.debloquer() (phrase muette dans le geste utilisateur : boutons de lancement, tout appui, manette), speak() différé de 220 ms après un cancel() (Safari ignore un speak immédiat), resume() si la synthèse est en pause (VOIX.veille dans gardeAudio), voix française par défaut si aucune n'est choisie, référence gardée sur l'utterance (V.garde).
 
 À FAIRE / IDÉES v0.7 : sauvegarde du visiteur en cours ; pêche par le joueur ; météo visible (pluie déjà possible via A.meteo) ; deux emplacements de sauvegarde ; branchement History Sens pour les dialogues libres.
 
