@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HDF : CAMPING">
 <meta name="theme-color" content="#0b0f0a">
-<title>HDF : CAMPING — v0.32</title>
+<title>HDF : CAMPING — v0.33</title>
 <style>
 :root{--lin:#f3efe6;--ambre:#f2c66d;--mousse:#8fb37a;--nuit:#0b0f0a;--verre:rgba(10,14,10,.62);--rouge:#e0665a;--bleu:#7fb6d8;
   --sans:-apple-system,BlinkMacSystemFont,"Avenir Next","Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
@@ -170,7 +170,7 @@ body.cine #cine .bande{height:11vh}
 <div id="cine"><div class="bande h"></div><div class="bande b"></div></div>
 <button id="cinePasser" hidden>Passer ›</button>
 <div id="hud" hidden>
-  <div id="titreJeu">HDF : CAMPING · v0.32</div>
+  <div id="titreJeu">HDF : CAMPING · v0.33</div>
   <div id="marqueurs"></div>
   <canvas id="boussole" width="1120" height="108"></canvas>
   <div id="heureJour"><b id="hHeure">07:00</b><span id="hJour">Jour 1 · lundi</span></div>
@@ -204,14 +204,14 @@ body.cine #cine .bande{height:11vh}
 </div>
 <div id="fin" hidden><h2 id="finTitre">Fin de partie</h2><p id="finTexte"></p><div class="stats" id="finStats"></div><div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><button class="gros" id="finRejouer">Recommencer une partie</button><button class="gros discret" id="finMenu">Menu</button></div></div>
 <div id="menu" hidden>
-  <div class="version">v0.32 · FSM-3D 2.10</div>
+  <div class="version">v0.33 · FSM-3D 2.10</div>
   <h1><small>F.S.M GAME HOUSE</small>HDF : CAMPING</h1>
   <p class="accroche">Seul au bord d'un lac de montagne. Chaque jour, quelqu'un passe. Tenez le plus longtemps possible.</p>
   <div class="ligne"><input id="prenom" maxlength="16" placeholder="Votre prénom" autocomplete="off" spellcheck="false"></div>
   <div class="ligne"><button class="gros" id="bNouvelle">Nouvelle partie</button><button class="gros discret" id="bContinuer" hidden>Continuer</button></div>
   <div class="opts"><button id="oSon" class="on">Son</button><button id="oVoix" class="on">Voix des PNJ</button><button id="oMusique" class="on">Musique</button><button id="oQualite">Qualité : auto</button><button id="oTexte">Texte : grand</button><button id="oMarq" class="on">Marqueurs de collecte</button><button id="oPerf">Performances</button></div>
   <div class="aideCtrl" id="aideCtrl">Manette PS : <b>stick gauche</b> marcher · <b>stick droit</b> regarder · <b>✕</b> action / choisir · <b>○</b> s'accroupir / partir · <b>△</b> sauter · <b>□</b> sac à dos · <b>R2</b> courir · <b>L1</b> lampe · <b>OPTIONS</b> menu.<br>Tactile : stick à gauche, glisser à droite pour regarder, boutons à droite. Clavier : ZQSD / flèches, souris (clic pour viser), Espace, C, Maj, E, Tab, F, Échap.</div>
-  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.32</div>
+  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.33</div>
 </div>
 
 <script>
@@ -4992,7 +4992,7 @@ self.JOE_DATA = { animals: 'Z2xURgIAAAD8HQQAtNIBAEpTT057ImFzc2V0Ijp7InZlcnNpb24i
    ===================================================================================== */
 'use strict';
 // ==== CAMP : OUTILS ===================================================================
-const JEU = { nom: 'HDF : CAMPING', version: '0.32', cle: 'hdfc-' };
+const JEU = { nom: 'HDF : CAMPING', version: '0.33', cle: 'hdfc-' };
 const $ = id => document.getElementById(id);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, k) => a + (b - a) * k;
@@ -10210,7 +10210,7 @@ VILLAGE.construire = () => { if (VILLAGE.ok) return; VILLAGE.ok = true; VILLAGE.
 VILLAGE.majBats = () => { const nt = A.nuit(); for (const b of BATS) { if (b.alpha) continue; const o = b.ouvert() ? 1 : 0, d = Math.hypot(PL.x - b.x, PL.z - b.z); if (d > 80) continue; b.porte.k = lerp(b.porte.k, o, .06); b.porte.nd.rot[1] = b.yaw + b.porte.k * 1.5;
     b.fen.visible = nt > .2 && (b.maison ? VIE.occupe(b.id) : o > 0); if (d < 55 && nt > .25 && b.fen.visible && b.maison) A.addLight({ p: [b.lumiere[0], CHANTIER.Hs + 2, b.lumiere[1]], c: [1, .78, .5], i: 3, r: 6 }); }
   const bi = ALPHA.batObj(PL.x, PL.z); if (bi && !bi.alpha) { const H = CHANTIER.Hs; for (const [u, w] of [[-bi.lu / 4, 0], [bi.lu / 4, 0]]) { const [x, z] = bi.p(u, w); A.addLight({ p: [x, H + 3, z], c: [1, .92, .78], i: 18, r: 10 }); } }
-  if (nt > .2) { let n = 0; for (const p of VILLAGE.lampes) { if (n > 3) break; if (Math.hypot(PL.x - p[0], PL.z - p[2]) < 45) { A.addLight({ p, c: [1, .82, .55], i: 18, r: 12, dir: [0, -1, 0], cone: [.35, .75] }); n++; } } } };
+  if (nt > .2) { let n = 0; for (const p of VILLAGE.lampes) { if (n > 4) break;   /* v0.33 : 5 lampadaires éclairés */ if (Math.hypot(PL.x - p[0], PL.z - p[2]) < 45) { A.addLight({ p, c: [1, .82, .55], i: 18, r: 12, dir: [0, -1, 0], cone: [.35, .75] }); n++; } } } };
 // collisions des bâtiments du village (repère de chaque bâtiment)
 { const ob = obstacles; obstacles = function (x, z, r) { let o = ob(x, z, r); if (!VILLAGE.dans(o.x, o.z, 6)) return o;
     for (const b of BATS) { if (b.alpha || Math.abs(o.x - b.x) > b.rmax + 1 || Math.abs(o.z - b.z) > b.rmax + 1) continue; let [u, w] = batLocal(b, o.x, o.z), hit = false;
@@ -12927,6 +12927,107 @@ PANNEAU.LISTE = () => { const S = z => SENTIER.x(z), [ax, az] = CHANTIER.mon(-24
 PANNEAU.construire = () => { if (PANNEAU.ok) return; PANNEAU.ok = true; for (const [x, z, t, v] of PANNEAU.LISTE()) try { PANNEAU.poser(x, z, t, v); } catch (e) { console.warn('[panneau]', e); } };
 { const c0 = VILLAGE.construire; VILLAGE.construire = () => { if (VILLAGE.ok) return; c0(); PANNEAU.construire(); }; }
 
+// ==== CAMP : BEAUTÉ DES LIEUX — SOLS, TOITS, LUMIÈRES, LAC ET CAMP, INTÉRIEURS (v0.33) ===========================
+// BEAU.TEX : textures dessinées à la toile une seule fois (pavés irréguliers, terre à ornières et bords d'herbe ragués (alphaCut), tuiles par couleur,
+// flaque, tapis de feuilles, touffe de roseaux). BEAU.plan(…) : quad couché texturé (uv répétées). Budget iPad : décalques = 2 triangles chacun.
+// 1) SOLS : pavés sur la place, terre texturée sur les chemins du bourg, d'Alpha et du chemin Alpha ↔ centre-ville, flaques, feuilles mortes sous les arbres,
+//    bordures de trottoir devant la gare et la banque. 2) TOITS : tuiles sur tous les toits en pente (construireBat enveloppé), lucarnes sur les maisons.
+// 3) LUMIÈRE : halos des lampadaires et lueur des vitrines au sol la nuit (A.fx glow), 5 lampadaires éclairés au lieu de 4, coucher et lever de soleil plus chauds.
+// 4) LAC ET CAMP : roseaux en touffes (cartes croisées), rochers de rive, brume du matin sur le lac (5 h 30 – 8 h 30), scintillement du soleil bas sur l'eau.
+// 5) INTÉRIEURS : gare, banque et Correspondant meublés en détail (collisions dans bat.rects).
+const BEAU = { TEX: {} };
+BEAU.toile = (w, h, f) => { const c = document.createElement('canvas'); c.width = w; c.height = h; f(c.getContext('2d'), w, h); return A.R.texture(c, { repeat: true, srgb: false }); };
+BEAU.alea = s => { let x = s; return () => (x = (x * 16807) % 2147483647) / 2147483647; };
+BEAU.tex = k => { if (BEAU.TEX[k]) return BEAU.TEX[k]; const r = BEAU.alea(99 + k.length * 7), T = BEAU.TEX;
+  if (k === 'pave') T[k] = BEAU.toile(512, 512, (g, W) => { g.fillStyle = '#6e675e'; g.fillRect(0, 0, W, W); const n = 8, s = W / n;
+    for (let j = 0; j < n; j++) for (let i = 0; i < n + 1; i++) { const x = (i - (j % 2) * .5) * s, y = j * s, v = 118 + (r() * 42 | 0), t = r() * 14 - 7; g.fillStyle = `rgb(${v + t | 0},${v - 6 | 0},${v - 16 + t | 0})`; g.beginPath(); const m = s * .07, rr = s * .18;
+      g.moveTo(x + m + rr, y + m + r() * 3); g.arcTo(x + s - m, y + m, x + s - m, y + s - m, rr); g.arcTo(x + s - m + r() * 3, y + s - m, x + m, y + s - m, rr); g.arcTo(x + m, y + s - m + r() * 3, x + m, y + m, rr); g.arcTo(x + m, y + m, x + s - m, y + m, rr); g.fill();
+      g.fillStyle = 'rgba(255,255,255,.07)'; g.fillRect(x + m * 2, y + m * 2, s * .5, s * .12); g.fillStyle = 'rgba(0,0,0,.08)'; g.fillRect(x + m * 2, y + s * .7, s * .7, s * .12); } for (let i = 0; i < 260; i++) { g.fillStyle = `rgba(${r() < .5 ? '40,35,30' : '240,235,225'},${r() * .12})`; g.fillRect(r() * W, r() * W, 2 + r() * 4, 2 + r() * 4); } });
+  else if (k === 'terre') T[k] = BEAU.toile(256, 512, (g, W, H) => { g.clearRect(0, 0, W, H); const bord = x => 18 + 14 * Math.sin(x * .07) + 9 * Math.sin(x * .19 + 1) + r() * 6;
+    for (let y = 0; y < H; y += 2) { const a = bord(y), b = bord(y + 300); const grd = g.createLinearGradient(0, 0, W, 0); grd.addColorStop(0, '#5d4a33'); grd.addColorStop(.3, '#6c573c'); grd.addColorStop(.5, '#735e42'); grd.addColorStop(.7, '#6c573c'); grd.addColorStop(1, '#5d4a33'); g.fillStyle = grd; g.fillRect(a, y, W - a - b, 2); }
+    for (const u of [.3, .7]) { g.fillStyle = 'rgba(40,30,20,.22)'; for (let y = 0; y < H; y += 3) g.fillRect(W * u - 10 + Math.sin(y * .05) * 3, y, 20, 3); }
+    for (let i = 0; i < 520; i++) { const x = 30 + r() * (W - 60), y = r() * H, s = 1 + r() * 3.5; g.fillStyle = `rgba(${150 + r() * 60 | 0},${135 + r() * 50 | 0},${110 + r() * 40 | 0},${.5 + r() * .5})`; g.beginPath(); g.ellipse(x, y, s, s * .7, r() * 3, 0, TAU); g.fill(); }
+    for (let i = 0; i < 700; i++) { const cote = r() < .5, y = r() * H, x0 = cote ? bord(y) : W - bord(y + 300), x = x0 + (cote ? 1 : -1) * (r() * 14 - 4), hgt = 4 + r() * 9; g.strokeStyle = `rgb(${50 + r() * 30 | 0},${85 + r() * 40 | 0},${30 + r() * 20 | 0})`; g.lineWidth = 1.5; g.beginPath(); g.moveTo(x, y); g.lineTo(x + (cote ? 1 : -1) * hgt, y + r() * 6 - 3); g.stroke(); } });
+  else if (k.startsWith('tuile')) { const [cr, cg, cb] = k.slice(6).split(',').map(Number); T[k] = BEAU.toile(256, 256, (g, W) => { const n = 4, s = W / n; g.fillStyle = `rgb(${cr * 150 | 0},${cg * 150 | 0},${cb * 150 | 0})`; g.fillRect(0, 0, W, W);
+    for (let j = 0; j < n; j++) for (let i = 0; i <= n; i++) { const x = (i - (j % 2) * .5) * s, y = j * s, v = .85 + r() * .3; const grd = g.createLinearGradient(x, 0, x + s, 0); grd.addColorStop(0, `rgb(${cr * 200 * v | 0},${cg * 200 * v | 0},${cb * 200 * v | 0})`); grd.addColorStop(.5, `rgb(${cr * 300 * v | 0},${cg * 300 * v | 0},${cb * 300 * v | 0})`); grd.addColorStop(1, `rgb(${cr * 170 * v | 0},${cg * 170 * v | 0},${cb * 170 * v | 0})`);
+      g.fillStyle = grd; g.beginPath(); g.moveTo(x + 2, y); g.lineTo(x + s - 2, y); g.lineTo(x + s - 2, y + s * .82); g.quadraticCurveTo(x + s / 2, y + s * 1.02, x + 2, y + s * .82); g.fill(); g.fillStyle = 'rgba(0,0,0,.25)'; g.fillRect(x, y + s * .86, s, s * .14); } }); }
+  else if (k === 'flaque') T[k] = BEAU.toile(256, 256, (g, W) => { g.clearRect(0, 0, W, W); g.beginPath(); for (let i = 0; i <= 40; i++) { const a = i / 40 * TAU, rr = W * (.36 + .08 * Math.sin(a * 3 + 1) + .05 * Math.sin(a * 5)); g.lineTo(W / 2 + Math.cos(a) * rr, W / 2 + Math.sin(a) * rr * .75); } g.closePath();
+    const grd = g.createRadialGradient(W * .45, W * .45, 4, W / 2, W / 2, W * .45); grd.addColorStop(0, '#9fb6c8'); grd.addColorStop(.6, '#5c7286'); grd.addColorStop(1, '#3d4a55'); g.fillStyle = grd; g.fill(); g.fillStyle = 'rgba(255,255,255,.35)'; g.fillRect(W * .3, W * .38, W * .3, 3); });
+  else if (k === 'feuilles') T[k] = BEAU.toile(256, 256, (g, W) => { g.clearRect(0, 0, W, W); const C = ['#b5651d', '#d9902a', '#8a3a1a', '#c9a227', '#7a5a2a', '#a8452a'];
+    for (let i = 0; i < 90; i++) { const a = r() * TAU, d = Math.sqrt(r()) * W * .45, x = W / 2 + Math.cos(a) * d, y = W / 2 + Math.sin(a) * d, s = 4 + r() * 6; g.save(); g.translate(x, y); g.rotate(r() * TAU); g.fillStyle = C[(r() * C.length) | 0]; g.beginPath(); g.ellipse(0, 0, s, s * .5, 0, 0, TAU); g.fill(); g.restore(); } });
+  else if (k === 'roseaux') T[k] = BEAU.toile(128, 256, (g, W, H) => { g.clearRect(0, 0, W, H); for (let i = 0; i < 26; i++) { const x = W * .2 + r() * W * .6, h = H * (.45 + r() * .5), b = (r() - .5) * 26; g.strokeStyle = `rgb(${70 + r() * 40 | 0},${100 + r() * 40 | 0},${40 + r() * 20 | 0})`; g.lineWidth = 3 + r() * 2; g.beginPath(); g.moveTo(x, H); g.quadraticCurveTo(x + b * .3, H - h * .5, x + b, H - h); g.stroke();
+    if (r() < .4) { g.fillStyle = '#5a3a1a'; g.beginPath(); g.ellipse(x + b * .9, H - h + 8, 3.5, 12, b * .01, 0, TAU); g.fill(); } } });
+  return T[k]; };
+BEAU.mesh = (w, d, uS, vS, k, normalUp = true) => { const hw = w / 2, hd = d / 2, q = [[-hw, -hd, 0, 0], [hw, -hd, uS, 0], [hw, hd, uS, vS], [-hw, hd, 0, vS]], a = []; for (const i of [0, 2, 1, 0, 3, 2]) a.push(q[i][0], 0, q[i][1], 0, 1, 0, q[i][2], q[i][3]);
+  const m = A.R.makeMesh(new Float32Array(a), { uv: true, noWeld: true }); m.tex = BEAU.tex(k); m.alphaCut = .5; m.rough = k === 'flaque' ? .08 : .9; m.metal = 0; return m; };
+BEAU.plan = (nd, x, y, z, yaw, w, d, uS, vS, k) => nd.addPart(BEAU.mesh(w, d, uS, vS, k), M3.mul(M3.translate(x, y, z), M3.rotY(yaw)), [1, 1, 1], 30, { cast: false });
+// ---------------- 1) sols ----------------
+BEAU.sols = () => { const H = CHANTIER.Hs, nd = new Node('beauSols'); nd.pickable = false; A.add(nd); let iP = 0; const P = (x0, z0, x1, z1, lg, y = H + .07 + (iP++ % 6) * .0015) => { const L = Math.hypot(x1 - x0, z1 - z0), yaw = Math.atan2(x1 - x0, z1 - z0); BEAU.plan(nd, (x0 + x1) / 2, y, (z0 + z1) / 2, yaw, lg + .9, L + .4, 1, (L + .4) / (lg + .9) * 2, 'terre'); };
+  BEAU.plan(nd, 71, H + .066, 135.5, 0, 28, 53, 11, 20.8, 'pave');
+  for (const [x0, z0, x1, z1, lg] of [[-44, 236.7, -2, 236.7, 10], [-1, 215.5, 56.5, 220, 8], [16, 218, 11, 245, 5], [-31, 219.6, -4.5, 219.6, 3], [-60, 252.4, -28, 252.4, 2.6], [-41, 239, -41, 252.4, 2.8], [31, 246, 47, 249.6, 2.6], [-46.5, 219.6, -31, 219.6, 2.4], [46, 136, 57, 136, 7]]) P(x0, z0, x1, z1, lg);
+  for (let i = 1; i < CHEMIN_AD.P.length; i++) P(...CHEMIN_AD.P[i - 1], ...CHEMIN_AD.P[i], CHEMIN_AD.l);
+  { const C = CHANTIER, [a, b] = C.mon(-25, -17.2), [c, d] = C.mon(13, -17.2); P(a, b, c, d, 10.2, H + .074); }
+  // flaques
+  const rr = BEAU.alea(4711); for (const [x, z, s] of [[-30, 235.2, 1.6], [-12, 238.4, 1.2], [8, 216.5, 1.4], [30, 219.1, 1.8], [13.6, 232, 1.1], [-50, 252.5, 1], [-41, 246, 1.2], [40, 248.4, 1], [52, 136.8, 1.5], [44.5, 165.2, 1.3], [64, 128.5, 1.1], [80.5, 150.5, .9]]) BEAU.plan(nd, x, H + .08, z, rr() * 6, s * 1.6, s, 1, 1, 'flaque');
+  // feuilles mortes sous les arbres du bourg et du centre-ville
+  let n = 0; for (const o of COLL) { if (o.r !== .35 || !VILLAGE.dans(o.x, o.z) || n > 70 || rr() < .45) continue; n++; BEAU.plan(nd, o.x + rr() - .5, H + .035, o.z + rr() - .5, rr() * 6, 2.6, 2.6, 1, 1, 'feuilles'); }
+  // bordures de trottoir devant la gare et la banque (côté place), coupées aux portes et aux passages
+  const m = GEO.merger(), CUBE = GEO.cube(); for (const [z0, z1] of [[109.2, 121.8], [127.2, 138.6], [143.2, 149.6], [154.4, 162]]) m.add(CUBE, M3.mul(M3.translate(85.1, H + .08, (z0 + z1) / 2), M3.scale(.26, .16, z1 - z0)), [.7, .66, .58], 12);
+  const nb = new Node('bordures'); nb.pickable = false; for (const p of m.build(mk)) nb.addPart(p.mesh, null, p.color, p.mat); A.add(nb); };
+// ---------------- 2) toits : tuiles + lucarnes ----------------
+BEAU.toit = (S, bat) => { if (!bat || !bat.L || S.toit !== 'pente') return; const L = bat.L, T = M3.translate, Sc = M3.scale, mul = M3.mul, hu = S.lu / 2, hw = S.lw / 2, h = S.h || 3.6, pl = .3, pente = S.pente || .5, ht = hw * pente, lt = Math.hypot(hw + .5, ht), ang = Math.atan2(ht, hw + .5);
+  const col = (S.toitCol || [.55, .25, .18]).map(c => Math.round(c * 20) / 20), k = 'tuile:' + col.join(','), nd = new Node('toit' + S.id); nd.pickable = false; A.add(nd);
+  for (const s of [-1, 1]) nd.addPart(BEAU.mesh(S.lu + .72, lt + .02, (S.lu + .72) / .95, lt / .5, k), L.M(mul(T(0, pl + h + ht / 2 + .05, s * (hw + .5) / 2), mul(M3.rotX(s * ang), mul(T(0, .086, 0), M3.rotY(s > 0 ? PI : 0))))), [1, 1, 1], 30, { cast: false });
+  if (!S.maison || S.lw < 6) return; const m = GEO.merger(), CUBE = GEO.cube(), B = (u, y, w, su, sy, sw, c, mat = 4, R) => m.add(CUBE, L.M(R ? mul(T(u, y, w), mul(R, Sc(su, sy, sw))) : mul(T(u, y, w), Sc(su, sy, sw))), c, mat);
+  const ud = -S.lu / 4, wd = -hw * .42, yRoof = w => pl + h + .05 + ht * (1 - Math.abs(w) / (hw + .5)), y0 = yRoof(wd + .55), MUR = S.mur || [.88, .84, .74], TOIT = S.toitCol || [.55, .25, .18];
+  B(ud, y0 + .45, wd, 1.3, 1.1, 1.2, MUR, 4); B(ud, y0 + .5, wd - .61, .7, .62, .04, [.34, .45, .52], 3); B(ud, y0 + .5, wd - .63, .82, .72, .02, [.95, .93, .88], 4); B(ud, y0 + .5, wd - .64, .05, .62, .03, [.95, .93, .88], 4);
+  for (const s of [-1, 1]) B(ud + s * .38, y0 + 1.12, wd - .05, .82, .1, 1.45, TOIT, 13, M3.rotZ(-s * .62));
+  const nl = new Node('lucarne' + S.id); nl.pickable = false; for (const p of m.build(mk)) nl.addPart(p.mesh, null, p.color, p.mat); A.add(nl); };
+// ---------------- 5) intérieurs : gare, banque, Correspondant ----------------
+BEAU.interieur = (S, bat) => { if (!bat || !bat.L || !/^(gare|banque|corresp)$/.test(S.id)) return; const L = bat.L, m = GEO.merger(), CUBE = GEO.cube(), CYL = GEO.cylinder(10), SPH = GEO.sphere(6, 4), T = M3.translate, Sc = M3.scale, mul = M3.mul, p = .32, hu = S.lu / 2, hw = S.lw / 2, h = S.h || 3.6, R = bat.rects;
+  const B = (u, y, w, su, sy, sw, c, mat = 4) => m.add(CUBE, L.M(mul(T(u, y, w), Sc(su, sy, sw))), c, mat), CY = (u, y, w, r, hh, c, mat = 7) => m.add(CYL, L.M(mul(T(u, y, w), Sc(r * 2, hh, r * 2))), c, mat), SP = (u, y, w, s, c, mat = 8) => m.add(SPH, L.M(mul(T(u, y, w), Sc(s, s, s))), c, mat);
+  const plante = (u, w) => { CY(u, p + .3, w, .28, .6, [.62, .38, .26], 12); for (let i = 0; i < 4; i++) SP(u + Math.cos(i * 1.6) * .18, p + .9 + i * .12, w + Math.sin(i * 1.6) * .18, .36, [.22, .42, .2], 20); R.push([u - .35, u + .35, w - .35, w + .35]); };
+  const cadre = (u, w, f, su, sv, c) => { B(u, p + 2, w, f === 'w' ? su : .05, sv, f === 'w' ? .05 : su, [.75, .6, .3], 14); B(u + (f === 'u' ? .015 * Math.sign(-u) : 0), p + 2, w + (f === 'w' ? .015 * Math.sign(-w) : 0), f === 'w' ? su - .12 : .04, sv - .12, f === 'w' ? .04 : su - .12, c, 4); };
+  const suspension = (u, w) => { B(u, p + h - .45, w, .02, .9, .02, [.2, .2, .2], 7); SP(u, p + h - .95, w, .3, [1, .86, .6]); };
+  if (S.id === 'gare') { for (const [u, w] of [[-hu + .9, -hw + .9], [hu - .9, -hw + .9], [-hu + .9, hw - 2.6], [hu - .9, hw - 2.6]]) plante(u, w);
+    for (const u of [-8, -2.5, 2.5, 8]) suspension(u, -1); B(0, p + .04, -.8, 6, .02, 3.2, [.5, .2, .18], 4);
+    cadre(-hu + .1, -1, 'u', 1.2, 1.6, [.85, .55, .3]); cadre(-hu + .1, 2.5, 'u', 1.2, 1.6, [.3, .55, .7]); cadre(hu - .1, -1, 'u', 1.2, 1.6, [.4, .6, .35]); cadre(hu - .1, 2.5, 'u', 1.2, 1.6, [.7, .45, .6]);
+    B(-6, p + .4, hw - 2.9, 1.4, .1, .7, [.4, .4, .42], 7); for (let i = 0; i < 3; i++) B(-6.4 + i * .4, p + .65, hw - 2.9, .35, .45, .55, [[.55, .35, .2], [.3, .3, .4], [.6, .2, .2]][i], 4); R.push([-6.8, -5.2, hw - 3.3, hw - 2.5]);
+    CY(5.5, p + .45, hw - 3, .22, .9, [.25, .3, .25]); R.push([5.2, 5.8, hw - 3.3, hw - 2.7]); }
+  if (S.id === 'banque') { B(0, p + .04, -2.6, 7, .02, 2.6, [.45, .12, .14], 4); for (const u of [-6, -3, 3, 6]) { CY(u, p + .45, -.4, .05, .9, [.78, .62, .3], 14); SP(u, p + .95, -.4, .1, [.78, .62, .3], 14); }
+    for (const u of [-2, 2]) { B(u * 2.2, p + .5, 2.9, 1.6, .06, .8, [.32, .2, .12], 13); B(u * 2.2, p + .25, 2.9, 1.5, .5, .7, [.28, .18, .1], 13); CY(u * 2.2 + .5, p + .7, 2.9, .06, .3, [.2, .5, .3], 8); SP(u * 2.2 + .5, p + .92, 2.9, .2, [.2, .6, .35], 8); R.push([u * 2.2 - .8, u * 2.2 + .8, 2.5, 3.3]); }
+    for (let i = 0; i < 6; i++) for (let j = 0; j < 4; j++) B(hu - .12, p + .8 + j * .42, 1.6 + i * .42 - 1.2, .06, .38, .38, [.7, .6, .35], 14);
+    cadre(-hu + .1, 2.2, 'u', 1, 1.3, [.35, .3, .4]); cadre(-hu + .1, -2.2, 'u', 1, 1.3, [.55, .45, .3]); SP(0, p + h - .6, -2, .5, [1, .9, .65]); plante(-hu + .9, -hw + .9); plante(hu - .9, -hw + .9); }
+  if (S.id === 'corresp') { for (const [u, w] of [[-7.6, -3.2], [7.6, -3.2], [-7.6, .6], [7.6, .6]]) { CY(u, p + .74, w, .55, .04, [.96, .95, .92], 4); CY(u, p + .5, w, .56, .45, [.9, .3, .3], 4); CY(u, p + .36, w, .06, .72, NOIR_V); CY(u, p + .84, w, .04, .14, [.95, .92, .85], 4); SP(u, p + .95, w, .05, [1, .8, .4]);
+      for (const a of [-.8, .8]) { B(u + a, p + .45, w, .4, .06, .4, [.4, .28, .17], 13); B(u + a * 1.25, p + .75, w, .05, .6, .4, [.4, .28, .17], 13); } R.push([u - .6, u + .6, w - .6, w + .6]); }
+    for (const [u, w] of [[-3.5, -1.5], [3.5, -1.5], [0, -1.5], [-7.6, -1.3], [7.6, -1.3]]) suspension(u, w);
+    B(-hu + .45, p + .7, 2.8, .6, 1.4, 1.8, [.55, .5, .46], 12); B(-hu + .7, p + .45, 2.8, .1, .7, 1, [.12, .1, .08], 4); B(-hu + .72, p + .35, 2.8, .08, .25, .7, [1, .5, .15], 8); B(-hu + .45, p + 1.45, 2.8, .8, .1, 2, [.42, .3, .2], 13); R.push([-hu, -hu + .9, 1.8, 3.8]);
+    cadre(-hu + .1, -2.5, 'u', 1.2, .9, [.4, .55, .7]); cadre(hu - .1, 3, 'u', 1.2, .9, [.75, .55, .3]); cadre(0, hw - .1, 'w', 1.6, .8, [.35, .5, .35]); plante(-hu + .9, -hw + .9); plante(hu - .9, -hw + .9); }
+  const nd = new Node('int' + S.id); nd.pickable = false; for (const q of m.build(mk)) nd.addPart(q.mesh, null, q.color, q.mat); A.add(nd); };
+{ const c0 = construireBat; construireBat = function (S) { const bat = c0(S); try { BEAU.toit(S, bat); BEAU.interieur(S, bat); } catch (e) { console.warn('[beauté]', e); } return bat; }; }
+// ---------------- 4) lac et camp : roseaux, rochers, brume, scintillement ----------------
+BEAU.lac = () => { const nd = new Node('roseaux'); nd.pickable = false; A.add(nd); const r = BEAU.alea(808), rx = GEO.merger();
+  for (let k = 0, essais = 0; k < 46 && essais < 400; essais++) { const a = (r() - .5) * 1.9 + PI / 2, R = 93.6 + r() * 2.2, x = Math.cos(a) * R, z = Math.sin(a) * R; if (Math.abs(x - PONTON.x) < 6 || Math.hypot(x - LIEUX.plage[0], z - LIEUX.plage[1]) < 8 || SOL(x, z) > .55 || SOL(x, z) < -.6) continue; k++;
+    const hgt = 1.1 + r() * .7, y = Math.max(SOL(x, z), -.05); for (let i = 0; i < 3; i++) { const yaw = i * PI / 3 + r(); for (const f of [0, PI]) nd.addPart(BEAU.vert(1, hgt), M3.mul(M3.translate(x, y, z), M3.rotY(yaw + f)), [1, 1, 1], 30, { cast: false }); } }
+  for (let k = 0, essais = 0; k < 28 && essais < 300; essais++) { const a = r() * TAU, R = 94 + r() * 4, x = Math.cos(a) * R, z = Math.sin(a) * R; if (Math.abs(x - PONTON.x) < 6 || Math.hypot(x - LIEUX.plage[0], z - LIEUX.plage[1]) < 8 || Math.hypot(x, z - 107) > 60 && Math.hypot(x - 52, z - 92) > 18) continue; k++;
+    const s = .5 + r() * 1.1, y = SOL(x, z); rx.add(GEO.rock(1200 + k, 1, .3), M3.mul(M3.translate(x, y + s * .15, z), M3.scale(s * 1.4, s * .7, s)), [.5 + r() * .1, .49 + r() * .08, .45 + r() * .06], 12); COLL.push({ x, z, r: s * .55 }); }
+  const nr = new Node('rochersRive'); nr.pickable = false; for (const p of rx.build(mk)) nr.addPart(p.mesh, null, p.color, p.mat); A.add(nr); };
+BEAU.vert = (w, h) => { const k = 'R' + w + 'x' + h; if (BEAU[k]) return BEAU[k]; const hw = w / 2, q = [[-hw, 0, 0, 1], [hw, 0, 1, 1], [hw, h, 1, 0], [-hw, h, 0, 0]], a = []; for (const i of [0, 1, 2, 0, 2, 3]) a.push(q[i][0], q[i][1], 0, 0, 0, 1, q[i][2], q[i][3]);
+  const m = A.R.makeMesh(new Float32Array(a), { uv: true, noWeld: true }); m.tex = BEAU.tex('roseaux'); m.alphaCut = .5; m.rough = .8; m.metal = 0; return (BEAU[k] = m); };
+// ---------------- 3) lumière : halos, vitrines, ciel du soir et du matin ----------------
+BEAU.t = 0;
+BEAU.maj = dt => { if (!A.fx || ETAT.dort || SALLE.ici) return; if ((BEAU.t -= dt) > 0) return; BEAU.t = .12; const h = HORL.h, nt = A.nuit ? +A.nuit() || 0 : 0, nuit = nt > .2, H = CHANTIER.Hs;
+  if (nuit) { let n = 0; for (const p of VILLAGE.lampes || []) { if (n > 14) break; const d = Math.hypot(PL.x - p[0], PL.z - p[2]); if (d > 70) continue; n++; A.fx.emit('glow', [p[0], p[1] + .15, p[2]], [0, 0, 0], .45, 1.25, [1, .82, .5], .45); if (d < 40) A.fx.emit('glow', [p[0], H + .25, p[2]], [0, 0, 0], .45, 2.6, [1, .75, .45], .12); }
+    let k = 0; for (const b of BATS) { if (b.alpha || b.maison || !b.dOut || k > 6) continue; if (!b.ouvert()) continue; const d = Math.hypot(PL.x - b.dOut[0], PL.z - b.dOut[1]); if (d > 45) continue; k++; A.fx.emit('glow', [b.dOut[0], H + .3, b.dOut[1]], [0, 0, 0], .45, 3, [1, .8, .55], .16); } }
+  const lac = Math.hypot(PL.x, PL.z) < 140;
+  if (lac && h > 5.5 && h < 8.5) for (let i = 0; i < 2; i++) { const a = PI / 2 + (Math.random() - .5) * 1.4, R = 45 + Math.random() * 45; A.fx.emit('smoke', [Math.cos(a) * R, .5 + Math.random() * .8, Math.sin(a) * R], [.25, .03, .05], 9, 7 + Math.random() * 5, [.92, .94, .97], .1 * Math.sin((h - 5.5) / 3 * PI)); }
+  if (lac && nt < .05 && ((h > 16.8 && h < 19) || (h > 7 && h < 8.6))) for (let i = 0; i < 2; i++) { const a = PI / 2 + (Math.random() - .5) * 1.2, R = 30 + Math.random() * 60; A.fx.emit('glow', [Math.cos(a) * R, .06, Math.sin(a) * R], [0, 0, 0], .3, .18, [1, .78, .45], .4); } };
+{ const m0 = ALPHA.maj; ALPHA.maj = dt => { m0(dt); try { BEAU.maj(dt); } catch (e) {} }; }
+BEAU.ciel = () => { const E = F.ENVS; if (E['desert-soir']) Object.assign(E['desert-soir'], { zenith: [.24, .3, .58], horizon: [1, .6, .36], sunColor: [1, .58, .32], sunI: 4.4, cloud: .34, sat: 1.12, contrast: 1.08, haze: .36, flare: 1.2, highTint: [1.08, .98, .9] });
+  if (E.crepuscule) Object.assign(E.crepuscule, { horizon: [.95, .5, .42], zenith: [.14, .16, .34], sat: 1.1 }); if (E.aube) Object.assign(E.aube, { horizon: [.98, .74, .6], zenith: [.3, .4, .62], haze: .55, fog: 1.5, sat: 1.06 }); };
+// construction
+{ const c0 = VILLAGE.construire; VILLAGE.construire = () => { if (VILLAGE.ok) return; c0(); try { BEAU.sols(); BEAU.lac(); BEAU.ciel(); } catch (e) { console.warn('[beauté]', e); } }; }
+
 // ==== CAMP : CINÉMATIQUES (randonnée d'ouverture, réveil) ======================================
 const CINE = { plans: [], t: 0, i: 0, on: false, marcheur: null, apres: null, cam: null };
 CINE.passer = () => { if (!CINE.on) return; CINE.finir(); };
@@ -13025,7 +13126,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 
 </script>
 <!--
-NOTE-INTERNE (Claude) · HDF : CAMPING v0.32 · F.S.M Game House · 3 nov. 2026
+NOTE-INTERNE (Claude) · HDF : CAMPING v0.33 · F.S.M Game House · 3 nov. 2026
 À lire avant de modifier ce fichier. Ne pas relire le fichier en entier : chercher les ancres « ==== CAMP : » (grep), puis ne lire que la section utile.
 
 STRUCTURE DU FICHIER
@@ -13175,6 +13276,8 @@ v0.30 — PROMENEURS (src/9m_promeneurs.js, objet PROM) : 4 promeneurs avec chie
 v0.31 — FOULE DU CENTRE-VILLE (src/9n_foule.js, objet FOULE) : 16 habitués de la place (musicien, fleuriste, kiosquier, joggeuse, voisines, enfants, amoureux, livreur, cantonnier, touriste, maman et fils, pétanque), plans par créneaux et circuits (FOULE.circuit). VIE.maj : MAX 18 au centre-ville.
 
 v0.32 — REFONTE DES DÉCORS (src/9o_decors.js, DECOR) : construireBat enveloppé → volets, jardinières fleuries, chaînages d'angle, faîtage, gouttières, massifs devant les maisons (un nœud par bâtiment) ; DECOR.ville : 4 arbres en bacs sur la place, bordures, fanions (place + bourg), fleurs autour de la fontaine, bacs fleuris (VERDURE.libre). DECOR.verifier() : portes dégagées. PANNEAUX (src/9p_panneaux.js, PANNEAU) : 14 mâts de signalisation d'interdiction dessinés à la toile (PANNEAU.dessin, PANNEAU.LISTE), lisibles (« Lire le panneau »).
+
+v0.33 — BEAUTÉ DES LIEUX (src/9q_beaute.js, objet BEAU) : textures toile (pavés, terre à bords d'herbe, tuiles, flaque, feuilles, roseaux) ; sols : pavés de la place, terre sur les chemins (bourg, Alpha, chemin A ↔ D, accès place), 12 flaques, feuilles sous ~70 arbres, bordures gare/banque ; toits : tuiles sur toutes les pentes + lucarne sur les maisons (construireBat enveloppé) ; lumière : halos des lampadaires + lueur des vitrines (A.fx glow), 5 lampadaires éclairés, ENVS desert-soir / crepuscule / aube réchauffés (BEAU.ciel, après creerMonde) ; lac : 46 touffes de roseaux (cartes croisées), 28 rochers de rive, brume du matin (smoke 5 h 30 – 8 h 30), scintillement au soleil bas ; intérieurs gare / banque / Correspondant détaillés (BEAU.interieur).
 
 À FAIRE / IDÉES v1.0 : sauvegarde du visiteur en cours ; météo visible (pluie déjà possible via A.meteo) ; deux emplacements de sauvegarde ; branchement History Sens pour les dialogues libres.
 
