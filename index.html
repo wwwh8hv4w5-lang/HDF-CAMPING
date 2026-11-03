@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HDF : CAMPING">
 <meta name="theme-color" content="#0b0f0a">
-<title>HDF : CAMPING — v0.21</title>
+<title>HDF : CAMPING — v0.21.1</title>
 <style>
 :root{--lin:#f3efe6;--ambre:#f2c66d;--mousse:#8fb37a;--nuit:#0b0f0a;--verre:rgba(10,14,10,.62);--rouge:#e0665a;--bleu:#7fb6d8;
   --sans:-apple-system,BlinkMacSystemFont,"Avenir Next","Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
@@ -170,7 +170,7 @@ body.cine #cine .bande{height:11vh}
 <div id="cine"><div class="bande h"></div><div class="bande b"></div></div>
 <button id="cinePasser" hidden>Passer ›</button>
 <div id="hud" hidden>
-  <div id="titreJeu">HDF : CAMPING · v0.21</div>
+  <div id="titreJeu">HDF : CAMPING · v0.21.1</div>
   <div id="marqueurs"></div>
   <canvas id="boussole" width="1120" height="108"></canvas>
   <div id="heureJour"><b id="hHeure">07:00</b><span id="hJour">Jour 1 · lundi</span></div>
@@ -204,14 +204,14 @@ body.cine #cine .bande{height:11vh}
 </div>
 <div id="fin" hidden><h2 id="finTitre">Fin de partie</h2><p id="finTexte"></p><div class="stats" id="finStats"></div><div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><button class="gros" id="finRejouer">Recommencer une partie</button><button class="gros discret" id="finMenu">Menu</button></div></div>
 <div id="menu" hidden>
-  <div class="version">v0.21 · FSM-3D 2.10</div>
+  <div class="version">v0.21.1 · FSM-3D 2.10</div>
   <h1><small>F.S.M GAME HOUSE</small>HDF : CAMPING</h1>
   <p class="accroche">Seul au bord d'un lac de montagne. Chaque jour, quelqu'un passe. Tenez le plus longtemps possible.</p>
   <div class="ligne"><input id="prenom" maxlength="16" placeholder="Votre prénom" autocomplete="off" spellcheck="false"></div>
   <div class="ligne"><button class="gros" id="bNouvelle">Nouvelle partie</button><button class="gros discret" id="bContinuer" hidden>Continuer</button></div>
   <div class="opts"><button id="oSon" class="on">Son</button><button id="oVoix" class="on">Voix des PNJ</button><button id="oMusique" class="on">Musique</button><button id="oQualite">Qualité : auto</button><button id="oTexte">Texte : grand</button><button id="oMarq" class="on">Marqueurs de collecte</button><button id="oPerf">Performances</button></div>
   <div class="aideCtrl" id="aideCtrl">Manette PS : <b>stick gauche</b> marcher · <b>stick droit</b> regarder · <b>✕</b> action / choisir · <b>○</b> s'accroupir / partir · <b>△</b> sauter · <b>□</b> sac à dos · <b>R2</b> courir · <b>L1</b> lampe · <b>OPTIONS</b> menu.<br>Tactile : stick à gauche, glisser à droite pour regarder, boutons à droite. Clavier : ZQSD / flèches, souris (clic pour viser), Espace, C, Maj, E, Tab, F, Échap.</div>
-  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.21</div>
+  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.21.1</div>
 </div>
 
 <script>
@@ -4992,7 +4992,7 @@ self.JOE_DATA = { animals: 'Z2xURgIAAAD8HQQAtNIBAEpTT057ImFzc2V0Ijp7InZlcnNpb24i
    ===================================================================================== */
 'use strict';
 // ==== CAMP : OUTILS ===================================================================
-const JEU = { nom: 'HDF : CAMPING', version: '0.21', cle: 'hdfc-' };
+const JEU = { nom: 'HDF : CAMPING', version: '0.21.1', cle: 'hdfc-' };
 const $ = id => document.getElementById(id);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, k) => a + (b - a) * k;
@@ -11073,7 +11073,7 @@ DUST.cineMaj = dt => { const C = DUST.cine; if (!C) return; C.t += dt; let acc =
   else { if (C.t > 6) DUST.rouler(dt, -1); }
   DUST.moteur.regler(C.type === 'arrivee' ? (C.t < 19 ? .07 : .025) : (C.t > 6 ? .07 : .02), C.t < 19 ? .6 : .1);
   if (i >= C.plans.length || IN.act || IN.menu) { DUST.cineFin(); return; }
-  const P = C.plans[i], lt = C.t - acc; if (C.i !== i) { C.i = i; sousTitre(P.txt); if (i > 0) { $('voile').classList.remove('off'); setTimeout(() => $('voile').classList.add('off'), 250); } }
+  const P = C.plans[i], lt = C.t - acc; if (C.i !== i) { C.i = i; sousTitre(P.txt); if (C.type === 'arrivee' && i === 3) try { VOIX.dire(DUST.ch(DUST.n).pourquoi, (DUST.pnj.rapace && DUST.pnj.rapace.voix) || { pitch: 1.05, rate: 1.04, genre: 'f', morph: 'woman' }); } catch (e) {} if (i > 0) { $('voile').classList.remove('off'); setTimeout(() => $('voile').classList.add('off'), 250); } }
   const [eye, look] = P.cam(lt); const g = SOL(eye[0], eye[2]) + .6; if (eye[1] < g) eye[1] = g; A.camera.fixed.eye = eye; A.camera.fixed.look = look; PL.eye = eye; if (lt > P.d - 1) sousTitre(null); };
 DUST.cineFin = () => { const C = DUST.cine; if (!C) return; DUST.cine = null; sousTitre(null); $('cinePasser').hidden = true; document.body.classList.remove('cine'); UI.cineOn = false; $('hud').hidden = false; DUST.moteur.regler(0, 0); [PL.x, PL.z, PL.yaw, PL.pitch] = C.savePL; PL.y = solJoueur(PL.x, PL.z);
   if (C.type === 'arrivee') { DUST.garer(); if (!Object.keys(DUST.pnj).length) DUST.creerSoldats(); note(`Le détachement FSMOPERATOR s’installe à l’est de la clairière pour deux nuits. « ${DUST.ch(DUST.n).titre} »`, 6000); historique('Le détachement FSMOPERATOR (Aegis Protocol) campe au lac'); }
@@ -11087,8 +11087,10 @@ DUST.partir = () => { DUST.retirerSoldats(); for (const P of DUST.props) P.nd.vi
 DUST.nettoyer = () => { DUST.retirerSoldats(); for (const V of DUST.veh) V.nd.visible = false; for (const P of DUST.props) P.nd.visible = false; DUST.actif = null; DUST.prochain = ETAT.jour + 6 + Math.floor(Math.random() * 5); const i = OBJETS.findIndex(o => o.id === 'm_dust'); if (i >= 0) OBJETS.splice(i, 1); DUST.moteur.regler(0, 0); };
 DUST.majMontage = () => { const A0 = DUST.actif; if (!A0) return; const t = (ETAT.jour - A0.jour) * 24 + HORL.h - A0.h, N = DUST.props.length; DUST.props.forEach((P, i) => { if (P === DUST.propsLum) return; const vis = t > .1 + i / N * 1.1; if (vis && !P.nd.visible) { P.nd.visible = true; P.nd.scale = [1, .05, 1]; P.anim = 0; } if (P.nd.visible && P.anim != null && P.anim < 1) { P.anim = Math.min(1, P.anim + .04); P.nd.scale = [1, .05 + .95 * P.anim, 1]; } });
   if (DUST.lum) DUST.lum.visible = DUST.lum.visible && A.nuit() > .2; };
-DUST.appel = () => { if (DUST.appelFait) return; DUST.appelFait = true; const L = DUST.ch(DUST.n).appel; let i = 0; const r = DUST.pnj.rapace; if (r && r.ch.visible) { VIS.allerA(r, [17.6, 102.6], 'Radio_Talk'); ALPHA.props(r, ['Radio']); }
-  const suiv = () => { if (i >= L.length) { sousTitre(null); GARDE.plus && GARDE.plus(6, 'appel radio avec Node'); historique('Tod a parlé à Node par la radio du détachement'); note('La radio se tait. Au poste de garde, une lampe reste allumée tard.', 4500); return; } SON.tic && SON.tic(.25, 1800 + Math.random() * 800, .05); sousTitre(L[i++]); setTimeout(suiv, 4600); }; note('Un grésillement sort de FSM01. La fenêtre radio est ouverte.', 2500); setTimeout(suiv, 1500); };
+DUST.appel = () => { if (DUST.appelFait) return; DUST.appelFait = true; DUST.appelEnCours = true; if (typeof BAV !== 'undefined') BAV.fin(); const L = DUST.ch(DUST.n).appel; let i = 0; const r = DUST.pnj.rapace; if (r && r.ch.visible) { VIS.allerA(r, [17.6, 102.6], 'Radio_Talk'); ALPHA.props(r, ['Radio']); }
+  const VX = { RIVET: { pitch: .92, rate: 1.04, genre: 'h', morph: 'man' }, RAPACE: (r && r.voix) || { pitch: 1.05, rate: 1.04, genre: 'f', morph: 'woman' }, TOD: (GARDE.v && GARDE.v.voix) || { pitch: 1.06, rate: 1, genre: 'h', morph: 'man' } };
+  const attendre = (t0) => { if (performance.now() - t0 < 2600 || (VOIX.parle && VOIX.parle() && performance.now() - t0 < 16000)) { setTimeout(() => attendre(t0), 250); return; } suiv(); };
+  const suiv = () => { if (i >= L.length) { sousTitre(null); DUST.appelEnCours = false; GARDE.plus && GARDE.plus(6, 'appel radio avec Node'); historique('Tod a parlé à Node par la radio du détachement'); note('La radio se tait. Au poste de garde, une lampe reste allumée tard.', 4500); return; } SON.tic && SON.tic(.25, 1800 + Math.random() * 800, .05); const l = L[i++], m = l.match(/^([A-ZÉ]+)\s*(\([^)]*\))?\s*:\s*(.*)$/); sousTitre(l); try { if (m) VOIX.dire(m[3], VX[m[1]] || {}); } catch (e) {} attendre(performance.now()); }; note('Un grésillement sort de FSM01. La fenêtre radio est ouverte.', 2500); setTimeout(suiv, 1500); };
 DUST.maj = dt => { if (DUST.cine) { DUST.cineMaj(dt); return; } if (!ETAT.enJeu) return; const A0 = DUST.actif;
   if (!A0) { if (ETAT.jour >= DUST.prochain && HORL.h >= 16.5 && HORL.h < 19.5 && !VIS.courant && !ETAT.dort && !UI.ouvert() && !UI.dlgOuvert && !UI.cineOn && !ETAT.mort && !CINE.on) { if (DUST.tirage !== ETAT.jour) { DUST.tirage = ETAT.jour; DUST.go = DUST.n === 0 ? (ETAT.jour >= 7 || Math.random() < .5) : Math.random() < .4; if (!DUST.go) DUST.prochain = ETAT.jour + 1; } if (DUST.go) { DUST.go = false; DUST.arriver(); } } return; }
   DUST.majMontage(); DUST.majSoldats(dt); if (DUST.lum) DUST.lum.visible = A.nuit() > .2 && DUST.props.some(P => P.nd.visible);
@@ -12094,12 +12096,12 @@ BAV.choisir = (a, b) => { const ka = BLA.cle(a), kb = BLA.cle(b), cp = [ka, kb].
   const [x] = choix, src = BAV.POOL[x[0].slice(2)] || BAV.PAIRES[x[0].slice(2)] || BAV.POOL.tous; BAV.vus[x[0] + '#' + src.indexOf(x[1])] = true; return x[1]; };
 BAV.libre = v => v && v.ch && v.ch.visible && v.etat === 'pose' && !v.parti && v.parle !== false && !(VIS.dlg && VIS.dlg.v === v) && !(v.tBav > performance.now()) && v.clipFinal !== 'Swim' && !/Sleep|Lie/.test(v.clipFinal || '');
 BAV.maj = dt => { const now = performance.now(), C = BAV.cur;
-  if (C) { if (UI.dlgOuvert || UI.cineOn || ETAT.dort || !C.a.ch || !C.b.ch) { BAV.fin(); return; } if (now < C.tSuiv) return; if (C.i >= C.L.length) { BAV.fin(); return; }
+  if (C) { if (UI.dlgOuvert || UI.cineOn || ETAT.dort || !C.a.ch || !C.b.ch) { BAV.fin(); return; } if (now < C.tSuiv || (VOIX.parle && VOIX.parle() && now < C.tMax)) return; if (C.i >= C.L.length) { BAV.fin(); return; }
     const v = C.i % 2 ? C.b : C.a, w = C.i % 2 ? C.a : C.b, t = texte(C.L[C.i]).replace(/\{A\}/g, C.a.prenom).replace(/\{B\}/g, C.b.prenom); C.i++;
     v.ch.yaw = Math.atan2(w.ch.pos[0] - v.ch.pos[0], w.ch.pos[2] - v.ch.pos[2]); w.ch.yaw = Math.atan2(v.ch.pos[0] - w.ch.pos[0], v.ch.pos[2] - w.ch.pos[2]);
-    if (VIS.jouer) VIS.jouer(v, 'Talk'); v.bulle = { t: v.prenom + ' : ' + t, fin: now + 2600 + t.length * 52 }; try { if (OPT.voix && !VOIX.parle()) VOIX.dire(t, v.voix); } catch (e) {}
-    C.tSuiv = now + 2900 + t.length * 52; return; }
-  if ((BAV.t -= dt) > 0) return; BAV.t = 1.5; if (UI.dlgOuvert || UI.cineOn || ETAT.dort || VOIX.parle && VOIX.parle()) return;
+    if (VIS.jouer) VIS.jouer(v, 'Talk'); v.bulle = { t: v.prenom + ' : ' + t, fin: now + 2600 + t.length * 52 }; try { VOIX.dire(t, v.voix); } catch (e) {}
+    C.tSuiv = now + 1800 + t.length * 30; C.tMax = now + 4000 + t.length * 90; return; }
+  if ((BAV.t -= dt) > 0) return; BAV.t = 1.5; if (UI.dlgOuvert || UI.cineOn || ETAT.dort || VOIX.parle && VOIX.parle() || (typeof DUST !== 'undefined' && DUST.appelEnCours)) return;
   const L = VIS.pnj.filter(v => BAV.libre(v) && Math.hypot(PL.x - v.ch.pos[0], PL.z - v.ch.pos[2]) < 16);
   for (let i = 0; i < L.length; i++) for (let j = i + 1; j < L.length; j++) { const a = L[i], b = L[j]; if (Math.hypot(a.ch.pos[0] - b.ch.pos[0], a.ch.pos[2] - b.ch.pos[2]) > 3.2 || Math.random() > .35) continue;
       const E = BAV.choisir(a, b); if (!E) continue; BAV.cur = { a, b, L: E, i: 0, tSuiv: now, clips: [a.clipFinal, b.clipFinal] }; return; } };
@@ -12282,7 +12284,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 
 </script>
 <!--
-NOTE-INTERNE (Claude) · HDF : CAMPING v0.21 · F.S.M Game House · 3 nov. 2026
+NOTE-INTERNE (Claude) · HDF : CAMPING v0.21.1 · F.S.M Game House · 3 nov. 2026
 À lire avant de modifier ce fichier. Ne pas relire le fichier en entier : chercher les ancres « ==== CAMP : » (grep), puis ne lire que la section utile.
 
 STRUCTURE DU FICHIER
@@ -12403,6 +12405,8 @@ v0.19 — BLABLA ÉTENDU (src/9c_blabla_sujets_a/b/c.js) : BLA.SUJETS = 29 sujet
 v0.20 — BLABLA ×1000 (src/9c_blabla_sujets_d/e.js) : 17 sujets de plus (jardin, montagne, livres, amour, mystères, voyages, enfance3, soldat2, tod3, camilla3, bourg3, ancien2, visiteur3, alpha3, cuisine2, métiers, eau) ; BLA.total() > 1000 répliques d'ouverture.
 
 v0.21 — BAVARDAGES ENTRE PNJ (src/9d_bavardages_a/b/c.js : BAV.POOL par paires de catégories + BAV.PAIRES de duos nommés, BAV.maj dans VIS.maj : deux PNJ posés à < 3,2 m, joueur à < 16 m, un échange à la fois, sous-titre « Nom : … ») et RÈGLE « JAMAIS DEUX FOIS, TOUJOURS COHÉRENT » (src/9e_coherence.js) : UNIQ (empreintes des répliques entendues, sauvegarde 'uniq', vidée en nouvelle partie) appliqué au blabla (le choix disparaît quand il n'y a plus d'inédit), aux bavardages, aux répliques spontanées (VIS.direAmb, appel patché dans VIS.maj) et aux variantes des nœuds (UNIQ.texte dans VIS.noeud ; seulement les fonctions « pures » à pick, n.unique === false pour exclure) ; BLA.ok = filtre de cohérence (soi à la 3e personne, connaissances du bourg, enfants, conditions d'événements BLA.CONDS, météo, pas de neige, accords 1re personne).
+
+v0.21.1 — VOIX : bavardages entre PNJ toujours dits (VOIX.dire, réplique suivante quand la voix a fini, garde C.tMax) ; appel radio de Rivet dit à trois voix (VX : RIVET, RAPACE, TOD ; la suivante attend la fin) ; citation de Rapace dite au 4e plan de la cinématique d'arrivée. Déjà dits : nœuds de dialogue (VIS.noeud → VIS.dire), blabla, répliques spontanées (VIS.direAmb → VIS.dire). Voix des PNJ créés par ALPHA.creer : selon le genre (voix.genre/morph).
 
 À FAIRE / IDÉES v1.0 : sauvegarde du visiteur en cours ; météo visible (pluie déjà possible via A.meteo) ; deux emplacements de sauvegarde ; branchement History Sens pour les dialogues libres.
 
