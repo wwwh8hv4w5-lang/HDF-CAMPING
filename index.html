@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HDF : CAMPING">
 <meta name="theme-color" content="#0b0f0a">
-<title>HDF : CAMPING — v0.15</title>
+<title>HDF : CAMPING — v0.15.1</title>
 <style>
 :root{--lin:#f3efe6;--ambre:#f2c66d;--mousse:#8fb37a;--nuit:#0b0f0a;--verre:rgba(10,14,10,.62);--rouge:#e0665a;--bleu:#7fb6d8;
   --sans:-apple-system,BlinkMacSystemFont,"Avenir Next","Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
@@ -170,7 +170,7 @@ body.cine #cine .bande{height:11vh}
 <div id="cine"><div class="bande h"></div><div class="bande b"></div></div>
 <button id="cinePasser" hidden>Passer ›</button>
 <div id="hud" hidden>
-  <div id="titreJeu">HDF : CAMPING · v0.15</div>
+  <div id="titreJeu">HDF : CAMPING · v0.15.1</div>
   <div id="marqueurs"></div>
   <canvas id="boussole" width="1120" height="108"></canvas>
   <div id="heureJour"><b id="hHeure">07:00</b><span id="hJour">Jour 1 · lundi</span></div>
@@ -204,14 +204,14 @@ body.cine #cine .bande{height:11vh}
 </div>
 <div id="fin" hidden><h2 id="finTitre">Fin de partie</h2><p id="finTexte"></p><div class="stats" id="finStats"></div><div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><button class="gros" id="finRejouer">Recommencer une partie</button><button class="gros discret" id="finMenu">Menu</button></div></div>
 <div id="menu" hidden>
-  <div class="version">v0.15 · FSM-3D 2.10</div>
+  <div class="version">v0.15.1 · FSM-3D 2.10</div>
   <h1><small>F.S.M GAME HOUSE</small>HDF : CAMPING</h1>
   <p class="accroche">Seul au bord d'un lac de montagne. Chaque jour, quelqu'un passe. Tenez le plus longtemps possible.</p>
   <div class="ligne"><input id="prenom" maxlength="16" placeholder="Votre prénom" autocomplete="off" spellcheck="false"></div>
   <div class="ligne"><button class="gros" id="bNouvelle">Nouvelle partie</button><button class="gros discret" id="bContinuer" hidden>Continuer</button></div>
   <div class="opts"><button id="oSon" class="on">Son</button><button id="oVoix" class="on">Voix des PNJ</button><button id="oMusique" class="on">Musique</button><button id="oQualite">Qualité : auto</button><button id="oTexte">Texte : grand</button><button id="oMarq" class="on">Marqueurs de collecte</button><button id="oPerf">Performances</button></div>
   <div class="aideCtrl" id="aideCtrl">Manette PS : <b>stick gauche</b> marcher · <b>stick droit</b> regarder · <b>✕</b> action / choisir · <b>○</b> s'accroupir / partir · <b>△</b> sauter · <b>□</b> sac à dos · <b>R2</b> courir · <b>L1</b> lampe · <b>OPTIONS</b> menu.<br>Tactile : stick à gauche, glisser à droite pour regarder, boutons à droite. Clavier : ZQSD / flèches, souris (clic pour viser), Espace, C, Maj, E, Tab, F, Échap.</div>
-  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.15</div>
+  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.15.1</div>
 </div>
 
 <script>
@@ -4992,7 +4992,7 @@ self.JOE_DATA = { animals: 'Z2xURgIAAAD8HQQAtNIBAEpTT057ImFzc2V0Ijp7InZlcnNpb24i
    ===================================================================================== */
 'use strict';
 // ==== CAMP : OUTILS ===================================================================
-const JEU = { nom: 'HDF : CAMPING', version: '0.15', cle: 'hdfc-' };
+const JEU = { nom: 'HDF : CAMPING', version: '0.15.1', cle: 'hdfc-' };
 const $ = id => document.getElementById(id);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, k) => a + (b - a) * k;
@@ -5137,7 +5137,7 @@ addEventListener('blur', () => { IN.keys = {}; });
   b('bCourir', () => { IN.run = !IN.run; $('bCourir').classList.toggle('on', IN.run); }, null); b('bLampe', () => { IN.lampe = true; }); b('bPause', () => { IN.menu = true; });
 })();
 // manette : ✕ 0 · ○ 1 · □ 2 · △ 3 · L1 4 · R1 5 · L2 6 · R2 7 · SHARE 8 · OPTIONS 9 · L3 10 · R3 11 · croix 12-15
-function manette() { const gs = navigator.getGamepads ? navigator.getGamepads() : []; let g = null; for (const x of gs) if (x && x.connected) { g = x; break; } IN.gp = g; if (!g) return;
+function manette() { const gs = navigator.getGamepads ? navigator.getGamepads() : []; let g = null; for (const x of gs) if (x && x.connected !== false && x.buttons && x.buttons.length) { g = x; break; } IN.gp = g; if (!g) return;
   const dz = v => Math.abs(v) < .14 ? 0 : (v - Math.sign(v) * .14) / .86, b = i => !!(g.buttons[i] && g.buttons[i].pressed), edge = i => b(i) && !IN.prev[i];
   const lx = dz(g.axes[0] || 0), ly = dz(g.axes[1] || 0), rx = dz(g.axes[2] || 0), ry = dz(g.axes[3] || 0);
   if (Math.abs(lx) + Math.abs(ly) + Math.abs(rx) + Math.abs(ry) > 0 || g.buttons.some(x => x.pressed)) { if (IN.dernier !== 'manette') { IN.dernier = 'manette'; document.body.classList.add('manette'); } }
@@ -5148,7 +5148,7 @@ function manette() { const gs = navigator.getGamepads ? navigator.getGamepads() 
   // stick gauche dans les menus : navigation à répétition lente
   const now = performance.now(); if (UI.ouvert()) { if (Math.abs(ly) > .6 && (!IN.tNav || now - IN.tNav > 260)) { IN.tNav = now; if (ly < 0) IN.haut = true; else IN.bas = true; } if (Math.abs(ly) < .3) IN.tNav = 0; }
   IN.prev = g.buttons.map(x => x.pressed); }
-addEventListener('gamepadconnected', () => { document.body.classList.add('manette'); IN.dernier = 'manette'; });
+addEventListener('gamepadconnected', e => { document.body.classList.add('manette'); IN.dernier = 'manette'; try { note('Manette détectée : ' + ((e.gamepad && e.gamepad.id) || 'manette') .slice(0, 40), 2500); } catch (er) {} });
 // garde audio : relance l'audio coupé à chaque appui manette et toutes les 1,5 s (sauf en pause)
 const GARDE_AUDIO = { touche: 0, t: 0 };
 function gardeAudio(now, pause) { if (pause) return; if (now - GARDE_AUDIO.t > 1500 || now - GARDE_AUDIO.touche < 50) { GARDE_AUDIO.t = now; if (SON.ok) SON.reprendre(); VOIX.veille(); } }
@@ -10101,7 +10101,7 @@ function construireBat(S) { const m = GEO.merger(), CUBE = GEO.cube(), T = M3.tr
   // murs avec porte (façade -w) et fenêtres
   const porteL = S.porteL || 1.5; B(-hu + e / 2, pl + h / 2, 0, e, h, S.lw, MUR); B(hu - e / 2, pl + h / 2, 0, e, h, S.lw, MUR); B(0, pl + h / 2, hw - e / 2, S.lu, h, e, MUR);
   const g = -hu, d = hu; B((g + pu - porteL / 2) / 2, pl + h / 2, -hw + e / 2, pu - porteL / 2 - g, h, e, MUR); B((pu + porteL / 2 + d) / 2, pl + h / 2, -hw + e / 2, d - pu - porteL / 2, h, e, MUR); B(pu, pl + 2.35 + (h - 2.35) / 2, -hw + e / 2, porteL, h - 2.35, e, MUR);
-  B(0, pl + .3, -hw + e / 2 - .01, S.lu + .02, .6, e + .04, SOUB, 12); B(pu, pl + .02, -hw + e / 2, porteL, .04, e + .1, [.45, .42, .38], 12);   // soubassement, seuil (porte libre)
+  { const g0 = -hu - .01, g1 = pu - porteL / 2, d0 = pu + porteL / 2, d1 = hu + .01; B((g0 + g1) / 2, pl + .3, -hw + e / 2 - .01, g1 - g0, .6, e + .04, SOUB, 12); B((d0 + d1) / 2, pl + .3, -hw + e / 2 - .01, d1 - d0, .6, e + .04, SOUB, 12); B(pu, pl / 2, -hw - .22, porteL + .3, pl, .5, S.marche || [.42, .3, .2], 13); }   // soubassement coupé à la porte + marche en bois B(pu, pl + .02, -hw + e / 2, porteL, .04, e + .1, [.45, .42, .38], 12);   // soubassement, seuil (porte libre)
   B(0, pl + h + .08, 0, S.lu + .24, .16, S.lw + .24, CADRE, 4); B(0, pl + h - .03, 0, S.lu - .6, .05, S.lw - .6, S.plafond || [.92, .9, .85], 4);   // plafond intérieur
   const fen = S.fenetres || [];
   S.lum = []; for (const [face, t] of fen) { const y = pl + 1.75, n = face === 'n' ? -1 : face === 's' ? 1 : 0, ax = face === 'e' || face === 'o';
@@ -10388,8 +10388,8 @@ BOURG.GENS = [
       histoire: [[10, 'Avant, je vendais des fruits sur le marché du dimanche, en bas. Avec Gaspard à côté, qui revendait mes fruits plus cher.'], [35, 'Un soir, un homme énorme est entré, a acheté vingt kilos de pommes et a payé en pièces anciennes. Il a dit : « André. » Et il est parti.'], [60, 'Tu veux un tuyau ? Le mardi, les invendus partent au fond du magasin. Demande « le panier de Sonia ».']],
       service: { seuil: 40, t: 'Le panier de Sonia, s’il te plaît.', dit: () => 'Chut. Deux conserves, de l’eau, et un paquet de biscuits pas si périmés.', f: () => { SAC.rations += 2; SAC.eau = (SAC.eau || 0) + 1; } } } },
   { id: 'mathis', nom: 'Mathis Lenoir', role: 'menuisier, ancien artilleur', g: 'h', morph: 'man', tenue: 'craftsman', col: { top: '#4a5a3a' }, maison: 'h8', animal: { esp: 'Dog', nom: 'Sergent', coat: 1, scale: .85, txt: 'Sergent se met au garde-à-vous, la queue battante. Mathis lui a appris à saluer.' },
-    plan: [[6, 7, 'sentierSud', 'Stretch_Idle'], [7, 7.5, MZ('h8'), 'Idle'], [7.5, 12, 'chantierV', 'Chop_Wood'], [12, 13.5, 'terrasse', 'Drink'], [13.5, 17, 'chantierV', 'Chop_Wood'], [17, 18.5, 'cour', 'Talk'], [18.5, 20, 'fontaine', 'Talk'], [20, 31, MZ('h8'), 'Idle']],
-    variantes: [{ si: () => [4, 5].includes(BOURG.dow()), plan: [[6, 7, 'sentierSud', 'Stretch_Idle'], [7, 7.5, MZ('h8'), 'Idle'], [7.5, 12, 'chantierV', 'Chop_Wood'], [12, 13.5, 'terrasse', 'Drink'], [13.5, 17, 'chantierV', 'Chop_Wood'], [17, 19, 'fontaine', 'Talk'], [19, 23.5, 'camping', 'Sit_Ground'], [23.5, 31, MZ('tenteB1'), 'Idle']] }],
+    plan: [[6, 7, 'sentierSud', 'Stretch_Idle'], [7, 7.5, MZ('h8'), 'Idle'], [7.5, 12, 'atelierBois', 'Chop_Wood'], [12, 13.5, 'terrasse', 'Drink'], [13.5, 17, 'atelierBois', 'Chop_Wood'], [17, 18.5, 'cour', 'Talk'], [18.5, 20, 'fontaine', 'Talk'], [20, 31, MZ('h8'), 'Idle']],
+    variantes: [{ si: () => [4, 5].includes(BOURG.dow()), plan: [[6, 7, 'sentierSud', 'Stretch_Idle'], [7, 7.5, MZ('h8'), 'Idle'], [7.5, 12, 'atelierBois', 'Chop_Wood'], [12, 13.5, 'terrasse', 'Drink'], [13.5, 17, 'atelierBois', 'Chop_Wood'], [17, 19, 'fontaine', 'Talk'], [19, 23.5, 'camping', 'Sit_Ground'], [23.5, 31, MZ('tenteB1'), 'Idle']] }],
     P: { intro: 'Mathis. Menuisier sur les chantiers de la Villa. Avant, artilleur à la base de la maréchale Shirley. On ne quitte jamais vraiment l’armée : je me lève encore à six heures pile.', bavard: ['Louana m’a appris à tirer. Puis elle est devenue meilleure que moi en une semaine. Elle est comme ça.', 'Le vendredi et le samedi, on campe sur l’aire du bourg avec Timéo. Il veut dormir « comme un soldat ». Il dort avec la lampe allumée.', 'Céline pilote « le grand aigle », l’hélicoptère de la base. Quand il passe au-dessus du bourg, Timéo court sur la place en faisant le salut.'],
       histoire: [[10, 'À la base, il y avait un jeune engagé qui ne parlait jamais de lui, juste de son petit frère garde forestier. Node. Il réparait tout ce qui était cassé, même le moral des autres.'], [35, 'Mike conduisait le blindé, le TAN 01. Un jour il a écrasé la boîte aux lettres de M. Boup. Le bourgmestre a écrit à la maréchale. Elle a répondu : « Achetez une boîte plus solide. »'], [60, 'Je reçois une lettre de la base chaque mois. Le dernier mot est toujours le même : « Tenez le bourg. » Je ne sais pas contre quoi. Je te le dis à toi : ouvre l’œil, au lac.']],
       service: { seuil: 50, t: 'Un coup de main pour le camp, Mathis ?', dit: () => 'J’ai taillé des piquets et un étai pour ta tente. Le vent des Cimes ne te la prendra pas.', f: () => { SAC.objets.push({ nom: 'Piquets de Mathis', d: 'Taillés au cordeau, à l’ancienne. La tente ne bougera plus.' }); } } } },
@@ -10484,7 +10484,7 @@ Object.assign(VIE.ABSENTS, BOURG.ABSENTS);
     if (!r) r = a0(C); if (r.absent) return r; if (r.lieu === 'baignade' && VIS.courant) { r.lieu = 'sable'; r.clip = 'Beach_Lie'; r.h0 = 'x' + r.h0; } if (r.nuit) { if (C.passant) return { absent: true, lieu: null, h0: -1 }; r.lieu = MZ(C.maison); } return r; }; }
 { const p0 = VIE.point; VIE.point = l => { if (Array.isArray(l) && l[0] === 'porte') { const b = VILLAGE.B[l[1]]; return b ? b.p((b.S.porteU || 0) + 1.3, -b.lw / 2 - 1.3) : null; }
     if (l === 'baignade') return VIS.bordEau(LIEUX.plage[0] + rnd(-4, 3), 97, true); if (l === 'sable') { const q = VIS.bordEau(LIEUX.plage[0] + rnd(-3, 3), 98); return [q[0], q[1] + 1.7]; }
-    if (l === 'camping') return [-46.5 + rnd(-2.2, 2.2), 216.8 + rnd(-.3, .3)]; if (l === 'marche') return [37.2, 245]; if (l === 'chantierV') return [LIEUX.chantier[0] + rnd(-3, 3), LIEUX.chantier[1] + rnd(-2, 2)];
+    if (l === 'camping') return [-46.5 + rnd(-2.2, 2.2), 216.8 + rnd(-.3, .3)]; if (l === 'marche') return [37.2, 245]; if (l === 'atelierBois') return [-35.2, 211.3]; if (l === 'chantierV') return [LIEUX.chantier[0] + rnd(-3, 3), LIEUX.chantier[1] + rnd(-2, 2)];
     if (Array.isArray(l) && l[0] === 'maison' && !VILLAGE.B[l[1]]) return null; return p0(l); }; }
 { const pp = VIE.persP; VIE.persP = C => { const P = Object.assign({}, pp(C)); P.bavard = (P.bavard || []).concat(BOURG.ragots()); if (CAMILLA.meh() && C.meh) { if (C.meh.intro) P.intro = C.meh.intro; P.bavard = C.meh.bavard.concat(P.bavard); } return P; }; }
 { const mo = VIE.maisonOuverte; let k = -1, cache = {}; VIE.maisonOuverte = mid => { if (mo(mid)) return true; const t = Math.floor(HORL.h * 30); if (t !== k) { k = t; cache = {}; for (const C of VIE.PERS) { const a = VIE.actA(C); if (Array.isArray(a.lieu) && a.lieu[0] === 'bat' && VILLAGE.B[a.lieu[1]] && VILLAGE.B[a.lieu[1]].maison) cache[a.lieu[1]] = true; } } return !!cache[mid]; }; }
@@ -10501,6 +10501,8 @@ Object.assign(VIE.ABSENTS, BOURG.ABSENTS);
     { const fx = -46.5, fz = 214.5; for (let i = 0; i < 10; i++) { const a = i / 10 * PI * 2; m.add(CUBE, mul(T(fx + Math.cos(a) * .8, H + .1, fz + Math.sin(a) * .8), S(.3, .2, .3)), [.5, .5, .5], 12); }
       for (const [dx, dz, r] of [[0, 2.3, 0], [-2.2, .4, PI / 2], [2.2, .4, PI / 2]]) m.add(GEO.cylinder(8), mul(T(fx + dx, H + .22, fz + dz), mul(M3.rotY(r), mul(M3.rotZ(PI / 2), S(.28, 1.8, .28)))), [.4, .28, .18], 13);
       m.add(CUBE, mul(T(-37, H + .75, 216), S(2, .08, .9)), [.5, .36, .22], 13); for (const s of [-1, 1]) m.add(CUBE, mul(T(-37, H + .45, 216 + s * .8), S(2, .06, .3)), [.5, .36, .22], 13); COLL.push({ x: -37, z: 216, r: 1 }); COLL.push({ x: fx, z: fz, r: .9 }); }
+    // atelier de Mathis : billot, tas de bûches, chevalet (il fend le bois du café et des campeurs)
+    { const bx = -35.2, bz = 212.5; m.add(GEO.cylinder(10), mul(T(bx, H + .3, bz), S(.55, .6, .55)), [.5, .36, .22], 13); for (let r = 0; r < 3; r++) for (let i = 0; i < 6 - r; i++) m.add(GEO.cylinder(8), mul(T(bx + 2 + i * .32 + r * .16, H + .15 + r * .27, bz + .6), mul(M3.rotX(PI / 2), S(.28, 1.4, .28))), [.55, .4, .25], 13); m.add(CUBE, mul(T(bx - 1.8, H + .5, bz + .4), S(1.2, .1, .3)), [.45, .32, .2], 13); for (const s of [-1, 1]) m.add(CUBE, mul(T(bx - 1.8 + s * .45, H + .25, bz + .4), S(.08, .5, .5)), [.45, .32, .2], 13); COLL.push({ x: bx, z: bz, r: .4 }); COLL.push({ x: bx + 2.8, z: bz + .6, r: 1.2 }); COLL.push({ x: bx - 1.8, z: bz + .4, r: .6 }); }
     const nd = new Node('bourgV'); nd.pickable = false; for (const p of m.build(mk)) nd.addPart(p.mesh, null, p.color, p.mat); A.add(nd);
     // tentes de l'aire (montées les nuits de camping), braises
     BOURG.tentes = [[-52.5, 210.6, .2, [.25, .45, .3]], [-40.5, 210.2, -.25, [.75, .5, .2]]].map(([x, z, yw, c]) => { const t = new Node('tenteB'); t.pickable = false; t.pos = [x, H, z]; t.rot[1] = yw; t.addPart(MESH.cube, mul(T(0, .02, 0), mul(M3.rotZ(PI / 4), S(1.55, 1.55, 2.3))), c, 4); t.addPart(MESH.cube, mul(T(0, .55, -1.16), S(.5, 1, .02)), [.15, .15, .15], 4); t.visible = false; A.add(t); return t; });
@@ -10553,6 +10555,8 @@ VIE.majBetes = dt => { if (!JOE || !JOE.pack.animals) return; let n = 0; const j
       BOURG.tentes[0].visible = C.some(c => ['mathis', 'yasmine', 'timeo'].includes(c.id)); BOURG.tentes[1].visible = C.some(c => ['theo', 'ines'].includes(c.id)); BOURG.braises.visible = C.length > 0 && soir; BOURG.charrette.visible = BOURG.dow() === 6 && HORL.h >= 7.8 && HORL.h < 14.2; }
     if (BOURG.braises.visible && A.nuit() > .2 && Math.hypot(PL.x + 46.5, PL.z - 214.5) < 50) A.addLight({ p: [-46.5, CHANTIER.Hs + .8, 214.5], c: [1, .6, .3], i: 10, r: 9 });
     if (ETAT.dort) { for (const k in VIE.BETES) BOURG.retirerBete(k); } else VIE.majBetes(dt); }; }
+// pas deux habitants au même endroit : on écarte ceux qui sont posés trop près l'un de l'autre
+{ const m0 = VIE.maj; VIE.maj = dt => { m0(dt); const L = Object.values(VIE.pnj).filter(v => v.ch && v.ch.visible && v.etat === 'pose' && v.clipFinal !== 'Swim'); for (let i = 0; i < L.length; i++) for (let j = i + 1; j < L.length; j++) { const a = L[i].ch.pos, b = L[j].ch.pos, dx = b[0] - a[0], dz = b[2] - a[2], d = Math.hypot(dx, dz); if (d < .95) { const k = (.95 - d) / 2 + .01, ux = d > .01 ? dx / d : Math.cos(i + j), uz = d > .01 ? dz / d : Math.sin(i + j); a[0] -= ux * k; a[2] -= uz * k; b[0] += ux * k; b[2] += uz * k; } } }; }
 { const r0 = GARDE.recaler; GARDE.recaler = function () { r0.apply(this, arguments); for (const k in VIE.BETES) BOURG.retirerBete(k); }; }
 
 // ==== CAMP : CINÉMATIQUES (randonnée d'ouverture, réveil) ======================================
@@ -10653,7 +10657,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 
 </script>
 <!--
-NOTE-INTERNE (Claude) · HDF : CAMPING v0.15 · F.S.M Game House · 3 nov. 2026
+NOTE-INTERNE (Claude) · HDF : CAMPING v0.15.1 · F.S.M Game House · 3 nov. 2026
 À lire avant de modifier ce fichier. Ne pas relire le fichier en entier : chercher les ancres « ==== CAMP : » (grep), puis ne lire que la section utile.
 
 STRUCTURE DU FICHIER
@@ -10756,6 +10760,8 @@ v0.15 — LE BOURG VIVANT (Node Opening 3D), module « CAMP : LE BOURG VIVANT »
   BOURG.FOYERS / ENFANTS (C.maison = domicile) ; BOURG.GENS : Jules, Hugo (facteur, tournée ['porte', id]), Claire, Luc, Sonia, Mathis (ancien artilleur de Shirley), Yasmine (Journal du Bourg), Abel, Rose, Théo, Inès (venue du Hameau), Gaspard (passant, dimanche, charrette).
   C.variantes [{ si(), plan }] (h0 préfixé 'v<i>_') : camping (aire du bourg, tentes tenteB1/2 visibles, braises, feu des campeurs) ven/sam Lenoir, mer/sam Théo+Inès ; baignade 'baignade'/'sable' à la plage du camp (si VIS.courant → sable) ; mercredi après-midi libre des enfants ; C.passant → absent hors plan ; nuit = maison.
   VIE.maj : MAX 9, apparition hors du village permise (plage, ponton, chantier), trajet > 70 m → retiré (pas de traversée de forêt). Animaux BOURG.BETES / C.animal → VIE.majBetes (Joe.Animal Dog/Cat, suivent le maître, ou couchés devant la porte de 7 h à 21 h, 6 au plus, « Caresser » +lien). Ragots BOURG.RAGOTS + BOURG.ragots() (état de partie) ajoutés au bavardage ; BOURG.PLUS (répliques Opening des anciens) ; BOURG.MEH (Med/Mehdy Badaoui) ; VIE.gazette() dans le Journal ; panneau « Avis du bourg ». Marqueurs m_fournil, m_aireCamp, m_marche, m_avis, m_habN, m_habS.
+
+v0.15.1 — Mathis fend le bois à son atelier ('atelierBois', billot + bûches + chevalet près de l'aire de camping) au lieu du parking du FSM ; construireBat : soubassement coupé à la porte + marche en bois (S.marche) ; VIE.maj : écartement des habitants posés à moins de 0,95 m. Manette : détection plus tolérante (connected !== false), note « Manette détectée ».
 
 À FAIRE / IDÉES v1.0 : sauvegarde du visiteur en cours ; météo visible (pluie déjà possible via A.meteo) ; deux emplacements de sauvegarde ; branchement History Sens pour les dialogues libres.
 
