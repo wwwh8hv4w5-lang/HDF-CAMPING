@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HDF : CAMPING">
 <meta name="theme-color" content="#0b0f0a">
-<title>HDF : CAMPING — v0.7</title>
+<title>HDF : CAMPING — v0.9</title>
 <style>
 :root{--lin:#f3efe6;--ambre:#f2c66d;--mousse:#8fb37a;--nuit:#0b0f0a;--verre:rgba(10,14,10,.62);--rouge:#e0665a;--bleu:#7fb6d8;
   --sans:-apple-system,BlinkMacSystemFont,"Avenir Next","Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
@@ -170,7 +170,7 @@ body.cine #cine .bande{height:11vh}
 <div id="cine"><div class="bande h"></div><div class="bande b"></div></div>
 <button id="cinePasser" hidden>Passer ›</button>
 <div id="hud" hidden>
-  <div id="titreJeu">HDF : CAMPING · v0.7</div>
+  <div id="titreJeu">HDF : CAMPING · v0.9</div>
   <div id="marqueurs"></div>
   <canvas id="boussole" width="1120" height="108"></canvas>
   <div id="heureJour"><b id="hHeure">07:00</b><span id="hJour">Jour 1 · lundi</span></div>
@@ -204,14 +204,14 @@ body.cine #cine .bande{height:11vh}
 </div>
 <div id="fin" hidden><h2 id="finTitre">Fin de partie</h2><p id="finTexte"></p><div class="stats" id="finStats"></div><div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><button class="gros" id="finRejouer">Recommencer une partie</button><button class="gros discret" id="finMenu">Menu</button></div></div>
 <div id="menu" hidden>
-  <div class="version">v0.7 · FSM-3D 2.10</div>
+  <div class="version">v0.9 · FSM-3D 2.10</div>
   <h1><small>F.S.M GAME HOUSE</small>HDF : CAMPING</h1>
   <p class="accroche">Seul au bord d'un lac de montagne. Chaque jour, quelqu'un passe. Tenez le plus longtemps possible.</p>
   <div class="ligne"><input id="prenom" maxlength="16" placeholder="Votre prénom" autocomplete="off" spellcheck="false"></div>
   <div class="ligne"><button class="gros" id="bNouvelle">Nouvelle partie</button><button class="gros discret" id="bContinuer" hidden>Continuer</button></div>
   <div class="opts"><button id="oSon" class="on">Son</button><button id="oVoix" class="on">Voix des PNJ</button><button id="oQualite">Qualité : auto</button><button id="oTexte">Texte : grand</button><button id="oMarq" class="on">Marqueurs de collecte</button><button id="oPerf">Performances</button></div>
   <div class="aideCtrl" id="aideCtrl">Manette PS : <b>stick gauche</b> marcher · <b>stick droit</b> regarder · <b>✕</b> action / choisir · <b>○</b> s'accroupir / partir · <b>△</b> sauter · <b>□</b> sac à dos · <b>R2</b> courir · <b>L1</b> lampe · <b>OPTIONS</b> menu.<br>Tactile : stick à gauche, glisser à droite pour regarder, boutons à droite. Clavier : ZQSD / flèches, souris (clic pour viser), Espace, C, Maj, E, Tab, F, Échap.</div>
-  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.7</div>
+  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.9</div>
 </div>
 
 <script>
@@ -4992,7 +4992,7 @@ self.JOE_DATA = { animals: 'Z2xURgIAAAD8HQQAtNIBAEpTT057ImFzc2V0Ijp7InZlcnNpb24i
    ===================================================================================== */
 'use strict';
 // ==== CAMP : OUTILS ===================================================================
-const JEU = { nom: 'HDF : CAMPING', version: '0.7', cle: 'hdfc-' };
+const JEU = { nom: 'HDF : CAMPING', version: '0.9', cle: 'hdfc-' };
 const $ = id => document.getElementById(id);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, k) => a + (b - a) * k;
@@ -5216,7 +5216,7 @@ function creerMonde() {
   A.meteo('clair', 1); A.setEnv('jour', true);
   // oiseaux
   A.ambiance.oiseaux(-30, 20, { n: 9, h: 55 }); A.ambiance.oiseaux(60, 90, { n: 6, h: 70 });
-  construireCamp(); construireFaune(); construirePDG();
+  construireCamp(); construireFaune(); construirePDG(); construireSalle();
   return A;
 }
 const SOL = (x, z) => A.groundAt(x, z);
@@ -5641,17 +5641,17 @@ function majJoueur(dt) { const P = PL, ouvert = UI.ouvert() || UI.dlgOuvert || E
   let nx = P.x + dx * dt, nz = P.z + dz * dt;
   // pente trop raide ou eau profonde : on reste
   const gN = solJoueur(nx, nz), dh = gN - solJoueur(P.x, P.z); if (dh > .9 * Math.max(.02, Math.hypot(dx, dz) * dt) + .45 && P.auSol) { nx = P.x; nz = P.z; }
-  if (gN < -1.15) { nx = P.x; nz = P.z; if (l > .3) P.bloque += dt; } else P.bloque = 0;
+  if (gN < -1.15 && !SALLE.ici) { nx = P.x; nz = P.z; if (l > .3) P.bloque += dt; } else P.bloque = 0;
   if (P.bloque > .6) { note('L’eau est glacée… pas plus loin.'); P.bloque = -4; }
   if (!zoneJoueur(nx, nz)) { if (zoneJoueur(nx, P.z)) nz = P.z; else if (zoneJoueur(P.x, nz)) nx = P.x; else { nx = P.x; nz = P.z; } if (l > .3 && (P.tForet = (P.tForet || 0) + dt) > 1.2) { P.tForet = -6; note(surChemin(P.x, P.z) || P.z > 115 ? 'Le sentier est le seul passage : la forêt est trop dense de part et d’autre.' : P.z < 100 ? 'Les arbres descendent jusqu’à l’eau : impossible de longer la rive.' : 'La forêt est trop dense par ici. On ne passe que par le sentier.'); } }
   else if (P.tForet > 0) P.tForet = 0;
   if (surChemin(nx, nz) && nz > 255 && l > .3 && Math.random() < dt * .5) note('Vous ne voulez pas trop vous éloigner du camp.');
-  const o = obstacles(nx, nz, .36); P.x = o.x; P.z = o.z;
+  const o = obstacles(nx, nz, .36); P.x = o.x; P.z = o.z; SALLE.borner();
   // gravité
   const g = solJoueur(P.x, P.z); P.vy -= 12 * dt; P.y += P.vy * dt; if (P.y <= g) { if (!P.auSol && P.vy < -3) SON.pas(P.surPonton ? 'bois' : g < .2 ? 'eau' : 'herbe', .7); P.y = g; P.vy = 0; P.auSol = true; }
-  P.dansEau = clamp(-g, 0, 1.2); P.vit = Math.hypot(dx, dz) * (o.hit ? .5 : 1) * (l > .05 ? 1 : 0);
+  P.dansEau = SALLE.ici ? 0 : clamp(-g, 0, 1.2); P.vit = Math.hypot(dx, dz) * (o.hit ? .5 : 1) * (l > .05 ? 1 : 0);
   // pas
-  if (P.auSol && P.vit > .2) { const p0 = P.pas; P.pas += dt * P.vit / (P.court ? 2.3 : 1.55); if (Math.floor(P.pas * 2) !== Math.floor(p0 * 2)) { SON.pas(P.surPonton ? 'bois' : P.dansEau > .05 ? 'eau' : (Math.hypot(P.x, P.z) < LAC.r + 4 ? 'cailloux' : 'herbe'), P.accroupi ? .25 : P.court ? .75 : .5, P.court); } }
+  if (P.auSol && P.vit > .2) { const p0 = P.pas; P.pas += dt * P.vit / (P.court ? 2.3 : 1.55); if (Math.floor(P.pas * 2) !== Math.floor(p0 * 2)) { SON.pas(P.surPonton || SALLE.ici ? 'bois' : P.dansEau > .05 ? 'eau' : (Math.hypot(P.x, P.z) < LAC.r + 4 ? 'cailloux' : 'herbe'), P.accroupi ? .25 : P.court ? .75 : .5, P.court); } }
   // endurance
   if (P.court && P.vit > 1) BES.endurance = Math.max(0, BES.endurance - dt * 9); else BES.endurance = Math.min(enduranceMax(), BES.endurance + dt * (P.vit > .1 ? 5 : 10));
   // œil
@@ -5838,7 +5838,7 @@ function majSommeil(dt) { const D = ETAT.dort; if (!D) return; D.t += dt; const 
     if (estNuit() && ETAT.renardJour !== ETAT.jour && Math.random() < dh * .06 && !ETAT.glaciereRangee && !ETAT.veille && !lanterneAllumee() && ETAT.feu <= 0 && SAC.rations > 0) { SAC.rations--; ETAT.renardJour = ETAT.jour; ETAT.msgReveil = 'Des traces de renard autour de la glacière : il manque une ration. (Rangez-la dans la tente, ou laissez la lanterne allumée.)'; historique('un renard a volé une ration'); }   // le renard rôde aussi pendant votre sommeil
     BES.energie = clamp(BES.energie + (D.evanoui ? 7 : ETAT.veille ? 8 : 12.5) * dh, 0, 100); BES.faim = clamp(BES.faim + 3.5 * dh, 0, 100); BES.soif = clamp(BES.soif + 5 * dh, 0, 100); BES.faim = Math.max(BES.faim, 6); BES.soif = Math.max(BES.soif, 6); /* on ne meurt pas de faim/soif pendant le sommeil : on se réveille affamé et assoiffé */ if (ETAT.mort) break; }
   $('hHeure').textContent = hm(HORL.h); $('sousTitre').textContent = (D.sieste ? 'Sieste… ' : D.evanoui ? 'Vous perdez connaissance… ' : 'Nuit… ') + hm(HORL.h); $('sousTitre').classList.add('on');
-  if (k >= 1 || ETAT.mort) { ETAT.dort = false; $('sousTitre').classList.remove('on'); if (ETAT.mort) return; VIS.recaler(); GARDE.recaler(); PL.pitch = 0; const auPoste = !!ETAT.dortAilleurs; if (auPoste) { ETAT.dortAilleurs = false; const b = NOEUDS.pdgBanc[1]; PL.x = b.p[0]; PL.z = b.p[1] + .9; PL.yaw = -PI / 2; PL.y = solJoueur(PL.x, PL.z); } if (!D.sieste && !D.evanoui && !auPoste) reveilTente(null, true); else { $('voile').classList.add('off'); SON.zip(); } const r = (VIS.reveil() + (ETAT.msgReveil ? ' ' + ETAT.msgReveil : '')).trim(); ETAT.msgReveil = ''; note((D.sieste ? 'Vous vous réveillez.' : D.evanoui ? 'Vous revenez à vous, courbatu.' : `Jour ${ETAT.jour}, ${jourSemaine()}. ` + ({ clair: 'Grand soleil sur le lac.', brume: 'Brume sur l’eau, le soleil perce.', couvert: 'Ciel couvert.', pluie: 'Il pleut.' })[ETAT.meteo]) + (r ? ' ' + r : ''), 5200); if (!D.sieste) appliquerMeteo(); sauver(); } }
+  if (k >= 1 || ETAT.mort) { ETAT.dort = false; $('sousTitre').classList.remove('on'); if (ETAT.mort) return; VIS.recaler(); GARDE.recaler(); PL.pitch = 0; const enSalle = SALLE.dort && SALLE.ici; SALLE.dort = false; const auPoste = !!ETAT.dortAilleurs && !enSalle; if (auPoste) { ETAT.dortAilleurs = false; const b = NOEUDS.pdgBanc[1]; PL.x = b.p[0]; PL.z = b.p[1] + .9; PL.yaw = -PI / 2; PL.y = solJoueur(PL.x, PL.z); } if (!D.sieste && !D.evanoui && !auPoste && !enSalle) reveilTente(null, true); else { $('voile').classList.add('off'); SON.zip(); } const r = (VIS.reveil() + (ETAT.msgReveil ? ' ' + ETAT.msgReveil : '')).trim(); ETAT.msgReveil = ''; note((D.sieste ? 'Vous vous réveillez.' : D.evanoui ? 'Vous revenez à vous, courbatu.' : `Jour ${ETAT.jour}, ${jourSemaine()}. ` + ({ clair: 'Grand soleil sur le lac.', brume: 'Brume sur l’eau, le soleil perce.', couvert: 'Ciel couvert.', pluie: 'Il pleut.' })[ETAT.meteo]) + (r ? ' ' + r : ''), 5200); if (!D.sieste) appliquerMeteo(); sauver(); } }
 function appliquerMeteo() { const m = ETAT.meteo; if (m === 'brume') { A.meteo('brume', .8); setTimeout(() => A.meteo('clair', 1), 240000); } else if (m === 'couvert') A.meteo('brume', .35); else if (m === 'pluie') { A.meteo('pluie', .7); setTimeout(() => A.meteo('clair', 1), 420000); } else A.meteo('clair', 1); }
 // ==== CAMP : SAUVEGARDE DE LA PARTIE ============================================================
 function sauver() { if (!ETAT.enJeu || ETAT.mort) return; const fruits = {}; for (const o of OBJETS) if (o.max) fruits[o.id] = o.fruits; const P = VIS.prochain;
@@ -5933,9 +5933,9 @@ function majInvite() { const el = $('invite'); const kb = IN.dernier === 'clavie
   if (UI.ouvert() || UI.dlgOuvert || ETAT.dort || UI.cineOn || ETAT.action) { el.hidden = true; INVITE = null; return; }
   let best = null, bd = 1e9; const sy = Math.sin(PL.yaw), cy = Math.cos(PL.yaw);
   const test = (x, z, r, nom, f, prio) => { const dx = x - PL.x, dz = z - PL.z, d = Math.hypot(dx, dz); if (d > r) return; const face = d < .8 ? 1 : (dx * sy + dz * cy) / d; if (face < .35) return; const sc = d - face * .6 - (prio || 0); if (sc < bd) { bd = sc; best = { nom, f, x, z }; } };
-  if (!PL.assis) for (const o of OBJETS) { if (o.cond && !o.cond()) continue; test(o.x, o.z, o.r, o.nom, o.f, 0); }
-  for (const v of VIS.pnj) if (v.ch && v.ch.visible && !v.parti && v.parle !== false) test(v.ch.pos[0], v.ch.pos[2], 3.2, 'Parler à ' + v.prenom, () => VIS.parler(v), .8);
-  for (const o of VIS.objets) if (o.actif) test(o.x, o.z, o.r, o.nom, o.f, .3);
+  if (!PL.assis) for (const o of OBJETS) { if (!!o.salle !== SALLE.ici || (o.cond && !o.cond())) continue; test(o.x, o.z, o.r, o.nom, o.f, 0); }
+  if (!SALLE.ici) for (const v of VIS.pnj) if (v.ch && v.ch.visible && !v.parti && v.parle !== false) test(v.ch.pos[0], v.ch.pos[2], 3.2, 'Parler à ' + v.prenom, () => VIS.parler(v), .8);
+  if (!SALLE.ici) for (const o of VIS.objets) if (o.actif) test(o.x, o.z, o.r, o.nom, o.f, .3);
   INVITE = best; if (PL.assis) { el.hidden = false; el.innerHTML = (best ? `<i class="ps x">✕</i> ${best.nom}` + (kb ? '<kbd>E</kbd>' : '') + ' &nbsp; ' : '') + '<i class="ps o">○</i> Se lever' + (kb ? '<kbd>C</kbd>' : ''); return; }
   if (!best) { el.hidden = true; return; } el.hidden = false; el.innerHTML = `<i class="ps x">✕</i> ${best.nom}` + (IN.dernier === 'clavier' || IN.dernier === 'souris' ? '<kbd>E</kbd>' : ''); }
 // --- menu de choix (actions sur les objets : même boîte que le dialogue)
@@ -8926,6 +8926,512 @@ PECHE.maj = dt => { if (!A || !A.water) return; if (!PECHE.poissons.length) { PE
 { const el = $('bX'); if (el) { el.addEventListener('pointerdown', () => { IN.xTenu = true; }); for (const ev of ['pointerup', 'pointercancel', 'pointerleave', 'lostpointercapture']) el.addEventListener(ev, () => { IN.xTenu = false; }); } }
 { const np = nouvellePartie; nouvellePartie = function () { const r = np.apply(this, arguments); SAC.prises = []; PECHE.majSeau(); return r; }; }
 
+// ==== CAMP : SALLE SOUS LE POSTE (v0.8) ======================================================
+// Trappe dans l'herbe derrière la cabane de Tod (côté ouest, mur aveugle) → échelle → grande salle enterrée (≈ 8 × 8 m) : coffre (stockage sûr, hors de portée des vols), lit (on y dort, réveil sur place), étagères, lampe.
+// Volontairement secrète : aucun marqueur, aucune note, aucune mention par Tod ni dans les textes du jeu. Le joueur la découvre seul.
+// SALLE.ici = joueur sous terre : solJoueur → SALLE.sol, pas d'eau, pas de zone/obstacles extérieurs, déplacement borné aux murs ; seuls les OBJETS { salle:true } sont proposés.
+const SALLE = { ici: false, coffre: {}, objets: [] };
+SALLE.TYPES = [['rations', 'Rations'], ['eau', 'Bouteilles d’eau'], ['baies', 'Baies'], ['pommes', 'Pommes'], ['noisettes', 'Noisettes'], ['poisson', 'Poissons crus'], ['poissonGrille', 'Poissons cuits'], ['buches', 'Bûches'], ['gaz', 'Cartouches de gaz']];
+function construireSalle() { const T = M3.translate, S = M3.scale, mul = M3.mul, cab = PDG.cab, hw = cab.w / 2;
+  let tx = cab.x - hw - 1.45, tz = cab.z + 1.1; for (let k = 0; k < 8; k++) { if (!COLL.some(o => o.r !== undefined && Math.hypot(o.x - tx, o.z - tz) < o.r + .9)) break; tz -= .6; }
+  const x0 = tx - 7.4, x1 = tx + .9, z0 = tz - 4.2, z1 = tz + 3.8; let gmin = 99; for (let i = 0; i <= 8; i++) for (let j = 0; j <= 8; j++) gmin = Math.min(gmin, SOL(x0 + (x1 - x0) * i / 8, z0 + (z1 - z0) * j / 8));
+  const sol = gmin - 3.7, haut = 2.9, cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, W = x1 - x0, D = z1 - z0; Object.assign(SALLE, { tx, tz, x0, x1, z0, z1, sol, haut, cx, cz });
+  // trappe (surface) : cadre et panneau de planches à ras de l'herbe, anneau de fer
+  const gy = SOL(tx, tz), tr = new Node('trappe'); tr.pickable = false; tr.pos = [tx, gy, tz]; A.add(tr);
+  tr.addPart(MESH.rb, S(1.15, .06, 1.05), [.3, .24, .17], 13); for (let i = 0; i < 4; i++) tr.addPart(MESH.rb, mul(T(-.375 + i * .25, .045, 0), S(.23, .04, .95)), i % 2 ? PAL.planche : PAL.planche2, 1);
+  for (const s of [-.3, .3]) tr.addPart(MESH.rb, mul(T(0, .07, s), S(1, .012, .07)), PAL.metalSombre, 7); tr.addPart(MESH.cyl6, mul(T(.32, .075, 0), S(.09, .015, .09)), PAL.metalSombre, 7);
+  for (let i = 0; i < 6; i++) { const a = i / 6 * TAU; tr.addPart(MESH.rb, mul(T(Math.cos(a) * .66, .03, Math.sin(a) * .62), mul(M3.rotY(a), S(.2, .08, .1))), PAL.feuille3, 20, { cast: false }); }   // herbes qui la bordent
+  // salle (sous terre) : sol de planches, murs de pierre, poutres, plafond
+  const s = new Node('salle'); s.pickable = false; s.castShadow = true; s.pos = [0, 0, 0]; A.add(s); SALLE.nd = s; const P = (x, y, z, sx, sy, sz, c, mat, o) => s.addPart(MESH.rb, mul(T(x, y, z), S(sx, sy, sz)), c, mat, o);
+  for (let i = 0; i < Math.ceil(W / .3); i++) P(x0 + .15 + i * .3, sol - .05, cz, .29, .1, D, i % 2 ? PAL.planche : PAL.planche2, 1);
+  const pierre = [[.42, .4, .37], [.36, .34, .31], [.47, .44, .4]];
+  for (let r = 0; r < 6; r++) { const y = sol + .25 + r * .48, dec = r % 2 * .35; for (let i = 0; i < Math.ceil(W / .7) + 1; i++) { const x = x0 + dec + i * .7; if (x > x1) break; P(x, y, z0 - .1, .68, .46, .3, pierre[(i + r) % 3], 12); P(x, y, z1 + .1, .68, .46, .3, pierre[(i + r + 1) % 3], 12); }
+    for (let i = 0; i < Math.ceil(D / .7) + 1; i++) { const z = z0 + dec + i * .7; if (z > z1) break; P(x0 - .1, y, z, .3, .46, .68, pierre[(i + r + 2) % 3], 12); P(x1 + .1, y, z, .3, .46, .68, pierre[(i + r) % 3], 12); } }
+  for (const [x, z, sx, sz] of [[cx, z0 - .3, W + .8, .12], [cx, z1 + .3, W + .8, .12], [x0 - .3, cz, .12, D + .8], [x1 + .3, cz, .12, D + .8]]) P(x, sol + haut / 2, z, sx, haut + .4, sz, [.12, .11, .1], 12);   // mortier derrière les pierres (pas de jour entre elles)
+  P(cx, sol + haut + .15, cz, W + .8, .3, D + .8, [.26, .2, .14], 13);                                                   // plafond
+  for (let i = 0; i < 5; i++) { const x = x0 + .7 + i * (W - 1.4) / 4; P(x, sol + haut - .12, cz, .22, .24, D + .2, PAL.ecorce, 13); if (i % 2 === 0) for (const z of [z0 + .2, z1 - .2]) P(x, sol + haut / 2, z, .2, haut, .2, PAL.ecorce, 13); }
+  // ouverture et échelle sous la trappe
+  for (const sx of [-.24, .24]) s.addPart(MESH.cyl6, matTube([tx + sx, sol, tz - .1], [tx + sx, sol + haut + .3, tz + .15], .028), PAL.bois, 13);
+  for (let i = 0; i < 9; i++) { const y = sol + .3 + i * .32, z = tz - .1 + i / 9 * .25; s.addPart(MESH.cyl6, matTube([tx - .24, y, z], [tx + .24, y, z], .02), PAL.boisClair, 13); }
+  // lit (fond nord-ouest) : cadre, matelas, couverture, oreiller
+  const bx = x0 + 1.2, bz = z1 - 1.3; P(bx, sol + .22, bz, 1.0, .1, 2.1, PAL.bois, 13); for (const [dx, dz] of [[-.45, -1], [.45, -1], [-.45, 1], [.45, 1]]) P(bx + dx, sol + .12, bz + dz, .08, .24, .08, PAL.ecorce, 13);
+  P(bx, sol + .55, bz + 1.02, 1.0, .7, .08, PAL.bois, 13); P(bx, sol + .34, bz, .92, .16, 2.0, PAL.creme, 4); P(bx, sol + .43, bz - .2, .96, .06, 1.5, [.42, .2, .16], 4); P(bx, sol + .46, bz + .75, .6, .1, .32, PAL.blanc, 4);
+  // coffre (mur est, près de l'échelle) : caisse cerclée, couvercle bombé, serrure
+  const kx = x1 - .7, kz = z0 + 1.2; P(kx, sol + .28, kz, .7, .56, 1.1, [.4, .27, .15], 13); s.addPart(MESH.cyl, mul(T(kx, sol + .56, kz), mul(M3.rotX(PI / 2), S(.7, 1.1, .3))), [.44, .3, .17], 13);
+  for (const dz of [-.45, 0, .45]) { P(kx, sol + .28, kz + dz, .72, .58, .05, PAL.metalSombre, 7); s.addPart(MESH.cyl, mul(T(kx, sol + .56, kz + dz), mul(M3.rotX(PI / 2), S(.72, .05, .32))), PAL.metalSombre, 7); }
+  P(kx - .36, sol + .5, kz, .03, .12, .1, [.7, .58, .25], 14);
+  // étagères, caisses, tonneau, tapis, table et lampe
+  const ex = cx + .4; for (let i = 0; i < 3; i++) P(ex, sol + .5 + i * .6, z0 + .25, 2.2, .05, .4, PAL.planche, 1); for (const dx of [-1.08, 1.08]) P(ex + dx, sol + .9, z0 + .25, .06, 1.8, .4, PAL.bois, 13);
+  for (let i = 0; i < 7; i++) { const c = [PAL.rouge, PAL.bleu, PAL.jaune, PAL.creme, PAL.gris][i % 5]; P(ex - .9 + i * .28, sol + .66 + (i % 3) * .6, z0 + .25, .14, .22, .16, c, 4); }
+  P(x0 + .6, sol + .3, z0 + .7, .6, .6, .6, PAL.planche2, 1); P(x0 + .6, sol + .75, z0 + .7, .45, .3, .45, PAL.planche, 1); s.addPart(MESH.cyl, mul(T(x0 + 1.5, sol + .45, z0 + .55), S(.55, .9, .55)), PAL.ecorce2, 13);
+  P(cx, sol + .005, cz + .4, 2.4, .01, 1.6, [.5, .18, .14], 4); P(cx - .3, sol + .38, cz + .4, .9, .05, .6, PAL.bois, 13); for (const [dx, dz] of [[-.4, -.25], [.4, -.25], [-.4, .25], [.4, .25]]) P(cx - .3 + dx, sol + .18, cz + .4 + dz, .05, .36, .05, PAL.ecorce, 13);
+  SALLE.lampe = [cx - .3, sol + .62, cz + .4]; s.addPart(MESH.cyl, mul(T(SALLE.lampe[0], sol + .45, SALLE.lampe[2]), S(.14, .06, .14)), PAL.metalSombre, 7); s.addPart(MESH.sph, mul(T(...SALLE.lampe), S(.1, .14, .1)), [1, .8, .45], 8, { cast: false });
+  // interactions (seulement sous terre, sauf la trappe)
+  OBJETS.push({ id: 'trappe', x: tx, z: tz, r: 1.3, nom: 'Trappe', f: () => SALLE.descendre() });
+  OBJETS.push({ id: 'echelle', salle: true, x: tx, z: tz, r: 1.4, nom: 'Échelle · remonter', f: () => SALLE.monter() });
+  OBJETS.push({ id: 'coffre', salle: true, x: kx, z: kz, r: 1.5, nom: 'Coffre', f: () => SALLE.menuCoffre() });
+  OBJETS.push({ id: 'litSalle', salle: true, x: bx, z: bz, r: 1.7, nom: 'Lit', f: () => SALLE.menuLit() });
+  s.visible = false; }
+SALLE.passer = (ici, x, z, yaw) => { $('voile').classList.remove('off'); SON.tic(.25, 500, .12); UI.cineOn = true;
+  setTimeout(() => { SALLE.ici = ici; SALLE.nd.visible = ici; PL.x = x; PL.z = z; PL.yaw = yaw; PL.pitch = ici ? -.1 : 0; PL.y = solJoueur(x, z); PL.vy = 0; PL.accroupi = false; UI.cineOn = false; $('voile').classList.add('off'); SON.pas('bois', .6); setTimeout(() => SON.tic(.18, 380, .1), 250); }, 650); };
+SALLE.descendre = () => SALLE.passer(true, SALLE.tx - .6, SALLE.tz - .2, -PI / 2);
+SALLE.monter = () => SALLE.passer(false, SALLE.tx - .9, SALLE.tz, -PI / 2);
+SALLE.menuCoffre = () => { const C = SALLE.coffre, ch = [], dedans = [];
+  for (const [k, nom] of SALLE.TYPES) { if (C[k]) dedans.push(`${nom} : ${C[k]}`); if (SAC[k] > 0) ch.push({ t: `Ranger : ${nom.toLowerCase()} (${SAC[k]})`, f: () => { C[k] = (C[k] || 0) + SAC[k]; SAC[k] = 0; if (k === 'eau') {} SON.tic(.15, 600, .06); setTimeout(SALLE.menuCoffre, 60); } });
+    if (C[k] > 0) ch.push({ t: `Prendre : ${nom.toLowerCase()} (${C[k]})`, f: () => { SAC[k] = (SAC[k] || 0) + C[k]; C[k] = 0; SON.tic(.15, 800, .06); setTimeout(SALLE.menuCoffre, 60); } }); }
+  for (const o of SALLE.objets) dedans.push(o.nom);
+  SAC.objets.filter(o => !o.hache && !o.canne).forEach(o => ch.push({ t: `Ranger : ${o.nom}`, f: () => { SAC.objets.splice(SAC.objets.indexOf(o), 1); SALLE.objets.push(o); majEquipements(); setTimeout(SALLE.menuCoffre, 60); } }));
+  SALLE.objets.forEach(o => ch.push({ t: `Prendre : ${o.nom}`, f: () => { SALLE.objets.splice(SALLE.objets.indexOf(o), 1); SAC.objets.push(o); majEquipements(); setTimeout(SALLE.menuCoffre, 60); } }));
+  ch.push({ t: 'Refermer', fin: true }); SON.tic(.2, 300, .15); menuChoix('Coffre', dedans.length ? dedans.join(' · ') : 'Vide.', ch); };
+SALLE.menuLit = () => { const h = HORL.h, ch = [{ t: h >= 19 || h < 5 ? 'Dormir jusqu’au matin' : 'Dormir (nuit complète)', f: () => { SALLE.dort = true; dormir(); } }, { t: 'Faire une sieste (2 h)', f: () => { SALLE.dort = true; dormir(2); } }, { t: 'Laisser', fin: true }]; menuChoix('Lit', '', ch); };
+SALLE.lumiere = () => { const C = A.camera; if (SALLE.ici) { if (C.ground) { SALLE.g0 = C.ground; C.ground = null; } } else if (SALLE.g0) { C.ground = SALLE.g0; SALLE.g0 = null; }   // la caméra est d'ordinaire tenue au-dessus du terrain
+  if (!SALLE.ici || !SALLE.lampe) return; const L = SALLE.lampe; A.addLight({ p: [L[0], L[1] + .3, L[2]], c: [1, .74, .45], i: 60 + Math.sin(A.time * 7) * 1.5, r: 14 }); A.addLight({ p: [SALLE.x0 + 1.3, SALLE.sol + 1.6, SALLE.z1 - 1.3], c: [1, .7, .42], i: 14, r: 7 }); };
+SALLE.borner = () => { if (!SALLE.ici) return; const m = .35; PL.x = clamp(PL.x, SALLE.x0 + m, SALLE.x1 - m); PL.z = clamp(PL.z, SALLE.z0 + m, SALLE.z1 - m); };
+// --- branchements
+{ const sj = solJoueur; solJoueur = function (x, z) { if (SALLE.ici) { PL.surPonton = false; return SALLE.sol; } return sj(x, z); }; }
+{ const zj = zoneJoueur; zoneJoueur = function (x, z) { return SALLE.ici ? true : zj(x, z); }; }
+{ const ob = obstacles; obstacles = function (x, z, r) { if (SALLE.ici) return { x, z, hit: false }; return ob(x, z, r); }; }
+{ const s0 = sauver; sauver = function () { s0(); if (ETAT.enJeu && !ETAT.mort) ecrire('salle', { coffre: SALLE.coffre, objets: SALLE.objets, ici: SALLE.ici }); }; }
+{ const c0 = charger; charger = function () { const r = c0(); const s = lire('salle') || {}; SALLE.coffre = s.coffre || {}; SALLE.objets = s.objets || []; if (r && s.ici && SALLE.nd) { SALLE.ici = true; SALLE.nd.visible = true; PL.x = SALLE.tx - .6; PL.z = SALLE.tz - .2; } return r; }; }
+{ const rt = reveilTente; reveilTente = function () { SALLE.ici = false; if (SALLE.nd) SALLE.nd.visible = false; return rt.apply(this, arguments); }; }
+{ const np = nouvellePartie; nouvellePartie = function () { SALLE.coffre = {}; SALLE.objets = []; SALLE.ici = false; if (SALLE.nd) SALLE.nd.visible = false; ecrire('salle', null); return np.apply(this, arguments); }; }
+
+// ==== CAMP : CAMILLA ET L'UNIVERS DE NODE OPENING (v0.9) =====================================
+// Camilla, 23 ans, rousse, chasseuse à l'arc, la compagne de Mehdy (Node Opening). Elle connaît Tod, Node, André le Terrible, Lucien, Jules, Lina, M. Boup, Germaine, Roméo et Marc, Gaspard, Louana.
+// • Joueur nommé « Med » ou « Mehdy » (CAMILLA.meh()) : elle arrive par le sentier (jour 1 vers 15 h, sinon dès 9 h 30), le reconnaît, plante sa tente au camp (LIEUX.tenteC) et reste pour toujours :
+//   PNJ permanent comme Tod (VIS.pnj, v.camilla, v.dialogue = CAMILLA.dialogue), journée planifiée (toilette, café, chasse à l'arc, repas, pêche/plage/poste, bois, veillée et histoires, nuit sous sa tente),
+//   gibier rapporté, repas partagé, aide, secours à l'arc (GARDE.secours enveloppé), réactions à André et aux visiteurs d'Opening.
+// • Autre prénom : visiteuse « camilla_visite » (elle cherche Mehdy) ; drapeau global camillaVue.
+// • CAMILLA.univers() (installée ou vue) : débloque les visiteurs { opening:true } (VIS.choisirType enveloppé), les nouvelles du matin (VIS.reveil enveloppé), les répliques et sujets Opening de Tod.
+const CAMILLA = { v: null, installee: false, montee: false, jourArr: 0, hInstall: 0, mem: null, plan: null, planJour: 0, act: null, secoursJour: -9, tente: null, arrivee: false };
+CAMILLA.meh = () => /^(med|mehdy)$/i.test((JOUEUR.prenom || '').trim());
+CAMILLA.univers = () => CAMILLA.installee || !!ETAT.drapeaux.camillaVue;
+CAMILLA.reset = () => { Object.assign(CAMILLA, { installee: false, montee: false, jourArr: 0, hInstall: 0, plan: null, planJour: 0, act: null, secoursJour: -9, arrivee: false }); CAMILLA.mem = { parles: 0, jourParle: 0, sujets: {}, repasJ: 0, chasseJ: 0, aideJ: 0, histoires: 0, andreJ: 0, salueJ: {}, amour: 0 };
+  if (CAMILLA.v) { const v = CAMILLA.v, i = JOE && JOE.pnj.indexOf(v.ch); if (i >= 0) JOE.pnj.splice(i, 1); VIS.pnj = VIS.pnj.filter(w => w !== v); CAMILLA.v = null; } if (CAMILLA.tente) CAMILLA.tente.visible = false; };
+CAMILLA.reset();
+CAMILLA.heureAbs = () => (ETAT.jour - 1) * 24 + HORL.h;
+CAMILLA.dire = t => { const v = CAMILLA.v; if (v && v.ch && v.ch.visible && !v.cache) VIS.dire(v, t); };
+// --- tente de Camilla (toile prune), construite cachée avec le monde
+function construireTenteC() { const tx = -7.8, tz = 116.4, ty = SOL(tx, tz), yaw = angleVers(LIEUX.camp[0] - tx, LIEUX.camp[1] - tz) + PI, mv = GEO.merger(), addV = (src, M, c, mat) => mv.add(src, M, c, mat), tubeV = (a, b, r, c, mat) => mv.add(GEO.cylinder(8), matTube(a, b, r), c, mat);
+  const L = repere(tx, ty, tz, yaw), D = { rx: 1.15, rz: 1.0, h: 1.08 }; bâtirTente(addV, tubeV, L, Object.assign({ toile: [.42, .17, .28], toile2: [.3, .3, .32], ourlet: [.86, .48, .2], porteH: .88, porteL: .8, interieur: false }, D));
+  addV(GEO.roundBox(.6, .14, 1.4, .06), L.M(M3.translate(-.3, .12, .1)), [.62, .28, .2], 4); addV(GEO.roundBox(.12, .9, .04, .02), L.M(M3.mul(M3.translate(1.2, .5, -.6), M3.rotZ(.25))), [.4, .27, .14], 13);   // duvet roux, arc posé contre la tente
+  addV(GEO.cylinder(10), L.M(M3.mul(M3.translate(1.25, .3, -.3), M3.scale(.16, .5, .16))), [.32, .22, .12], 13);                               // carquois
+  const nd = new Node('tenteC'); nd.pickable = false; for (const p of mv.build(mk)) nd.addPart(p.mesh, null, p.color, p.mat); nd.visible = false; A.add(nd); CAMILLA.tente = nd;
+  const porte = L.p([0, 0, -D.rz - .75]); LIEUX.tenteC = [porte[0], porte[2]]; CAMILLA.tenteInfo = { x: tx, z: tz, r: 1.25 };
+  PDG.lieux.tenteC = () => ({ p: LIEUX.tenteC.slice(), yaw: angleVers(tx - porte[0], tz - porte[2]), exact: true }); }
+CAMILLA.montrerTente = on => { if (!CAMILLA.tente) return; CAMILLA.tente.visible = on; const I = CAMILLA.tenteInfo, i = COLL.indexOf(CAMILLA.coll); if (on && i < 0) { CAMILLA.coll = { x: I.x, z: I.z, r: 1.2 }; COLL.push(CAMILLA.coll); } else if (!on && i >= 0) COLL.splice(i, 1); };
+// --- journée de Camilla (une fois installée)
+CAMILLA.faitPlan = () => { const g = graine(ETAT.jour * 613 + 7), r = () => g(), P = [];
+  P.push({ h0: 6.8, h1: 7.6, lieu: 'rive', clip: 'Interact', quoi: 'toilette' });
+  P.push({ h0: 7.6, h1: 8.6, lieu: 'feu', clip: 'Sit_Ground', props: ['Mug'], quoi: 'cafe' });
+  if (r() < .7) P.push({ h0: 8.6, h1: 11.4, type: 'chasse' }); else P.push({ h0: 8.6, h1: 11.4, lieu: pick(['baies1', 'baies2', 'noisetier']), clip: 'Harvest_Pull', props: ['Basket'], quoi: 'cueillette' });
+  P.push({ h0: 11.4, h1: 13.4, lieu: 'feu', clip: 'Interact', quoi: 'repas', repas: true });
+  const apres = [{ lieu: 'boutPonton', clip: 'Fish_Wait', props: ['Fishing_Rod'], quoi: 'peche', sfx: 'plouf' }, { lieu: 'plage', clip: 'Beach_Lie', quoi: 'plage' }, { lieu: 'pdg', clip: 'Talk', quoi: 'tod' }, { lieu: 'rocher', clip: 'Sit_Ground', props: ['Book'], quoi: 'lecture' }];
+  P.push(Object.assign({ h0: 13.4, h1: 16.4 }, apres[Math.floor(r() * apres.length)]));
+  P.push(r() < .55 ? { h0: 16.4, h1: 18.4, lieu: 'bois', clip: 'Chop_Wood', sfx: 'coup', quoi: 'bois' } : { h0: 16.4, h1: 18.4, lieu: 'pommier', clip: 'Harvest_Pull', props: ['Basket'], quoi: 'pommes' });
+  P.push({ h0: 18.4, h1: 22.2, lieu: 'feu', clip: 'Sit_Ground', quoi: 'veillee' });
+  P.push({ h0: 22.2, h1: 30.8, type: 'dort' });
+  return P; };
+CAMILLA.actA = h => { if (!CAMILLA.plan) CAMILLA.plan = CAMILLA.faitPlan(); const hh = h < 6.8 ? h + 24 : h; return CAMILLA.plan.find(a => hh >= a.h0 && hh < a.h1) || CAMILLA.plan[CAMILLA.plan.length - 1]; };
+CAMILLA.props = L => { const v = CAMILLA.v; if (v && v.ch) v.ch.extraProps = (L || []).map(pr => ({ prop: pr, socket: 'Socket_Hand_R', q: QHAND, t: [0, 0, 0] })); };
+// --- création du PNJ
+CAMILLA.creer = (arrivee) => { const J = joePack(); if (!J || CAMILLA.v) return;
+  const d = { id: 'camilla', prenom: 'Camilla', role: CAMILLA.meh() ? 'ta compagne' : 'chasseuse', genre: 'f', morph: 'woman', tenue: 'villager_f', graine: 23,
+    look: { parts: ['Hair_Long', 'Jacket', 'Boots'], retire: ['Cap', 'Beanie', 'Bucket_Hat', 'Straw_Hat', 'Headscarf', 'Scarf', 'Satchel', 'Hair_Short', 'Hair_Buzz', 'Hair_Bun', 'Hair_Ponytail', 'Hair_Curly', 'Hair_Bob', 'Glasses', 'Apron', 'Dress', 'Skirt'], colors: { top: '#5e2a4a', top2: '#4a2038', bottom: '#2b2a30', shoes: '#3a2416', hair: '#b23f14', skin: '#f2d2bb', accent: '#c8742e' }, build: 'slim', height: 1.0 },
+    ambiant: CAMILLA.AMB.jour };
+  const ch = creerPNJ(d, 0); if (!ch) return; const v = { d, ch, id: 'camilla', prenom: 'Camilla', role: d.role, genre: 'f', voix: { pitch: 1.17, rate: 1.04 }, danger: 0, cible: null, clipFinal: 'Idle', etat: 'pose', parti: false, tAmb: rnd(20, 40), i: 5, parle: true, vitesse: 1.45, revele: false, chemin: [], dialogue: CAMILLA.dialogue, camilla: true };
+  v.voix.voix = VOIX.choisir('f', 'woman'); v.voix.genre = 'f'; v.voix.morph = 'woman'; VIS.pnj.push(v); CAMILLA.v = v; ch.visible = true;
+  if (arrivee) { const p = VIS.lieu('sentier', 0).p; ch.pos = [p[0], SOL(p[0], p[1]), p[1]]; ch.yaw = angleVers(CAMP.x - p[0], CAMP.z - p[1]); CAMILLA.props([]); VIS.allerA(v, 'camp', 'Idle_LookAround'); CAMILLA.act = { quoi: 'arrivee' }; }
+  else { const L = VIS.lieu('feu', 5, 'Sit_Ground'); ch.pos = [L.p[0], SOL(L.p[0], L.p[1]), L.p[1]]; CAMILLA.act = null; CAMILLA.appliquer(CAMILLA.actA(HORL.h), true); } };
+CAMILLA.appliquer = (a, instant) => { const v = CAMILLA.v; if (!v || CAMILLA.act === a) return; const av = CAMILLA.act; CAMILLA.act = a; v.sfx = a.sfx || null; v.parle = a.type !== 'dort'; v.regardeJoueur = false;
+  if (av && av.type === 'chasse' && !instant) CAMILLA.retourChasse();
+  v.cache = false; CAMILLA.props(a.type === 'chasse' ? ['Bow'] : a.props || []);
+  const lieu = a.type === 'chasse' ? 'foret' : a.type === 'dort' ? 'tenteC' : a.lieu, clip = a.type ? 'Idle' : a.clip;
+  VIS.allerA(v, lieu, clip); if (instant && v.cible) { v.ch.pos[0] = v.cible[0]; v.ch.pos[2] = v.cible[1]; VIS.arrive(v); v.ch.yaw = v.yawCible || v.ch.yaw; if (a.type) v.cache = true; }
+  v.d.ambiant = a.quoi === 'veillee' || a.type === 'dort' ? CAMILLA.AMB.nuit : a.quoi === 'peche' ? CAMILLA.AMB.peche : CAMILLA.AMB.jour; };
+CAMILLA.recaler = () => { if (!CAMILLA.v || !CAMILLA.installee) return; CAMILLA.act = null; CAMILLA.appliquer(CAMILLA.actA(HORL.h), true); };
+CAMILLA.retourChasse = () => { const M = CAMILLA.mem; if (M.chasseJ === ETAT.jour) return; M.chasseJ = ETAT.jour; const G = pick([['un lièvre', 1], ['deux perdrix', 1], ['un faisan', 1], ['un marcassin (« un petit sanglier, comme au chalet »)', 2], ['un chevreuil… non, je rigole : un lapin', 1]]);
+  SAC.rations += G[1]; note(`Camilla rentre de la chasse, l’arc sur l’épaule : ${G[0]}. (+${G[1]} ration${G[1] > 1 ? 's' : ''})`, 4500); historique('Camilla a rapporté du gibier'); setTimeout(() => CAMILLA.dire(pick(['Qui a faim ? Moi j’ai faim. Toi aussi, je le sais.', 'Une flèche, une seule. Roméo et Marc en auraient tiré douze.', 'Ça, c’est du vrai repas. Pas tes rations de campeur.'])), 3000); };
+// --- arrivée (Mehdy) et installation
+CAMILLA.installer = () => { if (CAMILLA.installee) return; CAMILLA.installee = true; CAMILLA.jourArr = ETAT.jour; CAMILLA.hInstall = CAMILLA.heureAbs(); ETAT.drapeaux.univers = true; ETAT.drapeaux.camillaVue = true; const v = CAMILLA.v;
+  if (v) { CAMILLA.act = { quoi: 'montage' }; VIS.allerA(v, 'tenteC', 'Interact'); v.d.ambiant = CAMILLA.AMB.jour; v.role = 'ta compagne'; }
+  historique('Camilla est arrivée et plante sa tente au camp'); objectifAjouter('camilla', 'Camilla monte sa tente', 'tenteC'); };
+CAMILLA.maj = dt => { if (!ETAT.enJeu) return; const M = CAMILLA.mem, h = HORL.h;
+  if (CAMILLA.installee && !CAMILLA.v && joePack()) CAMILLA.creer(false);
+  // Mehdy : Camilla arrive (jour 1 vers 15 h, sinon dès 9 h 30 jusqu'à 18 h 30)
+  if (CAMILLA.meh() && !CAMILLA.installee && !CAMILLA.v && !ETAT.dort && !UI.cineOn && joePack() && ((ETAT.jour === 1 && h >= 14.8 && h < 19) || (ETAT.jour > 1 && h >= 9.5 && h < 18.5))) { CAMILLA.creer(true); CAMILLA.tArr = CAMILLA.heureAbs(); note('Des pas pressés sur le sentier… et une chevelure rousse que vous reconnaîtriez entre mille.', 5000); }
+  const v = CAMILLA.v; if (!v || !v.ch) return; const ch = v.ch, dP = Math.hypot(PL.x - ch.pos[0], PL.z - ch.pos[2]);
+  if (!CAMILLA.installee) { if (!CAMILLA.arrivee && dP < 11 && !v.cache) { CAMILLA.arrivee = true; v.regardeJoueur = true; VIS.dire(v, 'Mehdy ?! MEHDY ! C’est toi ! Je le savais !'); VIS.allerA(v, [PL.x + 1.2, PL.z - .8], 'Wave'); }
+    if (CAMILLA.heureAbs() - (CAMILLA.tArr || 0) > 1.6 && !VIS.dlg) { CAMILLA.installer(); VIS.dire(v, 'Bon. Tu ne viens pas me dire bonjour ? Tant pis : je plante ma tente. Je reste.'); } return; }
+  // montage de la tente (25 min de jeu), puis la journée normale
+  if (!CAMILLA.montee) { if (CAMILLA.heureAbs() - CAMILLA.hInstall > .42 || ETAT.dort) { CAMILLA.montee = true; CAMILLA.montrerTente(true); objectifRetirer('camilla'); note('La tente prune de Camilla est plantée à côté de la vôtre. Elle reste au camp.', 5000); CAMILLA.dire('Voilà. Chez moi, c’est chez toi, chez toi c’est chez moi. Comme au chalet.'); } else return; }
+  if (CAMILLA.tente && !CAMILLA.tente.visible) CAMILLA.montrerTente(true);
+  if (CAMILLA.planJour !== ETAT.jour) { CAMILLA.planJour = ETAT.jour; CAMILLA.plan = CAMILLA.faitPlan(); }
+  const a = CAMILLA.actA(h); if (a !== CAMILLA.act && !(VIS.dlg && VIS.dlg.v === v)) CAMILLA.appliquer(a, false);
+  if (v.etat === 'pose' && a.type && !v.cache) v.cache = true;   // dans la forêt (chasse) ou sous sa tente (nuit)
+  if (ch.visible && v.etat === 'pose' && v.clipFinal === 'Fish_Wait' && Math.random() < dt * .04) VIS.jouer(v, 'Fish_Cast');
+  // repas : elle appelle
+  if (a.repas && v.etat === 'pose' && dP < 8 && M.repasJ !== ETAT.jour && !M.appelRepasJ) { M.appelRepasJ = ETAT.jour; CAMILLA.dire(pick(['À table ! Viens, ça refroidit… enfin, ça va refroidir.', 'Mehdy, à manger ! Comme chez Lina : on ne discute pas, on mange.', 'J’ai fait comme au chalet. Sans la cheminée. Et sans la table. Viens.'])); }
+  if (M.appelRepasJ && M.appelRepasJ !== ETAT.jour) M.appelRepasJ = 0;
+  // la nuit, la lanterne de sa tente
+  if (a.type === 'dort' && A.nuit() > .2 && h > 21 && h < 23.3 && CAMILLA.tenteInfo) { const I = CAMILLA.tenteInfo; A.addLight({ p: [I.x, SOL(I.x, I.z) + .7, I.z], c: [1, .7, .45], i: 4, r: 5 }); }
+  // réactions aux visiteurs
+  const C = VIS.courant; if (C && !C.part && ch.visible && !v.cache) { const id = C.type.id, L = CAMILLA.SALUT[id]; if (!M.salueJ[id + ETAT.jour]) { const proche = C.pnj.some(w => w.ch && Math.hypot(w.ch.pos[0] - ch.pos[0], w.ch.pos[2] - ch.pos[2]) < 22);
+      if (proche) { M.salueJ[id + ETAT.jour] = true; if (L) CAMILLA.dire(L); else if (C.type.danger >= 2) CAMILLA.dire(pick(['Mehdy. Ceux-là, je ne les sens pas. Je garde l’arc à portée.', 'Je n’aime pas leur tête. Lucien dirait : « individu connu de nos services ».'])); } } } };
+CAMILLA.SALUT = {
+  andre: 'Mehdy. Ne bouge pas. C’est André. André le Terrible. Il parle de lui à la troisième personne, maintenant ? Il a toujours été bizarre, mais là…',
+  lucien_police: 'Bonjour Lucien ! Oui, l’arc est rangé. Oui, il est déchargé. Non, je ne braconne pas. Pas aujourd’hui.',
+  jules_boulanger: 'Jules ! Tu es un héros. Tu as monté le pain jusqu’ici ? Une baguette pas trop cuite, comme Germaine !',
+  lina_medecin: 'Lina ! Tu as arrosé mes plantes ? Dis oui. Même si c’est non, dis oui.',
+  romeo_marc: 'Roméo, Marc. Les panneaux « chasse interdite », vous savez les lire, maintenant ?',
+  gaspard_marchand: 'Pas un geste, Gaspard. On sait que ta camionnette est pleine.',
+  boup_germaine: 'Monsieur Boup ! Germaine ! … Mehdy, ne lui serre pas la main, on en a pour une demi-heure.',
+  louana_soldate: 'LOUANA ! Des nouvelles de Node ? Dis-moi qu’il mange, au moins.'
+};
+// secours : une flèche au bon moment (une fois tous les 4 jours)
+CAMILLA.secours = a => { const v = CAMILLA.v; if (!CAMILLA.installee || !CAMILLA.montee || !v || !['meurtre', 'combat', 'tir'].includes(a.raison) || ETAT.jour - CAMILLA.secoursJour < 4) return false; const act = CAMILLA.act || {}; if (act.type === 'chasse') return false;
+  CAMILLA.secoursJour = ETAT.jour; BES.sante = Math.max(BES.sante, 30); SON.tic(.5, 2400, .08); setTimeout(() => SON.coupFeu && SON.coupFeu(.3), 80);
+  note('Une flèche siffle et se plante à un pouce de votre agresseur. Camilla, l’arc encore tendu : « La prochaine, je ne la rate pas. » Il détale.', 7000); historique('Camilla vous a sauvé la vie'); if (VIS.courant) VIS.departir(); CAMILLA.mem.amour += 5; return true; };
+// --- répliques spontanées
+CAMILLA.AMB = {
+  jour: ['Tu te souviens du pommier de Node et Tod ? Trente pommes dans la réserve, pas une de plus. Tod les comptait.', 'Lucien m’a fait jurer de lui envoyer une carte postale. Il n’y a pas de poste, ici. Il le sait.', 'Germaine doit encore nourrir ses pigeons. Tous les jours, à la même heure, sur la fontaine.', 'Jules fait le meilleur pain du monde. Ici, il n’y a pas de Jules. C’est le seul défaut du lac.',
+    'Tu as encore de l’herbe dans les cheveux. Comme Node avec ses feuilles.', 'Lina garde le chalet. Enfin, elle arrose mes plantes. Enfin, j’espère.', 'Si Roméo et Marc voyaient ce lac… non. Il ne faut pas qu’ils le voient.', 'Mehdy Badaoui, campeur. Lucien va tomber de sa chaise.', 'Ta maison bleue, au village… tu crois que M. Boup l’a déjà revendue ?',
+    'Tod a un vrai poste de garde, maintenant. Avec un bureau. Tu te souviens quand il dormait sous la tente avec Node, et qu’il ronflait comme un ours ?', 'Node porte toujours ta casquette bleue. Sous son casque. Louana me l’a dit.', 'Si André le Terrible pointe son nez ici, tu ne fais pas le guet pour lui. Hein ?', 'J’ai trouvé des traces de sanglier près de la lisière. Gros. Très gros.', 'Tu ne fumes plus, hein ? Je sens tout, Mehdy. Je suis chasseuse.',
+    'Gaspard m’aurait racheté un faisan dix pièces. Ici, je te le donne. Tu vois comme je t’aime ?', 'Tu crois que la Dame blanche du bois vient jusqu’ici ? … Je rigole. Ou pas.', 'Avec un pommier plus grand, une cabane… et moi qui te fais peur. On serait bien.'],
+  nuit: ['Tu entends ? … Non, rien. C’est ce que disait Node, juste avant de hurler.', 'Une nuit sans Lucien qui passe à la lampe torche. C’est presque bizarre.', 'Le feu ne cligne pas, Mehdy. Ne le regarde pas trop longtemps.', 'Node, à cette heure-là, il vérifiait trois fois la fermeture de la tente.', 'Tod dit que les sapins parlent la nuit. Il tient ça d’une certaine Ilona. Il rougit quand il en parle.',
+    'Mehdy, ne te retourne pas. … Ha ! Tu t’es retourné.', 'Au chalet, à cette heure-là, je mettais une bûche et j’éteignais l’interrupteur. Ici, il n’y a pas d’interrupteur. J’adore.', 'Dors, toi. Moi, je garde un œil. Les chasseuses dorment d’un œil.'],
+  peche: ['Chut. Tod m’a dit : deux touches, pas une. Deux.', 'Si j’en attrape une plus grosse que la tienne, tu fais la vaisselle une semaine.', 'Le poisson, c’est comme le sanglier : il faut être plus patient que lui.']
+};
+// --- nouvelles du matin (univers d'Opening) : mot de Tod, radio du bourg, phrases de Camilla
+CAMILLA.NOUV = ['Au talkie de Tod, au matin : Lucien a encore perdu sa casquette dans un virage. Sophie conduisait.', 'Tod, à la radio : « Message du bourg : André le Terrible a été aperçu près du fournil de Jules. Fermez bien la glacière. »', 'Un mot de Tod coincé sous une pierre, près du feu : « Node a appelé. Il va bien. Il demande si le campeur pêche toujours aussi mal. »',
+  'La radio du poste grésille jusqu’au camp : M. Boup prépare un discours pour l’inauguration de la nouvelle fontaine. Il dure quarante minutes.', 'Tod, en passant : « Gaspard le marchand fait la tournée des Cimes cette semaine. Si vous avez du poisson en trop… »', 'Au talkie : Roméo et Marc ont été verbalisés pour braconnage. Encore. Lucien dit que c’est la dernière fois. Encore.',
+  'Tod, au petit matin : « Louana a donné des nouvelles de la base de la commandante Shirley. Node part en exercice avec le blindé. Il a le mal des transports. »', 'Un mot de Tod : « Germaine a envoyé un pot de confiture au poste. Il est déjà fini. Désolé. »', 'La radio du bourg : la Dr Lina rappelle que les champignons de la grande forêt ne se mangent pas tous. Surtout les jolis.', 'Tod, à la radio : « Jules a repeint sa vitrine. Elle est restée propre trois jours. Un record. »'];
+CAMILLA.NOUV_C = ['Camilla, en bâillant : « J’ai rêvé que Node avait peur d’un écureuil. En fait ce n’était pas un rêve, c’était il y a deux ans. »', 'Camilla est déjà levée. Elle a lavé vos deux tasses et fait du feu. « Ne t’habitue pas. Habitue-toi un peu. »', 'Camilla, emmitouflée : « Tu parles en dormant, Mehdy. Tu as dit "Les keufs !" Je t’ai pardonné. »', 'Camilla vous tend un café : « Lucien avait une moustache, ce matin, dans mon rêve. Il en a déjà une. C’était juste un rêve normal. »', 'Camilla : « Il a gelé cette nuit. Au chalet, j’aurais pris un bain. Ici, j’ai pris le lac. Une seconde et demie. »'];
+{ const r0 = VIS.reveil; VIS.reveil = function () { let r = r0.apply(this, arguments) || ''; if (CAMILLA.univers() && Math.random() < .6) { const L = CAMILLA.installee && CAMILLA.montee && Math.random() < .5 ? CAMILLA.NOUV_C : CAMILLA.NOUV; r = (r ? r + ' ' : '') + pick(L); } return r; }; }
+// --- dialogue (Mehdy et Camilla, tutoiement)
+CAMILLA.dialogue = { debut: 'debut', retour: 'debut', apres: [], noeuds: {} };
+{ const N = CAMILLA.dialogue.noeuds, M = () => CAMILLA.mem, act = () => CAMILLA.act || {}, sujet = k => !!M().sujets[k], vu = k => ({ run: () => { M().sujets[k] = true; } }), nuit = () => HORL.h >= 20 || HORL.h < 6;
+  const C = () => VIS.courant && !VIS.courant.part ? VIS.courant : null, andreIci = () => C() && C().type.id === 'andre', danger = () => C() && C().type.danger >= 2;
+  N.debut = { dit: () => { const m = M(); m.parles++;
+      if (!CAMILLA.installee) return 'Mehdy ! C’est toi ! Regarde-toi… une tente, un feu, un lac. Mehdy Badaoui, campeur. Je n’y crois pas.';
+      if (andreIci()) return 'Mehdy. C’est André. André le Terrible. Tu ne lui parles pas, tu ne lui prêtes rien, et surtout tu ne fais pas le guet. D’accord ?';
+      if (act().repas) return 'Assieds-toi. J’ai fait griller ce que j’ai trouvé. Si c’est bon, c’est moi. Si c’est mauvais, c’est le réchaud.';
+      if (act().quoi === 'veillee') return pick(['Viens près du feu. Tu veux une histoire ? Une vraie ? Une qui fait peur ?', 'La nuit tombe. Au bourg, Lucien commence sa ronde. Ici, c’est moi qui fais la ronde.', 'Le feu est bon ce soir. Assieds-toi contre moi, il fait froid de ce côté.']);
+      if (act().quoi === 'peche') return 'Chut ! … Bon, ça ne mord pas. Tu peux parler. Doucement.';
+      if (act().quoi === 'tod') return 'Je papote avec Tod. Il me raconte la forêt royale de Handram. Il rougit dès qu’il dit « Ilona ». Tu as remarqué ?';
+      if (act().quoi === 'cafe') return pick(['Café ? Enfin, eau chaude couleur café. Tod m’a donné son paquet. Il dit qu’il n’en boit pas. Il ment.', 'Bien dormi ? Moi oui. Le lac fait moins de bruit que Germaine qui ouvre ses volets.']);
+      return pick(['Oui, mon cœur ?', 'Tu as besoin de moi ou tu voulais juste me regarder ? Les deux, j’espère.', 'Mehdy ! Tu tombes bien. Ou mal. Je ne sais pas encore.', 'Qu’est-ce qu’il y a ? Tu fais ta tête de Node qui a entendu un bruit.']); },
+    choix: [
+      { t: 'Camilla ?! Qu’est-ce que tu fais là ?', go: 'r1', si: { test: () => !CAMILLA.installee } },
+      { t: 'Attention, c’est André…', go: 'andreIci', si: { test: () => CAMILLA.installee && andreIci() } },
+      { t: 'Ces visiteurs ne me plaisent pas.', go: 'danger', si: { test: () => CAMILLA.installee && danger() && !andreIci() } },
+      { t: 'Manger avec toi', go: 'repas', si: { test: () => CAMILLA.installee && act().repas && M().repasJ !== ETAT.jour } },
+      { t: 'Raconte-moi une histoire qui fait peur', go: 'h1', si: { test: () => CAMILLA.installee && nuit() } },
+      { t: 'Des nouvelles du bourg ?', go: 'bourg', si: { test: () => CAMILLA.installee } },
+      { t: 'Parle-moi de Node', go: 'node', si: { test: () => CAMILLA.installee } },
+      { t: 'Et Tod ? Tu l’as revu ?', go: 'tod', si: { test: () => CAMILLA.installee } },
+      { t: 'Tu repenses à André ?', go: 'andre', si: { test: () => CAMILLA.installee && !andreIci() } },
+      { t: 'Et le chalet ?', go: 'chalet', si: { test: () => CAMILLA.installee && !sujet('chalet') } },
+      { t: 'Tu m’apprends à tirer à l’arc ?', go: 'arc', si: { test: () => CAMILLA.installee && !sujet('arc') } },
+      { t: 'J’ai besoin d’un coup de main…', go: 'aide', si: { test: () => CAMILLA.installee && M().aideJ !== ETAT.jour } },
+      { t: 'On restera ici combien de temps ?', go: 'avenir', si: { test: () => CAMILLA.installee } },
+      { t: 'Je t’aime, tu sais.', go: 'amour', si: { test: () => CAMILLA.installee } },
+      { t: 'À tout à l’heure.', fin: true }
+    ] };
+  // retrouvailles
+  N.r1 = { dit: 'Ce que je fais là ? Lucien m’a dit que tu étais parti « réfléchir » dans les Cimes, avec une tente et trois rations. TROIS rations, Mehdy. J’ai pris la voiture jusqu’au bout de la route, j’ai marché, et au poste de garde… devine qui j’ai trouvé ? TOD ! Le Tod de Node ! En uniforme !', choix: [
+    { t: 'Tod t’a dit que j’étais là ?', go: 'r2' }, { t: 'Je voulais être un peu seul…', go: 'r3' }, { t: 'Tu m’as manqué.', go: 'r4', eff: { run: () => { M().amour += 3; } } } ] };
+  N.r2 = { dit: 'Tod m’a dit : « Il y a un campeur au lac, il pêche mal mais il est sympa. » J’ai su tout de suite que c’était toi. Personne d’autre ne pêche aussi mal. Il ne t’a pas reconnu ? Avec ta tête ? Node a ta casquette bleue sur toutes ses photos !', choix: [ { t: 'Je ne lui ai pas dit mon nom en entier…', go: 'r5' }, { t: 'Et maintenant ?', go: 'r5' } ] };
+  N.r3 = { dit: 'Seul ? Toi ? Tu ne tiens pas deux heures sans parler à quelqu’un. Au bourg, tu disais bonjour aux pigeons de Germaine. … Bon. Tu seras seul à cinquante centimètres de moi. C’est mon dernier mot.', choix: [ { t: 'D’accord. Reste.', go: 'r5', eff: { run: () => { M().amour += 2; } } }, { t: 'Tu es impossible.', go: 'r5' } ] };
+  N.r4 = { dit: 'Toi aussi, idiot. Le chalet était trop calme. Plus personne pour faire « bouh » derrière la porte, plus personne pour manger tout le sanglier. Même Lina m’a dit que j’avais une tête d’enterrement.', choix: [ { t: 'Reste avec moi.', go: 'r5', eff: { run: () => { M().amour += 3; } } } ] };
+  N.r5 = { dit: 'J’ai ma tente dans le dos, mon arc, et j’ai laissé les clés du chalet à Lina. Je ne repars pas. Je plante ma tente à côté de la tienne, là. Et on vit ici. Toi, moi, le lac, et Tod qui passe le soir avec sa lampe torche, comme Lucien chez Node.', eff: { run: () => CAMILLA.installer() }, choix: [ { t: 'Bienvenue chez nous, Camilla.', go: 'r6', eff: { run: () => { M().amour += 2; } } }, { t: 'Je t’aide à la monter ?', go: 'r6' } ] };
+  N.r6 = { dit: 'Non, non : je la monte seule. Tu poses toujours les piquets à l’envers, comme Tod. Va pêcher, je t’appelle quand c’est prêt. Et ne va pas te perdre en forêt. Encore.', choix: [ { t: 'Promis.', fin: true } ] };
+  // bourg
+  N.bourg = { dit: () => pick(['Le bourg ? Rien n’a changé. M. Boup fait toujours ses discours à la fontaine, Germaine nourrit toujours ses pigeons, et Jules fait toujours le meilleur pain du monde. Il a repeint sa vitrine. Personne n’a tagué « MEHDY WAS HERE » dessus, cette fois.', 'Lucien est chef de la police, maintenant, tu le savais ? Il a une voiture neuve. Sophie la conduit beaucoup trop vite. Karim et Bernard font des paris sur les virages.', 'Ta petite maison bleue, à côté de chez Germaine… M. Boup l’a gardée. Il dit qu’un homme qui achète une maison, ça ne se revend pas. Germaine y passe faire les poussières. Elle te laisse des confitures sur la table.']), eff: vu('bourg'), choix: [
+    { t: 'Et Lucien, il m’en veut encore ?', go: 'lucien' }, { t: 'Jules m’a gardé ma place au fournil ?', go: 'jules' }, { t: 'Merci.', go: 'debut' } ] };
+  N.lucien = { dit: 'Lucien ? Il dit encore « Badaoui Mehdy, vingt-sept ans, encore vous » quand il parle de toi. Mais il a dit à Sophie que tu t’étais rangé. Et quand tu as acheté la maison, il a failli tomber de sa chaise. Il te déteste moins qu’avant. Beaucoup moins. Un peu moins.', choix: [ { t: 'Mehdy. Avec un Y.', go: 'lucien2' }, { t: 'Retour', go: 'debut' } ] };
+  N.lucien2 = { dit: 'Le Y est important ! Je sais, je sais. Tu lui as dit ça en garde à vue, devant tout le commissariat. Karim en rit encore. Tu es une légende, Mehdy. Une petite légende locale.', eff: { run: () => { M().amour += 1; } }, choix: [ { t: 'Retour', go: 'debut' } ] };
+  N.jules = { dit: 'Jules dit que tu pétrissais comme un pro, à la fin. « Les mains bien farinées. » Il t’attend. Il a dit : « Le Mehdy qui achète son pain au lieu de taguer ma vitrine, je veux bien le revoir tous les matins. »', choix: [ { t: 'Retour', go: 'debut' } ] };
+  // Node
+  N.node = { dit: () => sujet('node') ? pick(['Node ? Toujours à la base de la commandante Shirley. Louana dit qu’il est le plus précis au tir et le plus lent au réveil.', 'Tu te souviens quand il disait « Je n’ai pas de cheveux, Tod » ? Il en a encore moins, maintenant. Coupe réglementaire.', 'Node m’a écrit. Trois lignes. « Ça va. Je mange. Dis à Mehdy que je porte la casquette. » C’est beaucoup, pour Node.']) : 'Node est parti à l’armée, tu le sais. La base de la commandante Shirley, avec Louana. Il est en mission, maintenant. Louana dit qu’il porte ta casquette bleue sous son casque. Il ne la quitte jamais. Il dit que c’est son porte-bonheur. Tu lui manques, tu sais. Tu es son meilleur ami.', eff: vu('node'), choix: [
+    { t: 'Tod dit qu’il va s’installer à Feral.', go: 'node2', si: { test: () => GARDE.mem && GARDE.mem.sujets && (GARDE.mem.sujets.node || GARDE.mem.sujets.feral) } }, { t: 'Tu lui faisais tellement peur…', go: 'node3' }, { t: 'Retour', go: 'debut' } ] };
+  N.node2 = { dit: 'Le quartier de Blum, à Feral ? Il paraît que les forêts sont belles, là-bas. Tod veut le rejoindre. Les deux frères dans la même ville… Et nous ? On irait aussi ? Une maison bleue à Feral… Je dis ça, je ne dis rien.', choix: [ { t: 'Pourquoi pas.', go: 'debut', eff: { run: () => { M().amour += 2; } } }, { t: 'Ici, c’est bien aussi.', go: 'debut' } ] };
+  N.node3 = { dit: 'La Dame blanche du bois ! Il a fait un bond de deux mètres. Et Tod qui disait « elle invente tout, hein, elle invente ? » … J’inventais. Presque tout.', choix: [ { t: 'Presque ?', go: 'h1', si: { test: nuit } }, { t: 'Presque ?', go: 'node4', si: { test: () => !nuit() } } ] };
+  N.node4 = { dit: 'Je te raconterai ce soir. Les histoires de fantômes, ça ne se raconte pas en plein jour. Ça porte malheur. Et surtout, ça ne fait pas peur.', choix: [ { t: 'Retour', go: 'debut' } ] };
+  // Tod
+  N.tod = { dit: () => pick(['Tod, garde forestier ! Pour de vrai ! Il en rêvait depuis la tenue qu’il avait déterrée dans un des six coffres, tu te souviens ? Il l’avait offerte à Node. Maintenant c’est lui qui la porte.', 'Tod mange toujours cinq pommes par jour. Je l’ai vu. Il cache un panier sous son bureau.', 'Tod m’a montré son poste. Un bureau, une radio, un lit. Il est fier comme un pape. Il m’a demandé si Node serait fier de lui. J’ai dit oui. C’est vrai.', 'Tu sais que Tod joue encore de la flûte ? Le soir, au poste. Mal. Très mal. C’est mignon.']), eff: vu('tod'), choix: [
+    { t: 'Il connaît une certaine Ilona ?', go: 'ilona', si: { test: () => GARDE.mem && GARDE.mem.sujets && GARDE.mem.sujets.ilona } }, { t: 'Il ronfle toujours ?', go: 'tod2' }, { t: 'Retour', go: 'debut' } ] };
+  N.tod2 = { dit: 'Comme un ours. Comme quand il dormait sous la tente avec Node et que Node mettait du coton dans ses oreilles. « Sous la tente il fait bon, quand Node ronfle comme un ourson » : c’était Tod qui ronflait. Node prenait pour lui.', choix: [ { t: 'Retour', go: 'debut' } ] };
+  N.ilona = { dit: 'Ilona ? La fille de la reine, à Handram ? Il m’en a parlé une fois, et il est devenu tout rouge. Il dit qu’elle disait que les sapins parlent la nuit. Moi je trouve que ça ressemble à une de mes histoires. Mais en plus triste.', choix: [ { t: 'Retour', go: 'debut' } ] };
+  // André
+  N.andre = { dit: 'André le Terrible… Tu faisais le guet pour lui, avant. « Les keufs ! » Tu sifflais, il filait. Et c’est toi que Lucien attrapait. Quand tu t’es rangé, il ne te l’a jamais pardonné. S’il passe ici, Mehdy, tu me promets ?', eff: vu('andre'), choix: [ { t: 'Je te le promets. Plus jamais.', go: 'andre2', eff: { run: () => { M().amour += 2; ETAT.drapeaux.prevenu_andre = true; } } }, { t: 'Il n’est pas si méchant…', go: 'andre3' } ] };
+  N.andre2 = { dit: 'Bien. Lucien l’a déjà pris deux fois avec une arme sur lui. Il a enlevé Germaine, une fois, tu te souviens ? Ligotée à un arbre. Si on le voit, on appelle Tod, et Tod appelle Lucien.', choix: [ { t: 'Retour', go: 'debut' } ] };
+  N.andre3 = { dit: 'Pas si méchant ? Il a mis le feu à la réserve de Node et Tod. Il a volé Gaspard, qui revendait ce qu’André volait aux autres. C’est un cercle, Mehdy. Toi, tu en es sorti. N’y retourne pas.', choix: [ { t: 'Tu as raison.', go: 'debut', eff: { run: () => { ETAT.drapeaux.prevenu_andre = true; } } } ] };
+  N.andreIci = { dit: 'Je l’ai vu. Il compte les choses, maintenant, à voix haute. Il ne t’a pas reconnu, ou il fait semblant. Range la glacière, ne le laisse pas approcher de la tente. Moi je garde l’arc à la main.', eff: { run: () => { ETAT.drapeaux.prevenu_andre = true; } }, choix: [ { t: 'D’accord.', fin: true } ] };
+  N.danger = { dit: 'Moi non plus. Ne leur donne rien, ne leur dis pas où on dort. Si ça tourne mal, tu cries. Je n’ai jamais raté un sanglier. Je ne raterai pas un homme.', choix: [ { t: 'Merci, Camilla.', fin: true } ] };
+  // chalet, arc
+  N.chalet = { dit: 'Le chalet ? Lina a les clés. Elle passe arroser. Ma baignoire me manque. Mon interrupteur aussi : clic, la lumière ; clic, plus de lumière. Ici, c’est le soleil qui décide. Mais tu es là. Et le chalet, sans toi, c’était juste une maison avec une baignoire.', eff: vu('chalet'), choix: [ { t: 'Retour', go: 'debut' } ] };
+  N.arc = { dit: 'Toi ? À l’arc ? Tu tiens une flèche comme Jules tient une baguette. Bon. Pieds écartés, tu respires, tu tires sur l’expiration. Et tu ne vises pas Tod. Ni les pigeons. Demain matin, viens avec moi à la chasse. Tu porteras le gibier.', eff: vu('arc'), choix: [ { t: 'Marché conclu.', go: 'debut' } ] };
+  // repas, aide
+  N.repas = { dit: () => pick(['Lièvre aux herbes, façon chalet. Mange. Non, pas comme ça, avec les doigts, comme un chasseur.', 'Perdrix grillée. Roméo et Marc vendraient leur fusil pour ça. Mange lentement, c’est un ordre.', 'Sanglier… enfin, marcassin. Petit. Le grand, je le garde pour quand Tod viendra dîner.']), eff: { run: () => { M().repasJ = ETAT.jour; BES.faim = clamp(BES.faim + 35, 0, 100); BES.soif = clamp(BES.soif + 5, 0, 100); historique('a déjeuné avec Camilla'); M().amour += 1; } }, choix: [ { t: 'C’est délicieux, Camilla !', go: 'repas2' } ] };
+  N.repas2 = { dit: 'Je sais. On me le dit tous les midis. Node et Tod me le disaient : « On te doit une pomme grillée. » Ils me la doivent toujours.', choix: [ { t: 'Merci pour le repas.', fin: true } ] };
+  N.aide = { dit: () => { const m = M(); m.aideJ = ETAT.jour; const txt = [];
+      if (BES.sante < 60) { BES.sante = clamp(BES.sante + 30, 0, 100); txt.push('Montre-moi ça. Lina m’a appris : on nettoie, on serre, on ne pleure pas.'); }
+      if (BES.faim < 45) { SAC.rations += 1; txt.push('Tiens, une ration de mon sac.'); }
+      if (BES.soif < 45) { SAC.eau += 1; txt.push('Et de l’eau. Bois.'); }
+      if (SAC.buches < 2) { SAC.buches += 2; txt.push('J’ai fendu deux bûches pour toi, comme Tod.'); }
+      if (!txt.length) txt.push('Tu vas très bien. Tu voulais juste un câlin, avoue. … Viens là.');
+      return txt.join(' '); }, choix: [ { t: 'Merci, mon cœur.', fin: true } ] };
+  // histoire de fantômes (la Dame blanche du bois)
+  N.h1 = { dit: 'Bon. Il était une fois… non. Pas « il était une fois ». C’était l’hiver où Node et Tod ont scié leur premier sapin. Il y avait une dame, dans le bois, entre le chalet et le pommier. Toute blanche. Elle ne marchait pas : elle glissait.', clip: 'Talk', auto: 'h2', choix: [ { t: 'Continue.', go: 'h2' } ] };
+  N.h2 = { dit: 'Chaque nuit, elle s’arrêtait devant une tente. Elle ne frappait pas. Elle attendait. Et au matin, il manquait une pomme. Une seule. Toujours la plus rouge. Personne ne l’a jamais vue manger.', auto: 'h3', choix: [ { t: 'Et ensuite ?', go: 'h3' } ] };
+  N.h3 = { dit: 'Une nuit, Node a ouvert la tente. Pour voir. Et elle était là. Juste là. Elle a penché la tête… et elle a dit son prénom. « Node. » Comme ça. Doucement.', auto: 'h4', choix: [ { t: '…Et ?', go: 'h4' } ] };
+  N.h4 = { dit: 'Et… BOUH ! … Ha ha ha ! Tu as sursauté ! Tu as sursauté comme Node ! Respire, Mehdy, respire. Je l’ai inventée. Presque toute.', clip: 'Point', eff: { run: () => { M().histoires++; SON.tic(.4, 300, .2); M().amour += 1; } }, choix: [ { t: 'Ce n’est pas drôle, Camilla !', go: 'h5' }, { t: 'Presque ?', go: 'h5' } ] };
+  N.h5 = { dit: 'La pomme qui manquait, c’était moi. Je passais tous les matins, avant qu’ils se réveillent. Tod comptait trente, il en restait vingt-neuf. Il n’a jamais compris. Ne lui dis pas. Jamais.', choix: [ { t: 'Promis.', fin: true } ] };
+  // avenir, amour
+  N.avenir = { dit: () => pick(['Combien de temps ? Toute la vie, si le lac veut bien. Ou jusqu’à ce que Tod parte à Feral. Après, on verra. Une maison bleue à Blum, à côté de chez Node ?', 'Le temps que tu apprennes à pêcher. Donc toujours.', 'Tant qu’il y aura du gibier, du bois, et toi. Le reste, on s’en fiche.']), choix: [ { t: 'Toute la vie, alors.', go: 'debut', eff: { run: () => { M().amour += 1; } } } ] };
+  N.amour = { dit: () => { const m = M(); m.amour++; return pick(['Je sais. Tu me l’as dit au bourg, devant tout le monde, en rougissant comme Tod. Et je t’ai embrassé. Ça n’a pas changé.', 'Moi aussi, Mehdy Badaoui. Avec un Y.', 'Moi aussi. Même quand tu poses les piquets à l’envers. Surtout quand tu poses les piquets à l’envers.', 'Je t’aime aussi. Maintenant va chercher du bois, l’amour ne chauffe pas la marmite.']); }, choix: [ { t: '…', fin: true } ] }; }
+// --- Tod : il connaît Camilla, Mehdy, le pommier, Lucien… (sujets ajoutés à son dialogue)
+{ const N = GARDE.dialogue.noeuds, D = N.debut, iFin = D.choix.findIndex(c => c.fin), S = () => GARDE.mem.sujets, ajout = [
+    { t: 'Tu ne me reconnais pas ? Mehdy. L’ami de Node.', go: 'tMeh', si: { test: () => CAMILLA.meh() && !S().mehdy } },
+    { t: 'Parlons de Camilla.', go: 'tCam', si: { test: () => CAMILLA.univers() } },
+    { t: 'Le camp au pommier, avec Node, ça te manque ?', go: 'tPom', si: { test: () => CAMILLA.univers() && (S().node || S().qui) } },
+    { t: 'Tu as des nouvelles de Lucien et du bourg ?', go: 'tBourg', si: { test: () => CAMILLA.univers() } } ];
+  D.choix.splice(iFin < 0 ? D.choix.length : iFin, 0, ...ajout);
+  N.tMeh = { dit: 'Attends… Mehdy ? Avec un Y ? LE Mehdy ? Celui de la casquette bleue ? Node ne jure que par toi ! Il l’a sur toutes ses photos de la base ! Pourquoi tu ne l’as pas dit tout de suite ? Je t’ai vouvoyé pendant des jours comme un idiot !', eff: { run: () => { S().mehdy = true; GARDE.plus(18, 'a reconnu Mehdy, le meilleur ami de Node'); } }, choix: [ { t: 'Je voulais être un campeur comme les autres.', go: 'tMeh2' }, { t: 'Node va bien ?', go: 'tMeh2' } ] };
+  N.tMeh2 = { dit: 'Node va bien. Il dit que tu es la seule personne qui l’ait fait rire à la base, sans être là. Il raconte tes bêtises aux autres soldats. Le sabotage des roues de la voiture de Lucien, c’est son histoire préférée. Ne le dis pas à Lucien. Il ne s’en est jamais remis.', choix: [ { t: 'Ha ! Promis.', go: 'debut' } ] };
+  N.tCam = { dit: () => CAMILLA.installee ? pick(['Camilla au camp, avec toi… Ça me rappelle le chalet, tout à l’ouest du pommier. Elle venait frapper à la tente à six heures pour nous faire peur. Elle a fait pareil au poste, hier. À la vitre. J’ai renversé la radio.', 'Elle m’a ramené un lièvre. « Pour le garde forestier. » Node serait jaloux. Elle lui faisait toujours peur, à lui. Moi, elle m’invitait à manger.', 'Prends soin d’elle. Enfin, non : c’est elle qui prend soin de tout le monde. Prends soin de toi, elle s’occupe du reste.']) : 'Camilla ! Elle est passée au poste, elle cherchait son Mehdy. Elle faisait des histoires de fantômes à Node, au camp du pommier. Node faisait des bonds de deux mètres. Elle chasse mieux que Roméo et Marc réunis.', choix: [ { t: 'Retour', go: 'debut' } ] };
+  N.tPom = { dit: 'Le pommier… Trente pommes dans la réserve, pas une de plus. On sciait les sapins à deux, Node d’un côté, moi de l’autre. Lucien passait avec sa lampe la nuit. Et un jour j’ai déterré six coffres avec une pelle. Dans l’un d’eux, une tenue de garde forestier. Je l’ai donnée à Node. Tu vois comment ça finit : c’est moi qui suis devenu garde.', eff: { run: () => { GARDE.plus(2); } }, choix: [ { t: 'Il manquait parfois une pomme, non ?', go: 'tPom2' }, { t: 'Retour', go: 'debut' } ] };
+  N.tPom2 = { dit: 'Une ! Tous les matins ! Il en restait vingt-neuf. Node accusait la Dame blanche du bois. Moi j’accusais Mehdy… Pourquoi tu souris ?', choix: [ { t: 'Pour rien.', go: 'debut' } ] };
+  N.tBourg = { dit: () => pick(['Lucien appelle le poste une fois par semaine. Il dit « secteur sept, rien à signaler ? » et je dis « rien à signaler, capitaine ». Il aime bien qu’on l’appelle capitaine. Il est chef de la police, maintenant.', 'Jules m’a envoyé une tarte par le car du matin. Elle est arrivée en miettes. Je l’ai mangée quand même. Ne juge pas.', 'André le Terrible ? Toujours recherché. Lucien dit qu’il a été vu vers les Cimes. Si tu vois un type qui parle de lui à la troisième personne… tu m’appelles.', 'M. Boup veut faire une visite officielle du poste. Il va me serrer la main pendant trente secondes. Je m’entraîne.']), eff: { run: () => { ETAT.drapeaux.prevenu_andre = true; } }, choix: [ { t: 'Retour', go: 'debut' } ] };
+}
+CAMILLA.AMB_TOD = ['Trente pommes, pas une de plus… Vieille habitude.', 'Si Lucien voyait ce poste, il dirait « secteur sept, rien à signaler ».', 'Node aurait adoré ce lac. Il aurait eu peur de l’eau, mais il aurait adoré.', 'Camilla m’a encore fait peur ce matin. Elle a frappé à la vitre.', 'Il faudrait que j’écrive à Jules pour la tarte.'];
+{ const c0 = GARDE.creer; GARDE.creer = function () { const r = c0.apply(this, arguments); if (GARDE.v && GARDE.v.d && CAMILLA.univers() && !GARDE.v.d.ambiant.includes(CAMILLA.AMB_TOD[0])) GARDE.v.d.ambiant.push(...CAMILLA.AMB_TOD); if (CAMILLA.installee) CAMILLA.creer(false); return r; }; }
+{ const r0 = GARDE.recaler; GARDE.recaler = function () { r0.apply(this, arguments); CAMILLA.recaler(); }; }
+{ const s0 = GARDE.secours; GARDE.secours = function (a) { return s0.call(this, a) || CAMILLA.secours(a); }; }
+// --- visiteurs : Camilla de passage (autres prénoms), univers d'Opening après sa venue
+{ const c0 = VIS.choisirType; VIS.choisirType = function (ok) { const u = CAMILLA.univers(), filtre = v => (!v.opening || u) && (v.id !== 'camilla_visite' || (!CAMILLA.meh() && !ETAT.drapeaux.camillaVue)) && (!ok || ok(v));
+    // après la venue de Camilla, une visite sur deux vient du monde de Node et Tod
+    if (u && Math.random() < .5) { const L = VISITEURS.filter(v => v.opening && !VIS.vus.slice(-3).includes(v.id) && filtre(v)); if (L.length) return pick(L); }
+    let r = null; for (let k = 0; k < 8; k++) { r = c0.call(this, filtre); if (filtre(r) || (!ok && (!r.opening || u) && r.id !== 'camilla_visite')) break; } return r; }; }
+// --- sauvegarde, nouvelle partie, construction
+{ const s0 = sauver; sauver = function () { s0(); if (ETAT.enJeu && !ETAT.mort) ecrire('camilla', { installee: CAMILLA.installee, montee: CAMILLA.montee, jourArr: CAMILLA.jourArr, mem: CAMILLA.mem, secoursJour: CAMILLA.secoursJour }); }; }
+{ const c0 = charger; charger = function () { const r = c0(); CAMILLA.reset(); const s = lire('camilla'); if (r && s) { CAMILLA.installee = !!s.installee; CAMILLA.montee = !!s.montee || CAMILLA.installee; CAMILLA.jourArr = s.jourArr || 0; Object.assign(CAMILLA.mem, s.mem || {}); CAMILLA.secoursJour = s.secoursJour || -9; CAMILLA.montrerTente(CAMILLA.installee); } return r; }; }
+{ const np = nouvellePartie; nouvellePartie = function () { CAMILLA.reset(); CAMILLA.montrerTente(false); ecrire('camilla', null); return np.apply(this, arguments); }; }
+{ const cs = construireSalle; construireSalle = function () { cs.apply(this, arguments); construireTenteC(); }; }
+
+// ==== CAMP : VISITEURS DE L'UNIVERS DE NODE OPENING (v0.9) ====================================
+// camilla_visite : Camilla de passage (joueur qui ne s'appelle ni Med ni Mehdy) ; elle cherche Mehdy → drapeau global camillaVue (débloque l'univers).
+// { opening:true } : n'arrivent qu'après la venue de Camilla (CAMILLA.univers()), une visite sur deux : Lucien et Sophie (police du bourg), Jules (boulanger),
+// la Dr Lina, Roméo et Marc (chasseurs de sanglier), Gaspard (marchand), M. Boup et Germaine, Louana (soldate de la base de la commandante Shirley).
+const MEH = () => CAMILLA.meh(), CAMI = () => CAMILLA.installee && CAMILLA.montee;
+VISITEURS.push({
+  id: 'camilla_visite', type: 'Chasseuse', poids: 4, jourMin: 2, heure: [10, 16.5], arrivee: 'sentier', sortie: 'sentier', duree: [2, 3.5], danger: 0,
+  annonce: 'Une jeune femme rousse descend le sentier, un arc sur l’épaule. Elle scrute le camp comme on cherche quelqu’un.',
+  pnj: [{ id: 'camilla', prenom: 'Camilla', role: 'chasseuse', genre: 'f', morph: 'woman', tenue: 'villager_f', graine: 23, look: { parts: ['Hair_Long', 'Jacket', 'Boots'], retire: ['Cap', 'Beanie', 'Bucket_Hat', 'Straw_Hat', 'Headscarf', 'Scarf', 'Satchel', 'Hair_Short', 'Hair_Buzz', 'Hair_Bun', 'Hair_Ponytail', 'Hair_Curly', 'Hair_Bob', 'Glasses', 'Apron', 'Dress', 'Skirt'], colors: { top: '#5e2a4a', top2: '#4a2038', bottom: '#2b2a30', shoes: '#3a2416', hair: '#b23f14', skin: '#f2d2bb', accent: '#c8742e' }, build: 'slim', height: 1.0 }, props: ['Bow'], voix: { pitch: 1.17, rate: 1.04 }, vitesse: 1.4,
+    ambiant: ['Mehdy ? … Non. Pas Mehdy.', 'Il se perd toujours en forêt. Toujours.', 'Tod a un poste de garde. Tod ! Le Tod de Node !', 'Beau lac. Trop calme. Mehdy l’aurait déjà rempli de bruit.'] }],
+  routine: [
+    { qui: 'camilla', ou: 'finSentier', clip: 'Idle_LookAround', des: 0 },
+    { qui: 'camilla', ou: 'feu', clip: 'Idle_LookAround', des: .12, dit: 'Bonjour ! Pardon d’entrer comme ça… Vous n’auriez pas vu un grand gars, une capuche, qui parle tout le temps ?' },
+    { qui: 'camilla', ou: 'rive', clip: 'Idle_LookAround', des: .4 },
+    { qui: 'camilla', ou: 'feu', clip: 'Sit_Ground', des: .6 },
+    { qui: 'camilla', ou: 'finSentier', clip: 'Wave', des: .92 }
+  ],
+  dialogue: { camilla: { debut: 'c0', retour: 'cr', noeuds: {
+    c0: { dit: 'Bonjour ! Camilla. Je cherche mon copain, Mehdy. Avec un Y, il y tient. Grand, une capuche, il parle à tout le monde et il se perd dans toutes les forêts. Lucien m’a dit qu’il était monté dans les Cimes « réfléchir ». Vous l’avez vu ?', choix: [
+      { t: 'Non, je suis seul ici depuis le début.', go: 'c1' }, { t: 'Lucien ?', go: 'c2' }, { t: 'Vous êtes passée par le poste de garde ?', go: 'c3' }, { t: 'Vous chassez, avec cet arc ?', go: 'c4' } ] },
+    c1: { dit: 'Seul… Lui, il ne tiendrait pas une journée seul. Il dirait bonjour aux arbres. Bon. Il est peut-être de l’autre côté du lac, ou perdu, encore. Ça ne vous dérange pas si je me pose un peu ? J’ai marché depuis la route.', choix: [
+      { t: 'Asseyez-vous près du feu.', go: 'c5', eff: { conf: 1 } }, { t: 'Je préfère être tranquille.', go: 'c6' } ] },
+    c2: { dit: 'Lucien, le chef de la police du bourg. Moustache, voiture, et une rancune de trois kilomètres contre Mehdy. Il dit encore « Badaoui Mehdy, vingt-sept ans, encore vous ». Même maintenant que Mehdy s’est rangé. Il travaille au fournil de Jules, il a acheté une maison ! Lucien a failli tomber de sa chaise.', choix: [
+      { t: 'Il avait fait quoi, avant ?', go: 'c7' }, { t: 'Il a l’air sympa, votre Mehdy.', go: 'c5', eff: { conf: 1 } } ] },
+    c3: { dit: 'Oui ! Et devinez qui garde le poste : Tod ! Je connais Tod depuis le camp du pommier, à côté de mon chalet. Lui et Node, deux garçons, une tente, trente pommes, et moi qui leur racontais des histoires de fantômes. Node faisait des bonds de deux mètres. Tod, maintenant, il a un uniforme. Ça m’a fait tout drôle.', choix: [
+      { t: 'Node ? Son frère ?', go: 'c8' }, { t: 'Des histoires de fantômes ?', go: 'c9' } ] },
+    c4: { dit: 'Je chasse, oui. Le sanglier, surtout, dans ma forêt, à l’ouest du bourg. Il paraît que je tire mieux que Roméo et Marc, les deux chasseurs du coin. Il paraît. Ce n’est pas moi qui le dis. Enfin, si, un peu.', choix: [ { t: 'Impressionnant.', go: 'c5', eff: { conf: 1 } }, { t: 'Vous ne chassez pas ici, j’espère.', go: 'c6' } ] },
+    c5: { dit: 'Merci. C’est gentil. Tenez : du pain de Jules, le boulanger du bourg. Le meilleur du monde. Je l’avais pris pour Mehdy, mais Mehdy n’est pas là, alors c’est pour vous. Pas trop cuit, comme Germaine.', eff: { don: { rations: 1, t: 'Camilla vous tend un pain encore souple.' }, flag: 'camillaVue', global: true }, choix: [
+      { t: 'Merci. Il y a autre chose que je dois savoir ?', go: 'c10' }, { t: 'Je vous souhaite de le retrouver.', go: 'c11' } ] },
+    c6: { dit: 'Compris. Je ne reste pas longtemps. Juste le temps de regarder si je vois une capuche bleue sur l’autre rive. Il en a donné une à Node, vous savez. Il dit que Node est son meilleur ami. Node dit pareil, alors c’est vrai.', eff: { flag: 'camillaVue', global: true }, choix: [ { t: 'Bonne chance.', fin: true } ] },
+    c7: { dit: 'Des bêtises. Beaucoup. Il fumait en forêt, il posait des collets, il a saboté les roues de la voiture de la police… et il faisait le guet pour André. André le Terrible. Si vous croisez un type bizarre qui s’appelle André, ne lui faites pas confiance. Ne lui laissez pas votre glacière, ne lui tournez pas le dos.', eff: { flag: 'prevenu_andre', global: true }, choix: [ { t: 'Merci du conseil.', go: 'c5', eff: { conf: 1 } } ] },
+    c8: { dit: 'Son frère, oui. Parti à l’armée, à la base de la commandante Shirley. Louana, une copine soldate, dit qu’il porte la casquette bleue de Mehdy sous son casque. Tod, lui, a préféré la forêt. Deux frères, deux chemins. Ils vont se retrouver à Feral, il paraît.', choix: [ { t: 'C’est beau.', go: 'c5' } ] },
+    c9: { dit: 'La Dame blanche du bois. Elle glisse entre les sapins, elle s’arrête devant votre tente, et au matin il manque une pomme. … Vous avez frissonné. Je l’ai vu. Node aussi frissonnait. Je ne vous la raconte pas en entier, il fait jour, ça porte malheur.', choix: [ { t: 'Vous m’avez fait peur.', go: 'c5', eff: { conf: 1 } } ] },
+    c10: { dit: 'Si vous voyez Mehdy, dites-lui… dites-lui que Camilla a planté sa tente sur tous les lacs des Cimes pour le trouver. Et que s’il ne rentre pas, je viens le chercher avec mon arc. Il comprendra.', choix: [ { t: 'Je lui dirai.', go: 'c11' } ] },
+    c11: { dit: 'Merci, {JOUEUR}. Vous êtes quelqu’un de bien. Tod a de la chance d’avoir un voisin comme vous. Bon. Je vais chercher de l’autre côté du lac. S’il est perdu, il est perdu près de l’eau, c’est sa spécialité.', choix: [ { t: 'Au revoir, Camilla.', fin: true } ] },
+    cr: { dit: 'Toujours pas de Mehdy à l’horizon. Il est doué pour disparaître… et pour réapparaître au pire moment. Vous voulez quelque chose ?', choix: [ { t: 'Parlez-moi de Tod.', go: 'c3' }, { t: 'Et cet André ?', go: 'c7' }, { t: 'Non, rien.', fin: true } ] } } } },
+  evenements: [{ quand: 'arrivee', faire: [{ type: 'flag', f: 'camillaVue', global: true }] }],
+  depart: { texte: 'Camilla remonte le sentier en scrutant la forêt. Elle va chercher son Mehdy ailleurs.' }
+});
+// --- LUCIEN ET SOPHIE : la police du bourg monte jusqu'aux Cimes (avis de recherche d'André le Terrible)
+VISITEURS.push({
+  id: 'lucien_police', opening: true, type: 'Police du bourg', poids: 3, jourMin: 1, heure: [9.5, 17], arrivee: 'sentier', sortie: 'sentier', duree: [1.2, 2.2], danger: 0,
+  annonce: 'Deux uniformes descendent le sentier. Une moustache impressionnante ouvre la marche.',
+  pnj: [
+    { id: 'lucien', prenom: 'Lucien', role: 'chef de la police du bourg', genre: 'h', morph: 'man', tenue: 'police', look: { parts: ['Mustache', 'Police_Cap'], colors: { hair: '#5a4632' }, build: 'heavy', height: 1.02 }, props: ['Clipboard'], voix: { pitch: .86, rate: .95 }, vitesse: 1.2,
+      ambiant: ['Secteur des Cimes. Rien à signaler… pour l’instant.', 'Sophie, on marche, on ne court pas.', 'Une carte postale, Camilla avait promis. Une carte postale.', 'Toutes unités : individu connu de nos services, André. Je répète : André.'] },
+    { id: 'sophie', prenom: 'Sophie', role: 'agente de police', genre: 'f', morph: 'woman', tenue: 'police', look: { parts: ['Hair_Ponytail', 'Police_Cap'], colors: { hair: '#2e2018' }, build: 'slim' }, voix: { pitch: 1.12, rate: 1.1 }, vitesse: 1.4,
+      ambiant: ['J’ai garé la voiture au poste. En marche arrière. Sans toucher le poteau. Presque.', 'Lucien râle, mais il adore la montagne.'] } ],
+  routine: [ { qui: 'lucien', ou: 'finSentier', clip: 'Idle_LookAround', des: 0 }, { qui: 'sophie', ou: 'finSentier', clip: 'Idle', des: 0 },
+    { qui: 'lucien', ou: 'feu', clip: 'Write_Notes', des: .15, dit: 'Police du bourg. Bonjour. Contrôle de routine, rien de grave.' }, { qui: 'sophie', ou: 'glaciere', clip: 'Examine', des: .2 },
+    { qui: 'sophie', ou: 'rive', clip: 'Idle_LookAround', des: .5 }, { qui: 'lucien', ou: 'porteTente', clip: 'Radio_Talk', des: .55 },
+    { qui: 'lucien', ou: 'finSentier', clip: 'Idle', des: .9 }, { qui: 'sophie', ou: 'finSentier', clip: 'Idle', des: .9 } ],
+  dialogue: {
+    lucien: { debut: 'l0', retour: 'lr', noeuds: {
+      l0: { dit: () => MEH() ? 'Contrôle de routine. Nom, prénom… Non. Non, non, non. Badaoui Mehdy, vingt-sept ans. ENCORE vous. Dans MON secteur de vacances.' : 'Bonjour. Lucien, chef de la police du bourg, en bas de la vallée. Contrôle de routine, secteur des Cimes. Vous campez seul ? Nom, prénom ?', choix: [
+        { t: 'Mehdy. Avec un Y.', go: 'l1', si: { test: MEH } }, { t: 'Je m’appelle {JOUEUR}. Je campe seul, oui.', go: 'l2', si: { test: () => !MEH() } },
+        { t: 'Vous cherchez quelqu’un ?', go: 'l3' }, { t: 'Camilla est ici, avec moi.', go: 'l4', si: { test: CAMI } } ] },
+      l1: { dit: 'Le Y est important. Je sais. Vous me l’avez dit en garde à vue, devant Karim, Bernard et la machine à café. … Bon. Je sais que vous vous êtes rangé. Jules dit que vous pétrissez bien. M. Boup dit que vous payez vos factures. Je n’arrive pas à m’y faire, c’est tout.', eff: { conf: 1 }, choix: [ { t: 'Vous me manquiez aussi, Lucien.', go: 'l5' }, { t: 'Vous cherchez André, c’est ça ?', go: 'l3' } ] },
+      l2: { dit: '{JOUEUR}. Noté. Pas de feu laissé sans surveillance, pas de collets, pas de pétards. On a eu un sapin brûlé l’an dernier, près du pommier de deux garçons. Une histoire de feu de joie. Je ne veux plus de ça.', choix: [ { t: 'Promis.', go: 'l3', eff: { conf: 1 } }, { t: 'Le pommier de Node et Tod ?', go: 'l6', si: { flag: 'camillaVue' } } ] },
+      l3: { dit: 'Avis de recherche. André, dit André le Terrible. Vol, agression, enlèvement, et il a mis le feu à une réserve de pommes. Il a été vu vers les Cimes. Il parle bizarrement, il compte les choses. S’il passe ici : vous ne le provoquez pas, vous rangez vos affaires, et vous prévenez Tod au poste de garde.', eff: { flag: 'prevenu_andre', global: true }, choix: [
+        { t: 'Je l’ai déjà vu passer.', go: 'l7', si: { test: () => VIS.vus.includes('andre') } }, { t: 'Compris.', go: 'l8' } ] },
+      l4: { dit: 'Camilla ? Ici ? … Évidemment. Partout où il y a un Badaoui, il y a une Camilla, et partout où il y a une Camilla, il y a un arc. Bonjour, Camilla ! L’arc, il est bien déchargé et rangé ? La procédure, Camilla.', choix: [ { t: 'Elle chasse uniquement pour manger.', go: 'l8' } ] },
+      l5: { dit: 'Ne poussez pas. … Tenez. Sophie a insisté pour qu’on monte des rations à Tod, il en reste. Prenez-en deux. Et si vous voyez André, vous m’appelez. Vous ne faites pas le guet. Plus jamais.', eff: { don: { rations: 2, t: 'Lucien vous donne deux rations, en grommelant.' } }, choix: [ { t: 'Plus jamais, Lucien.', fin: true } ] },
+      l6: { dit: 'Vous connaissez Node et Tod ? Deux braves gamins. Je passais les voir la nuit, avec ma lampe, pour vérifier que tout allait bien. Tod est garde ici, maintenant. Et Node est parti à l’armée. Ça fait un vide, au bourg. Je ne le dirai qu’une fois.', eff: { conf: 1 }, choix: [ { t: 'Je ne le répéterai pas.', go: 'l8' } ] },
+      l7: { dit: 'Vous l’avez vu ? Quand ? Il a pris quelque chose ? … Merci. C’est précieux. Sophie, note : « vu au lac des Cimes, a parlé au campeur ». Tenez, pour le dérangement.', eff: { don: { rations: 1, eau: 1, t: 'Lucien vous laisse une ration et une bouteille d’eau.' }, conf: 1 }, choix: [ { t: 'De rien.', go: 'l8' } ] },
+      l8: { dit: 'Bien. On remonte voir Tod, et on redescend avant la nuit. Sophie conduit, alors priez pour nous. Bonne journée.', choix: [ { t: 'Bonne route.', fin: true } ] },
+      lr: { dit: 'Oui ? Encore une chose ? Faites vite, Sophie s’impatiente, et quand Sophie s’impatiente, elle conduit encore plus vite.', choix: [ { t: 'Parlez-moi d’André.', go: 'l3' }, { t: 'Rien, merci.', fin: true } ] } } },
+    sophie: { debut: 's0', noeuds: {
+      s0: { dit: 'Sophie, police du bourg. Ne faites pas attention à Lucien, il grogne mais il est tout doux. Il a fait toute la route en parlant de Tod. Et de Node. Et des pommes.', choix: [ { t: 'Vous conduisez vite, il paraît.', go: 's1' }, { t: 'Vous connaissez Camilla ?', go: 's2' }, { t: 'Au revoir.', fin: true } ] },
+      s1: { dit: 'Je conduis bien. Vite et bien. Lucien a perdu sa casquette dans le troisième virage. Karim et Bernard parient sur combien de virages il tient avant de crier. Record : deux.', eff: { conf: 1 }, choix: [ { t: 'Ha !', fin: true } ] },
+      s2: { dit: 'Tout le monde connaît Camilla. Quand André fait des siennes, tout le bourg se réfugie chez elle, au chalet. Elle ferme à clé et elle nous appelle. C’est la meilleure chasseuse du coin, et la seule personne dont Lucien a un peu peur.', choix: [ { t: 'Je comprends pourquoi.', fin: true } ] } } } },
+  depart: { texte: 'Lucien et Sophie remontent vers le poste de garde. On entend Lucien : « Pas trop vite, Sophie. »' }
+});
+// --- JULES : le boulanger du bourg monte du pain
+VISITEURS.push({
+  id: 'jules_boulanger', opening: true, type: 'Boulanger', poids: 3, jourMin: 1, heure: [7, 11], arrivee: 'sentier', sortie: 'sentier', duree: [1, 1.8], danger: 0,
+  annonce: 'Une odeur de pain chaud précède un homme en tablier, une hotte sur le dos.',
+  pnj: [{ id: 'jules', prenom: 'Jules', role: 'boulanger du bourg', genre: 'h', morph: 'man', tenue: 'baker', look: { parts: ['Backpack'], colors: { hair: '#2b1e14' }, build: 'heavy' }, props: ['Bread'], voix: { pitch: 1.0, rate: 1.05 }, vitesse: 1.2,
+    ambiant: ['Pas trop cuite, comme depuis quarante ans pour Germaine.', 'Les mains bien farinées, c’est la moitié du travail.', 'Le pain voyage mal, mais il voyage.'] }],
+  routine: [ { qui: 'jules', ou: 'finSentier', clip: 'Idle', des: 0 }, { qui: 'jules', ou: 'table', clip: 'Give_Item', des: .15, dit: 'Pain frais ! Pain frais du bourg, monté à pied jusqu’aux Cimes !' }, { qui: 'jules', ou: 'feu', clip: 'Sit_Ground', des: .45 }, { qui: 'jules', ou: 'finSentier', clip: 'Wave', des: .9 } ],
+  dialogue: { jules: { debut: 'j0', retour: 'jr', noeuds: {
+    j0: { dit: () => MEH() ? 'MEHDY ! Mon apprenti ! Les mains bien farinées, et tu pétris comme je t’ai appris ? Non ? Ici il n’y a pas de four. Excuse valable. Je t’ai monté ta baguette.' : 'Bonjour ! Jules, boulanger au bourg. Je livre Tod au poste une fois par semaine, et cette fois j’ai poussé jusqu’au lac. Du pain ? C’est le meilleur du monde. Tout le monde le dit, donc c’est vrai.', choix: [
+      { t: 'Une baguette, pas trop cuite.', go: 'j1' }, { t: 'Tu as repeint ta vitrine ?', go: 'j2', si: { test: MEH } }, { t: 'Vous connaissez Camilla ?', go: 'j3', si: { flag: 'camillaVue' } }, { t: 'Je n’ai rien pour payer.', go: 'j4' } ] },
+    j1: { dit: '« Pas trop cuite »… Vous parlez comme Germaine ! Elle me dit ça tous les matins depuis quarante ans. Tenez. Et une tarte, parce que je suis faible.', eff: { don: { rations: 2, t: 'Jules vous donne une baguette et une part de tarte (+2 rations).' }, besoin: { faim: 10 } }, choix: [ { t: 'Merci, Jules !', go: 'j5' } ] },
+    j2: { dit: 'Repeinte ! Et personne n’a tagué « MEHDY WAS HERE » dessus. Ça me manquerait presque. Presque. Lucien dit que c’est un miracle. Moi je dis que c’est toi qui as changé. Tiens, ton pain. Tu ne paies pas. Un apprenti ne paie pas.', eff: { don: { rations: 3, t: 'Jules vous fourre trois pains dans les bras.' }, conf: 1 }, choix: [ { t: 'Merci, patron.', go: 'j5' } ] },
+    j3: { dit: 'Camilla ? Elle m’achète un quartier de sanglier par semaine… non, c’est elle qui le vend aux chasseurs. Je ne sais plus. Ce que je sais : quand elle entre au fournil, elle fait « bouh » derrière la porte, et je fais tomber mes croissants. Tous les mardis.', choix: [ { t: 'Ça lui ressemble.', go: 'j1' } ] },
+    j4: { dit: 'Payer ? Un poisson, ça me va. Ou rien du tout, si vous me racontez une histoire drôle. Allez, je vous en donne un quand même. Le pain, ça se partage, c’est ma règle.', choix: [ { t: 'Un poisson contre du pain.', go: 'j6', si: { item: 'poisson:1' }, eff: { donne: { poisson: -1 } } }, { t: 'Merci, vous êtes trop bon.', go: 'j7' } ] },
+    j5: { dit: 'Si vous descendez au bourg un jour, le fournil est à côté de la fontaine. M. Boup y fait ses discours. Venez tôt, avant le discours. Après, il ne reste plus rien.', choix: [ { t: 'Je m’en souviendrai.', fin: true } ] },
+    j6: { dit: 'Une belle truite ! Germaine va être contente, elle adore le poisson. Tenez : deux pains et une brioche. Le commerce, c’est beau.', eff: { don: { rations: 3, t: 'Jules vous donne deux pains et une brioche (+3 rations).' } }, choix: [ { t: 'Marché conclu.', go: 'j5' } ] },
+    j7: { dit: 'Trop bon, c’est mon défaut. Tenez.', eff: { don: { rations: 1, t: 'Jules vous donne un pain.' } }, choix: [ { t: 'Merci.', go: 'j5' } ] },
+    jr: { dit: 'Encore faim ? Il me reste des miettes et de l’amour. Surtout de l’amour.', choix: [ { t: 'Au revoir, Jules.', fin: true } ] } } } },
+  depart: { texte: 'Jules remonte le sentier, la hotte allégée, en sifflotant.' }
+});
+// --- LA DR LINA : le médecin du bourg fait sa tournée des Cimes
+VISITEURS.push({
+  id: 'lina_medecin', opening: true, type: 'Médecin', poids: 2, jourMin: 2, heure: [10, 16], arrivee: 'sentier', sortie: 'sentier', duree: [1.2, 2.2], danger: 0,
+  annonce: 'Une femme en blouse blanche, une sacoche à la main, descend vers le camp d’un pas de montagnarde.',
+  pnj: [{ id: 'lina', prenom: 'Dr Lina', role: 'médecin du bourg', genre: 'f', morph: 'woman', tenue: 'doctor', look: { parts: ['Hair_Bun', 'Glasses'], colors: { hair: '#1e1a18' }, build: 'slim' }, props: ['Medical_Bag'], voix: { pitch: 1.08, rate: .98 }, vitesse: 1.3,
+    ambiant: ['Les champignons de la grande forêt ne se mangent pas tous. Surtout les jolis.', 'Je ne dors jamais, on dit. C’est faux. Je dors debout.', 'J’ai arrosé les plantes de Camilla. Toutes. Même la morte.'] }],
+  routine: [ { qui: 'lina', ou: 'finSentier', clip: 'Idle', des: 0 }, { qui: 'lina', ou: 'feu', clip: 'Idle_LookAround', des: .15, dit: 'Bonjour ! Docteur Lina. Tournée des Cimes : je vérifie que tout le monde est vivant.' }, { qui: 'lina', ou: 'chaise', clip: 'Sit_Chair', des: .45 }, { qui: 'lina', ou: 'finSentier', clip: 'Wave', des: .9 } ],
+  dialogue: { lina: { debut: 'n0', retour: 'nr', noeuds: {
+    n0: { dit: 'Docteur Lina, du bourg. Je monte deux fois par saison voir Tod et les campeurs. On attrape vite froid au lac, et on se coupe vite au couteau. Vous allez bien ? Faites-moi voir.', choix: [
+      { t: 'J’ai mal, oui. Vous pouvez m’examiner ?', go: 'n1' }, { t: 'Je me sens bizarre depuis un repas…', go: 'n2', si: { test: () => (ETAT.poison || 0) > 0 } }, { t: 'Vous connaissez Camilla ?', go: 'n3', si: { flag: 'camillaVue' } }, { t: 'Tout va bien, merci.', go: 'n4' } ] },
+    n1: { dit: 'Asseyez-vous. Respirez. Encore. … Rien de grave. Je nettoie, je serre, et vous ne faites pas le malin pendant deux jours. Et prenez ce bonbon. J’en donnais à Node quand il se coupait en sciant les sapins.', eff: { besoin: { sante: 45 }, conf: 1 }, choix: [ { t: 'Merci, docteur.', go: 'n5' } ] },
+    n2: { dit: 'Montrez-moi vos yeux. … Oui. Vous avez mangé ou bu quelque chose qui ne vous voulait pas du bien. Tenez, buvez ça. C’est amer. C’est fait pour. Dans une heure, vous irez mieux.', eff: { run: () => { ETAT.poison = 0; BES.sante = clamp(BES.sante + 30, 0, 100); note('Le remède de Lina vous brûle la gorge… puis le malaise se dissipe.', 4000); } }, choix: [ { t: 'Vous m’avez sauvé.', go: 'n5' } ] },
+    n3: { dit: () => CAMI() ? 'Camilla est ici ? Avec son Mehdy ? Je le savais. Elle avait une tête d’enterrement au chalet. Je garde ses clés, j’arrose ses plantes. Dites-lui que la baignoire l’attend… mais qu’elle peut prendre son temps.' : 'Camilla ? Ma meilleure amie. Elle me donne du sanglier, je lui recouds les doigts. Elle cherche son Mehdy dans toutes les Cimes. Je lui ai dit : « Il reviendra, il revient toujours. » Il se perd, mais il revient.', choix: [ { t: 'Je lui dirai.', go: 'n4' } ] },
+    n4: { dit: 'Parfait. Buvez de l’eau traitée, pas l’eau du lac directement, même si elle a l’air propre. Et dormez. Tout le monde oublie de dormir. Moi la première.', eff: { don: { eau: 1, t: 'Lina vous laisse une bouteille d’eau stérile.' } }, choix: [ { t: 'Promis.', go: 'n5' } ] },
+    n5: { dit: 'Bien. Je monte voir Tod : il cache ses ampoules aux pieds, je le connais. Bonne continuation, {JOUEUR}.', choix: [ { t: 'Au revoir, docteur.', fin: true } ] },
+    nr: { dit: 'Un autre bobo ?', choix: [ { t: 'Oui, examinez-moi encore.', go: 'n1', si: { test: () => BES.sante < 70 } }, { t: 'Non, merci.', fin: true } ] } } } },
+  depart: { texte: 'La Dr Lina remonte le sentier vers le poste, sa sacoche à la main.' }
+});
+// --- ROMÉO ET MARC : les deux chasseurs de sanglier (braconnage nocturne)
+VISITEURS.push({
+  id: 'romeo_marc', opening: true, type: 'Chasseurs de sanglier', poids: 2, jourMin: 2, heure: [15, 19], arrivee: 'sentier', sortie: 'sentier', duree: 'nuit', danger: 1,
+  annonce: 'Deux chasseurs en tenue de camouflage arrivent en riant fort, fusils à l’épaule.', objets: ['tenteV', 'feuV'],
+  pnj: [
+    { id: 'romeo', prenom: 'Roméo', role: 'chasseur', genre: 'h', morph: 'man', tenue: 'farmer', look: { parts: ['Cap', 'Beard', 'Vest'], colors: { top: '#4b5a32', bottom: '#3a3a28', hat: '#c8641e', hair: '#3a2a1e' }, build: 'heavy' }, props: ['Rifle'], voix: { pitch: .9, rate: 1.05 }, vitesse: 1.3,
+      ambiant: ['Un sanglier, ici ? Je le sens. Je le SENS.', 'Marc, tu as pris les saucisses ? Marc ?', 'Il paraît que Camilla chasse mieux que nous. Il paraît.'] },
+    { id: 'marc', prenom: 'Marc', role: 'chasseur', genre: 'h', morph: 'man', tenue: 'farmer', look: { parts: ['Beanie', 'Vest'], colors: { top: '#3f4a2c', bottom: '#2e2e22', hat: '#2a2a2a', hair: '#7a5a3a' }, build: 'average' }, props: ['Rifle'], voix: { pitch: 1.02, rate: 1.0 }, vitesse: 1.3,
+      ambiant: ['La nuit, c’est du braconnage, Roméo. Je dis ça, je dis rien.', 'Lucien a nos noms sur un carnet. Un carnet entier.'] } ],
+  routine: [ { qui: 'romeo', ou: 'finSentier', clip: 'Idle', des: 0 }, { qui: 'marc', ou: 'finSentier', clip: 'Idle', des: 0 },
+    { qui: 'romeo', ou: 'feuV', clip: 'Sit_Ground', des: .1, dit: 'Salut le campeur ! On s’installe à côté, juste pour la nuit. On ne fait pas de bruit. Presque pas.' }, { qui: 'marc', ou: 'tenteV', clip: 'Interact', des: .1 },
+    { qui: 'marc', ou: 'feuV', clip: 'Sit_Ground', des: .3 }, { qui: 'romeo', ou: 'foret', clip: 'Aim_Pistol', des: .55 }, { qui: 'romeo', ou: 'feuV', clip: 'Sit_Ground', des: .7 },
+    { qui: 'romeo', ou: 'tenteV', clip: 'Sleep_Lie', des: .78 }, { qui: 'marc', ou: 'tenteV', clip: 'Sleep_Lie', des: .8 }, { qui: 'romeo', ou: 'finSentier', clip: 'Idle', des: .96 }, { qui: 'marc', ou: 'finSentier', clip: 'Idle', des: .96 } ],
+  dialogue: {
+    romeo: { debut: 'r0', retour: 'rr', noeuds: {
+      r0: { dit: 'Roméo ! Et lui, c’est Marc. Chasseurs de sanglier, grande forêt du bourg, depuis toujours. On monte aux Cimes parce qu’en bas, Lucien nous attend derrière chaque arbre. Vous avez vu des traces ? Des grosses ?', choix: [
+        { t: 'Oui, près de la lisière.', go: 'r1', eff: { conf: 1 } }, { t: 'La chasse est autorisée, ici ?', go: 'r2' }, { t: 'Camilla dit qu’elle chasse mieux que vous.', go: 'r3', si: { flag: 'camillaVue' } }, { t: 'Pas de coups de feu près du camp, la nuit.', go: 'r4', eff: { flag: 'pasDeTir' } } ] },
+      r1: { dit: 'Je le savais ! Marc, je te l’avais dit ! Tenez, pour le tuyau : une terrine de sanglier. Maison. C’est la recette de ma grand-mère, on y met trop de poivre, c’est le secret.', eff: { don: { rations: 2, t: 'Roméo vous offre une terrine de sanglier (+2 rations).' }, conf: 1 }, choix: [ { t: 'Merci !', go: 'r5' } ] },
+      r2: { dit: 'Autorisée… c’est un grand mot. Disons qu’elle n’est pas interdite tant que personne ne la voit. Et la nuit, personne ne voit. Hein, Marc ? … Marc dit que c’est du braconnage. Marc est rabat-joie.', choix: [ { t: 'Je préviendrai Tod.', go: 'r6' }, { t: 'Je n’ai rien entendu.', go: 'r1' } ] },
+      r3: { dit: 'Elle a dit ça ? … Bon. C’est vrai. Une flèche, un sanglier. Nous, douze cartouches, un sapin abîmé et Lucien qui arrive. Un jour, on lui a acheté un quartier de sanglier. À Camilla. Le nôtre s’était enfui.', eff: { conf: 1 }, choix: [ { t: 'Ha !', go: 'r1' } ] },
+      r4: { dit: 'Pas de coups de feu… D’accord, d’accord. On tirera loin. Très loin. Vous n’entendrez rien. Peut-être un peu.', choix: [ { t: 'Merci.', go: 'r5' } ] },
+      r5: { dit: 'Ce soir, on mange au feu, demain on file avant le jour. Vous ne nous avez jamais vus. Si Lucien demande : deux randonneurs, très polis, très beaux.', choix: [ { t: 'Très beaux, noté.', fin: true } ] },
+      r6: { dit: 'Tod ? Le petit Tod du pommier ? Il est garde, maintenant ? … Marc. MARC. On repart demain très tôt. Très, très tôt.', eff: { flag: 'menace_tod' }, choix: [ { t: 'Bonne idée.', fin: true } ] },
+      rr: { dit: 'Vous changez d’avis pour la terrine ? Il en reste. Toujours.', choix: [ { t: 'Non, merci.', fin: true } ] } } },
+    marc: { debut: 'm0', noeuds: {
+      m0: { dit: 'Marc. Je suis le raisonnable des deux. C’est-à-dire que je dis « c’est une mauvaise idée » et que je viens quand même.', choix: [ { t: 'Pourquoi vous suivez Roméo ?', go: 'm1' }, { t: 'Au revoir.', fin: true } ] },
+      m1: { dit: 'Parce que sans Roméo, la cabane est bien calme. Et parce qu’un jour, il en attrapera un, de sanglier. Je veux être là. Ce sera le plus beau jour de sa vie. Et du sanglier, aussi.', eff: { conf: 1 }, choix: [ { t: 'C’est touchant.', fin: true } ] } } } },
+  evenements: [
+    { quand: 'nuit', si: { pasFlag: 'pasDeTir' }, faire: [{ type: 'sfx', s: 'coupFeu' }, { type: 'note', t: 'Deux coups de feu claquent dans la forêt. Puis un juron. Puis un autre coup. Puis Roméo : « Il est parti ! »' }] },
+    { quand: 'nuit', si: { flag: 'pasDeTir' }, faire: [{ type: 'note', t: 'Au loin, très loin, un coup de feu étouffé. Ils ont tenu parole… presque.' }] },
+    { quand: 'aube', si: { glaciereDehors: true, hasard: .5 }, faire: [{ type: 'vol', rations: 1, t: 'Ils sont partis avant le jour. Il vous manque une ration — et un mot griffonné : « Désolés, faim. R. et M. »' }] }
+  ],
+  depart: { texte: 'Roméo et Marc filent dans la brume en se disputant pour savoir qui porte le fusil.' }
+});
+// --- GASPARD : le marchand ambulant (troc)
+VISITEURS.push({
+  id: 'gaspard_marchand', opening: true, type: 'Marchand ambulant', poids: 2, jourMin: 2, heure: [10, 17], arrivee: 'sentier', sortie: 'sentier', duree: [1.5, 2.5], danger: 0,
+  annonce: 'Un homme pousse une carriole chargée de sacs, de bocaux et de casseroles qui tintent.',
+  pnj: [{ id: 'gaspard', prenom: 'Gaspard', role: 'marchand ambulant', genre: 'h', morph: 'man', tenue: 'shopkeeper', look: { parts: ['Straw_Hat', 'Mustache', 'Vest'], colors: { top: '#7a5a3a', hat: '#c8b070', hair: '#5a4a3a' }, build: 'heavy' }, props: ['Shopping_Bag'], voix: { pitch: .95, rate: 1.12 }, vitesse: 1.1,
+    ambiant: ['Pommes, bûches, champignons, je prends tout !', 'Je rachète le gibier ! Le poisson aussi !', 'Rien de volé, rien de volé. Presque rien.'] }],
+  routine: [ { qui: 'gaspard', ou: 'finSentier', clip: 'Idle', des: 0 }, { qui: 'gaspard', ou: 'table', clip: 'Vendor_Call', des: .12, dit: 'Gaspard est là ! Je rachète, je vends, j’échange ! Approchez !' }, { qui: 'gaspard', ou: 'feu', clip: 'Sit_Ground', des: .6 }, { qui: 'gaspard', ou: 'finSentier', clip: 'Wave', des: .92 } ],
+  dialogue: { gaspard: { debut: 'g0', retour: 'g0', noeuds: {
+    g0: { dit: 'Gaspard, marchand du bourg et de toutes les vallées ! Vous avez du poisson, des baies, des bûches ? Moi j’ai des rations, de l’eau, du gaz pour le réchaud. On échange ?', choix: [
+      { t: '2 poissons contre 3 rations', go: 'g1', si: { item: 'poisson:2' }, eff: { donne: { poisson: -2 }, don: { rations: 3, t: 'Gaspard empile trois rations sur votre table.' } } },
+      { t: '6 baies contre 2 bouteilles d’eau', go: 'g1', si: { item: 'baies:6' }, eff: { donne: { baies: -6 }, don: { eau: 2, t: 'Gaspard vous tend deux bouteilles.' } } },
+      { t: '3 bûches contre une cartouche de gaz', go: 'g1', si: { item: 'buches:3' }, eff: { donne: { buches: -3 }, run: () => { SAC.gaz = (SAC.gaz || 0) + 1; note('Gaspard vous donne une cartouche de gaz.', 2500); } } },
+      { t: 'Vous rachetez des objets volés ?', go: 'g2' }, { t: 'Vous connaissez André le Terrible ?', go: 'g3' }, { t: 'Rien aujourd’hui.', go: 'g4' } ] },
+    g1: { dit: 'Affaire conclue ! Vous êtes dur en affaires. Presque autant que Camilla. Elle me vend son gibier dix pièces la bête, et elle me fait peur en même temps. Autre chose ?', choix: [ { t: 'Voyons encore.', go: 'g0' }, { t: 'C’est tout.', go: 'g4' } ] },
+    g2: { dit: 'Volés ? Moi ? … Bon. Une fois. Peut-être deux. Lucien m’a fait un contrôle de facturation qui a duré une après-midi entière. Maintenant je demande toujours : « Ça vient d’où ? » Et on me répond toujours : « De ma grand-mère. » Beaucoup de grands-mères, dans la vallée.', choix: [ { t: 'Ha !', go: 'g0' } ] },
+    g3: { dit: 'André ? Il me revendait ce qu’il volait. Et puis il m’a volé moi. C’est un cercle, avec André. Si vous le voyez, ne lui achetez rien, ne lui vendez rien. Et rangez vos casseroles.', eff: { flag: 'prevenu_andre', global: true }, choix: [ { t: 'Merci.', go: 'g0' } ] },
+    g4: { dit: 'Dommage ! Je repasse dans une semaine, ou dans un mois, ou jamais. Le commerce, c’est l’aventure.', choix: [ { t: 'Au revoir, Gaspard.', fin: true } ] } } } },
+  depart: { texte: 'Gaspard repart avec sa carriole cliquetante. « Je rachète le gibier ! » résonne encore sur le sentier.' }
+});
+// --- M. BOUP ET GERMAINE : le bourgmestre en visite officielle, et la voisine aux confitures
+VISITEURS.push({
+  id: 'boup_germaine', opening: true, type: 'Visite officielle', poids: 2, jourMin: 3, heure: [10, 15], arrivee: 'sentier', sortie: 'sentier', duree: [1.5, 2.5], danger: 0,
+  annonce: 'Un monsieur en costume, écharpe tricolore de travers, descend le sentier au bras d’une vieille dame en fichu.',
+  pnj: [
+    { id: 'boup', prenom: 'M. Boup', role: 'bourgmestre du bourg', genre: 'h', morph: 'elder', tenue: 'elder', look: { parts: ['Glasses', 'Coat'], colors: { top: '#2a2a3a', hair: '#d0d0d0' }, build: 'heavy' }, props: ['Clipboard'], voix: { pitch: .82, rate: .9 }, vitesse: .9,
+      ambiant: ['Chers administrés… ah, il n’y en a qu’un. Cher administré !', 'Une fontaine, ici, ce serait magnifique. Je note.', 'Ma poignée de main est une institution.'] },
+    { id: 'germaine', prenom: 'Germaine', role: 'voisine', genre: 'f', morph: 'elder', tenue: 'elder', look: { parts: ['Headscarf'], colors: { top: '#6a4a5a', hat: '#a03a3a', hair: '#e0e0e0' }, build: 'average' }, props: ['Basket'], voix: { pitch: 1.1, rate: .88 }, vitesse: .85,
+      ambiant: ['Mes pigeons doivent se demander où je suis.', 'Pas trop cuite, la baguette. Jamais trop cuite.', 'Il y a des confitures pour tout le monde.'] } ],
+  routine: [ { qui: 'boup', ou: 'finSentier', clip: 'Idle', des: 0 }, { qui: 'germaine', ou: 'finSentier', clip: 'Idle', des: 0 },
+    { qui: 'boup', ou: 'feu', clip: 'Talk', des: .1, dit: 'Bonjour, cher administré ! M. Boup, votre bourgmestre ! Visite officielle des Cimes !' }, { qui: 'germaine', ou: 'chaise', clip: 'Sit_Chair', des: .15 },
+    { qui: 'boup', ou: 'rive', clip: 'Point', des: .45 }, { qui: 'boup', ou: 'feu', clip: 'Talk', des: .65 }, { qui: 'boup', ou: 'finSentier', clip: 'Wave', des: .9 }, { qui: 'germaine', ou: 'finSentier', clip: 'Idle', des: .9 } ],
+  dialogue: {
+    boup: { debut: 'b0', retour: 'br', noeuds: {
+      b0: { dit: () => MEH() ? 'Monsieur Badaoui ! Mon propriétaire préféré ! La petite maison bleue, à côté de chez Germaine, la cheminée tire bien ? Les voisins sont charmants ? Germaine vous a fait des confitures !' : 'M. Boup, bourgmestre du bourg, en bas de la vallée ! Je fais la tournée des Cimes : poste de garde, sentier, lac. Tout est sous ma responsabilité, même si rien n’est vraiment dans ma commune. Une poignée de main ?', choix: [
+        { t: 'Lui serrer la main.', go: 'b1' }, { t: 'Saluer de loin.', go: 'b2' }, { t: 'Vous n’avez pas un discours, par hasard ?', go: 'b3' } ] },
+      b1: { dit: 'Ah ! Une vraie poignée de main ! Ferme ! Franche ! … (trente secondes plus tard) … Pardon, je ne lâche jamais en premier. C’est une institution.', clip: 'Give_Item', eff: { conf: 1 }, choix: [ { t: 'Je… peux récupérer ma main ?', go: 'b4' } ] },
+      b2: { dit: 'De loin ? Comme Lucien. Lucien me salue de loin depuis que je lui ai serré la main pendant quarante secondes, le jour de sa nomination. Il a dû signer de la main gauche.', choix: [ { t: 'Ha !', go: 'b4' } ] },
+      b3: { dit: 'Un discours ? Quelle bonne idée ! « Chers administrés, chère administré, cher lac… » … (le discours dure longtemps : la fontaine, le fournil de Jules, la maison de santé de la Dr Lina, le pommier de Node et Tod, la sécurité, André, les pigeons…) … « …et vive les Cimes ! »', eff: { run: () => { tick && tick(.5); note('Le discours de M. Boup a duré une demi-heure. Germaine s’est endormie sur la chaise.', 4000); } }, choix: [ { t: 'Bravo !', go: 'b4', eff: { conf: 1 } } ] },
+      b4: { dit: 'Bien ! Je remonte saluer notre garde forestier. Un garçon bien, ce Tod. Il me dit que son frère va s’installer à Feral, au quartier de Blum. On perd tous nos jeunes à la ville ! Sauf ceux qui achètent des maisons. Bonne journée !', choix: [ { t: 'Au revoir, monsieur le bourgmestre.', fin: true } ] },
+      br: { dit: 'Un autre discours ?', choix: [ { t: 'Non ! Non, merci.', fin: true } ] } } },
+    germaine: { debut: 'e0', noeuds: {
+      e0: { dit: () => MEH() ? 'Mehdy, mon grand ! Tu manges assez ? Tu as maigri. Tiens, une confiture de mûres. Et je fais les poussières chez toi, ne t’inquiète pas. Ta maison est propre comme un sou neuf. Tes pigeons… mes pigeons vont bien.' : 'Bonjour, mon petit. Germaine. Je suis montée avec M. Boup parce qu’il ne sait pas marcher en montagne. Tenez, une confiture. Je fais des confitures pour tout le monde, c’est mon métier de retraitée.', eff: { don: { objet: { nom: 'Confiture de Germaine', d: 'Un pot de mûres, étiquette écrite à la main.' }, rations: 1, t: 'Germaine vous donne un pot de confiture et une tranche de pain.' } }, choix: [
+        { t: 'Merci, Germaine !', go: 'e1' }, { t: 'Vous avez des pigeons ?', go: 'e2' } ] },
+      e1: { dit: 'Avec du pain de Jules, pas trop cuit. C’est le seul vrai petit-déjeuner. Le reste, c’est de la gymnastique.', choix: [ { t: 'C’est noté.', fin: true } ] },
+      e2: { dit: 'Les pigeons de la fontaine. Je les nourris tous les jours. Un jour, un drôle de garçon m’a porté mes courses jusqu’à la maison, et il leur a donné des noms. Mehdy. Il est gentil, Mehdy. Lucien ne le croit pas, mais moi je le sais.', eff: { conf: 1 }, choix: [ { t: 'Je suis sûr qu’il est gentil.', fin: true } ] } } } },
+  depart: { texte: 'M. Boup et Germaine remontent le sentier bras dessus, bras dessous, lentement. Très lentement.' }
+});
+// --- LOUANA : soldate de la base de la commandante Shirley, en permission (nouvelles de Node)
+VISITEURS.push({
+  id: 'louana_soldate', opening: true, type: 'Soldate en permission', poids: 2, jourMin: 3, heure: [9, 16], arrivee: 'sentier', sortie: 'sentier', duree: [1.5, 2.5], danger: 0,
+  annonce: 'Une jeune femme en treillis, sac militaire sur le dos, descend le sentier d’un pas réglementaire.',
+  pnj: [{ id: 'louana', prenom: 'Louana', role: 'soldate', genre: 'f', morph: 'woman', tenue: 'guard', look: { parts: ['Hair_Ponytail', 'Cargo_Pants', 'Boots', 'Backpack'], retire: ['Cap', 'Helmet'], colors: { top: '#4a5536', bottom: '#3c4430', hair: '#1a1410', accent: '#2a2a20' }, build: 'slim' }, voix: { pitch: 1.1, rate: 1.08 }, vitesse: 1.5,
+    ambiant: ['Repos. Enfin, repos… On ne se repose jamais vraiment.', 'La commandante Shirley dirait : « Tenue correcte même en permission. »', 'Node a fait cinq sur cinq au tir, la semaine dernière. Je ne l’ai dit à personne. Je vous le dis à vous.'] }],
+  routine: [ { qui: 'louana', ou: 'finSentier', clip: 'Idle', des: 0 }, { qui: 'louana', ou: 'feu', clip: 'Salute', des: .15, dit: 'Bonjour ! Louana. En permission. Je viens voir le frère d’un copain de régiment.' }, { qui: 'louana', ou: 'rive', clip: 'Stretch_Idle', des: .45 }, { qui: 'louana', ou: 'finSentier', clip: 'Wave', des: .9 } ],
+  dialogue: { louana: { debut: 'o0', retour: 'or', noeuds: {
+    o0: { dit: () => MEH() ? 'Toi, tu es Mehdy. Ne nie pas, Node a ta photo collée dans son casier, à côté de celle de Tod et d’un pommier. Il porte ta casquette bleue sous son casque. La commandante Shirley a essayé de la confisquer. Elle a renoncé.' : 'Louana, base de la commandante Shirley. Je suis dans l’unité de Node, le frère de Tod. Il m’a demandé de passer voir si son frère mangeait bien. Je suis passée au poste. Il mange trop de pommes.', choix: [
+      { t: 'Comment va Node ?', go: 'o1' }, { t: 'Il est en mission ?', go: 'o2' }, { t: 'Il va vraiment aller à Feral ?', go: 'o3' }, { t: 'Tu connais Camilla ?', go: 'o4', si: { flag: 'camillaVue' } } ] },
+    o1: { dit: 'Node va bien. Il est toujours aussi sérieux, il ne sourit qu’une fois par jour, au courrier. Il est le plus précis au tir et le plus lent au réveil. Et il parle de son frère tout le temps. « Tod a un poste, Tod a un bureau, Tod a une radio. »', eff: { conf: 1 }, choix: [ { t: 'Ça fait plaisir.', go: 'o5' } ] },
+    o2: { dit: 'Je ne peux pas tout dire. Il part avec le blindé, le TAN 01. Il a le mal des transports, ne le répète surtout pas. C’est un secret de Louana. Il revient à la fin de la saison. Il a un plan, maintenant.', choix: [ { t: 'Un plan ?', go: 'o3' } ] },
+    o3: { dit: 'Feral. Le quartier de Blum. Un petit appartement avec des arbres devant la fenêtre. Il dit : « Pour un garde forestier, c’est une promesse. » Tod le rejoindra. Les deux frères dans la même ville, enfin.', choix: [ { t: 'C’est une belle histoire.', go: 'o5' } ] },
+    o4: { dit: 'Camilla ? Celle qui fait peur à Node avec ses histoires de dame blanche ? Il en parle encore, la nuit, sous la tente. Les autres soldats rigolent. Lui, il vérifie la fermeture trois fois.', choix: [ { t: 'Ha !', go: 'o5' } ] },
+    o5: { dit: 'Tiens, des rations militaires. Ça a le goût du carton, mais ça tient au corps. Node dit que tu en auras besoin, si tu pêches comme il le dit.', eff: { don: { rations: 2, t: 'Louana vous donne deux rations militaires.' } }, choix: [ { t: 'Dis à Node que je pense à lui.', go: 'o6' } ] },
+    o6: { dit: 'Je lui dirai. Repos, {JOUEUR}. Enfin… bonne continuation.', clip: 'Salute', choix: [ { t: 'Au revoir, Louana.', fin: true } ] },
+    or: { dit: 'Encore une question ? Vite, je dois être au poste avant la nuit, Tod m’a promis une soupe.', choix: [ { t: 'Comment va Node ?', go: 'o1' }, { t: 'Non, bonne route.', fin: true } ] } } } },
+  depart: { texte: 'Louana remonte au pas de course vers le poste de garde, où Tod l’attend avec sa soupe.' }
+});
+
 // ==== CAMP : CINÉMATIQUES (randonnée d'ouverture, réveil) ======================================
 const CINE = { plans: [], t: 0, i: 0, on: false, marcheur: null, apres: null, cam: null };
 CINE.passer = () => { if (!CINE.on) return; CINE.finir(); };
@@ -8992,7 +9498,7 @@ function boucle(dt) { const now = performance.now(); manette(); gardeAudio(now, 
   const actif = !ETAT.pause && !ETAT.dort && !UI.ouvert() && !ETAT.mort;
   if (ETAT.dort) majSommeil(dt);
   else if (actif) { if (REVEIL.on) majReveil(dt); else if (!UI.cineOn) majJoueur(dt); if (!UI.dlgOuvert) { tick(dt * HORL.VITESSE / 3600); majAction(dt); } alertesBesoins(); }
-  if (!ETAT.pause && !ETAT.mort) { VIS.maj(dt); GARDE.maj(dt); PECHE.maj(dt); majFaune(dt, PL); majFeu(dt); if (!ETAT.dort) majMains(dt, PL); if (VIS.dlg) VIS.majNom(); }
+  if (!ETAT.pause && !ETAT.mort) { VIS.maj(dt); GARDE.maj(dt); PECHE.maj(dt); SALLE.lumiere(); CAMILLA.maj(dt); majFaune(dt, PL); majFeu(dt); if (!ETAT.dort) majMains(dt, PL); if (VIS.dlg) VIS.majNom(); }
   majJauges(); majBoussole(); majInvite(); MARQ.maj(); majPerf(dt);
   objT += dt; if (objT > 2) { objT = 0; if (ETAT.drapeaux.alerte) {} } sauveT += dt; if (sauveT > 60) { sauveT = 0; sauver(); }
   consommerEntrees(); }
@@ -9024,7 +9530,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 
 </script>
 <!--
-NOTE-INTERNE (Claude) · HDF : CAMPING v0.7 · F.S.M Game House · 3 nov. 2026
+NOTE-INTERNE (Claude) · HDF : CAMPING v0.9 · F.S.M Game House · 3 nov. 2026
 À lire avant de modifier ce fichier. Ne pas relire le fichier en entier : chercher les ancres « ==== CAMP : » (grep), puis ne lire que la section utile.
 
 STRUCTURE DU FICHIER
@@ -9094,7 +9600,16 @@ v0.7 — PÊCHE IMMERSIVE (section « ==== CAMP : PÊCHE IMMERSIVE », src/85_pe
   ESPECES (6 : truite fario, arc-en-ciel, perche, gardon, omble, brochet ; taille/poids a·L³) ; poserPoisson(nd, esp, L, sombre) = modèle (corps tourné meshPoisson, nageoires, yeux, points/bandes). Canne en main reconstruite (PECHE.construireCanne : brin 6 segments plierCanne, anneaux, moulinet + manivelle) ; PECHE.pose = poses des mains (viser, lancer, combat, prise) appelée dans majMains.
   Seau : PECHE.creerSeau près du porte-canne (OBJETS id 'seau', LIEUX.seau), prises visibles dedans (majSeau), SAC.prises (≤ 20, synchronisé avec SAC.poisson : poisson cuisiné = retiré), record localStorage 'recordPeche', relâcher. PECHE.maj(dt) appelé dans la boucle après GARDE.maj.
 
-À FAIRE / IDÉES v0.8 : sauvegarde du visiteur en cours ; météo visible (pluie déjà possible via A.meteo) ; deux emplacements de sauvegarde ; branchement History Sens pour les dialogues libres.
+v0.8 — SALLE SECRÈTE (section « ==== CAMP : SALLE SOUS LE POSTE », src/86_salle.js) : trappe dans l'herbe derrière la cabane (ouest, SALLE.tx/tz), échelle → salle enterrée (sol = terrain min − 3,7 ; 8,3 × 8 m ; pierre, poutres, lampe, lit, coffre, étagères).
+  SECRET VOULU (demande du studio) : aucun marqueur, aucune note, Tod n'en parle pas, rien dans les résumés/textes du jeu. Ne pas en ajouter.
+  SALLE.ici : solJoueur/zoneJoueur/obstacles enveloppés, SALLE.borner() après obstacles, dansEau 0, OBJETS { salle:true } seuls proposés (majInvite), PNJ ignorés. Coffre : SALLE.coffre {type: n} + SALLE.objets (hors hache/canne), hors du SAC donc à l'abri des vols ; sauvé à part (clé 'salle'). Lit : SALLE.dort → réveil sur place (majSommeil enSalle). reveilTente enveloppé (sortie forcée de la salle).
+
+v0.9 — CAMILLA ET L'UNIVERS DE NODE OPENING (sections « ==== CAMP : CAMILLA » src/87_camilla.js et « VISITEURS DE L'UNIVERS DE NODE OPENING » src/88_opening_visiteurs.js).
+  Source du lore : Node_Opening_3.5 (Camilla : 23 ans, rousse, veste prune, chasseuse à l'arc, chalet tout à l'ouest, baignoire, histoires de la Dame blanche du bois, fait peur à Node ; Mehdy Badaoui 27 ans « avec un Y », ex-complice d'André le Terrible (guet, « Les keufs ! »), rangé : fournil de Jules, maison bleue achetée à M. Boup à côté de Germaine, compagnon de Camilla, a offert sa casquette bleue à Node, meilleur ami de Node ; Lucien chef de la police (moustache, Sophie conduit trop vite, Karim, Bernard) ; Dr Lina ; Roméo et Marc chasseurs de sanglier ; Gaspard marchand receleur ; base militaire de la commandante Shirley, Louana, blindé TAN 01 ; camp de Node et Tod au pommier (30 pommes, 6 coffres, tenue de garde forestier offerte à Node)). Lexique moderne (la v3.5 d'Opening est habillée en médiéval : ne pas reprendre charrette/pierre parlante).
+  CAMILLA.meh() = prénom « Med » ou « Mehdy » → arrivée (J1 ≥ 14,8 h ou J≥2 9,5-18,5 h), retrouvailles (r1…r6) → CAMILLA.installer() → tente prune LIEUX.tenteC [-7,8 ; 116,4] (PDG.lieux.tenteC), PNJ permanent (v.camilla), plan journalier faitPlan, v.cache en chasse/nuit, gibier, repas, aide, histoire h1-h5, secours à l'arc (GARDE.secours enveloppé, 1/4 j), réactions CAMILLA.SALUT aux visiteurs. Sinon visiteuse camilla_visite (drapeau global camillaVue).
+  CAMILLA.univers() : visiteurs opening:true (VIS.choisirType enveloppé, 1 visite sur 2), nouvelles du matin (VIS.reveil enveloppé), sujets de Tod tMeh/tCam/tPom/tBourg (insérés dans GARDE.dialogue.noeuds.debut), répliques de Tod AMB_TOD. Sauvegarde clé 'camilla'.
+
+À FAIRE / IDÉES v1.0 : sauvegarde du visiteur en cours ; météo visible (pluie déjà possible via A.meteo) ; deux emplacements de sauvegarde ; branchement History Sens pour les dialogues libres.
 
 -->
 </body></html>
