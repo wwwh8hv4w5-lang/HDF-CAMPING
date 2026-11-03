@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HDF : CAMPING">
 <meta name="theme-color" content="#0b0f0a">
-<title>HDF : CAMPING — v0.17</title>
+<title>HDF : CAMPING — v0.21</title>
 <style>
 :root{--lin:#f3efe6;--ambre:#f2c66d;--mousse:#8fb37a;--nuit:#0b0f0a;--verre:rgba(10,14,10,.62);--rouge:#e0665a;--bleu:#7fb6d8;
   --sans:-apple-system,BlinkMacSystemFont,"Avenir Next","Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
@@ -170,7 +170,7 @@ body.cine #cine .bande{height:11vh}
 <div id="cine"><div class="bande h"></div><div class="bande b"></div></div>
 <button id="cinePasser" hidden>Passer ›</button>
 <div id="hud" hidden>
-  <div id="titreJeu">HDF : CAMPING · v0.17</div>
+  <div id="titreJeu">HDF : CAMPING · v0.21</div>
   <div id="marqueurs"></div>
   <canvas id="boussole" width="1120" height="108"></canvas>
   <div id="heureJour"><b id="hHeure">07:00</b><span id="hJour">Jour 1 · lundi</span></div>
@@ -204,14 +204,14 @@ body.cine #cine .bande{height:11vh}
 </div>
 <div id="fin" hidden><h2 id="finTitre">Fin de partie</h2><p id="finTexte"></p><div class="stats" id="finStats"></div><div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><button class="gros" id="finRejouer">Recommencer une partie</button><button class="gros discret" id="finMenu">Menu</button></div></div>
 <div id="menu" hidden>
-  <div class="version">v0.17 · FSM-3D 2.10</div>
+  <div class="version">v0.21 · FSM-3D 2.10</div>
   <h1><small>F.S.M GAME HOUSE</small>HDF : CAMPING</h1>
   <p class="accroche">Seul au bord d'un lac de montagne. Chaque jour, quelqu'un passe. Tenez le plus longtemps possible.</p>
   <div class="ligne"><input id="prenom" maxlength="16" placeholder="Votre prénom" autocomplete="off" spellcheck="false"></div>
   <div class="ligne"><button class="gros" id="bNouvelle">Nouvelle partie</button><button class="gros discret" id="bContinuer" hidden>Continuer</button></div>
   <div class="opts"><button id="oSon" class="on">Son</button><button id="oVoix" class="on">Voix des PNJ</button><button id="oMusique" class="on">Musique</button><button id="oQualite">Qualité : auto</button><button id="oTexte">Texte : grand</button><button id="oMarq" class="on">Marqueurs de collecte</button><button id="oPerf">Performances</button></div>
   <div class="aideCtrl" id="aideCtrl">Manette PS : <b>stick gauche</b> marcher · <b>stick droit</b> regarder · <b>✕</b> action / choisir · <b>○</b> s'accroupir / partir · <b>△</b> sauter · <b>□</b> sac à dos · <b>R2</b> courir · <b>L1</b> lampe · <b>OPTIONS</b> menu.<br>Tactile : stick à gauche, glisser à droite pour regarder, boutons à droite. Clavier : ZQSD / flèches, souris (clic pour viser), Espace, C, Maj, E, Tab, F, Échap.</div>
-  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.17</div>
+  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.21</div>
 </div>
 
 <script>
@@ -4992,7 +4992,7 @@ self.JOE_DATA = { animals: 'Z2xURgIAAAD8HQQAtNIBAEpTT057ImFzc2V0Ijp7InZlcnNpb24i
    ===================================================================================== */
 'use strict';
 // ==== CAMP : OUTILS ===================================================================
-const JEU = { nom: 'HDF : CAMPING', version: '0.17', cle: 'hdfc-' };
+const JEU = { nom: 'HDF : CAMPING', version: '0.21', cle: 'hdfc-' };
 const $ = id => document.getElementById(id);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, k) => a + (b - a) * k;
@@ -6160,7 +6160,7 @@ VIS.maj = dt => { const C = VIS.courant; if (C) VIS.routine(false);
     // bruitages liés à l'activité
     if (v.sfx && ch.visible && v.etat === 'pose' && dP < 40) { v.tSfx = (v.tSfx || 0) - dt; if (v.tSfx <= 0) { v.tSfx = v.sfx === 'djembe' ? rnd(.25, .5) : v.sfx === 'guitare' ? rnd(.5, 1.4) : v.sfx === 'cerfVolant' ? rnd(3, 7) : v.sfx === 'coupFeu' ? rnd(6, 20) : v.sfx === 'plouf' ? rnd(4, 9) : rnd(2, 6); if (SON[v.sfx]) SON[v.sfx](v.sfx === 'djembe' ? Math.random() < .4 : v.sfx === 'plouf' ? .12 * clamp(1 - dP / 40, 0, 1) : undefined); } }
     // répliques spontanées
-    if (v.d.ambiant && !VIS.dlg && dP < 9 && ch.visible && !v.parti) { v.tAmb -= dt; if (v.tAmb <= 0) { v.tAmb = rnd(35, 70); if (!VOIX.parle()) VIS.dire(v, pick(v.d.ambiant)); } } }
+    if (v.d.ambiant && !VIS.dlg && dP < 9 && ch.visible && !v.parti) { v.tAmb -= dt; if (v.tAmb <= 0) { v.tAmb = rnd(35, 70); if (!VOIX.parle()) (VIS.direAmb ? VIS.direAmb(v, v.d.ambiant) : VIS.dire(v, pick(v.d.ambiant))); } } }
   // cerf-volant : flotte au vent au-dessus de la plage
   if (VIS.kite) { const k = VIS.kite, t = A.time; k.pos[0] = LIEUX.plage[0] + Math.sin(t * .5) * 3; k.pos[1] = 12 + Math.sin(t * .8) * 1.5; k.pos[2] = LIEUX.plage[1] - 9 + Math.cos(t * .37) * 2; k.rot[2] = Math.sin(t * .9) * .3; k.rot[0] = .6; }
   // nettoyage des visiteurs partis
@@ -6235,7 +6235,7 @@ VIS.faire = (liste, v) => { const C = VIS.courant; if (!liste) return; for (cons
 VIS.parler = v => { if (VIS.dlg || !v.d) return; const D = v.dialogue || (VIS.courant && VIS.courant.type.dialogue || {})[v.id]; if (!D) { VIS.dire(v, '…'); return; } VIS.dlg = { v, D, pile: [] }; UI.dlgOuvert = true; UI.dlgMode = 'dialogue'; $('dlg').hidden = false; $('dlgNom').style.display = ''; $('dlgNom').querySelector('b').textContent = v.prenom; $('dlgNom').querySelector('span').textContent = v.role; $('dlgPied').innerHTML = '<span><i class="ps x">✕</i> Choisir <kbd>Entrée</kbd></span><span><i class="ps o">○</i> Partir <kbd>Échap</kbd></span>';
   v.tAmb = 60; const deb = v.deja && D.retour ? D.retour : D.debut; v.deja = true; VIS.noeud(deb); };
 VIS.noeud = id => { const G = VIS.dlg; if (!G) return; const n = G.D.noeuds[id]; if (!n) { console.warn('[dialogue] nœud inconnu', id); fermerDlg(); return; } G.courant = n; G.id = id; if (n.eff) VIS.faire(n.eff, G.v); if (ETAT.mort) return;
-  const qui = n.qui ? ((VIS.courant && VIS.courant.pnj.find(p => p.id === n.qui)) || G.v) : G.v; const t = texte(typeof n.dit === 'function' ? n.dit() : Array.isArray(n.dit) ? pick(n.dit) : n.dit); $('dlgTexte').textContent = t; VOIX.stop(); VIS.dire(qui, t); qui.bulle = null;
+  const qui = n.qui ? ((VIS.courant && VIS.courant.pnj.find(p => p.id === n.qui)) || G.v) : G.v; const t = typeof UNIQ !== 'undefined' ? UNIQ.texte(n) : texte(typeof n.dit === 'function' ? n.dit() : Array.isArray(n.dit) ? pick(n.dit) : n.dit); $('dlgTexte').textContent = t; VOIX.stop(); VIS.dire(qui, t); qui.bulle = null;
   if (qui !== G.v) { $('dlgNom').querySelector('b').textContent = qui.prenom; $('dlgNom').querySelector('span').textContent = qui.role; } else { $('dlgNom').querySelector('b').textContent = G.v.prenom; $('dlgNom').querySelector('span').textContent = G.v.role; }
   if (n.clip && qui.ch) { qui.ch.play(n.clip); qui.clipForce = true; setTimeout(() => { qui.clipForce = false; }, 2500); }
   let ch = (n.choix || []).filter(c => VIS.cond(c.si)).map(c => Object.assign({}, c, { t: texte(c.t) })); if (!ch.length) ch = [{ t: n.finT || 'Au revoir', fin: true }]; UI.items = ch; UI.sel = 0; rendreChoix();
@@ -11121,6 +11121,1069 @@ MARQ.sites.push({ id: 'm_dust', ico: 'humvee', nom: 'Détachement FSMOPERATOR', 
 { const c0 = charger; charger = function () { const r = c0(); const s = lire('dust'); if (s) { DUST.n = s.n || 0; DUST.prochain = s.prochain || DUST.prochain; DUST.appelFait = !!s.appelFait; DUST.memo = s.memo || {}; if (s.actif) { DUST.actif = s.actif; setTimeout(() => { try { if (!DUST.props.length) DUST.construireCamp(); DUST.garer(); for (const P of DUST.props) P.nd.visible = true; DUST.creerSoldats(); if (!OBJETS.some(o => o.id === 'm_dust')) OBJETS.push({ id: 'm_dust', x: 20.3, z: 106, r: 0, nom: '', cond: () => false, f: () => {} }); } catch (e) {} }, 2500); } } return r; }; }
 { const n0 = nouvellePartie; nouvellePartie = function () { const r = n0.apply(this, arguments); DUST.nettoyer(); DUST.n = 0; DUST.memo = {}; DUST.prochain = 4 + Math.floor(Math.random() * 3); return r; }; }
 
+// ==== CAMP : BLABLA — DISCUSSIONS LIBRES CHEZ TOUS LES PNJ (v0.18) ===============================
+// Un choix « On papote un peu ? » ajouté à l'ouverture de chaque dialogue (Tod, Camilla, habitants, Alpha, soldats, visiteurs sans danger) :
+// nœud 'bla' (une réplique tirée sans répétition, puis une réaction du joueur et une suite), nœud 'bla2' (la suite) → encore / autre chose.
+// BLA.POOL : catégories (commun, tod, camilla, soldat, enfant, ancien, bourg, alpha, visiteur) + BLA.PERSO[id] (répliques propres).
+// Chaque entrée : [réplique, suite] ; {JOUEUR} = prénom du joueur. Mémoire par PNJ : BLA.vus[clé] (indices déjà entendus).
+const BLA = { vus: {} };
+BLA.POOL = {
+  commun: [
+    ['Vous avez vu ce ciel, ce matin ? On aurait dit qu’il avait été repeint pendant la nuit.', 'Ici, le ciel change trois fois avant midi. On ne s’ennuie jamais en regardant en l’air.'],
+    ['Je me demande toujours qui a eu l’idée de mettre un lac aussi beau aussi loin de tout.', 'Peut-être que c’est justement pour ça qu’il est beau. Les choses tranquilles se cachent.'],
+    ['Vous dormez bien, sous une tente ? Moi, le moindre bruit me réveille.', 'Il paraît qu’on s’habitue. Les grillons, la chouette, le vent… et après, c’est le silence qui réveille.'],
+    ['Vous êtes plutôt café ou plutôt thé, {JOUEUR} ?', 'Moi, je suis plutôt « ce qu’il y a ». Dans les Cimes, on apprend à ne pas faire le difficile.'],
+    ['Il paraît que l’hiver arrive d’un coup, ici. Un matin, tout est blanc.', 'Germaine dit que le lac gèle en une nuit. Et qu’il chante en gelant. Je veux entendre ça au moins une fois.'],
+    ['Vous croyez aux histoires de la bête du lac ?', 'Moi, je ne crois pas. Mais je ne me baigne pas quand il y a du brouillard. Juste au cas où je me tromperais.'],
+    ['Le pain de Jules, le matin, avec un peu de confiture de Germaine… ça vaut tous les restaurants de Handram.', 'Enfin, je dis ça, je ne suis jamais allé dans un restaurant de Handram. Mais j’imagine.'],
+    ['Vous savez ce qui me manque, parfois ? Le bruit d’une ville. Juste cinq minutes.', 'Cinq minutes, pas plus. Après, je reviendrais ici en courant.'],
+    ['J’ai compté les étoiles hier soir. J’ai abandonné à deux cents.', 'Le garde forestier dit qu’il y en a autant que d’aiguilles de pin dans la forêt. Il a peut-être compté, lui.'],
+    ['Vous avez remarqué ? Les oiseaux se taisent juste avant l’orage.', 'Les anciens disent qu’ils écoutent le ciel. Moi, je les écoute eux. Ça marche à tous les coups.'],
+    ['Quel est votre plat préféré, au feu de camp ?', 'Pour moi, c’est la pomme grillée. Simple, sucrée, brûlante. Il faut juste ne pas l’oublier dans les braises.'],
+    ['Je me demande à quoi ressemblait la vallée, avant que tout le monde monte ici.', 'Un bourg, une rivière, des vergers. Et de la boue l’hiver. Beaucoup de boue.'],
+    ['Si vous pouviez emporter une seule chose sur une île déserte, ce serait quoi ?', 'Moi, une bonne couverture. Les gens disent un livre, mais un livre, ça ne tient pas chaud.'],
+    ['Vous avez un endroit à vous, quelque part ? Un endroit où vous vous sentez chez vous ?', 'Moi, c’est un banc. Un vieux banc, en bas, dans la vallée. Il n’existe plus. Je m’y assois quand même, dans ma tête.'],
+    ['Le vent, ici, a une odeur. Résine, eau froide, et un peu de fumée.', 'Si on pouvait le mettre en bouteille, Gaspard le vendrait le dimanche.'],
+    ['Vous chantez, quand vous êtes seul ?', 'Moi, oui. Faux. Très faux. Les écureuils ne se plaignent pas.'],
+    ['Je déteste les moustiques. Ils m’adorent. C’est une relation compliquée.', 'Rose Fournier dit qu’il faut frotter de la menthe sur les poignets. J’ai essayé. Ils aiment la menthe.'],
+    ['Vous avez déjà vu une aurore, ici ? Le lac devient rose.', 'Il faut se lever avant tout le monde. C’est le prix. Ça vaut le coup, une fois dans sa vie.'],
+    ['C’est drôle, on ne parle jamais de la pluie quand il fait beau.', 'Et quand il pleut, on ne parle que de ça. Les gens sont comme le temps : changeants.'],
+    ['Vous lisez, le soir ? Avec une lampe, sous la tente ?', 'Mme Célestine dit qu’un livre lu sous une tente compte double. Elle invente des règles, mais j’aime bien celle-là.'],
+    ['Je me demande souvent ce que deviennent les gens qu’on croise une seule fois.', 'Ils deviennent des souvenirs. Les bons restent, les autres s’effacent. C’est pratique.'],
+    ['Le plus beau son du monde, pour moi, c’est une bûche qui craque.', 'Après, il y a le bruit de la cafetière. Mais ça, c’est une question de priorité.'],
+    ['Vous savez nager loin ? Moi, je nage comme une pierre avec des bras.', 'Une pierre courageuse, quand même. Je reste au bord. Le bord, c’est bien.'],
+    ['J’ai l’impression que les journées sont plus longues, ici.', 'Ou alors c’est qu’on fait attention à chaque heure. En ville, elles passent sans qu’on les regarde.'],
+    ['Vous avez un porte-bonheur ?', 'Moi, un caillou rouge trouvé sur la plage. Ça marche une fois sur deux. C’est déjà pas mal.'],
+    ['Les chiens du bourg ont tous une personnalité. Préfet est vexé de naissance.', 'Et Biscotte connaît chaque boîte aux lettres. Si un jour Hugo prend sa retraite, elle fera la tournée seule.'],
+    ['On dit que la Villa voit tout. Vous y croyez ?', 'Si elle voit tout, elle s’ennuie beaucoup. Il ne se passe pas grand-chose ici. Enfin… pas tous les jours.'],
+    ['Quand j’étais petit, je voulais être explorateur.', 'Et puis j’ai découvert que les explorateurs dorment par terre. Vous, vous dormez par terre. Vous êtes un explorateur.'],
+    ['Vous préférez le lever ou le coucher du soleil ?', 'Le coucher, pour moi. Le lever, ça demande trop d’efforts. Le coucher vient tout seul.'],
+    ['Si le lac avait un nom de personne, ce serait quoi, d’après vous ?', 'Moi, je dirais Hortense. Il a l’air calme et un peu sévère. Comme une Hortense.']],
+  tod: [
+    ['Tu savais que le registre du poste a deux cent douze pages ? J’en ai rempli trente-quatre. Je fais court.', 'Enfin… court. Il y a trois pages sur la fois où un écureuil est entré dans le bureau.'],
+    ['Quand j’étais petit, Node me faisait croire que les sapins se parlaient la nuit.', 'Et puis Ilona m’a dit la même chose, à Handram. Alors maintenant, je ne sais plus qui a commencé.'],
+    ['Le café du poste est mauvais. Je le sais. Tout le monde le dit. Je le refais pareil chaque matin.', 'C’est une tradition. Mon chef, à Handram, faisait le pire café de la forêt royale. Je lui rends hommage.'],
+    ['J’ai fait une liste des oiseaux du secteur sept. Il y en a quarante et un. Enfin, quarante, plus un que je n’arrive pas à identifier.', 'Il siffle comme une bouilloire. Je l’appelle « la bouilloire ». Ce n’est pas très scientifique.'],
+    ['Tu crois que je ferais un bon garde-chef, un jour ?', 'Il faudrait que j’apprenne à donner des ordres. Je n’arrive même pas à en donner à mon talkie.'],
+    ['Node m’a appris à faire du feu avec une seule allumette. Moi, je lui ai appris à ne pas en mettre partout.', 'On était une bonne équipe. Il allumait, j’éteignais.'],
+    ['Le meilleur moment de la ronde, c’est quand la lampe éclaire un renard et qu’il me regarde comme si c’était moi l’intrus.', 'Ce qui est vrai, d’ailleurs. Je suis chez lui.'],
+    ['Je collectionne les cailloux plats. Pour les ricochets. J’en ai deux cents dans une boîte.', 'Je ne les lance jamais. Ils sont trop beaux pour couler.'],
+    ['Tu as déjà essayé de dormir dans un hamac ? Moi, je suis tombé quatre fois la première nuit.', 'La cinquième, je suis resté par terre. C’était plus simple.'],
+    ['Si tu entends quelqu’un chanter faux vers six heures, c’est moi. Je chante pour réveiller la forêt.', 'Elle ne se plaint pas. Enfin, elle n’a pas de bureau des plaintes.']],
+  camilla: [
+    ['Mehdy, tu crois qu’on pourrait apprivoiser un renard ?', 'Je plaisante. … À moitié. Il y en a un qui me suit depuis trois jours. Je l’ai appelé Lucien. Il a une moustache.'],
+    ['J’ai encore rêvé du terrier. La lumière, clic, l’odeur des peaux qui sèchent.', 'Et toi tu frappais à la porte, trois coups, comme toujours. Même en rêve, tu frappes trois fois.'],
+    ['Tu sais ce que je préfère chez toi ? Tu ne sais pas te taire. Ça rassure, dans la forêt.', 'Quand tu te tais, c’est que tu dors. Ou que tu manges. Ou que tu as fait une bêtise.'],
+    ['Si on avait une maison, je voudrais une porte rouge.', 'Une porte rouge, un interrupteur, un poêle et toi qui ronfles dans un fauteuil. Le paradis.'],
+    ['Ne bouge pas. … Il y avait une araignée. Tu as bougé. Elle est partie. Bravo.', 'Je rigole, il n’y avait pas d’araignée. Mais tu as fait ta tête de Node. J’adore ta tête de Node.'],
+    ['Combien de pommes tu crois que j’ai volées à Node et Tod, en tout ?', 'Cent douze. Je les ai comptées. Comme Tod. Je suis plus organisée que j’en ai l’air.'],
+    ['Apprends-moi un mot de ta langue de la vallée, celle de ta grand-mère.', '… Encore une fois. Plus lentement. … Je le garde pour moi. C’est mon mot, maintenant.'],
+    ['Tu crois que Germaine m’aime bien ? Elle me regarde toujours comme si j’allais voler ses confitures.', 'Bon. Une fois. J’ai volé UN pot. Il y a quatre ans. Elle a la mémoire longue, Germaine.'],
+    ['L’arc, c’est de la respiration, Mehdy. Tout est dans le souffle.', 'Comme les baisers. … Ne rougis pas. Tu rougis comme Tod. C’est contagieux dans votre bande.'],
+    ['Un jour, je t’emmène voir la grande forêt aux sangliers. De loin. Très loin de Roméo et Marc.', 'Il y a une clairière, là-bas, pleine de fleurs bleues. Je n’y ai jamais emmené personne.']],
+  soldat: [
+    ['Ça fait drôle, un endroit sans sable. Je n’arrête pas de chercher des grains dans mes poches.', 'Il y en a encore. Il y en aura toujours. Le désert, ça se garde sur soi.'],
+    ['Vous savez ce qu’on mange, en mission ? Des rations qui ont toutes le même goût, sauf le dessert.', 'Le dessert a un goût de carton sucré. C’est le meilleur moment de la journée.'],
+    ['Le silence, ici, il est presque bruyant. Je l’entends.', 'À Kesh, le silence, c’est mauvais signe. Ici, c’est juste… le silence. Je réapprends.'],
+    ['Vous jouez aux cartes ? Dogue triche. Tout le monde le sait. On le laisse gagner.', 'Ça lui fait plaisir. Et puis s’il perd, il cuisine moins bien. On est des stratèges.'],
+    ['Je n’avais jamais vu de lac de montagne. On dirait un miroir posé par terre.', 'Si je reviens un jour en civil, je reviens ici. Avec une canne à pêche et rien d’autre.'],
+    ['La radio grésille même quand personne ne parle. On finit par trouver ça rassurant.', 'Un grésillement, ça veut dire que quelqu’un, quelque part, écoute. On n’est jamais tout à fait seuls.'],
+    ['Rivet nous a appris une chanson de son village. Sur un pommier. Tout le détachement la chante faux.', 'La capitaine fait semblant de ne pas la connaître. Elle la fredonne en conduisant.'],
+    ['Vous dormez avec une lampe ? Moi oui. Depuis l’erg, je ne supporte plus le noir complet.', 'Ne le dites à personne. Enfin, dites-le. Tout le monde a sa lampe, ici.'],
+    ['Le plus dur, ce n’est pas le combat. C’est l’attente. Des heures à regarder une piste vide.', 'Alors on parle. De tout, de rien. De chez soi, surtout. Le chez-soi, c’est le sujet préféré de tout le monde.'],
+    ['Je vais écrire à ma mère que j’ai vu un lac. Elle va croire que je suis en vacances.', 'Je ne la contredirai pas. Deux nuits de vacances. C’est ce que c’est.']],
+  enfant: [
+    ['Tu sais faire des ricochets ? Moi je fais trois. Le record de Timéo, c’est quatre. Il triche.', 'Il dit que le quatrième compte même s’il coule. Ça ne compte pas !'],
+    ['Pourquoi le ciel est bleu ? La maîtresse a expliqué mais j’ai pas compris.', 'Moi je crois que c’est parce que le lac se reflète dedans. Le lac est bleu, alors le ciel aussi.'],
+    ['Tu as un chien ? Moi je veux un chien. Maman dit qu’on verra. « On verra », ça veut dire non.', 'Sauf chez Shirley, d’après Mathis. Chez elle, « on verra » ça veut dire presque oui.'],
+    ['J’ai trouvé une plume énorme ! Je crois que c’est un aigle. Ou un pigeon géant.', 'Germaine dit que c’est un pigeon. Mais Germaine dit que tout est un pigeon.'],
+    ['Quand je serai grand, je serai garde forestier, ou pilote d’hélicoptère, ou boulanger.', 'Ou les trois. Je ferai du pain en volant au-dessus de la forêt.'],
+    ['Tu dors vraiment tout seul au lac ? Même quand il y a de l’orage ?', 'Moi je me cache sous la couette. Avec ma lampe. Et Kiwi, le chat de Lou, quand il veut bien.']],
+  ancien: [
+    ['De mon temps, on montait aux Cimes à pied, avec une mule. Et on ne se plaignait pas.', 'Enfin, la mule se plaignait. Mais nous, non.'],
+    ['Vous savez, à mon âge, on compte les hivers. J’en ai compté soixante-dix-huit.', 'Le meilleur, c’était celui où le lac a gelé si fort qu’on a fait un bal dessus. Avec un accordéon.'],
+    ['Les jeunes ne savent plus attendre. Tout doit aller vite. Moi, j’attends le printemps depuis septembre.', 'Il finit toujours par venir. C’est la seule promesse qu’on ne m’ait jamais trahie.'],
+    ['Je me souviens du jour où on a planté le verger d’en bas. Il pleuvait. On riait.', 'Les pommiers ont poussé. Les gens qui riaient sont partis, un par un. Les pommiers, eux, sont restés.'],
+    ['Mon dos me dit qu’il va pleuvoir demain. Mon dos ne se trompe jamais.', 'Enfin… une fois. Mais ce jour-là, il a neigé. Alors il avait presque raison.']],
+  bourg: [
+    ['Le bourg neuf, c’est bien, mais tout sent la peinture. J’attends que ça sente le pain et le feu de bois.', 'Jules y travaille. Le fournil commence à donner une odeur à la place. Ça devient chez nous.'],
+    ['La fontaine n’est toujours pas inaugurée. M. Boup attend le bon jour. Ça fait trois mois.', 'Il dit que le discours doit être parfait. On lui a dit qu’il était parfait. Il l’a rallongé.'],
+    ['Le marché du dimanche, c’est le seul jour où tout le monde se croise. Même ceux qui ne s’aiment pas.', 'Surtout ceux qui ne s’aiment pas, en fait. Ils viennent vérifier que l’autre est toujours là.'],
+    ['Vous avez goûté la potée de Jouanne ? Elle met un ingrédient secret. Je pense que c’est du lard.', 'Germaine pense que c’est de l’amour. Firmin m’a dit que c’était du lard. Germaine a tort.'],
+    ['Le soir, quand toutes les fenêtres s’allument, le bourg ressemble à une maquette.', 'On a l’impression que quelqu’un nous regarde d’en haut. Peut-être la Villa. Peut-être les étoiles.'],
+    ['Hugo le facteur sait tout sur tout le monde. Il ne dit rien. C’est un coffre-fort avec une casquette.', 'Biscotte, sa chienne, en sait encore plus. Elle, au moins, elle remue la queue quand c’est une bonne nouvelle.'],
+    ['Les enfants de l’école font des dessins de vous, vous savez. « Le campeur du lac ».', 'Vous avez toujours une tente sur la tête et un poisson dans la main. C’est ressemblant ?']],
+  alpha: [
+    ['Le FSM SHOPYMARKET a reçu des mangues. Des mangues ! Dans les Cimes ! Je ne sais pas d’où elles viennent.', 'Le shérif Nougat a ouvert une enquête. Il a conclu : « elles viennent d’un camion ». Affaire classée.'],
+    ['Le parking du FSM est plus grand que le bourg entier. Je ne sais pas pour qui ils l’ont fait.', 'La Villa voit grand. Peut-être qu’elle attend beaucoup de monde. Ça me donne des frissons.'],
+    ['Les détenus du shérif parlent tellement qu’on les entend depuis la caisse.', 'L’un d’eux récite des poèmes. Mal. Le shérif dit que c’est une punition pour lui aussi.'],
+    ['Les caddies du FSM ont une roue qui grince. Toujours la même. Sur tous les caddies.', 'C’est un mystère que même Yasmine du Journal n’a pas résolu.']],
+  visiteur: [
+    ['Je ne pensais pas trouver quelqu’un au bord de ce lac. Vous êtes là depuis longtemps ?', 'Ça se voit, vous avez l’air d’être d’ici. Le lac vous a adopté, on dirait.'],
+    ['La montée était plus dure que prévu. Mes mollets me détestent.', 'Mais la vue valait chaque pas. Enfin, je le dirai quand mes mollets m’auront pardonné.'],
+    ['Vous connaissez un bon coin pour planter la tente, plus loin ?', 'Je ne veux pas déranger. Enfin, juste un peu. Le temps d’un café.'],
+    ['Il y a du réseau, ici ? … Non ? Tant mieux, en fait.', 'Je vais peut-être enfin finir mon livre. Ou le commencer, plutôt.']] };
+BLA.PERSO = {
+  jules: [['Vous savez pourquoi on fait des grignes sur le pain ? Pour qu’il respire en cuisant.', 'Le pain, c’est vivant. Il faut le laisser respirer. Comme les gens.'], ['Le levain, je l’ai depuis vingt ans. Je l’appelle Gaston.', 'Gaston a remonté la vallée dans un bocal sur mes genoux. C’est le plus vieux du bourg, avec Germaine.']],
+  germaine: [['Les pigeons viendront, vous verrez. Ils viennent toujours. Il faut juste leur laisser des miettes.', 'Je laisse des miettes tous les matins sur le bord de la fontaine. Pour l’instant, ce sont les moineaux qui en profitent.'], ['Vous voulez une recette de confiture ? Mûres, sucre, patience. Surtout la patience.', 'Et il ne faut jamais remuer avec une cuillère en métal. Ça, c’est ma mère qui le disait.']],
+  boup: [['J’ai ajouté un paragraphe au discours de la fontaine. Sur l’eau. L’eau, c’est la vie, vous savez.', 'C’est le vingt-troisième paragraphe. Paulette dit qu’il ressemble au septième. Paulette a l’œil.'], ['Un bourgmestre, c’est un homme qui serre des mains. Je serre des mains depuis douze ans.', 'Germaine dit que je les serre trop longtemps. Je dis que c’est de la chaleur humaine.']],
+  marius: [['Le gardon, on le sous-estime. C’est le poisson le plus honnête du lac.', 'Il mord, il se bat un peu, il ne fait pas de manières. Le brochet, lui, c’est un acteur.'], ['Bouchon a mangé un asticot hier. Il a fait la tête toute la journée.', 'Il pensait que c’était une friandise. On apprend à tout âge.']],
+  jouanne: [['La table du fond, c’est celle de M. Boup. Personne ne s’y assoit. Même quand il n’est pas là.', 'Une fois, un randonneur s’y est assis. Le café entier l’a regardé. Il est parti sans finir sa soupe.'], ['Mon secret pour la potée ? Le temps. Six heures à feu doux.', 'Et une feuille de laurier. Juste une. Deux, c’est trop. Une, c’est l’amour.']],
+  lina: [['La moitié de la médecine, c’est d’écouter. L’autre moitié, c’est le désinfectant.', 'Claire dit que c’est soixante-quarante en faveur du désinfectant. On n’est pas d’accord.']],
+  agathe: [['Lou m’a demandé si les étoiles avaient des prénoms. J’ai dit oui. Elle veut tous les apprendre.', 'J’ai acheté un livre sur les constellations chez Mme Célestine. On commence par la Grande Ourse.']],
+  celestine: [['Balzac a dormi sur un dictionnaire, cette nuit. Ce matin, il connaissait tous les mots en « R ».', 'Enfin, il ronronnait. C’est un mot en « R ». Je l’interprète comme je veux.']],
+  hugo: [['Il y a une lettre qui arrive chaque mois pour quelqu’un qui n’existe pas dans le registre. « Monsieur L. »', 'Je la pose sur le comptoir de la mairie. Elle disparaît toujours dans la nuit. Je ne pose pas de questions.']],
+  mathis: [['À la base de Shirley, on se levait à cinq heures. Je n’arrive pas à perdre l’habitude.', 'Le matin, je cours jusqu’au sentier sud et retour. Sergent court avec moi. Il est meilleur que moi.']],
+  theo: [['J’ai écrit un nouveau couplet à la ballade du campeur du lac. Ça rime avec « glacière ».', '« Il range sa glacière, comme le dit le garde forestier »… Bon. Ça ne rime pas vraiment.']],
+  ines: [['Au Hameau, il y avait des murs partout. Ici, je compte les arbres à la place.', 'J’en suis à mille deux cents. Je recommence tous les jours, je me trompe toujours.']],
+  rapace: [['Vous savez ce qu’on fait, en premier, quand on arrive quelque part ? On cherche les sorties.', 'Ici, la sortie, c’est le sentier. Et le lac, si on sait nager. Je trouve ça reposant, un endroit avec une seule sortie.']],
+  dogue: [['Ce soir, popote spéciale : ration améliorée aux herbes du coin. Enfin, aux herbes que Camilla m’a dit de ne pas cueillir.', 'Je les ai cueillies quand même. Si on est malades demain, c’est ma faute.']] };
+BLA.REACT = ['Ah bon ?', 'C’est vrai ?', 'Et alors ?', 'Raconte…', 'Ha ! Et ensuite ?', 'Je vois.', 'Sérieusement ?', 'Moi aussi, un peu.'];
+BLA.cats = v => { if (!v) return ['commun']; const C = v.vie, id = v.dust || (C && (C.id)) || v.id || '';
+  if (v.garde) return ['tod', 'commun'];
+  if (v.id === 'camilla' || (typeof CAMILLA !== 'undefined' && CAMILLA.v === v)) return ['camilla'];
+  if (v.dust) return ['soldat', 'commun'];
+  if (C) return [C.enfant ? 'enfant' : C.morph === 'elder' ? 'ancien' : 'bourg', 'bourg', 'commun'];
+  if (v.client || v.staff || v.lienId) return ['alpha', 'commun'];
+  return ['visiteur', 'commun']; };
+BLA.cle = v => v.dust || (v.vie && v.vie.id) || v.id || v.prenom || '?';
+BLA.tirer = v => { const k = BLA.cle(v), L = []; for (const e of (BLA.PERSO[k] || [])) L.push(e); for (const c of BLA.cats(v)) for (const e of (BLA.POOL[c] || [])) L.push(e);
+  const vus = BLA.vus[k] || (BLA.vus[k] = []); let libres = L.map((_, i) => i).filter(i => !vus.includes(i)); if (!libres.length) { vus.length = 0; libres = L.map((_, i) => i); }
+  const perso = libres.filter(i => i < (BLA.PERSO[k] || []).length), i = perso.length && Math.random() < .5 ? perso[0] : pick(libres); vus.push(i); return L[i]; };
+BLA.injecter = (D, v) => { if (!D || !D.noeuds || D._bla) return; const N = D.noeuds, deb = N[D.debut || 'debut'] || N.d; if (!deb || !Array.isArray(deb.choix)) return; D._bla = true;
+  let cur = null; const ret = D.debut || (N.debut ? 'debut' : 'd');
+  N.bla = { dit: () => { const vv = (VIS.dlg && VIS.dlg.v) || v; cur = BLA.tirer(vv); N.bla.choix[0].t = pick(BLA.REACT); return cur[0]; }, choix: [{ t: 'Ah bon ?', go: 'bla2' }, { t: 'On parle d’autre chose.', go: ret }] };
+  N.bla2 = { dit: () => cur ? cur[1] : '…', choix: [{ t: 'Encore un peu de blabla ?', go: 'bla' }, { t: 'Revenons à nos moutons.', go: ret }] };
+  const iFin = deb.choix.findIndex(c => c.fin); deb.choix.splice(iFin < 0 ? deb.choix.length : iFin, 0, { t: 'On papote un peu ?', go: 'bla', ico: 'parler' }); };
+// (la réaction du joueur est tirée dans dit : les « t » des choix doivent rester du texte)
+{ const p0 = VIS.parler; VIS.parler = v => { try { if (v && v.d && !VIS.dlg) { const D = v.dialogue || (VIS.courant && VIS.courant.type.dialogue || {})[v.id]; const dang = VIS.courant && VIS.courant.pnj && VIS.courant.pnj.includes(v) && (VIS.courant.type.danger || 0) >= 2; if (D && !dang) BLA.injecter(D, v); } } catch (e) {} return p0(v); }; }
+
+// ==== CAMP : BLABLA — SUJETS (1/2) (v0.19) =======================================================
+// BLA.SUJETS : grandes listes par sujet. Chaque sujet : pour (publics : tous, enfant, ancien, bourg, soldat, tod, camilla, visiteur),
+// r (répliques d'ouverture, toutes différentes) et s (suites qui vont avec n'importe quelle réplique du sujet). Une conversation = r + s.
+BLA.SUJETS = [
+ { id: 'lac', pour: ['tous'], r: [
+  'Le lac est d’un vert presque noir, ce matin. On dirait qu’il réfléchit.', 'Vous avez remarqué que le lac ne fait jamais le même bruit deux jours de suite ?', 'Ce matin, il y avait une brume si fine sur le lac qu’on aurait dit du lait.',
+  'Il paraît que le lac fait quarante mètres de profondeur au milieu. Personne n’est allé vérifier.', 'J’ai vu un poisson sauter trois fois au même endroit. Il devait avoir quelque chose à dire.',
+  'Quand le vent tombe, le lac devient un miroir. On voit les montagnes à l’envers.', 'L’eau est si claire au bord qu’on peut compter les cailloux.', 'Le soir, le lac garde la chaleur du jour. On le sent quand on y trempe les mains.',
+  'Je me suis assis au bout du ponton pendant une heure. Je n’ai pensé à rien. C’était merveilleux.', 'Les reflets du soleil sur l’eau me font cligner des yeux comme un vieux chat.',
+  'On dit que le lac était un glacier, il y a très longtemps. Il a fondu de chagrin.', 'L’autre jour, une feuille a traversé tout le lac, portée par le vent. Je l’ai suivie des yeux jusqu’au bout.',
+  'Il y a un endroit, près des herbiers, où l’eau est plus chaude. Les perches le savent.', 'Le lac sent la pierre mouillée et la menthe sauvage. Vous trouvez aussi ?',
+  'Quand il pleut sur le lac, chaque goutte fait un petit cercle. Des milliers de petits cercles.', 'La nuit, la lune fait une route d’argent sur l’eau. On a envie de marcher dessus.',
+  'Je lance toujours un caillou dans le lac en arrivant. Pour dire bonjour.', 'Le lac a gelé une fois en plein mois d’octobre, paraît-il. Une seule nuit, puis plus jamais.',
+  'Les canards du lac ont un chef. Le plus gros. Il passe en premier, toujours.', 'Si on écoute bien, au petit matin, on entend le lac respirer.'],
+  s: ['Ce lac, il a sa propre humeur. Il faut apprendre à la lire.', 'On pourrait le regarder toute une vie sans jamais le voir pareil.', 'C’est pour ça que les gens montent jusqu’ici. Pas pour la vue : pour le lac.',
+   'Le garde forestier dit que le lac est le vrai propriétaire de la vallée. On n’est que des locataires.', 'Je vous envie un peu, de dormir à côté.', 'Il y a des endroits qui vous changent sans rien dire. Le lac en fait partie.'] },
+ { id: 'meteo', pour: ['tous'], r: [
+  'Le vent tourne à l’ouest. Ça veut dire de la pluie avant ce soir.', 'Ce matin, il faisait si froid que mon souffle faisait des nuages.', 'Regardez ces nuages en forme de poisson. Le temps va changer.',
+  'Il a plu toute la nuit et la forêt sent le champignon.', 'Le soleil tape fort pour la saison. On dirait l’été qui a oublié de partir.', 'Le brouillard monte du lac comme une marée.',
+  'Il y a eu un orage au loin hier, derrière les crêtes. On voyait les éclairs sans entendre le tonnerre.', 'Le ciel est si bleu qu’on dirait qu’il a été lavé.',
+  'Ma grand-mère disait : « ciel pommelé, femme fardée, ne sont pas de longue durée ».', 'La rosée de ce matin brillait sur toutes les toiles d’araignée.', 'Le thermomètre de la mairie a gelé. Le thermomètre lui-même.',
+  'Il paraît qu’il va neiger sur les sommets cette semaine.', 'Quand les hirondelles volent bas, la pluie arrive. Elles volent très bas, aujourd’hui.', 'Le vent du nord est revenu. Il pique les oreilles.',
+  'Une journée grise, c’est une journée pour les histoires et le café.', 'Il a fait si chaud hier que même les lézards cherchaient l’ombre.', 'Le ciel était rouge ce matin. Les marins disent que c’est mauvais signe. On n’est pas marins.',
+  'Il y a un arc-en-ciel au-dessus de la forêt. Double, même.', 'La grêle a fait des trous dans les feuilles du potager de Rose.', 'L’air sent la neige. Je ne sais pas comment, mais il sent la neige.'],
+  s: ['Ici, la météo, c’est la seule conversation que tout le monde comprend.', 'On ne peut rien y faire, alors on en parle. C’est déjà ça.', 'Le garde forestier note la météo dans son registre. Tous les jours. Même quand il ne se passe rien.',
+   'Il faut toujours prévoir une couche de plus. C’est la règle des Cimes.', 'Les vieux du bourg ne se trompent jamais sur le temps. Leurs genoux sont des baromètres.', 'De toute façon, on sera bien au chaud ce soir. Enfin… j’espère pour vous.'] },
+ { id: 'manger', pour: ['tous'], r: [
+  'J’ai une envie de soupe à l’oignon depuis ce matin. Ça ne me lâche pas.', 'La meilleure tartine du monde : pain grillé, beurre, une pincée de sel. C’est tout.', 'Vous avez déjà mangé des myrtilles chaudes, cueillies au soleil ?',
+  'Jouanne m’a fait goûter une tarte aux noix. J’en rêve encore.', 'Rien ne vaut un œuf cuit dans la braise. Il faut juste ne pas l’oublier.', 'Les châtaignes, à l’automne, c’est la meilleure saison.',
+  'Je mange toujours trop quand il fait froid. C’est le corps qui fait des réserves.', 'Le fromage de la vallée sentait si fort qu’on le gardait dehors.', 'Mon plat préféré, c’est le gratin. Le bord, surtout. Le bord croustillant.',
+  'J’ai essayé de faire du pain une fois. Il est sorti comme une brique.', 'Le miel des Cimes a un goût de fleurs et de résine.', 'Une pomme croquée sous un pommier, ça n’a pas le même goût qu’une pomme du FSM.',
+  'Le café de Jouanne réveillerait un mort. Je l’ai vu faire.', 'Les crêpes du dimanche, chez ma mère, c’était sacré.', 'Une truite grillée avec un peu de citron, et je suis heureux pour la journée.',
+  'Germaine met du thym dans tout. Même dans le thé.', 'Je ne supporte pas les champignons. Leur texture. C’est une question de principe.', 'Un bol de chocolat chaud après la pluie. Le bonheur tient dans un bol.',
+  'Au bourg, on ne dit pas « bonjour », on dit « tu as mangé ? ».', 'Le meilleur repas, c’est celui qu’on partage. Même s’il est raté.'],
+  s: ['Manger, c’est la moitié de la vie. L’autre moitié, c’est en parler.', 'Rien qu’à en parler, j’ai faim.', 'Dans les Cimes, on mange pour avoir chaud. Le goût, c’est un bonus.',
+   'Jules dit que les gens heureux ont toujours une miette sur la chemise.', 'Il faudra qu’on mange ensemble, un jour. Au café, ou autour d’un feu.', 'Ma mère disait : « Ventre plein, cœur content. » Elle avait raison.'] },
+ { id: 'animaux', pour: ['tous'], r: [
+  'J’ai vu un écureuil voler une noisette à un autre écureuil. Une vraie bagarre.', 'Il y a un héron qui pêche au bord du lac tous les matins. Il est plus patient que Marius.', 'Un cerf est passé près du sentier hier soir. Il m’a regardé comme si j’étais en retard.',
+  'Les grenouilles du lac chantent comme une chorale désaccordée.', 'Une chouette hulule toutes les nuits derrière le poste de garde. Tod l’appelle « la vigie ».', 'J’ai trouvé des empreintes de blaireau près de la rivière.',
+  'Les mésanges viennent manger dans la main, si on est patient.', 'Un renard m’a volé un gant. Un seul. Il doit avoir une main froide.', 'Les fourmis ont construit une ville entière sous le vieux sapin.',
+  'Il y a un lièvre qui traverse le sentier tous les jours à la même heure. Il a un rendez-vous.', 'Les canards se sont disputé un morceau de pain pendant dix minutes.', 'J’ai vu un aigle tourner au-dessus des crêtes. Il ne battait même pas des ailes.',
+  'Les sangliers ont retourné le pré du bas. On dirait qu’on a labouré.', 'Une libellule bleue s’est posée sur mon genou. Je n’ai plus osé bouger.', 'Les chats du bourg se réunissent la nuit sur le toit de la mairie.',
+  'Il paraît qu’il y a des loups de l’autre côté des montagnes. Jamais ici.', 'Les vaches de la vallée avaient toutes un prénom. La mienne s’appelait Fleurette.', 'Un pic-vert frappe le même arbre depuis trois jours. Il est têtu.',
+  'J’ai vu une biche avec son faon dans la clairière. Ils ont disparu en une seconde.', 'Les martinets crient en volant le soir. On dirait qu’ils s’amusent.'],
+  s: ['Les bêtes, ici, sont chez elles. On est les invités.', 'Il suffit de rester assis sans bouger, et la forêt vient à vous.', 'Tod les connaît toutes. Il leur donne des noms, mais il ne le dit pas.',
+   'Les animaux sentent tout. Les gens gentils, les gens pressés, la pluie qui arrive.', 'Si on était plus silencieux, on en verrait dix fois plus.', 'Chaque fois que j’en vois un, j’ai l’impression d’avoir de la chance.'] },
+ { id: 'souvenirs', pour: ['tous'], r: [
+  'Quand j’étais enfant, on construisait des cabanes dans les arbres. Elles tombaient toujours.', 'Je me souviens de l’odeur de l’école : craie, cire et pommes.', 'Mon père sifflait en travaillant. Je n’ai jamais su siffler comme lui.',
+  'Ma première bicyclette était rouge et trop grande. Je suis tombé quinze fois.', 'On faisait des bonshommes de neige avec des cailloux pour les yeux.', 'Ma grand-mère racontait des histoires si longues qu’on s’endormait avant la fin.',
+  'Le premier été où j’ai vu la mer, j’ai cru que c’était un lac sans fin.', 'Je gardais des trésors dans une boîte en fer : une plume, une bille, une clé qui n’ouvrait rien.', 'On attrapait des têtards dans la mare et on les relâchait le soir.',
+  'Mon premier livre, je l’ai lu sous les couvertures, avec une lampe de poche.', 'Je me souviens du bal du village, des lampions, de la musique jusqu’à minuit.', 'Mon grand frère me portait sur ses épaules pour voir les feux d’artifice.',
+  'On allait cueillir des cerises chez le voisin. Il faisait semblant de ne pas nous voir.', 'Le jour où il a tellement neigé que l’école a fermé, c’était le plus beau jour de ma vie.', 'Je me souviens de la première fois que j’ai dormi à la belle étoile. J’ai eu peur, puis j’ai adoré.',
+  'Quand j’étais petit, je croyais que la lune me suivait en voiture.', 'Ma mère chantait en étendant le linge. Je l’entends encore.', 'Le marché du samedi, en bas, sentait les fraises et le poisson. Mélange étrange.',
+  'On jouait à cache-cache dans les vignes. On se perdait toujours.', 'Mon premier chagrin d’amour, j’avais huit ans. Elle préférait le fils du boulanger.'],
+  s: ['C’est drôle comme les vieux souvenirs reviennent ici. Le lac les remonte à la surface.', 'On ne se rend jamais compte qu’on est heureux sur le moment. C’est après.', 'Je raconterais bien ça à mes petits-enfants. Si j’en ai un jour.',
+   'Parfois, je donnerais tout pour une seule journée de ce temps-là.', 'Et vous, {JOUEUR}, c’est quoi, votre plus beau souvenir ?', 'Les souvenirs, c’est comme les pommes de la réserve : on en garde toujours une pour plus tard.'] },
+ { id: 'reves', pour: ['tous'], r: [
+  'Si je gagnais une fortune, j’achèterais une petite maison avec un poêle et un chat.', 'Un jour, je ferai le tour du monde. En commençant par la vallée d’à côté.', 'J’aimerais apprendre à jouer du violon. Juste pour une chanson.',
+  'Mon rêve, ce serait d’ouvrir une librairie-café. Avec des fauteuils qui grincent.', 'Je voudrais voir la mer une fois en hiver. Grise et furieuse.', 'J’aimerais savoir le nom de toutes les étoiles.',
+  'Si je pouvais voler, je survolerais les Cimes à l’aube.', 'Un jour, j’écrirai un livre. Sur le bourg. Avec tous ses secrets.', 'Je rêve d’un été entier sans réveil.',
+  'J’aimerais avoir un potager si grand qu’on s’y perd.', 'Mon rêve, c’est de voir une aurore boréale. Il paraît qu’on en voit au Hameau, certains hivers.', 'Je voudrais retrouver mon meilleur ami d’enfance. Il est parti un jour, sans adresse.',
+  'J’aimerais savoir cuisiner comme Jouanne. Rien qu’une fois, une potée parfaite.', 'Un jour, je dormirai dans une cabane en haut d’un arbre.', 'Je rêve d’apprendre à nager pour de vrai. Pas « à la pierre ».',
+  'Si j’avais du courage, je monterais jusqu’au sommet le plus haut.', 'J’aimerais être de ceux qui n’ont jamais peur.', 'Mon rêve le plus simple : un matin sans aucun souci.',
+  'Je voudrais un chien qui m’attend sur le pas de la porte.', 'J’aimerais vivre assez longtemps pour voir les pommiers que j’ai plantés donner des fruits.'],
+  s: ['Les rêves, il faut les dire à voix haute. Sinon ils rouillent.', 'Ce n’est pas si fou, quand on y pense. Rien n’est si fou, ici.', 'Mme Célestine dit qu’un rêve noté est un rêve à moitié réalisé.',
+   'Et vous, {JOUEUR} ? Vous rêvez de quoi, au bord de votre lac ?', 'Un jour, peut-être. On a le temps. Enfin, on croit.', 'C’est bête, mais rien que d’en parler, ça me rend heureux.'] },
+ { id: 'bourgvie', pour: ['bourg', 'ancien', 'enfant', 'tod', 'camilla'], r: [
+  'Paulette a rangé les archives par couleur. M. Boup ne retrouve plus rien.', 'Il y a un concours de citrouilles à la mairie le mois prochain. Rose est favorite.', 'Firmin a cassé trois tasses ce matin au café. Un record.',
+  'Le facteur a glissé sur une flaque devant la librairie. Biscotte a ramassé les lettres.', 'Les enfants ont peint la fontaine en bleu. Personne ne sait qui leur a donné la peinture.', 'Victor raconte la même histoire de pêche depuis trente ans. Le poisson grossit à chaque fois.',
+  'Odette a perdu ses lunettes. Elles étaient sur sa tête.', 'Mlle Agathe organise une chorale. Il y a déjà quatre volontaires, dont deux chiens.', 'Jules a fait un pain en forme de cœur pour la fête de Germaine.',
+  'Le basset de M. Boup a mangé le chapeau du shérif Nougat.', 'Paulo Ribeiro repeint sa porte pour la troisième fois. Il n’aime aucune couleur.', 'La librairie organise une lecture à voix haute le jeudi. Balzac s’endort toujours au premier chapitre.',
+  'Quelqu’un a laissé un bouquet anonyme devant la maison bleue.', 'Le Journal du Bourg a fait une faute dans le titre. « Le bourg en fête » est devenu « Le bourg en bête ».', 'Marius a accroché un brochet empaillé au-dessus de son comptoir. Il fait peur aux enfants.',
+  'Les Lenoir ont planté un pommier devant leur maison. Ça fait jaser.', 'Hugo a trouvé une lettre adressée « au lac ». Il ne sait pas quoi en faire.', 'La Dr Lina a soigné le chat de Mme Célestine. Il lui en veut toujours.',
+  'Sonia du FSM a gagné à la tombola de la mairie. Un jambon entier.', 'Théo joue de la guitare sur la place le soir. Les volets se ferment un par un.'],
+  s: ['Le bourg est petit, mais il s’y passe plus de choses qu’en ville.', 'Ici, tout le monde sait tout sur tout le monde. Et personne ne dit rien. Enfin, presque.', 'Venez au café, un soir : vous aurez toutes les nouvelles en une heure.',
+   'C’est ça, la vie de bourg. On rit, on râle, et on recommence le lendemain.', 'Yasmine en fera sûrement un article. Elle fait des articles avec tout.', 'Ne le répétez pas. Enfin, si, répétez-le. Tout le monde le sait déjà.'] },
+ { id: 'opening', pour: ['bourg', 'ancien', 'tod', 'camilla', 'enfant'], r: [
+  'En bas, au vieux village, il y avait une cloche d’alarme. Elle sonnait chaque fois qu’André passait.', 'Lucien a toujours sa vieille voiture de police. Elle démarre une fois sur deux.', 'On raconte que la Dame blanche du bois venait voler des pommes au verger.',
+  'Gaspard faisait sa tournée avec une charrette tirée par un âne. L’âne était plus intelligent que tout le monde.', 'Les chasseurs Roméo et Marc avaient une cabane dans la grande forêt. Elle sentait le sanglier.', 'La maison de guérison de la Dr Lina, en bas, avait des volets bleus.',
+  'Le manoir de M. Boup avait un coffre si lourd qu’il a fallu six hommes pour le monter ici.', 'La pierre parlante du commissariat sonnait la nuit. Lucien sursautait à chaque fois.', 'Il paraît qu’André le Terrible a rendu une poule qu’il avait volée. Avec des excuses.',
+  'Le soir, en bas, on voyait les lampes torches de la patrouille de Lucien entre les arbres.', 'La forteresse de la maréchale Shirley, on l’apercevait par temps clair, tout à l’est.', 'Node et Tod avaient un pommier et une réserve de trente pommes. Pas une de plus.',
+  'Le terrier de Camilla, tout à l’ouest, avait toujours une lumière allumée la nuit.', 'Lucien et Sophie ont fait la course en voiture une fois. Sophie a gagné. Lucien dit le contraire.', 'Le campement d’André était près de la rivière. Personne n’y allait.',
+  'Le fournil de Jules a été cambriolé une nuit. L’alarme a réveillé tout le monde sauf Lucien.', 'Quand Mehdy Badaoui taguait une vitrine, il signait toujours avec un Y.', 'Louana venait de la base en permission et elle gagnait tous les concours de lancer de pommes.',
+  'Les hélicoptères de la base passaient au-dessus du village. Les enfants faisaient de grands signes.', 'Il y avait un puits au milieu du vieux village. On disait qu’il exauçait les vœux. Il ne les exauçait pas.'],
+  s: ['Le vieux village me manque, parfois. Même ses bêtises.', 'Tout ça paraît si loin, et pourtant c’était il y a deux ans.', 'Ici, c’est plus calme. Trop calme, disent certains.',
+   'Demandez à Tod, il vous racontera mieux que moi. Il était là pour tout.', 'C’était une drôle d’époque. Je ne sais pas si on était plus heureux, mais on riait plus fort.', 'Germaine dit qu’on emporte toujours son village avec soi. Elle a raison.'] },
+ { id: 'travail', pour: ['bourg', 'ancien', 'visiteur', 'soldat', 'tod'], r: [
+  'Le travail, c’est comme le bois : on n’en a jamais trop avant l’hiver.', 'J’ai commencé à travailler à quatorze ans. Je portais des sacs de farine.', 'Ce que je préfère, dans mon métier, c’est la fin de la journée.',
+  'Mon patron disait : « Bien fait vaut mieux que vite fait. » Il était très lent.', 'Je n’ai jamais aimé les lundis. Même ici, les lundis ont une tête de lundi.', 'J’ai changé de métier quatre fois. Le cinquième sera le bon.',
+  'Travailler avec ses mains, ça vide la tête. C’est le meilleur des repos.', 'J’ai passé la matinée à réparer une clôture. Elle tient. Pour l’instant.', 'Le plus dur, c’est de commencer. Après, ça roule tout seul.',
+  'Il y a des jours où l’on se demande à quoi on sert. Et puis quelqu’un dit merci.', 'J’ai appris un métier en regardant faire. Personne ne m’a jamais rien expliqué.', 'Un outil bien entretenu dure toute une vie. Comme une amitié.',
+  'Je me lève tôt, mais je ne suis réveillé qu’à dix heures.', 'La mairie paie en écus. Ça fait drôle d’être payé avec un nom pareil.', 'Je rêve parfois de mon travail. Je travaille la nuit, en plus du jour.',
+  'Mon grand-père était charpentier. Il disait que chaque poutre a un caractère.', 'Les vacances, je ne sais plus ce que c’est. Enfin, je crois que c’est ce que vous faites.', 'Ce que j’aime, c’est quand le travail est fini et qu’on peut le regarder.',
+  'J’ai une ampoule à la main depuis trois jours. C’est ma médaille.', 'On travaille dur dans les Cimes, mais on ne travaille jamais seul.'],
+  s: ['Il faut bien gagner son pain. Celui de Jules, de préférence.', 'Le soir, on est fatigué, mais c’est une bonne fatigue.', 'Vous, au moins, votre travail, c’est de survivre au bord d’un lac. C’est un métier noble.',
+   'Un jour, je prendrai ma retraite au bord de l’eau. Comme vous, mais avec un toit.', 'Le travail bien fait, ça se voit de loin et ça se sent de près.', 'Allez, je ne vais pas me plaindre. Il y a pire, ailleurs.'] },
+ { id: 'saisons', pour: ['tous'], r: [
+  'L’automne, ici, c’est un incendie de couleurs. Les mélèzes deviennent d’or.', 'Au printemps, la forêt sent si bon qu’on a envie de la manger.', 'L’été dans les Cimes, c’est court et précieux. Il faut en profiter vite.',
+  'L’hiver, le silence est si profond qu’on entend la neige tomber.', 'Les premiers flocons tombent toujours la nuit. Comme s’ils avaient honte.', 'Au printemps, le lac déborde un peu. Il fond de joie.',
+  'L’automne, c’est la saison des confitures et des pull-overs qui grattent.', 'En été, les nuits sont si courtes qu’on n’a pas le temps d’avoir peur du noir.', 'Les jonquilles sortent toujours au même endroit, près du vieux rocher.',
+  'L’hiver dernier, la neige est montée jusqu’aux fenêtres.', 'Quand les feuilles tombent, la forêt devient plus claire. On voit plus loin.', 'Le printemps arrive par les oiseaux. Un matin, ils sont tous là.',
+  'En été, les enfants passent leur journée dans l’eau froide. Les adultes les regardent en grelottant.', 'L’automne sent le champignon, la fumée et la pomme cuite.', 'L’hiver, on se rapproche les uns des autres. Pour la chaleur, et pour le reste.',
+  'Il y a une semaine, au printemps, où tout fleurit en même temps. Ça ne dure pas.', 'Les mélèzes perdent leurs aiguilles en hiver. Ce sont les seuls à faire ça.', 'Les soirées d’été ici sont roses. Pas oranges, roses.',
+  'La première neige rend tout le monde un peu enfant.', 'Le printemps, c’est quand Germaine sort enfin son chapeau rouge.'],
+  s: ['Chaque saison a sa beauté. Il faut juste savoir la chercher.', 'J’aime toutes les saisons, sauf celle de la boue.', 'Vous verrez bien, si vous restez assez longtemps au lac.',
+   'Les saisons, ici, sont plus franches qu’en bas. Elles ne font pas semblant.', 'Je compte les saisons comme d’autres comptent les années.', 'On dit que celui qui a vu les quatre saisons au lac ne peut plus le quitter.'] }
+];
+
+// ==== CAMP : BLABLA — SUJETS (2/2) (v0.19) =======================================================
+BLA.SUJETS.push(
+ { id: 'enfance', pour: ['enfant'], r: [
+  'Tu sais quoi ? J’ai perdu une dent ce matin ! Je l’ai mise sous l’oreiller.', 'Lou dit que les nuages sont des moutons qui ont fugué.', 'J’ai fait un château de sable avec une douve. La douve a tout mangé.',
+  'Moi, quand je serai grand, j’aurai une cabane sur le lac. Une cabane qui flotte.', 'Noé a mangé une fourmi. Pour voir. Il dit que ça a un goût de citron.', 'La maîtresse nous a appris à compter jusqu’à mille. J’arrête à cent, c’est trop long.',
+  'J’ai vu une étoile filante ! J’ai fait un vœu, mais je peux pas te le dire.', 'Jade sait siffler avec deux doigts. Moi j’essaie, mais je crache.', 'J’ai un caillou qui brille dans le noir. Enfin, presque.',
+  'Mon papa dit que les ours n’existent pas ici. Alors pourquoi il ferme la porte à clé ?', 'J’ai appris un tour de magie ! Je fais disparaître une bille. Je la retrouve jamais.', 'Timéo dit que son papa a conduit un char. Je le crois pas.',
+  'Si je mange toutes mes carottes, je verrai dans le noir. C’est vrai ou c’est un mensonge des grands ?', 'J’ai trouvé un nid avec trois œufs bleus ! Je l’ai pas touché, promis.', 'Kiwi, le chat de Lou, m’a griffé. Mais c’était pour jouer.',
+  'J’ai fait un dessin du monstre du lac. Il est gentil. Il a un chapeau.', 'Les grands disent « tu comprendras plus tard ». C’est quand, plus tard ?', 'J’ai gagné la course jusqu’à la fontaine ! Jade dit que je suis parti avant.',
+  'Est-ce que les poissons dorment ? Ils ont pas de paupières.', 'Demain c’est mercredi ! Pas d’école l’après-midi ! On va à la plage !'],
+  s: ['Tu veux jouer avec nous, après ? On a besoin d’un monstre.', 'C’est un secret, hein. Tu le dis à personne.', 'Les grands, vous comprenez jamais rien. Sauf toi, peut-être.',
+   'Après je vais le raconter à la maîtresse !', 'Tu trouves que c’est bien ? Moi, je trouve que c’est génial.', 'Tu me crois, hein ? Personne me croit, jamais.'] },
+ { id: 'anciens', pour: ['ancien'], r: [
+  'À mon âge, chaque matin est un cadeau. Même ceux où il pleut.', 'J’ai connu le bourg quand il n’avait qu’une rue et trois vaches.', 'Mes genoux me racontent toute la météo de la semaine.',
+  'Les jeunes courent partout. Moi, j’arrive en même temps qu’eux en marchant.', 'Je me souviens de la grande crue. L’eau est montée jusqu’au clocher.', 'On dansait la polka, en ce temps-là. Maintenant, on ne sait plus danser.',
+  'Mon mari disait que j’avais le plus beau rire de la vallée. Je ris moins fort, maintenant, mais je ris.', 'J’ai planté le tilleul de la place de l’ancien village. Il a soixante ans.', 'Le monde va trop vite. Heureusement, ici, il ralentit.',
+  'Je fais la sieste tous les jours à treize heures. C’est le secret de ma longévité.', 'Les écus du Bourg, les francs, les pièces d’or… j’ai connu toutes les monnaies.', 'Quand j’étais jeune, on montait aux Cimes en charrette. Trois jours de route.',
+  'J’ai écrit des lettres d’amour pour la moitié du village. Je n’ai jamais signé.', 'Ma mémoire me joue des tours, mais elle n’oublie jamais une recette.', 'Les hivers d’aujourd’hui sont des hivers de poule mouillée.',
+  'J’ai vu partir beaucoup de gens. Je préfère regarder ceux qui arrivent.', 'Quand on est vieux, on devient transparent. C’est pratique pour écouter.', 'J’ai encore toutes mes dents. Enfin, toutes celles qui restent.',
+  'Le secret d’une longue vie ? Une soupe chaude et une bonne dispute par semaine.', 'Je ne regrette rien. Sauf peut-être cette fois où je n’ai pas dansé.'],
+  s: ['Écoutez les anciens, mon petit. On a fait toutes les bêtises avant vous.', 'Le temps passe, mais les bonnes choses restent.', 'Ah, si j’avais votre âge… je ferais exactement pareil. Les mêmes bêtises.',
+   'Venez prendre le café, un jour. Je vous raconterai la suite.', 'On ne vieillit pas, on mûrit. Comme les pommes. Et puis on tombe.', 'Vous êtes un bon garçon de m’écouter. Ou une bonne fille. Mes yeux, vous savez…'] },
+ { id: 'guerre', pour: ['soldat'], r: [
+  'À Port-Aven, les gens nous lançaient des fleurs au passage. Puis des pierres. Puis plus rien.', 'Dans le désert, la nuit, il fait si froid qu’on dort avec ses bottes.', 'Le sable s’infiltre partout. Dans les armes, dans les rations, dans les rêves.',
+  'On a croisé une caravane de chameaux près de Tal Rakh. Ils nous ont regardés comme des intrus. Ils avaient raison.', 'La radio de l’état-major parle toujours d’une voix calme. Même quand tout brûle.', 'Vautour 2, le drone, on l’entend tourner au-dessus de nos têtes. On finit par lui parler.',
+  'Le Résolu, au large, quand il tire, la mer s’illumine. On sent le souffle jusque sur la plage.', 'Le pire, ce sont les pistes vides. On attend, on attend, et rien ne vient. Ou tout.', 'On a dormi trois heures en deux jours pendant l’évacuation.',
+  'À Orion, la base avancée, il y a une douche. Une seule. Il faut prendre un ticket.', 'Les enfants de Kesh nous font des signes de la main. Leurs parents, non.', 'On a appris à reconnaître le bruit d’un moteur ennemi à deux kilomètres.',
+  'Les ordres arrivent en code. Les nouvelles de la maison arrivent en retard.', 'Une fois, on a partagé une gamelle avec un berger. Il nous a donné du lait de chèvre. On ne parlait pas la même langue.', 'Dans l’erg, les dunes bougent. La carte d’hier est fausse aujourd’hui.',
+  'On compte les jours sur la crosse de nos fusils. Avec un feutre, pas un couteau.', 'Le premier coup de feu, on ne l’oublie jamais. Le dernier, on l’attend.', 'Quand le cessez-le-feu a été annoncé, on a dansé sur le capot. Trois jours plus tard, plus personne ne dansait.',
+  'Les villages de Kesh ont tous un puits. Le puits, c’est la vie. On le protège en premier.', 'Rivet a réparé la radio avec une boîte de conserve. On a capté une chanson. On l’a écoutée dix fois.'],
+  s: ['Ici, au lac, tout ça paraît d’un autre monde.', 'On n’en parle pas souvent. Mais avec vous, c’est plus facile.', 'Un jour, ce sera fini. On rentrera, et on racontera seulement les bons moments.',
+   'Rivet dit que la guerre, c’est une très longue patrouille de nuit. Il a raison.', 'Merci d’écouter. Ça fait du bien de parler à quelqu’un qui n’a pas d’uniforme.', 'Ne le répétez pas à la capitaine. Elle dit qu’on parle trop. Elle a raison aussi.'] },
+ { id: 'tod2', pour: ['tod'], r: [
+  'J’ai reçu un nouvel uniforme. Il est trop grand. Je grandirai dedans, a dit le fournisseur.', 'Ce matin, j’ai trouvé une plume de chouette devant la porte du poste. Je l’ai mise dans le registre.', 'J’ai essayé de cuisiner des lentilles. Elles ont collé. Elles collent encore.',
+  'Le sentier a besoin d’être dégagé après les pluies. Je le fais tous les mardis.', 'Mon talkie capte parfois une radio de l’autre côté des montagnes. Une musique très ancienne.', 'Quand je fais ma ronde, je compte mes pas. Mille deux cents jusqu’au lac.',
+  'Je dors mieux depuis que tu campes au lac. Je sais qu’il y a quelqu’un.', 'Le tonneau d’eau du poste fuit. Je l’ai réparé avec de la résine. Node aurait fait mieux.', 'Le chef forestier vient m’inspecter le mois prochain. Je range le bureau depuis une semaine.',
+  'J’ai planté des graines de pommier derrière le poste. Rien n’a poussé. Pour l’instant.', 'J’ai lu tout le règlement des gardes forestiers. Il y a un article sur les ours. Il n’y a pas d’ours ici.', 'La lanterne du poste a un caractère. Elle s’éteint quand je m’assois.',
+  'Je me suis fait un petit potager. Trois tomates. J’ai donné un nom à chacune.', 'Les enfants du bourg m’appellent « monsieur le garde ». Ça me fait bizarre.', 'J’ai trouvé une vieille boussole dans la forêt. Elle indique toujours l’est. C’est inutile, mais je la garde.',
+  'Ce que j’aime le plus dans mon métier, c’est l’aube. Personne ne la voit à part moi.', 'J’ai appris à faire un nœud de chaise. J’ai mis trois jours.', 'Mon poste a une gouttière qui chante quand il pleut. Je l’ai baptisée « la soprano ».',
+  'Je note les visiteurs du lac dans le registre. Tu es à la page sept. Une page entière.', 'Je n’arrive toujours pas à siffler pour appeler un chien. Heureusement, je n’ai pas de chien.'],
+  s: ['C’est des petites choses, mais c’est ma vie, maintenant.', 'Node se moquerait de moi. Puis il m’aiderait.', 'Tu trouves ça bête ? Moi, je trouve ça important.',
+   'Je le noterai dans le registre. Tout ce qui compte va dans le registre.', 'Je suis content qu’on puisse parler de tout et de rien, toi et moi.', 'Bon, je ne devrais pas papoter, je suis en service. … Encore cinq minutes.'] },
+ { id: 'camilla2', pour: ['camilla'], r: [
+  'J’ai entendu un cerf bramer cette nuit. Ça m’a donné des frissons. Les bons.', 'Ta tente sent la fumée et le savon. C’est ton odeur, maintenant.', 'Je me suis coupé les cheveux avec mon couteau de chasse. Ne dis rien.',
+  'J’ai vu le renard moustachu ce matin. Il m’a suivie jusqu’au lac. Lucien a un fan.', 'Si on avait un enfant, je voudrais qu’il ait tes yeux et mon tir.', 'J’ai compté les cicatrices sur mes mains. Une par sanglier. Douze.',
+  'Tu crois qu’on vieillira ici ? Avec des cheveux blancs et des cannes à pêche ?', 'J’ai rêvé qu’on volait au-dessus du lac. Tu avais peur du vide. Comme Node.', 'Le feu de ce soir était parfait. Je ne l’ai pas raté une seule fois.',
+  'Je t’ai gardé la plus belle pomme du sac. Je l’ai déjà croquée. Un peu.', 'Les étoiles, ici, sont plus nombreuses qu’à l’ouest. Ou alors je les regarde mieux, avec toi.', 'Tu as encore parlé en dormant. Tu as dit « moustache ». Deux fois.',
+  'Un jour, je t’apprendrai à lire les traces. Celles des bêtes et celles des gens.', 'Le vent m’a apporté une odeur de pain. Jules a dû rater une fournée.', 'J’aime quand tu me regardes sans rien dire. C’est rare. Profites-en.',
+  'J’ai cousu ton pantalon. Mal. Mais il tient.', 'Si tu devais me décrire en un mot ? … Ne réponds pas « bruyante ».', 'Le lac me fait penser à tes yeux quand tu es triste. Ne sois pas triste trop souvent.',
+  'J’ai ramassé des champignons. Lina m’a dit lesquels étaient bons. J’ai oublié lesquels.', 'Tu te souviens de notre premier baiser ? Sous la pluie, derrière le fournil. Jules a crié.'],
+  s: ['Mehdy… tu m’écoutes, au moins ? … Oui, tu m’écoutes. Tu fais la tête de quelqu’un qui écoute.', 'Bon. Je t’aime. Mais va chercher du bois.', 'Tu vois ? On n’a jamais fini de se dire des choses.',
+   'Ne rigole pas. … D’accord, rigole. C’est joli, quand tu rigoles.', 'Je te dis tout. Enfin, presque tout. Une chasseuse garde ses secrets.', 'C’est bien, ici, avec toi. Je ne m’attendais pas à être si bien.'] },
+ { id: 'route', pour: ['visiteur'], r: [
+  'J’ai pris le mauvais sentier deux fois avant de trouver le bon.', 'Ma tente a une fermeture éclair qui coince. Je dors à moitié dehors.', 'J’ai croisé un garde forestier très poli. Il m’a demandé si j’avais rangé ma glacière.',
+  'J’ai marché six heures aujourd’hui. Mes pieds ont des opinions.', 'Le dernier village avant ici avait une boulangerie fermée et un chat très bavard.', 'J’ai une carte qui date d’il y a vingt ans. Le lac n’a pas bougé, au moins.',
+  'Je voyage seul depuis un mois. On apprend à se parler à soi-même.', 'Mon sac pèse dix-huit kilos. Dont trois de chocolat.', 'J’ai dormi dans une grange hier. Une vache m’a réveillé en me léchant le visage.',
+  'Il paraît qu’il y a un nouveau bourg plus bas. Avec un vrai café ?', 'Je collectionne les cailloux de chaque endroit où je dors.', 'J’ai perdu ma gourde au col. Une marmotte l’a peut-être adoptée.',
+  'Je fais ce voyage pour réfléchir. Pour l’instant, je réfléchis surtout à mes ampoules.', 'Le silence d’ici me fait un peu peur. J’ai l’habitude de la ville.', 'J’ai pris des photos de tous les levers de soleil. Ils se ressemblent. Je les garde quand même.',
+  'Vous connaissez la légende de la bête du lac ? Un berger me l’a racontée en riant. Il ne riait pas des yeux.', 'Mon téléphone est mort depuis trois jours. Je ne l’ai jamais aussi peu regretté.', 'J’ai partagé un repas avec des chasseurs. Ils parlaient de sangliers comme d’anciens ennemis.',
+  'Je suis parti sans dire à personne où j’allais. C’était peut-être une erreur.', 'J’ai trouvé une plume d’aigle sur le sentier. Je la garde pour la chance.'],
+  s: ['C’est pour ça qu’on voyage, non ? Pour ces petites choses.', 'En tout cas, je suis content de tomber sur quelqu’un de sympathique.', 'Vous, vous avez l’air d’avoir trouvé votre place.',
+   'Je vous raconterai la suite si je repasse un jour.', 'Le chemin, c’est la moitié du voyage. L’autre moitié, ce sont les gens qu’on croise.', 'Enfin, je papote, je papote… Vous devez avoir mieux à faire.'] },
+ { id: 'alpha2', pour: ['alpha'], r: [
+  'Le rayon des pâtes a été dévalisé. Une colonie de vacances, paraît-il.', 'Le shérif Nougat fait ses rondes en vélo, maintenant. Il dit que c’est « plus discret ».', 'Il y a un détenu qui chante l’opéra en cellule. Assez bien, en fait.',
+  'La caisse numéro trois est hantée. Elle bipe toute seule à minuit.', 'Les agents du shérif ont arrêté un voleur de bonbons. Il avait sept ans. Ils l’ont raccompagné chez lui.', 'Le parking est si grand qu’on s’y perd. Hier, un client a cherché sa voiture une heure.',
+  'Les promotions du FSM changent tous les jours. Personne ne comprend la logique.', 'Il y a eu une panne de courant. Tout le monde s’est mis à chuchoter.', 'Le shérif a trouvé un chat dans le stock de croquettes. Il l’a adopté. Il s’appelle Mandat.',
+  'Un client a payé en pièces de la vallée. Sonia a dû appeler la mairie pour connaître le taux.', 'Le chariot élévateur a une plaque d’immatriculation. Personne ne sait pourquoi.', 'Les détenus ont demandé un livre. Le shérif leur a donné le règlement.',
+  'Il y a une odeur de pain frais à l’entrée. C’est un parfum diffusé par la ventilation.', 'Une famille de touristes a pris le FSM pour un musée. Ils ont tout photographié.', 'Le shérif répète ses interrogatoires devant le miroir des toilettes.',
+  'Les agents de nuit prennent toujours un café au distributeur. Il est pire que celui de Tod.', 'On a reçu une livraison de bottes en caoutchouc. Personne n’en a commandé.', 'Un détenu jure qu’il est innocent. Il est en cellule pour avoir volé la voiture du shérif.',
+  'Le panneau « Grande ouverture » est toujours là. Ça fait trois mois.', 'Le FSM ferme à vingt et une heures, mais les lumières restent allumées toute la nuit.'],
+  s: ['Le FSM, c’est un petit monde. Avec ses mystères.', 'Le shérif dit qu’il faut tout noter. Alors je note tout. Ça fait beaucoup.', 'Si vous voulez des nouvelles, venez à la caisse. Tout passe par la caisse.',
+   'Je me demande parfois ce que la Villa pense de tout ça.', 'C’est fatiguant, mais on rigole bien.', 'Vous ne direz rien au shérif, hein ?'] },
+ { id: 'philo', pour: ['tous'], r: [
+  'Vous croyez qu’on choisit vraiment sa vie, ou qu’elle nous choisit ?', 'Le bonheur, c’est peut-être juste un bon repas et personne qui vous attend.', 'On passe sa vie à vouloir être ailleurs, et quand on y est, on pense à revenir.',
+  'Les gens qui ne parlent jamais de leur passé en ont souvent trop.', 'Le temps file plus vite quand on est heureux. C’est injuste.', 'Un ami, c’est quelqu’un qui sait quand se taire.',
+  'Je crois qu’on garde un peu de chaque endroit où on a vécu.', 'Être seul, ce n’est pas pareil qu’être isolé. Vous, vous êtes seul. Pas isolé.', 'La peur, c’est une boussole. Elle indique ce qui compte.',
+  'On ne sait jamais quelle conversation va nous changer la vie.', 'Les plus belles choses ne font pas de bruit. Un lever de soleil, la neige.', 'Il faut parfois se perdre pour savoir où on va.',
+  'On ne possède rien vraiment. Même pas son temps.', 'Le pardon, c’est un cadeau qu’on se fait à soi-même.', 'Je pense que chaque arbre a une histoire. Personne ne l’écoute.',
+  'Les rêves de nuit disent ce que le jour cache.', 'On ne devient pas courageux en n’ayant pas peur. On devient courageux en ayant peur et en avançant.', 'Le silence entre deux personnes, c’est parfois la meilleure conversation.',
+  'Quand on donne quelque chose, on en garde toujours un peu.', 'Chacun a un lac quelque part. Un endroit où il revient pour réfléchir.'],
+  s: ['Pardon, je philosophe. C’est l’air des Cimes, il monte à la tête.', 'Vous voyez ce que je veux dire ? Moi non plus, parfois.', 'Il faudrait poser la question à Mme Célestine. Elle a lu tous les livres.',
+   'On en reparlera, un soir, autour d’un feu.', 'C’est le genre de chose qu’on pense, mais qu’on ne dit jamais. Là, je l’ai dit.', 'Enfin, je ne suis pas un sage. Je suis juste quelqu’un qui parle trop.'] });
+// ---------------- branchement : les sujets complètent BLA.tirer ----------------
+BLA.publics = v => { const c = BLA.cats(v), P = ['tous']; for (const k of c) { if (k === 'commun') continue; P.push(k === 'bourg' ? 'bourg' : k); } if (c.includes('enfant')) P.push('enfant'); if (c.includes('ancien')) P.push('ancien', 'bourg'); return P; };
+{ const t0 = BLA.tirer; BLA.tirer = v => { const k = BLA.cle(v), pub = BLA.publics(v), S = BLA.SUJETS.filter(s => s.pour.includes('tous') ? !(s.id === 'philo' && pub.includes('enfant')) : s.pour.some(p => pub.includes(p)));
+    const vus = BLA.vus['s_' + k] || (BLA.vus['s_' + k] = []); if (Math.random() < .3 || !S.length) return t0(v);
+    let libres = []; S.forEach(s => s.r.forEach((r, i) => { const id = s.id + i; if (!vus.includes(id)) libres.push([s, i, id]); })); if (!libres.length) { vus.length = 0; return t0(v); }
+    const [s, i, id] = pick(libres); vus.push(id); return [s.r[i], pick(s.s)]; }; }
+BLA.total = () => BLA.SUJETS.reduce((n, s) => n + s.r.length, 0) + Object.values(BLA.POOL).reduce((n, L) => n + L.length, 0) + Object.values(BLA.PERSO).reduce((n, L) => n + L.length, 0);
+
+// ==== CAMP : BLABLA — SUJETS (3/3) (v0.19) =======================================================
+BLA.SUJETS.push(
+ { id: 'foret', pour: ['tous'], r: [
+  'La forêt est plus bruyante la nuit que le jour. Tout le monde se réveille quand on dort.', 'J’ai trouvé un sapin si vieux qu’il faut trois personnes pour en faire le tour.', 'Les champignons poussent en cercle, parfois. On appelle ça un rond de sorcières.',
+  'La mousse pousse toujours du côté nord des arbres. Enfin, presque toujours.', 'Il y a un sentier caché derrière le rocher. Il ne mène nulle part, mais il est joli.', 'Les pommes de pin s’ouvrent quand il fait sec et se ferment quand il va pleuvoir.',
+  'J’ai entendu un arbre tomber au loin. Personne n’était là pour le voir, mais je l’ai entendu.', 'La résine colle aux doigts pendant trois jours. Mais elle sent si bon.', 'Les fougères étaient là avant les dinosaures. Elles ont tout vu.',
+  'Au cœur de la forêt, la lumière devient verte. On dirait qu’on est sous l’eau.', 'Les bouleaux ont une écorce qui se détache comme du papier. On pourrait écrire dessus.', 'J’ai marché pieds nus sur la mousse. C’est plus doux qu’un tapis.',
+  'Les arbres se parlent par leurs racines, paraît-il. Ils se préviennent du danger.', 'Il y a un vieux chêne fendu par la foudre près de la rivière. Il a survécu.', 'Le matin, les toiles d’araignées entre les branches brillent comme des colliers.',
+  'Quand le vent souffle dans les pins, on dirait la mer.', 'J’ai trouvé une clairière pleine de fraises des bois. Je n’en ai laissé aucune.', 'La forêt cache des ruines de vieilles bergeries. Plus personne ne sait qui y vivait.',
+  'Les bûcherons d’autrefois gravaient leurs initiales dans les arbres qu’ils épargnaient.', 'La forêt la nuit, sans lampe, c’est un autre pays.'],
+  s: ['La forêt nous apprend la patience. Elle a tout son temps.', 'Le garde forestier dit qu’on ne possède pas une forêt : on lui appartient.', 'Je pourrais m’y promener des heures sans m’ennuyer.',
+   'Faites attention de ne pas vous perdre. Elle est plus grande qu’elle n’en a l’air.', 'Il y a des forêts qui font peur et d’autres qui protègent. Celle-ci protège.', 'Un jour, il faudra que je vous montre mon coin secret.'] },
+ { id: 'feu', pour: ['tous'], r: [
+  'Le feu de camp, c’est la première télévision de l’humanité.', 'Les bûches de hêtre brûlent longtemps et sans fumée. Les meilleures.', 'Regarder les braises, c’est mieux que n’importe quel spectacle.',
+  'Il faut toujours garder une bûche sèche pour le matin.', 'Le bois de sapin crépite et lance des étincelles. Il fait le malin.', 'Rien ne réchauffe autant qu’un feu partagé.',
+  'Les histoires sont toujours meilleures autour d’un feu.', 'J’ai appris à faire du feu avec un silex. Il m’a fallu deux heures et trois doigts écorchés.', 'L’odeur de fumée reste dans les cheveux pendant deux jours.',
+  'Le feu attire les papillons de nuit comme un phare.', 'Mon grand-père disait : « Un feu, c’est un ami qu’il faut surveiller. »', 'Les flammes bleues, c’est quand le bois est très sec.',
+  'J’adore le bruit d’une casserole d’eau qui chauffe sur les braises.', 'On cuisait des pommes de terre dans la cendre, enveloppées de feuilles.', 'Les étincelles qui montent ressemblent à des étoiles qui rentrent chez elles.',
+  'Il faut toujours éteindre son feu avec de l’eau ET de la terre.', 'Un feu de camp sans guimauves, c’est un feu triste.', 'Quand le feu s’éteint, la nuit se referme d’un coup.',
+  'Le meilleur moment, c’est quand tout le monde se tait et regarde les flammes.', 'Certains bois chantent en brûlant. Le pommier siffle doucement.'],
+  s: ['Ce soir, vous ferez un beau feu, je le sens.', 'Le feu, c’est ce qui rend la nuit supportable.', 'Tod vous dira de bien l’éteindre. Il le dit à tout le monde.',
+   'Un bon feu, c’est une bonne soirée. C’est mathématique.', 'Je pourrais passer des heures à le regarder. Je l’ai déjà fait.', 'Au bourg, les cheminées fument toutes en même temps le soir. C’est rassurant.'] },
+ { id: 'peche2', pour: ['tous'], r: [
+  'La pêche, c’est l’art d’attendre en faisant semblant de faire quelque chose.', 'Marius dit qu’un pêcheur ne ment jamais. Il exagère, c’est tout.', 'J’ai attrapé une botte une fois. La gauche. Je cherche toujours la droite.',
+  'Le meilleur moment pour pêcher, c’est l’aube. Ou le crépuscule. Ou quand ça mord.', 'Un vrai pêcheur parle aux poissons. Ils ne répondent pas, mais ils écoutent.', 'La truite est maligne. Elle voit l’hameçon de loin.',
+  'J’ai perdu le plus gros poisson de ma vie à un mètre du bord. Il m’a fait un clin d’œil.', 'Abel Fournier pêche avec la même canne depuis quarante ans.', 'Le brochet a des dents comme un loup. Il faut le tenir par les ouïes.',
+  'Quand le bouchon tremble, on retient son souffle. Toute la journée tient dans ce moment.', 'Les gardons mordent même quand on ne fait pas attention. Ce sont des poissons polis.', 'On a fait un concours de pêche au vieux village. Le gagnant avait acheté son poisson.',
+  'Pêcher sous la pluie, c’est mouillé, mais ça mord mieux.', 'Le ver de terre est le meilleur appât. Le moins cher aussi.', 'Il faut relâcher les petits. Ils reviendront grands.',
+  'Je préfère pêcher que manger du poisson. C’est pour la compagnie.', 'L’omble chevalier, c’est le roi du lac. On en attrape un par saison.', 'Le silence du pêcheur, c’est un silence plein.',
+  'Un jour, j’ai pêché toute la journée sans rien prendre. C’était une très bonne journée.', 'La ligne qui siffle quand on lance, c’est une musique.'],
+  s: ['Venez pêcher avec moi un matin. Je ne parlerai pas. Promis.', 'La pêche, c’est la seule activité où rater fait partie du plaisir.', 'Si vous attrapez un gros, apportez-le à Marius. Il fera des yeux ronds.',
+   'Moi, je ne suis pas doué. Mais je suis patient. C’est presque pareil.', 'Le lac garde toujours ses plus beaux poissons pour les autres.', 'La prochaine fois, c’est sûr, je prends le gros.'] },
+ { id: 'nuit', pour: ['tous'], r: [
+  'La nuit, au lac, le silence a une forme. On peut presque le toucher.', 'J’ai vu une étoile filante si longue qu’elle a traversé tout le ciel.', 'Les nuits sans lune sont les plus belles pour les étoiles.',
+  'La Voie lactée, ici, on dirait une rivière de lait.', 'Je n’arrive pas à dormir quand il y a pleine lune. Je regarde dehors.', 'Les chouettes ne font pas de bruit en volant. Elles sont des fantômes à plumes.',
+  'J’aime l’heure où tout le monde dort sauf moi.', 'La nuit, les sons voyagent plus loin. On entend le bourg depuis le lac.', 'Les vers luisants dansent au-dessus des herbes en été.',
+  'J’ai peur du noir depuis toujours. Ici, un peu moins.', 'Les nuits d’hiver sont si froides que les étoiles ont l’air de trembler.', 'La lune se lève derrière la montagne comme une lanterne qu’on allume.',
+  'Une nuit, j’ai vu une lumière bouger sur le lac. Je n’ai jamais su ce que c’était.', 'Les grillons chantent plus vite quand il fait chaud. On peut calculer la température.', 'Dormir à la belle étoile, c’est s’endormir en regardant l’infini.',
+  'La nuit, les pensées font plus de bruit.', 'Il paraît que les étoiles qu’on voit sont peut-être déjà mortes.', 'Le premier cri d’oiseau avant l’aube, c’est le signal que la nuit est finie.',
+  'J’ai compté les étoiles filantes du mois d’août : dix-sept en une nuit.', 'La nuit, la forêt se met à craquer comme une vieille maison.'],
+  s: ['La nuit, ici, c’est un cadeau. En ville, on ne voit rien.', 'Gardez votre lampe à portée de main. On ne sait jamais.', 'Le garde forestier fait sa ronde de nuit. Ça rassure, de voir sa lampe.',
+   'J’aime m’endormir en pensant que le lac veille.', 'Il faudrait que tout le monde passe une nuit ici, au moins une fois.', 'Les nuits sont longues, mais elles sont belles.'] },
+ { id: 'musique', pour: ['tous'], r: [
+  'Quelqu’un jouait de l’harmonica au bourg hier soir. C’était triste et beau.', 'Je connais une chanson sur un pommier. Tout le monde la connaît, en fait.', 'Théo joue de la guitare avec trois accords. Il en fait des chansons entières.',
+  'Ma mère chantait des berceuses en patois. Je ne comprenais pas les paroles, mais je m’endormais.', 'Au bal du vieux village, l’accordéoniste jouait jusqu’à ce que plus personne ne tienne debout.', 'Le vent dans les câbles du mât fait une note. Toujours la même.',
+  'J’ai appris le piano enfant. Je ne sais plus que la première ligne d’un morceau.', 'Les oiseaux du matin, c’est le meilleur orchestre.', 'Quand il pleut sur la toile de tente, ça fait une batterie.',
+  'Je chante sous la douche. Ici, je chante sous la pluie.', 'Il y a une chanson qui me fait pleurer à chaque fois. Je ne dirai pas laquelle.', 'Les cloches de l’ancienne église sonnaient faux. On les aimait comme ça.',
+  'La musique, c’est la seule chose qui voyage sans valise.', 'Mathis siffle des marches militaires en coupant du bois. Ça donne du rythme.', 'Mme Célestine a un vieux tourne-disque à la librairie. Elle passe toujours le même disque.',
+  'Une flûte en roseau, ça se fabrique en dix minutes. Ça sonne pendant des années.', 'Les enfants de l’école préparent un spectacle. On entend les répétitions depuis la fontaine.', 'La plus belle musique du monde, c’est le silence juste après une chanson.',
+  'Je ne sais pas danser, mais je tape du pied. C’est déjà ça.', 'Les soldats chantaient en passant au bourg. Une chanson sur un pommier, je crois.'],
+  s: ['La musique, ça rapproche les gens. Même ceux qui chantent faux.', 'Vous chantez, vous ? Au bord du lac, personne ne vous jugera.', 'Il faudrait organiser une fête au bourg. Avec de la musique.',
+   'Le lac a une acoustique incroyable. Essayez de chanter, un soir.', 'Quand j’entends cette musique, je retourne en enfance.', 'Allez, je vous chanterai quelque chose un jour. Prévoyez des bouchons.'] },
+ { id: 'amitie', pour: ['tous'], r: [
+  'Un vrai ami, c’est quelqu’un qui vient vous aider à déménager sans qu’on le lui demande.', 'J’ai un ami que je n’ai pas vu depuis dix ans. Quand on se retrouve, c’est comme hier.', 'Les amitiés se font souvent autour d’un repas raté.',
+  'Il y a des gens qu’on rencontre une heure et qu’on n’oublie jamais.', 'Mon meilleur ami et moi, on s’est battus le premier jour d’école. Depuis, on est inséparables.', 'L’amitié, c’est comme un jardin. Il faut l’arroser.',
+  'Ici, au bourg, tout le monde est un peu ami avec tout le monde. Même ceux qui se disputent.', 'Un ami, c’est celui qui connaît vos défauts et vient quand même.', 'J’ai perdu un ami pour une histoire bête. Je le regrette encore.',
+  'Les meilleurs amis sont ceux avec qui on peut se taire.', 'Node et Tod, c’est plus que des frères. Ce sont des amis.', 'Je me suis fait un ami en partageant mon parapluie.',
+  'On ne choisit pas sa famille, mais on choisit ses amis. Enfin, parfois ils nous choisissent.', 'Un ami qui vous prête son couteau, c’est un ami pour la vie.', 'Les lettres d’amis, je les garde toutes dans une boîte.',
+  'Le plus beau cadeau d’un ami, c’est son temps.', 'Mon chien était mon meilleur ami. Il m’écoutait sans jamais me contredire.', 'Il faut parfois des années pour devenir amis, et parfois une seule soirée.',
+  'Les amis d’enfance connaissent la personne que vous étiez avant de devenir vous.', 'Un ami, c’est quelqu’un qui vous fait rire quand vous avez envie de pleurer.'],
+  s: ['Vous, {JOUEUR}, vous avez l’air d’être un bon ami.', 'Si un jour vous avez besoin, vous savez où me trouver.', 'L’amitié, c’est ce qui reste quand on a tout perdu.',
+   'Je suis content qu’on se parle, vous et moi.', 'Les gens du lac et ceux du bourg finissent toujours par devenir amis.', 'Prenez soin de vos amis. On n’en a jamais trop.'] },
+ { id: 'villes', pour: ['tous'], r: [
+  'Handram, la capitale, a des rues pavées et des fontaines à chaque coin.', 'Feral, c’est une grande ville bruyante. Le quartier de Blum a des forêts, paraît-il.', 'Il paraît qu’à Handram, la forêt royale ferme ses portes la nuit.',
+  'J’ai visité Feral une fois. Je me suis perdu trois fois dans la même rue.', 'Les gens des villes marchent vite et ne se disent pas bonjour.', 'À Handram, la princesse Ilona gouverne avec des conseillers de métal. Ça fait froid dans le dos.',
+  'Le Hameau, de l’autre côté des montagnes, est entouré de murs. Je n’y suis jamais allé.', 'Port-Aven, sur la côte, a été évacuée. Il paraît que la ville est vide, maintenant.', 'Les marchés de Feral vendent des épices qu’on ne connaît pas ici.',
+  'En ville, on ne voit pas les étoiles. Les gens oublient qu’elles existent.', 'J’ai un cousin qui vit à Blum. Il dit que c’est le seul quartier calme de Feral.', 'Handram a un château avec mille fenêtres. Personne ne les a comptées.',
+  'Les villes, c’est bien pour une semaine. Après, j’étouffe.', 'Il paraît que le désert de Kesh brille la nuit comme de l’argent.', 'À Feral, il y a des tramways. Je n’en ai jamais pris.',
+  'Les gens de Handram disent « monsieur » à tout le monde. Même aux chiens.', 'J’aimerais voir la mer à Port-Aven, quand la guerre sera finie.', 'Les villes changent si vite qu’on ne les reconnaît plus d’une année sur l’autre.',
+  'Le bourg neuf, c’est presque une petite ville. Avec un supermarché, en plus.', 'Je préfère un bourg où l’on connaît tout le monde à une ville où l’on ne connaît personne.'],
+  s: ['Ici, au moins, on sait où on habite.', 'Je n’échangerais pas les Cimes contre toutes les villes du monde.', 'Un jour, peut-être, j’irai voir. Juste pour revenir.',
+   'Les villes ont des lumières, mais les Cimes ont des étoiles.', 'Vous, {JOUEUR}, vous venez d’une ville ?', 'Chaque ville a son histoire. Le bourg aussi, à sa manière.'] },
+ { id: 'blagues', pour: ['tous'], r: [
+  'Vous connaissez la blague du pêcheur qui attrape un poisson qui parle ? Moi non plus, je l’ai oubliée.', 'Pourquoi les sapins ne se perdent jamais ? Parce qu’ils ont toujours une aiguille. … Bon.', 'J’ai fait une blague à Firmin : j’ai mis du sel dans le sucrier. Il s’est vengé. Je ne bois plus de café.',
+  'Germaine m’a dit que j’étais « drôle comme un lundi ». Je crois que ce n’est pas un compliment.', 'Le basset de M. Boup s’est coincé dans la porte de la mairie. Tout le monde a ri, sauf le basset.', 'J’ai essayé de faire peur à Tod avec un masque. Il a noté l’incident dans son registre.',
+  'Pourquoi les canards ont-ils des plumes ? Pour couvrir leur derrière. Mon grand-père adorait celle-là.', 'Un randonneur a demandé à Jules s’il avait du pain sans gluten. Jules a ri pendant dix minutes.', 'Le shérif Nougat a arrêté son propre reflet dans une vitrine. Il dit que c’était un entraînement.',
+  'Victor dit qu’il a attrapé un brochet de deux mètres. La semaine dernière, c’était un mètre cinquante.', 'Dogue raconte des blagues si nulles que tout le détachement rit par politesse.', 'J’ai demandé à la Dr Lina un remède contre la paresse. Elle m’a dit de revenir demain.',
+  'Hugo le facteur a reçu une lettre adressée à lui-même. Il l’avait écrite et oubliée.', 'Les enfants ont appris à Préfet à s’asseoir. Il ne se relève plus.', 'J’ai voulu faire du yoga au bord du lac. Un canard m’a imité. Il était meilleur.',
+  'Paulette a classé un dossier si bien que personne ne l’a jamais retrouvé.', 'Mme Célestine a prêté un livre sur la patience. On l’attend toujours.', 'Le café de Tod est si fort qu’une cuillère tient debout toute seule.',
+  'Marius a appris à Bouchon à rapporter les poissons. Il les mange avant.', 'J’ai demandé à Gaspard d’où venait sa marchandise. Il m’a vendu une réponse.'],
+  s: ['Bon, c’était mieux dans ma tête.', 'Riez, ça fait du bien. Même par politesse.', 'Le bourg a besoin de rire. On rit beaucoup, ici.',
+   'Ne le répétez pas, on va croire que je suis drôle.', 'Ha ! Rien que d’y repenser, je ris tout seul.', 'Vous en avez une, vous ? Une vraie, une drôle ?'] },
+ { id: 'sante', pour: ['tous'], r: [
+  'J’ai mal au dos depuis que j’ai porté le tonneau de pluie. Il était plein.', 'La Dr Lina dit qu’il faut boire deux litres d’eau par jour. Le café compte, j’espère.', 'Une bonne nuit de sommeil, c’est le meilleur médicament.',
+  'J’ai attrapé un rhume en me baignant au lac. Il était à dix degrés. Le lac, pas le rhume.', 'Les infusions de thym de Germaine guérissent tout. Sauf la mauvaise humeur.', 'Marcher tous les jours, c’est le secret des anciens du bourg.',
+  'J’ai une ampoule au pied qui a sa propre personnalité.', 'Le grand air donne faim. Et sommeil. Et encore faim.', 'Rose Fournier dit que les fleurs soignent l’âme. Elle en a partout.',
+  'J’ai mangé une baie inconnue une fois. Je ne recommencerai pas.', 'Une piqûre de guêpe, ça se soigne avec du vinaigre. Ou en pleurant.', 'Claire, l’infirmière, a des mains si douces que les piqûres ne font pas mal.',
+  'Quand on vit dehors, on n’est jamais malade. Ou alors très malade.', 'Le meilleur remède contre le froid, c’est une soupe et une couverture.', 'J’ai un genou qui craque. Il annonce les orages.',
+  'Les marches en montagne, ça muscle les mollets et ça vide la tête.', 'Il faut toujours avoir une trousse de secours. Tod le répète à tout le monde.', 'Mon grand-père vivait jusqu’à cent ans en mangeant de l’ail tous les matins.',
+  'La fatigue, ici, c’est une bonne fatigue. Celle qui fait dormir.', 'J’ai pris un coup de soleil sur le nez. Je ressemble à une fraise.'],
+  s: ['Prenez soin de vous, au lac. Il n’y a pas d’hôpital à côté.', 'Si ça ne va pas, allez voir la Dr Lina. Elle soigne tout le monde.', 'Le corps, c’est comme une tente : il faut le réparer avant qu’il pleuve.',
+   'Moi, je me soigne au café. Ce n’est pas recommandé.', 'Le grand air, c’est gratuit et c’est le meilleur médecin.', 'Vous avez l’air en forme, en tout cas. Le lac vous réussit.'] },
+ { id: 'objets', pour: ['tous'], r: [
+  'J’ai un couteau de poche qui appartenait à mon père. Il coupe encore.', 'Ma lampe torche a survécu à trois chutes et une rivière.', 'J’ai une montre qui retarde de cinq minutes. Je suis toujours en avance.',
+  'Mon chapeau a vu plus de pays que moi. Je l’ai acheté d’occasion.', 'J’ai une tasse ébréchée que je ne jetterai jamais. Elle a une histoire.', 'Les objets anciens ont une âme. Ou au moins une odeur.',
+  'J’ai trouvé une clé rouillée dans la forêt. Elle n’ouvre rien, je l’ai gardée.', 'Ma tente a des pièces de toile de quatre couleurs différentes. Elle a vécu.', 'Un bon sac à dos, c’est une maison qu’on porte.',
+  'J’ai une boussole qui montre le nord. Enfin, la plupart du temps.', 'Les allumettes, c’est le trésor du campeur. Gardez-les au sec.', 'Mon carnet de notes est rempli de dessins de champignons.',
+  'J’ai une couverture tricotée par ma grand-mère. Elle gratte, mais elle tient chaud.', 'Les gourdes en métal gardent l’eau fraîche. Celles en plastique lui donnent un goût.', 'J’ai un caillou rond que je garde dans ma poche. Je le touche quand je suis inquiet.',
+  'Ma paire de bottes a tellement marché qu’elles connaissent le chemin toutes seules.', 'J’ai une radio qui ne capte qu’une station. Elle passe de la musique d’accordéon.', 'Un bon couteau, une bonne corde, une bonne lampe. Le reste, c’est du luxe.',
+  'J’ai perdu un gant l’hiver dernier. Je garde l’autre en attendant qu’il revienne.', 'Les vieilles cartes ont des erreurs, mais elles ont du charme.'],
+  s: ['On s’attache aux objets. C’est bête, mais c’est comme ça.', 'Un objet qu’on garde longtemps devient un ami.', 'Gaspard vous vendrait n’importe quoi, mais pas ça. Ça n’a pas de prix.',
+   'Il faut prendre soin de ses affaires. Elles prennent soin de vous.', 'Et vous, quel est votre objet porte-bonheur ?', 'Le jour où je le perdrai, je serai très triste. Alors je ne le perdrai pas.'] });
+
+// ==== CAMP : BLABLA — SUJETS (4/5) (v0.20) =======================================================
+BLA.SUJETS.push(
+ { id: 'jardin', pour: ['tous'], r: [
+  'Rose a fait pousser une courge si grosse qu’il a fallu une brouette pour la rentrer.', 'Les tomates ne mûrissent jamais à cette altitude. Rose dit qu’il faut leur parler.', 'J’ai planté des radis. Ils ont poussé en trois semaines. Les radis sont pressés.',
+  'Les limaces ont mangé toute ma salade. Elles ont laissé un mot de remerciement en bave.', 'Le persil ne pousse que si on le sème un jour de pluie, disait ma mère.', 'Les fraises de montagne sont minuscules mais elles ont dix fois plus de goût.',
+  'J’ai fait un épouvantail avec un vieux manteau. Les corbeaux s’assoient dessus.', 'Le compost, c’est de la magie : des épluchures qui deviennent de la terre.', 'Il faut planter les pommes de terre quand les lilas fleurissent.',
+  'Les capucines éloignent les pucerons. Et elles se mangent. Double emploi.', 'J’ai trouvé un ver de terre de trente centimètres. Je l’ai remis en place, avec respect.', 'Rien ne pousse sous les sapins. Ils gardent toute la lumière pour eux.',
+  'La lavande attire les abeilles. Les abeilles attirent les enfants curieux.', 'Mon arrosoir fuit. J’arrose mes pieds autant que mes plantes.', 'Les haricots grimpent tout seuls. Il faut juste leur donner un bâton et du temps.',
+  'J’ai essayé de faire pousser un citronnier. Il a fait une feuille et il est mort de froid.', 'Un jardin, c’est la seule chose qui récompense la patience à coup sûr.', 'Les mauvaises herbes poussent toujours plus vite que les bonnes. C’est une loi.',
+  'Les potirons d’Halloween de l’école ont été plantés par les enfants. Ils sont tout tordus.', 'Le premier petit pois de l’année, on le mange cru, debout dans le jardin.'],
+  s: ['Le jardinage, ça apprend l’humilité. La terre décide.', 'Rose vous donnera des graines si vous lui demandez gentiment.', 'Il faudrait un petit potager à côté de votre tente.',
+   'Les légumes qu’on fait pousser soi-même ont toujours meilleur goût. Même ratés.', 'Le jardin, c’est mon endroit pour réfléchir.', 'L’année prochaine, je ferai mieux. Je dis ça tous les ans.'] },
+ { id: 'montagne', pour: ['tous'], r: [
+  'Le sommet derrière le lac s’appelle la Dent du Garde. Personne ne sait pourquoi.', 'Les montagnes ont l’air proches, mais il faut deux jours pour atteindre la première.', 'Quand il fait très clair, on voit cinq crêtes à la suite, de plus en plus bleues.',
+  'La neige reste sur les sommets même en été. Comme un chapeau qu’on n’enlève jamais.', 'Les marmottes sifflent pour prévenir du danger. Elles sifflent aussi quand on passe.', 'L’air est si pur là-haut qu’on a la tête qui tourne.',
+  'Un berger m’a dit qu’il y a une grotte avec des dessins anciens dans la montagne.', 'Les avalanches grondent au printemps. On les entend sans jamais les voir.', 'Les chamois sautent de rocher en rocher comme s’ils dansaient.',
+  'Le soleil se couche plus tôt derrière les montagnes. On perd une heure de lumière.', 'Il paraît qu’un col oublié mène directement au Hameau.', 'J’ai gravi le petit sommet de l’est une fois. J’ai pleuré en haut. De fatigue et de beauté.',
+  'Les nuages s’accrochent aux sommets comme de la laine sur des épines.', 'Les edelweiss poussent là où personne ne va. C’est pour ça qu’ils sont rares.', 'En montagne, il faut toujours prévoir le pire et espérer le meilleur.',
+  'Les sommets changent de couleur au coucher du soleil : orange, rose, puis violet.', 'Un cairn, c’est un tas de pierres qui dit : quelqu’un est passé par là.', 'Il y a un écho magnifique près de la cascade. Il répète trois fois.',
+  'Les montagnes sont plus vieilles que tout ce qu’on peut imaginer.', 'Le vent de la montagne descend le soir dans la vallée. Il apporte l’odeur de la neige.'],
+  s: ['La montagne ne se laisse pas apprivoiser. On la respecte, c’est tout.', 'Un jour, il faudra que j’y monte pour de bon.', 'Les montagnes nous rappellent qu’on est petits.',
+   'Ici, on vit à leurs pieds, et elles veillent sur nous.', 'Le garde forestier connaît tous les sentiers. Demandez-lui avant de partir.', 'Quand je les regarde, j’oublie mes soucis.'] },
+ { id: 'livres', pour: ['tous'], r: [
+  'Je relis toujours le même livre chaque hiver. Il change à chaque fois. Moi aussi.', 'Mme Célestine dit que chaque livre a un lecteur qui l’attend quelque part.', 'J’ai lu un roman où le héros vivait seul au bord d’un lac. Il finissait par parler aux arbres.',
+  'Les vieux livres sentent la vanille et la poussière.', 'J’ai un livre de recettes de ma grand-mère, avec ses taches de sauce.', 'Les contes de mon enfance avaient tous un loup. Je n’en ai jamais vu.',
+  'Je lis le soir à la lampe. Je m’endors toujours au même chapitre.', 'Le Journal du Bourg est le seul journal où chaque article parle d’un voisin.', 'J’ai écrit un poème une fois. Je l’ai caché si bien que je ne l’ai jamais retrouvé.',
+  'Les cartes géographiques, c’est des livres qu’on lit avec les pieds.', 'Il y a un livre à la librairie que personne n’a jamais emprunté. Le titre fait peur.', 'Lire, c’est voyager sans ampoules aux pieds.',
+  'Les livres de Handram ont des dorures sur la tranche. Ici, ils ont des taches de café.', 'J’ai appris à lire avec un almanach. Je savais quand semer avant de savoir mon alphabet.', 'Un livre prêté est un livre perdu, dit Mme Célestine. Elle prête quand même.',
+  'Les légendes du lac des Cimes sont dans un vieux livre relié en cuir.', 'J’ai lu que les étoiles ont des noms donnés par des bergers.', 'Un bon livre, c’est un ami qui ne vous interrompt jamais.',
+  'Je garde des fleurs séchées entre les pages de mes livres.', 'Le plus beau livre, c’est celui qu’on lit à quelqu’un.'],
+  s: ['Passez à la librairie, Mme Célestine vous trouvera le livre parfait.', 'Les livres, c’est la meilleure compagnie pour les soirées d’hiver.', 'Je vous prêterai le mien, si vous me le rendez.',
+   'Il paraît que Balzac, le chat, a lu toute la librairie. En dormant dessus.', 'Lire, c’est vivre plusieurs vies en une seule.', 'Vous lisez quoi, vous, au bord de votre lac ?'] },
+ { id: 'amour', pour: ['tous'], r: [
+  'Il paraît que Firmin est amoureux de quelqu’un du bourg. Il rougit dès qu’on dit son nom.', 'Le premier rendez-vous de mes parents, c’était au bal du village. Il lui a marché sur les pieds.', 'L’amour, c’est comme le feu de camp. Il faut le nourrir tous les soirs.',
+  'J’ai écrit une lettre d’amour que je n’ai jamais envoyée. Je la garde dans un tiroir.', 'Germaine a été mariée cinquante ans. Elle dit que le secret, c’est de ne jamais aller se coucher fâchés.', 'Les gens amoureux marchent plus lentement. Ils ne veulent pas arriver.',
+  'Il y a un banc au bord du lac où les amoureux gravent leurs initiales.', 'L’amour, ça ne se commande pas. Même au FSM.', 'Mes grands-parents se tenaient la main jusqu’au bout. Ça me fait encore sourire.',
+  'On dit que si on voit une étoile filante à deux, on reste ensemble pour toujours.', 'J’ai été amoureux d’une fille qui ne m’a jamais regardé. Elle est maintenant ma meilleure amie.', 'Les chansons d’amour sont toutes tristes. Pourquoi ?',
+  'Camilla et Mehdy, c’est la plus belle histoire du bourg. Tout le monde le dit.', 'L’amour, c’est partager le dernier morceau de tarte.', 'Mon cœur a battu si fort la première fois que j’ai cru qu’on l’entendait.',
+  'Un bouquet de fleurs des champs vaut plus qu’un bouquet acheté.', 'Les lettres d’amour d’autrefois étaient longues de dix pages. Aujourd’hui, trois mots suffisent.', 'Il ne faut jamais attendre pour dire je t’aime. On ne sait jamais.',
+  'J’ai vu deux cygnes sur le lac. Ils ne se quittaient pas d’un mètre.', 'L’amour, c’est quand on pense à quelqu’un en regardant un coucher de soleil.'],
+  s: ['L’amour, ça rend tout le monde un peu bête. Et heureux.', 'Ne le répétez pas, mais je suis un grand romantique.', 'Il faut savoir le saisir quand il passe.',
+   'Au bourg, les histoires d’amour font toujours la une du Journal.', 'Et vous, {JOUEUR}, vous avez quelqu’un qui vous attend ?', 'C’est la plus belle chose du monde. Après le pain de Jules.'] },
+ { id: 'mysteres', pour: ['tous'], r: [
+  'Qui habite vraiment la Villa ? Personne ne l’a jamais vu.', 'Il y a des lumières dans la forêt certaines nuits. Pas des lampes torches. Autre chose.', 'Le courrier de la Villa arrive sans timbre. Comment ?',
+  'Une porte du bourg est toujours fermée. Celle de la cave de la mairie.', 'Les enfants disent que la bête du lac a des yeux qui brillent.', 'Il y a une cabane abandonnée sur l’autre rive. La fumée sort parfois de la cheminée.',
+  'Quelqu’un dépose des fleurs devant la maison bleue chaque semaine.', 'Le vieux puits du village d’en bas faisait un bruit d’écho qui ne s’arrêtait jamais.', 'Les chiens du bourg aboient tous en même temps vers minuit. Puis plus rien.',
+  'Il paraît que le premier garde forestier des Cimes a disparu en suivant la bête.', 'Une nuit, j’ai entendu chanter sur le lac. Une voix de femme. Personne dans l’eau.', 'Les cartes anciennes ne montrent pas le lac. Comme s’il était apparu après.',
+  'On a trouvé des pièces d’or très anciennes dans le sable de la plage.', 'La radio du poste capte parfois une voix qui récite des chiffres.', 'Il y a un arbre dans la forêt où personne n’ose s’asseoir.',
+  'Le contrat de la Villa tient en une phrase. Une seule. Ça cache forcément quelque chose.', 'Les oiseaux évitent un coin du lac. Toujours le même.', 'Inès, la fille du Hameau, a une liste de noms. Personne ne sait pourquoi.',
+  'Certains soirs, le brouillard monte d’un coup, sans prévenir, puis disparaît en dix minutes.', 'Un randonneur est parti vers les crêtes et a renvoyé une carte postale du Hameau. Il n’y avait pas de chemin.'],
+  s: ['Il vaut mieux ne pas trop y penser. Ou y penser beaucoup. Je ne sais pas.', 'Yasmine enquête. Elle finira bien par trouver.', 'Moi, je préfère ne pas savoir. Certaines choses doivent rester des mystères.',
+   'Le garde forestier dit qu’il y a une explication à tout. Il ne dit pas laquelle.', 'Brrr. J’en ai des frissons rien qu’à en parler.', 'Si vous découvrez quelque chose, vous me le direz, hein ?'] },
+ { id: 'voyages', pour: ['tous'], r: [
+  'J’ai pris un train une fois, jusqu’à Feral. J’ai regardé par la fenêtre pendant six heures.', 'Le plus beau voyage, c’est celui qu’on fait sans savoir où on va.', 'J’ai une valise qui n’a jamais servi. Elle attend son heure.',
+  'Les voyageurs qui passent au bourg ont toujours des histoires incroyables.', 'J’ai rêvé de prendre un bateau depuis Port-Aven. La guerre a tout annulé.', 'Le voyage le plus long de ma vie, c’est la montée du vieux village jusqu’ici.',
+  'Quand on voyage, on emporte trop de choses et pas assez de temps.', 'Les cartes postales, c’est des petits morceaux de voyage qu’on envoie aux autres.', 'Un jour, je ferai le tour des Cimes à pied. Tous les lacs, un par un.',
+  'J’ai dormi une nuit dans une gare. Il y avait un pianiste qui jouait pour personne.', 'Les gens de Kesh, avant la guerre, voyageaient en caravane. Avec des chameaux.', 'Gaspard a voyagé partout. Il ne raconte jamais rien.',
+  'Le meilleur moment d’un voyage, c’est le départ. Ou le retour. Pas le milieu.', 'J’ai perdu mon chapeau dans un col. Il doit être encore en train de rouler.', 'Ma tante est partie à l’autre bout du monde. Elle envoie des lettres avec des timbres d’oiseaux.',
+  'Les voyages forment la jeunesse et fatiguent la vieillesse.', 'On ne revient jamais vraiment pareil d’un voyage.', 'J’aimerais voir un désert. Juste une fois. Les soldats disent que c’est beau et terrible.',
+  'Quand je voyage, je goûte toujours le pain local. On apprend tout d’un pays par son pain.', 'Il y a des voyages qu’on fait dans sa tête, en regardant un lac.'],
+  s: ['Voyager, c’est bien. Revenir, c’est mieux.', 'Vous, vous avez fait un sacré voyage pour arriver ici.', 'Un jour, je partirai. Et je reviendrai, bien sûr.',
+   'Les voyageurs sont toujours les bienvenus au bourg.', 'Le monde est grand, mais le lac est assez grand pour moi.', 'Racontez-moi votre plus beau voyage, un jour.'] },
+ { id: 'enfance3', pour: ['enfant'], r: [
+  'J’ai vu un écureuil qui faisait des réserves. Il en avait plein les joues !', 'Ma maman dit que je pose trop de questions. Pourquoi ?', 'J’ai fait un collier avec des glands. Il est un peu lourd.',
+  'Si on creuse très profond, on arrive de l’autre côté du monde ?', 'J’ai appris à faire des avions en papier. Le mien a volé jusqu’à la fontaine !', 'Lou a un dent qui bouge. Elle la remue tout le temps.',
+  'Les nuages ça goûte quoi ? Moi je crois que ça goûte la barbe à papa.', 'J’ai trouvé une pierre en forme de cœur. Je vais la donner à la maîtresse.', 'Pourquoi les adultes boivent du café ? C’est pas bon !',
+  'Mon papa ronfle comme un ours. Je l’ai enregistré dans ma tête.', 'On a fait une cabane dans la cour de l’école. Préfet est venu dedans.', 'J’ai vu un arc-en-ciel et j’ai couru pour trouver le trésor au bout. Il bougeait tout le temps.',
+  'Timéo dit que les soldats ont des chars qui volent. C’est vrai ?', 'J’ai mangé trois chouquettes de Jules. Il m’a vu. Il a fait un clin d’œil.', 'Les fourmis, elles ont un roi ou une reine ?',
+  'Je sais faire la roue ! Enfin, presque. Je tombe à la fin.', 'Pourquoi le soleil se couche ? Il est fatigué ?', 'J’ai écrit une lettre à la bête du lac. Je l’ai mise dans une bouteille.',
+  'Noé dit qu’il a vu un fantôme près de la maison bleue. C’était Germaine avec son chiffon.', 'Quand je serai grande, je serai capitaine d’un bateau sur le lac.'],
+  s: ['Tu veux voir ? Viens, je te montre !', 'C’est vrai, je te jure ! Croix de bois, croix de fer !', 'Tu sais plein de choses, toi. Tu es vieux ?',
+   'Après, je le dirai à tout le monde à l’école.', 'Hihi ! T’es drôle, toi.', 'Tu peux garder le secret ? Promis juré ?'] },
+ { id: 'soldat2', pour: ['soldat'], r: [
+  'Mon premier jour à l’armée, je me suis trompé de casque. J’ai porté celui du sergent.', 'Dans le désert, on se lève avant le soleil pour éviter la chaleur.', 'Le Humvee a un nom secret. Écho l’appelle « la vieille dame ». Elle ne l’aime pas.',
+  'On a des photos de nos familles collées au tableau de bord. Pour se souvenir pourquoi on est là.', 'Le plus beau son de la guerre, c’est le silence d’après.', 'À Orion, on a un chat de base. Il s’appelle Caporal. Il est gradé.',
+  'Les colis de la maison arrivent avec des semaines de retard. Le chocolat est toujours fondu.', 'On s’entraîne à démonter nos armes les yeux fermés. Moi, je perds toujours une pièce.', 'La capitaine Marest connaît le nom de chaque soldat de la base. Même les nouveaux.',
+  'Les étoiles du désert sont si nombreuses qu’on peut lire une carte à leur lumière.', 'Rivet nous a fabriqué un petit four avec une boîte de munitions. On y cuit du pain.', 'On a croisé une tempête de sable si épaisse qu’on ne voyait plus le capot.',
+  'Les permissions, on les compte en jours, puis en heures, puis en minutes.', 'Cendre écrit un journal. Elle dit qu’elle le publiera un jour.', 'Le café de campagne est si mauvais qu’on le boit pour se punir.',
+  'On a un code pour dire qu’on va bien à la radio : « le pommier fleurit ». C’est Rivet qui l’a inventé.', 'Silex dort toujours avec un œil ouvert. Il dit que c’est le gauche.', 'Le jour où on rentrera, on fera une fête au bord d’un lac. Celui-ci, peut-être.',
+  'Les enfants des villages de Kesh nous apprennent leurs jeux. On perd toujours.', 'Quand la radio se tait trop longtemps, tout le monde retient son souffle.'],
+  s: ['C’est notre vie. Pas toujours drôle, mais c’est la nôtre.', 'Vous êtes un civil qui sait écouter. C’est rare.', 'Ne vous inquiétez pas pour nous. On s’occupe les uns des autres.',
+   'Rivet dirait qu’il faut garder le moral. Il a raison.', 'Un jour, vous viendrez nous voir à Port-Aven. Quand ce sera fini.', 'Merci pour l’accueil. Ce lac, c’est une parenthèse.'] },
+ { id: 'tod3', pour: ['tod'], r: [
+  'J’ai écrit une lettre à Node hier. Six pages. J’en ai déchiré cinq.', 'Je me demande si Ilona se souvient de moi. Sûrement pas. Elle voit tant de gens.', 'J’ai trouvé des traces de lynx près du sentier. Le premier depuis dix ans.',
+  'Mon uniforme a un trou au coude. Je l’ai recousu avec du fil vert. Ça se voit.', 'J’ai appris à identifier les champignons. Enfin, ceux qu’il ne faut pas manger.', 'Le bureau du poste a une latte qui grince. Je saute par-dessus depuis un mois.',
+  'J’ai vu le soleil se lever sur le lac ce matin. J’ai oublié de noter l’heure dans le registre.', 'Le chef forestier m’a envoyé une lettre de félicitations. Je l’ai encadrée.', 'J’ai sauvé un oisillon tombé du nid. Il va bien. Il m’a mordu.',
+  'Quand je fais ma ronde de nuit, je chante pour me donner du courage.', 'Je me suis fait une tisane avec des herbes du coin. Elle avait un goût de pied.', 'Les enfants du bourg veulent tous devenir gardes forestiers. Je ne sais pas si je dois être fier ou inquiet.',
+  'J’ai dessiné une carte du secteur sept. Elle est plus belle que l’officielle.', 'Je garde une pomme sur mon bureau pour Node. Je la change chaque semaine.', 'Le talkie a sonné à trois heures du matin. C’était une erreur. J’ai mis une heure à me rendormir.',
+  'J’ai pris une photo du lac au lever du soleil. Elle est floue. Mais je l’aime.', 'Les visiteurs du lac sont tous différents. Je les note tous. Tu es mon préféré.', 'J’ai essayé de pêcher comme toi. J’ai attrapé une branche.',
+  'Je me demande ce que fait maman en ce moment. Elle doit étendre le linge en chantant.', 'Le jour où Node rentrera, je fermerai le poste une heure. Une seule. C’est le règlement.'],
+  s: ['Pardon, je parle beaucoup. Node dit que c’est de famille.', 'Tu es une bonne oreille, tu sais.', 'Je le noterai dans le registre. Page « choses importantes ».',
+   'Ça me fait du bien de parler avec toi.', 'Bon, il faut que je reprenne ma ronde. Mais c’était bien.', 'Node te ferait rire. Il a toujours une histoire.'] }
+);
+
+// ==== CAMP : BLABLA — SUJETS (5/5) (v0.20) =======================================================
+BLA.SUJETS.push(
+ { id: 'camilla3', pour: ['camilla'], r: [
+  'Tu sais ce que je ferais si j’avais une journée sans rien ? Je dormirais au soleil comme un chat.', 'J’ai vu une biche boire au lac ce matin. Je n’ai pas tiré. Elle était trop belle.', 'Tu crois que Node me pardonnera un jour pour la Dame blanche ?',
+  'J’ai trouvé une plume de geai bleu. Je te l’ai mise dans ta casquette. Ne l’enlève pas.', 'Ma mère me disait : « Ne te marie jamais avec un homme qui parle trop. » Bon.', 'J’ai réparé mon arc avec du nerf de cerf. Il tire mieux qu’avant.',
+  'Si on avait une fille, on l’appellerait comment ? Pas Germaine. Rien contre Germaine.', 'Le lac est mon nouveau terrier. Sans les murs. Avec toi.', 'Tu ronfles moins quand tu dors sur le côté. J’ai fait des essais.',
+  'J’ai fait un rêve où on vivait dans la maison bleue. Il y avait un chien et douze poules.', 'Lucien m’a fait les gros yeux au bourg. Il pense que je t’ai kidnappé.', 'Je t’ai vu pêcher ce matin. Tu tirais la langue. C’était adorable.',
+  'Le vent m’a apporté ton odeur de fumée jusqu’à la lisière. Je savais que tu étais là.', 'J’aimerais t’emmener chasser une fois. Juste pour voir ta tête quand un sanglier charge.', 'Mon arc a un nom. Je ne te dirai jamais lequel.',
+  'Tu sais ce qui me rend heureuse ? Le matin, quand tu me fais un café trop fort.', 'Les femmes du bourg me demandent comment je t’ai « attrapé ». Je dis : « avec une flèche ».', 'Je n’ai jamais eu peur de la nuit. Mais j’aime bien que tu sois là quand même.',
+  'Si un jour tu pars, je te retrouverai. Je suis chasseuse. Je retrouve toujours.', 'Raconte-moi encore comment tu as tagué la vitrine de Jules. J’adore cette histoire.'],
+  s: ['Tu vois, c’est pour ça que je suis restée.', 'Ne fais pas cette tête. Je t’embête.', 'Mehdy Badaoui, tu es la chose la plus bizarre qui me soit arrivée. Et la meilleure.',
+   'Bon. Assez parlé. On va voir le lac ?', 'Je te le dis parce que je le pense. Retiens-le.', 'Tu me fais rire. Même quand tu ne fais pas exprès. Surtout quand tu ne fais pas exprès.'] },
+ { id: 'bourg3', pour: ['bourg'], r: [
+  'La mairie va peut-être organiser une fête des pommes à l’automne. Jules est déjà en panique.', 'Le banc devant la librairie est le meilleur endroit pour voir passer tout le monde.', 'La fontaine coule enfin. M. Boup a attendu qu’il pleuve pour être sûr.',
+  'Les Ribeiro ont eu une dispute sur la couleur des volets. Les volets sont restés gris.', 'L’école a un nouvel élève. Il vient d’un autre bourg, plus haut. Les enfants l’ont adopté en une heure.', 'Agathe a monté une petite bibliothèque dans la cour. Les enfants y laissent des dessins.',
+  'Paulette a acheté une machine à écrire chez Gaspard. Elle tape les discours de M. Boup à toute vitesse.', 'Le café de Jouanne a une nouvelle nappe. Rouge à carreaux. Tout le monde en parle.', 'Victor a enfin attrapé un brochet. Il l’a montré à tout le bourg. Deux fois.',
+  'La Dr Lina a vacciné tous les enfants. Il y a eu des larmes. Surtout chez Firmin, qui accompagnait.', 'Le FSM a livré des sapins de Noël en plein octobre. Personne ne comprend.', 'Les poules d’Odette se sont échappées. On les a retrouvées dans le fournil.',
+  'Le nouveau panneau du village a une faute d’orthographe. « Bienvenu » sans e.', 'Mathis a construit un banc en bois pour l’aire de camping. Il est très solide. Trop.', 'Les Morel ont un chat qui dort sur la boîte aux lettres. Hugo doit le soulever chaque jour.',
+  'La cloche de la mairie sonne midi à midi cinq. Personne ne veut la régler.', 'On a fait une collecte pour le cadeau d’anniversaire de Germaine. Elle a deviné en cinq minutes.', 'Yasmine a publié un sondage : « Le lac est-il hanté ? » Oui à soixante pour cent.',
+  'La boulangerie de Jules fait la queue jusqu’à la fontaine le dimanche matin.', 'Il y a un concours de la plus belle fenêtre fleurie. Rose gagne chaque année.'],
+  s: ['C’est petit, le bourg, mais on ne s’ennuie jamais.', 'Ici, chaque petite nouvelle devient une grande histoire.', 'Passez au café, vous en apprendrez encore plus.',
+   'Le bourg vit, comme un vieux village. Il a juste des murs neufs.', 'On se dispute, on se réconcilie, on recommence. C’est la vie de bourg.', 'La prochaine fois, je vous raconte la suite.'] },
+ { id: 'ancien2', pour: ['ancien'], r: [
+  'J’ai eu sept frères et sœurs. On dormait à trois par lit. C’était chaud, au moins.', 'Ma première paie, je l’ai dépensée en bonbons. Toute.', 'Le premier poste de radio du village, on l’écoutait à vingt dans la même cuisine.',
+  'J’ai appris à danser la valse avec un balai. Il ne m’a jamais marché sur les pieds.', 'Autrefois, on lavait le linge à la rivière. Les mains gelaient, mais on chantait.', 'Le médecin passait une fois par mois à dos de mule. On gardait nos maladies pour lui.',
+  'Ma mère faisait des confitures avec tout. Même des carottes.', 'J’ai été maîtresse d’école pendant quarante ans. J’ai appris à lire à la moitié de ce bourg.', 'Le soir, on se racontait des histoires de loups. Il n’y avait plus de loups depuis cent ans.',
+  'J’ai fait la guerre de notre temps, la petite, celle dont personne ne se souvient.', 'Mon premier baiser, c’était derrière l’église. Le curé nous a vus. Il a souri.', 'On mangeait de la soupe matin, midi et soir. On était heureux quand même.',
+  'J’ai vu arriver l’électricité au village. On allumait et éteignait la lumière pour s’amuser.', 'Les foires d’autrefois duraient trois jours. On y vendait des vaches et des rubans.', 'Mon père m’a appris à tailler le bois. J’ai encore la petite chèvre qu’il a sculptée.',
+  'À mon époque, on ne jetait rien. Une chaussette trouée devenait un chiffon.', 'J’ai connu la grand-mère de Tod et de Node. Elle avait le même sourire qu’eux.', 'Les hivers d’avant, la neige montait jusqu’aux toits. On sortait par la fenêtre du grenier.',
+  'J’ai porté le même manteau pendant trente ans. Il est toujours dans l’armoire.', 'Quand on vieillit, on se met à aimer les petits matins.'],
+  s: ['C’était un autre monde, mon petit. Pas meilleur, pas pire. Différent.', 'Vous ne me croyez pas ? Demandez à Germaine, elle était là.', 'Les souvenirs, c’est tout ce qui reste. Et c’est déjà beaucoup.',
+   'Allez, je vous ennuie avec mes vieilles histoires.', 'Vous êtes gentil d’écouter une vieille personne.', 'Un jour, vous aussi, vous raconterez votre lac à des jeunes.'] },
+ { id: 'visiteur3', pour: ['visiteur'], r: [
+  'Je suis venu ici sur un coup de tête. Je ne regrette pas.', 'J’ai un ami qui m’a parlé de ce lac. Il disait qu’on y oublie le temps.', 'J’ai croisé un chien qui portait une sacoche de facteur. Ou j’ai rêvé ?',
+  'Le bourg en bas est étonnant. Tout est neuf, mais les gens ont l’air d’être là depuis toujours.', 'J’ai acheté une baguette au fournil. Le boulanger m’a demandé si je la voulais « pas trop cuite ».', 'J’ai dormi sous un rocher hier. Un hibou m’a observé toute la nuit.',
+  'On m’a dit qu’il fallait se méfier du brouillard sur le lac. Pourquoi ?', 'J’ai vu deux Humvee militaires sur la route, il y a quelques jours. Ici, dans les montagnes !', 'Je fais un tour des lacs de montagne. Celui-ci est le plus beau. Ne le dites pas aux autres.',
+  'J’ai rencontré une chasseuse rousse dans la forêt. Elle m’a souri, puis elle a disparu.', 'Le garde forestier m’a fait un sermon sur le feu de camp. Très poli, très long.', 'Je suis photographe. Je cherche la lumière parfaite. Ici, elle change toutes les cinq minutes.',
+  'J’ai perdu mon chemin trois fois. Le lac m’a retrouvé.', 'J’ai partagé mon thermos avec un vieux pêcheur. Il m’a raconté l’histoire de son père et de la bête.', 'Il paraît qu’il y a un supermarché gigantesque plus haut. Au milieu de nulle part ?',
+  'Je suis parti pour fuir un travail que je n’aimais plus. Je réfléchis à la suite.', 'J’ai une carte qui indique une source chaude près d’ici. Vous connaissez ?', 'J’ai rencontré des enfants qui jouaient sur la plage. Ils m’ont demandé si j’étais un aventurier.',
+  'Je repars demain. J’emporte un caillou du lac.', 'Je reviendrai l’année prochaine. Peut-être avec quelqu’un.'],
+  s: ['En tout cas, merci de me laisser partager votre coin.', 'Vous avez de la chance de vivre ici.', 'Je n’oublierai pas ce lac.',
+   'Les gens du coin sont accueillants. C’est rare.', 'Bon, je ne vais pas vous déranger plus longtemps.', 'Si vous passez par chez moi un jour, je vous rendrai la pareille.'] },
+ { id: 'alpha3', pour: ['alpha'], r: [
+  'Le shérif a organisé un exercice d’évacuation. Tout le monde est sorti, sauf lui. Il était aux toilettes.', 'La caisse automatique ne reconnaît que les pièces neuves. Les écus usés, elle les recrache.', 'Il y a un client qui vient tous les jours acheter une seule pomme.',
+  'Les agents de nuit jouent aux cartes dans le local. Le shérif fait semblant de ne pas savoir.', 'Un détenu a demandé un oreiller supplémentaire. Le shérif lui a donné un dictionnaire.', 'Le rayon jouets a été dévalisé par les enfants de l’école pendant une sortie.',
+  'On a retrouvé un hérisson dans le rayon légumes. Il a été relâché avec les honneurs.', 'Le shérif Nougat a un carnet où il note les plaques de toutes les voitures. Même la sienne.', 'Le parking a des places réservées « Villa ». Personne ne s’y gare jamais.',
+  'Un voleur de chocolat a été rattrapé parce qu’il avait les doigts marron.', 'La musique d’ambiance du FSM passe la même chanson depuis l’ouverture.', 'Les chariots du FSM disparaissent un par un. On en a retrouvé un au bord du lac.',
+  'Le shérif répète « force reste à la loi » à chaque arrestation. Même pour les chewing-gums.', 'Les promotions sont annoncées au haut-parleur. Personne ne comprend rien, ça grésille.', 'Un client a voulu payer avec une truite. Sonia a hésité.',
+  'Les agents ont des lampes torches neuves. Ils les allument même en plein jour pour tester.', 'Les cellules du commissariat ont une vue sur la forêt. Les détenus disent que c’est reposant.', 'Le FSM vend des tentes. Personne n’en achète, tout le monde campe déjà.',
+  'Un jour, le shérif a donné une amende à un pigeon. Le pigeon n’a pas payé.', 'Les employés ont un badge avec leur photo. Sonia a fermé les yeux sur la sienne.'],
+  s: ['Le FSM, c’est un village dans le village.', 'On rigole bien, même si on travaille dur.', 'Venez faire vos courses un jour, vous verrez le spectacle.',
+   'Le shérif est jeune, mais il a du cœur. Et beaucoup de carnets.', 'C’est ça, la vie dans un supermarché au bout du monde.', 'Ne le dites pas au shérif, il le noterait.'] },
+ { id: 'cuisine2', pour: ['tous'], r: [
+  'La soupe de potiron de Rose est si épaisse que la cuillère tient debout.', 'Le secret d’une bonne omelette ? Ne jamais la regarder trop longtemps.', 'J’ai fait brûler des pâtes une fois. Il paraît que c’est impossible. J’ai réussi.',
+  'Un gâteau au chocolat sans chocolat, c’est un gâteau triste.', 'Les champignons des bois, revenus au beurre avec de l’ail. Rien de meilleur.', 'Les confitures de Germaine ont gagné un concours. Elle ne dit pas lequel.',
+  'Pour faire une bonne sauce, il faut du temps et de la patience. J’ai ni l’un ni l’autre.', 'Les beignets du carnaval, au vieux village, étaient légers comme des nuages.', 'Le meilleur pain se mange encore tiède, avec rien dessus.',
+  'J’ai appris à faire un pot-au-feu. Six heures de cuisson. Six minutes pour le manger.', 'Un oignon qui fait pleurer, c’est un bon oignon.', 'Les tartes aux myrtilles laissent la langue bleue pendant une heure.',
+  'La raclette, c’est un plat qui réunit les gens autour du fromage.', 'Le gratin dauphinois de ma tante, c’était une religion familiale.', 'J’ai essayé de faire des crêpes en camping. La première est restée collée au plafond de la tente.',
+  'Une compote de pommes, c’est le goût de l’enfance.', 'Les épices de Kesh, les soldats en parlent comme de trésors.', 'Le poisson du lac grillé au feu de bois a un goût de montagne.',
+  'Mon livre de cuisine préféré, c’est celui où les recettes sont écrites à la main.', 'Cuisiner pour les autres, c’est la meilleure façon de dire qu’on les aime.'],
+  s: ['Vous me donnez faim, à force.', 'Jouanne pourrait vous donner la recette. Ou pas. Elle garde ses secrets.', 'Un jour, je vous ferai goûter ma spécialité.',
+   'La cuisine, c’est de l’amour avec de la farine.', 'Au bourg, on parle cuisine plus que politique. Heureusement.', 'Il faut manger chaud dans les Cimes. C’est la règle.'] },
+ { id: 'metiers', pour: ['tous'], r: [
+  'Le forgeron du vieux village faisait des fers à cheval et des bagues de fiançailles.', 'Le rémouleur passait une fois par an avec sa roue. On lui donnait tous nos couteaux.', 'Le colporteur vendait des aiguilles, des rubans et des nouvelles.',
+  'Le meunier avait toujours de la farine dans les sourcils.', 'Le sabotier fabriquait des chaussures en bois. On les entendait arriver de loin.', 'La lavandière connaissait tous les secrets du village. Le linge parle.',
+  'Le berger montait l’été avec ses moutons et redescendait à l’automne avec une barbe.', 'Le maréchal-ferrant savait parler aux chevaux. Ils se calmaient d’un mot.', 'Le charbonnier vivait dans la forêt et ne descendait qu’une fois par mois.',
+  'Le tonnelier faisait des tonneaux si étanches qu’on pouvait y garder la pluie dix ans.', 'L’allumeur de réverbères passait chaque soir avec sa longue perche.', 'Le crieur public annonçait les nouvelles sur la place. Il avait une voix énorme.',
+  'Le vannier tressait des paniers avec l’osier de la rivière.', 'Le cordonnier réparait les chaussures et racontait des histoires en même temps.', 'Le fromager de la vallée affinait ses fromages dans une grotte.',
+  'Le garde champêtre faisait sa tournée avec un tambour. Avant Tod, c’était lui le gardien.', 'La couturière du village faisait les robes de mariée de toutes les filles.', 'Le bûcheron savait dans quel sens un arbre allait tomber rien qu’en le regardant.',
+  'Le facteur d’autrefois livrait à cheval. Hugo a un chien. Les temps changent.', 'L’horloger réparait toutes les montres du village. Il était toujours en retard.'],
+  s: ['Ces métiers ont presque tous disparu. C’est dommage.', 'Il faudrait que quelqu’un les écrive avant qu’on les oublie.', 'Les anciens du bourg en parlent encore avec les yeux qui brillent.',
+   'Aujourd’hui, il y a le FSM. Ce n’est pas pareil.', 'Chaque métier avait son savoir. Comme une langue secrète.', 'Mon grand-père en faisait un. Je vous dirai lequel.'] },
+ { id: 'eau', pour: ['tous'], r: [
+  'La rivière qui descend du lac fait trois cascades avant la vallée.', 'L’eau de source, ici, a un goût de pierre et de neige.', 'Il paraît que l’eau du lac guérit les rhumatismes. Germaine y croit.',
+  'J’ai trouvé une source cachée sous les fougères. L’eau est glacée même en été.', 'Le bruit d’un ruisseau, c’est le meilleur somnifère.', 'Les truites remontent la rivière à l’automne. On les voit sauter les cascades.',
+  'Il faut toujours purifier l’eau du lac. Tod le répète, et il a raison.', 'Les gouttes de pluie sur la toile, c’est une musique qui berce.', 'Il y a un vieux moulin en ruine près de la rivière. La roue tourne encore un peu.',
+  'L’eau gelée fait des sculptures sur les rochers en hiver.', 'Les enfants font des barrages dans le ruisseau. Les castors seraient jaloux.', 'Boire l’eau directement à la source, avec les mains. C’est un plaisir rare.',
+  'La cascade du nord forme un arc-en-ciel l’après-midi.', 'L’eau, c’est la vie, dit M. Boup. C’est le vingt-troisième paragraphe de son discours.', 'Les galets de la rivière sont si lisses qu’ils semblent polis à la main.',
+  'J’ai vu une loutre dans la rivière. Elle jouait avec un caillou.', 'L’eau du lac est plus claire le matin. Le soir, elle se trouble.', 'Les vieux disent qu’il ne faut jamais siffler près de l’eau. Ça attire les esprits.',
+  'La neige qui fond au printemps remplit le lac d’un coup.', 'On peut entendre la rivière depuis le bourg, la nuit, quand tout se tait.'],
+  s: ['L’eau, ici, c’est un trésor. Il faut la respecter.', 'Rien ne vaut un bon bain froid dans le lac. Enfin, après.', 'Le garde forestier surveille la rivière comme une sœur.',
+   'Quand j’entends l’eau couler, je suis apaisé.', 'Ne buvez jamais l’eau sans la traiter. Croyez-moi.', 'L’eau des Cimes, c’est la meilleure du monde.'] }
+);
+
+// ==== CAMP : BAVARDAGES ENTRE PNJ (1/3) (v0.21) ==================================================
+// Quand deux PNJ sont posés à moins de 3,2 m l'un de l'autre et que le joueur est à moins de 16 m, ils échangent quelques répliques
+// (sous-titre « Nom : … », bulle « … » au-dessus de celui qui parle, clip Talk, ils se tournent l'un vers l'autre). Un échange à la fois,
+// pause de 45 s par PNJ. BAV.POOL[clé] : clé = catégories triées 'a|b' (bourg, enfant, ancien, soldat, alpha, visiteur, tod, camilla)
+// ou 'tous' ; BAV.PAIRES['id1|id2'] (ids triés) pour les duos nommés. Chaque échange = tableau de répliques alternées A, B, A… ;
+// {A} et {B} = prénoms des deux interlocuteurs. Mémoire : BAV.vus (sans répétition avant épuisement).
+const BAV = { POOL: {}, PAIRES: {}, vus: {}, cur: null, t: 0 };
+BAV.POOL.tous = [
+ ['Tu as bien dormi ?', 'Comme une bûche. Une bûche qui se réveille trois fois.', 'C’est l’altitude. Tout le monde dort mal la première année.'],
+ ['Il va pleuvoir, tu crois ?', 'Regarde les hirondelles. Elles volent bas.', 'Alors je rentre le linge.'],
+ ['Tu as vu le campeur du lac ?', 'Ce matin, il pêchait. Il n’attrapait rien, mais il avait l’air content.', 'C’est ça, la sagesse.'],
+ ['Quelle heure il est ?', 'L’heure d’un café.', 'C’est toujours l’heure d’un café, avec toi.'],
+ ['J’ai mal aux pieds.', 'Tu marches trop.', 'Je marche pour oublier que j’ai mal aux pieds.'],
+ ['Tu as goûté le pain de Jules, ce matin ?', 'Deux fois. Une pour moi, une pour vérifier.', 'Et alors ?', 'Il faudra que je revérifie demain.'],
+ ['Il fait frais, aujourd’hui.', 'Frais ? Il fait froid.', 'Pour les Cimes, c’est frais.'],
+ ['Tu crois à la bête du lac ?', 'Je n’y crois pas. Mais je ne pêche pas dans le brouillard.', 'Moi non plus. Par principe.'],
+ ['On se voit au café ce soir ?', 'Si Jouanne fait sa potée, oui.', 'Elle fait toujours sa potée le mardi.', 'Alors on est mardi.'],
+ ['J’ai trouvé un champignon énorme.', 'Montre-le à la Dr Lina avant de le manger.', 'Trop tard.', '… Comment tu te sens ?', 'Très bien. Pour l’instant.'],
+ ['Tu as des nouvelles de ta sœur ?', 'Elle m’a écrit. Elle va bien. Elle se plaint de la ville.', 'Tout le monde se plaint de la ville.'],
+ ['Regarde ce ciel !', 'On dirait une peinture.', 'Une peinture qui change toutes les cinq minutes.'],
+ ['J’ai oublié mon parapluie.', 'Il ne pleut pas.', 'Pas encore. Il attend que je sois loin de chez moi.'],
+ ['Tu sais ce que j’aime, ici ?', 'Le silence ?', 'Non, le bruit. Le bon bruit. Le vent, les oiseaux, les gens qui se disent bonjour.'],
+ ['On m’a dit que la Villa avait payé tout le bourg.', 'On dit beaucoup de choses.', 'Mais c’est vrai ?', 'Oui. Mais on le dit quand même beaucoup.'],
+ ['Tu as l’air fatigué.', 'J’ai compté les étoiles cette nuit.', 'Tu es allé jusqu’où ?', 'Deux cent douze. Puis je me suis endormi dehors.'],
+ ['Il y a des myrtilles derrière la mairie.', 'Ne le dis à personne.', 'Je ne l’ai dit qu’à toi.', 'Alors tout le bourg le sait déjà.'],
+ ['J’ai vu un aigle ce matin.', 'Un aigle ou un pigeon ?', 'Un aigle. Avec un air important.', 'Alors c’est un aigle.'],
+ ['Tu viens marcher jusqu’au lac ?', 'Le campeur ne va pas aimer qu’on le dérange.', 'On ne le dérangera pas. On regardera le lac de loin.'],
+ ['Tu as entendu ce grondement, cette nuit ?', 'L’orage, sûrement.', 'Il n’y avait pas d’orage.', '… Alors je n’ai rien entendu.'],
+ ['Le garde forestier est passé deux fois aujourd’hui.', 'Il vérifie le périmètre.', 'Il vérifie surtout que personne n’a fait de feu.'],
+ ['J’ai fait une tarte. Elle est ratée.', 'Une tarte ratée, c’est quand même une tarte.', 'Tu en veux une part ?', 'Une petite. Pour être poli.'],
+ ['Tu crois qu’il neigera bientôt ?', 'Mon genou dit oui.', 'Ton genou se trompe toujours.', 'Mon genou a raison une fois sur deux. C’est mieux que la météo.'],
+ ['J’adore cette heure-là.', 'Laquelle ?', 'Celle où le soleil passe derrière la montagne et où tout devient doré.'],
+ ['Tu as un mouchoir ?', 'Tu pleures ?', 'Non, j’ai le nez qui coule. C’est moins poétique.'],
+ ['Il paraît que Gaspard vient dimanche.', 'Avec quoi, cette fois ?', 'Il ne le sait jamais lui-même avant d’ouvrir sa charrette.'],
+ ['On devrait faire une fête.', 'Pour fêter quoi ?', 'Le fait qu’on est encore là.', 'Ça, c’est une bonne raison.'],
+ ['J’ai rêvé que je volais au-dessus du lac.', 'Et alors ?', 'Je suis tombé dedans. Je me suis réveillé en sursaut.'],
+ ['Tu as rangé ta glacière ?', 'Tu parles comme le garde forestier.', 'Il a raison, le garde forestier.'],
+ ['Je crois que je vais repeindre ma porte.', 'En quelle couleur ?', 'Bleu. Comme la maison bleue.', 'Germaine va être jalouse.'],
+ ['Tu as vu le chien du facteur ?', 'Biscotte ? Elle est plus ponctuelle que lui.', 'C’est elle qui fait la tournée, en vrai.'],
+ ['Le vent a tourné.', 'Je l’ai senti. Ça sent la neige.', 'Ou la soupe de Rose.', 'Les deux sentent pareil, en hiver.'],
+ ['On a encore perdu une poule.', 'Le renard ?', 'Ou Préfet. Il a des goûts de renard.'],
+ ['J’ai lu un livre extraordinaire.', 'De quoi ça parle ?', 'D’un homme qui vit seul au bord d’un lac.', 'Il n’y a pas besoin de lire, il suffit de regarder par là-bas.'],
+ ['Tu es allé au FSM ?', 'J’y suis resté une heure. Je cherchais le sel.', 'Il est où, le sel ?', 'Je ne l’ai pas trouvé. J’ai acheté des mangues.'],
+ ['Il fait beau.', 'Ne le dis pas trop fort.', 'Pourquoi ?', 'Le temps nous entend, ici. Il se vexe.'],
+ ['Tu as l’air heureux.', 'J’ai mangé une chouquette.', 'C’est tout ?', 'C’est déjà beaucoup.'],
+ ['Les enfants ont encore peint la fontaine.', 'En quelle couleur ?', 'Toutes.'],
+ ['Tu as vu les soldats, l’autre jour ?', 'Les deux camions couleur sable ? Oui.', 'Ils avaient l’air fatigués.', 'Ils avaient l’air de gens qui reviennent de loin.'],
+ ['Je n’arrive pas à dormir quand il y a pleine lune.', 'Moi, je dors mieux.', 'Tu dors toujours mieux. C’est injuste.'],
+ ['On m’a dit que le campeur s’appelait {JOUEUR}.', 'C’est joli, comme prénom.', 'Ça sonne bien avec « campeur du lac ».'],
+ ['Il faudrait réparer la clôture.', 'Il faudrait.', 'Tu le feras ?', 'Il faudrait.'],
+ ['J’ai trouvé une plume de chouette.', 'Ça porte bonheur.', 'Tout porte bonheur, d’après toi.', 'Parce que tout porte bonheur, si on y croit.'],
+ ['Tu aimes l’hiver ?', 'J’aime l’hiver vu d’une fenêtre, avec une soupe.', 'Ça, ce n’est pas l’hiver, c’est la soupe.'],
+ ['Ton chapeau est neuf ?', 'Il a vingt ans.', 'Il fait jeune.', 'Il a de l’entretien. Comme moi.'],
+ ['J’ai vu de la lumière à la Villa, cette nuit.', 'Personne n’a jamais vu la Villa.', 'Justement. J’ai vu de la lumière quelque part où il n’y a rien.'],
+ ['Tu viens à la chorale d’Agathe ?', 'Je chante faux.', 'Tout le monde chante faux. C’est pour ça qu’on chante ensemble.'],
+ ['Il y a un nouveau dans le bourg.', 'Encore ?', 'La Villa dit d’accueillir tout le monde.', 'Alors accueillons.'],
+ ['On ne s’ennuie jamais, ici.', 'Il ne se passe rien.', 'Justement. On a le temps de regarder ce rien.'],
+ ['J’ai fait des confitures de mûres.', 'Combien de pots ?', 'Douze.', 'Il en restera combien demain ?', 'Dix, si je les cache bien.'],
+ ['La mairie cherche des bras pour les petits travaux.', 'En écus ?', 'En écus du Bourg.', 'Alors je suis volontaire.'],
+ ['Tu crois que la guerre va venir jusqu’ici ?', 'Les Cimes sont loin de tout.', 'C’est ce qu’on disait de Port-Aven.', '… Parlons d’autre chose.'],
+ ['Le lac est gelé au bord.', 'Déjà ?', 'Juste une petite croûte. Elle fond à midi.'],
+ ['J’ai perdu une boucle d’oreille.', 'Où ?', 'Si je le savais, je ne l’aurais pas perdue.'],
+ ['On dit que le facteur a une lettre pour « le lac ».', 'Pour le lac ? Le lac lui-même ?', 'Il l’a jetée à l’eau. Il a dit que c’était la bonne adresse.'],
+ ['Tu as vu passer le shérif ?', 'À vélo, oui.', 'Il pédalait vite ?', 'Il poursuivait un voleur de chocolat.', 'Il l’a eu ?', 'Le chocolat était déjà mangé.'],
+ ['Il paraît que Théo s’est baigné dans le lac.', 'En cette saison ?', 'Il dit que c’était « vivifiant ».', 'Il était bleu en sortant, d’après Rose.'],
+ ['Je vais à la librairie.', 'Rapporte-moi quelque chose.', 'Quoi ?', 'Une histoire. N’importe laquelle.'],
+ ['J’ai compté les chats du bourg.', 'Combien ?', 'Cinq officiels, et trois qui font semblant d’habiter ici.'],
+ ['Il fait doux, pour la saison.', 'Méfie-toi. La douceur, ici, c’est le calme avant la neige.'],
+ ['Tu as des projets pour l’hiver ?', 'Tricoter. Lire. Survivre.', 'Dans cet ordre ?', 'Dans le désordre, surtout.'],
+ ['On devrait aller voir les étoiles ce soir.', 'Il fait froid.', 'On prendra des couvertures.', 'Et du chocolat chaud.', 'Marché conclu.'],
+ ['Tu as vu mes lunettes ?', 'Sur ta tête.', 'Ah. Merci.', 'De rien. C’est la quatrième fois cette semaine.'],
+ ['Les mélèzes commencent à jaunir.', 'L’automne arrive par le haut.', 'Comme la neige.', 'Comme tout, ici.'],
+ ['J’ai trouvé une pièce ancienne sur la plage.', 'Montre-la à Gaspard.', 'Il va me l’acheter.', 'Ou te la voler. Avec le sourire.'],
+ ['Ça fait du bien de te voir.', 'On s’est vus hier.', 'Ça fait quand même du bien.'],
+ ['Je crois que la chouette a trouvé un nouveau perchoir.', 'Où ça ?', 'Sur ma cheminée. Elle me regarde dormir.', 'Brrr.'],
+ ['Le café était froid, ce matin.', 'Tu l’as oublié sur la table ?', 'Pendant deux heures.', 'Ce n’est plus un café, c’est un souvenir.'],
+ ['On a vu un cerf près du sentier.', 'Un grand ?', 'Avec des bois comme un arbre.', 'Il faut le dire au garde.', 'Il l’a déjà noté. Il note tout.'],
+ ['Tu as l’air soucieux.', 'Je pensais à la Villa.', 'N’y pense pas trop. Ça donne mal à la tête.'],
+ ['J’ai planté des tulipes.', 'Elles pousseront au printemps.', 'Si les écureuils ne les mangent pas avant.'],
+ ['Tu as entendu parler du chat Balzac ?', 'Celui de la librairie ?', 'Il a dormi sur un dictionnaire toute la nuit.', 'Il doit être très cultivé.'],
+ ['Le fournil sent bon jusqu’ici.', 'Jules a dû faire des brioches.', 'Tu crois qu’il en reste ?', 'Il n’en reste jamais.'],
+ ['On a enfin un médecin dans le bourg.', 'La Dr Lina était déjà là, en bas.', 'Oui, mais maintenant elle a un vélo.'],
+ ['J’ai une ampoule au talon.', 'Mets du sparadrap.', 'Je n’en ai plus.', 'Va voir Claire. Elle a toujours tout.'],
+ ['C’est quoi, ce bruit ?', 'Le vent dans la cheminée.', 'On dirait quelqu’un qui chante.', 'C’est le vent qui chante. Il en a le droit.'],
+ ['On devrait inviter le campeur au café.', 'Il viendrait ?', 'Si on lui promet une soupe chaude.', 'Tout le monde vient pour une soupe chaude.'],
+ ['J’ai trouvé ton écharpe.', 'Où ?', 'Sur le banc de la fontaine.', 'Elle m’attendait. C’est une écharpe fidèle.'],
+ ['Tu as vu comme les jours raccourcissent ?', 'Bientôt, il fera nuit à cinq heures.', 'Alors on se couchera à six.'],
+ ['Il paraît que la fontaine sera inaugurée.', 'Quand ?', 'Bientôt.', 'C’est ce qu’on dit depuis trois mois.']
+];
+BAV.POOL['enfant|enfant'] = [
+ ['On joue à chat ?', 'C’est toi le chat !', 'Non, c’est toi !', 'On est deux chats, alors.'],
+ ['T’as vu la bête du lac ?', 'Non, mais j’ai vu son ombre.', 'C’était peut-être un nuage.', 'Un nuage avec un long cou ?'],
+ ['La maîtresse a dit qu’on aura une sortie nature.', 'Avec Tod ?', 'Oui !', 'Génial ! Il va nous montrer les écureuils.'],
+ ['J’ai une dent qui bouge.', 'Montre ! … Beurk.', 'C’est pas beurk, c’est la petite souris qui va venir.'],
+ ['T’as fini tes devoirs ?', 'Quels devoirs ?', 'Ceux de demain.', 'Ah. Ceux-là. Non.'],
+ ['Je parie que je cours plus vite que toi jusqu’à la fontaine.', 'Pari tenu !', 'Trois, deux, un…', 'Tu es parti avant !'],
+ ['Tu crois que les poissons font des rêves ?', 'Sûrement. Des rêves de vers de terre.', 'Ou de nager dans le ciel.'],
+ ['Ma maman fait des crêpes ce soir.', 'Je peux venir ?', 'Si tu apportes de la confiture.', 'Je vais demander à Germaine !'],
+ ['J’ai trouvé un caillou magique.', 'Il fait quoi ?', 'Il brille quand on le mouille.', 'Tous les cailloux brillent quand on les mouille.', 'Oui, mais lui, il est magique.'],
+ ['Plus tard, je serai pilote d’hélicoptère.', 'Moi, garde forestier.', 'Alors je te transporterai dans mon hélicoptère.', 'D’accord, mais tu atterris doucement.'],
+ ['On fait une cabane ?', 'Où ?', 'Derrière l’école.', 'Mlle Agathe va nous gronder.', 'Pas si c’est une cabane éducative.'],
+ ['T’as peur du noir ?', 'Non. Et toi ?', 'Non plus. Mais je dors avec la lampe.', 'Moi aussi. Mais c’est pour lire.'],
+ ['Le chien de M. Boup m’a léché la main.', 'Préfet ? Il ne lèche personne !', 'Moi, il m’aime bien.'],
+ ['Tu sais siffler ?', 'Écoute… pfff.', 'C’est pas siffler, ça, c’est souffler.'],
+ ['J’ai vu les soldats ! Avec leurs camions !', 'Ils avaient des fusils ?', 'Et des casques ! Et une radio qui parle !', 'Je veux être soldat, alors.', 'Moi aussi. Mais pas pour la guerre, pour les camions.'],
+ ['On va à la plage mercredi ?', 'Si maman veut.', 'On lui dira qu’Inès sera là.', 'Alors elle voudra.'],
+ ['Pourquoi les grands boivent du café ?', 'Pour se réveiller.', 'Mais ils sont déjà réveillés !', 'Pas vraiment. Regarde papa le matin.'],
+ ['J’ai fait un dessin du campeur.', 'Il ressemble à quoi ?', 'À un monsieur avec une tente sur la tête.', 'C’est très ressemblant.'],
+ ['Tu crois que le Père Noël passe par les Cimes ?', 'Il passe partout.', 'Même chez le campeur ?', 'Surtout chez le campeur. Il est tout seul.'],
+ ['J’ai un secret.', 'Dis-le !', 'Non, c’est un secret.', 'Alors pourquoi tu m’en parles ?', 'Pour que tu saches que j’en ai un.'],
+ ['On compte jusqu’à cent ?', 'Un, deux, trois… euh… après quarante-neuf, c’est quoi ?', 'Cinquante !', 'Ah oui. On recommence ?'],
+ ['Mon papa dit qu’il y a des ours dans la forêt.', 'Il n’y a pas d’ours !', 'Il dit ça pour qu’on ne s’éloigne pas.', 'Alors je vais faire comme s’il y en avait.'],
+ ['Tu veux voir mon trésor ?', 'C’est quoi ?', 'Une bille bleue, une plume et un bonbon.', 'Je peux avoir le bonbon ?', 'Non, c’est un trésor.'],
+ ['La maîtresse a dit que la Terre est ronde.', 'Alors pourquoi le lac est plat ?', 'Parce que c’est un petit morceau de la Terre.', 'Ah. C’est logique.'],
+ ['On fait la course jusqu’au fournil ?', 'Le premier arrivé a une chouquette !', 'Jules va nous voir arriver !', 'Il nous donnera peut-être deux chouquettes.'],
+ ['Tu as vu la chouette sur la cheminée ?', 'Elle me fait peur.', 'Elle est gentille. Elle mange les souris.', 'Elle me regarde comme si j’étais une souris.'],
+ ['J’ai fait un vœu sur une étoile filante.', 'C’était quoi ?', 'Si je le dis, il ne marche pas.', 'Alors dis-le-moi demain, quand il aura marché.'],
+ ['Je vais construire un bateau pour traverser le lac.', 'Avec quoi ?', 'Avec des bâtons et beaucoup de courage.', 'Prends aussi une bouée.'],
+ ['Kiwi a attrapé un papillon.', 'Il l’a mangé ?', 'Non, il l’a regardé partir.', 'C’est un chat poli.'],
+ ['On joue au monstre du lac ?', 'C’est moi le monstre !', 'Non, tu as déjà été le monstre hier !', 'Mais je fais mieux le grondement !'],
+ ['T’as fini ton goûter ?', 'Oui. Et toi ?', 'Pas encore.', 'Je peux t’aider à le finir ?'],
+ ['Lou sait lire des mots très longs.', 'Comme quoi ?', 'Comme « anticonstitutionnellement ».', 'Ça veut dire quoi ?', 'Elle sait pas. Mais elle sait le lire.'],
+ ['J’ai vu un écureuil faire des réserves.', 'Il en avait combien ?', 'Plein les joues !', 'Comme toi au goûter.'],
+ ['Pourquoi le ciel est rouge le soir ?', 'Parce que le soleil a honte de partir.', 'C’est pas vrai.', 'Si. C’est la maîtresse qui l’a dit. Presque.'],
+ ['On écrit une lettre à la bête du lac ?', 'Elle sait pas lire.', 'On lui fera des dessins.', 'Et on la mettra dans une bouteille !'],
+ ['Tu crois que Tod a peur de quelque chose ?', 'Des araignées, peut-être.', 'Un garde forestier, ça n’a peur de rien.', 'Sauf des araignées.'],
+ ['J’ai perdu mon bonnet.', 'Il est où ?', 'S’il était quelque part, il ne serait pas perdu.', 'Tu parles comme ta mamie.'],
+ ['Demain, il y a des frites à la cantine !', 'Comment tu le sais ?', 'Inès me l’a dit.', 'Alors c’est sûr !'],
+ ['On fait des ricochets ?', 'Je sais faire trois rebonds !', 'Moi quatre !', 'Menteur !', 'Viens voir, alors !'],
+ ['Tu as vu le chien des soldats ?', 'Ils n’ont pas de chien.', 'Ils ont un chat à leur base, Mathis l’a dit.', 'Un chat soldat ? Trop bien.']
+];
+
+// ==== CAMP : BAVARDAGES ENTRE PNJ (2/3) (v0.21) ==================================================
+BAV.POOL['bourg|bourg'] = [
+ ['M. Boup a encore rallongé son discours.', 'Combien de paragraphes, maintenant ?', 'Vingt-sept.', 'La fontaine sera tarie avant qu’il ait fini.'],
+ ['Tu as vu la nouvelle nappe de Jouanne ?', 'Rouge à carreaux ?', 'Elle dit que c’est « rustique moderne ».', 'C’est surtout rouge.'],
+ ['Hugo a apporté une lettre de la Villa à la mairie.', 'Sans timbre ?', 'Comme toujours.', 'Paulette l’a ouverte ?', 'Elle l’a rangée. Sans l’ouvrir. Elle a peur.'],
+ ['Les Ribeiro se sont encore disputés pour les volets.', 'Quelle couleur, cette fois ?', 'Vert contre gris.', 'Ils finiront par les peindre en marron. Comme tout le monde.'],
+ ['Tu as vu Marius et Abel au ponton ce matin ?', 'Ils se sont disputé le bout.', 'Qui a gagné ?', 'Le brochet. Il est parti avec la ligne des deux.'],
+ ['La librairie fait une lecture jeudi.', 'Mme Célestine va lire quoi ?', 'Les légendes du lac.', 'Les enfants vont faire des cauchemars.', 'Ils adorent ça.'],
+ ['Victor raconte encore son histoire de brochet.', 'Il fait quelle taille, cette fois ?', 'Deux mètres.', 'La semaine dernière, il en faisait un et demi.', 'Le poisson grandit avec l’âge de Victor.'],
+ ['On dit que Firmin est amoureux.', 'De qui ?', 'Il ne veut pas le dire. Il rougit dès qu’on passe devant la librairie.', 'Ah. Je crois que je sais.'],
+ ['Germaine a laissé un pot de confiture devant ma porte.', 'C’est sa façon de dire bonjour.', 'Ou de dire « tu as l’air triste ».', 'Les deux, sûrement.'],
+ ['La Dr Lina cherche quelqu’un pour l’aider à ranger.', 'Ranger quoi ?', 'Les bocaux de la maison de guérison. Il y en a deux cents.', 'Je suis malade, justement. De la tête.'],
+ ['Tu as goûté la nouvelle brioche de Jules ?', 'Celle aux pommes ?', 'Elle a disparu en dix minutes.', 'Je l’ai vue disparaître. C’est moi qui l’ai fait disparaître.'],
+ ['Il paraît que la cave de la mairie est toujours fermée.', 'M. Boup dit qu’il y a les archives.', 'Personne n’y est jamais descendu.', 'Même pas Paulette ?', 'Surtout pas Paulette.'],
+ ['Le basset de M. Boup a encore aboyé sur Lucien.', 'Lucien est monté au bourg ?', 'Pour un contrôle. Préfet l’a reconnu à la moustache.', 'Il est fidèle, ce chien. À sa haine.'],
+ ['Le Journal du Bourg sort demain.', 'Qu’est-ce que Yasmine a trouvé, cette fois ?', 'Elle enquête sur les chariots du FSM qui disparaissent.', 'Elle les retrouvera au bord du lac.'],
+ ['Mlle Agathe veut monter une pièce de théâtre.', 'Avec qui ?', 'Les enfants, et des volontaires.', 'Je joue un arbre. Je sais très bien faire l’arbre.'],
+ ['Tu sais que Mathis était soldat ?', 'À la base de la maréchale Shirley, oui.', 'Il ne parle jamais de ce qu’il a vu.', 'Il fend du bois. C’est sa façon d’en parler.'],
+ ['Inès a encore regardé la maison bleue longtemps.', 'Elle cherche quelqu’un.', 'Qui ?', 'Elle ne le dit pas. Germaine dit que c’est un nom de sa liste.'],
+ ['Le FSM a reçu des sapins de Noël.', 'En octobre ?', 'La Villa a dû se tromper de calendrier.', 'Ou alors elle sait quelque chose qu’on ne sait pas.'],
+ ['La cloche de la mairie sonne en retard.', 'Cinq minutes.', 'Personne ne veut la régler.', 'C’est l’heure du bourg. On n’est jamais pressés.'],
+ ['Les enfants ont encore volé des chouquettes.', 'Jules les a vus ?', 'Il leur a fait un clin d’œil.', 'Il fait toujours un clin d’œil. Il a été enfant aussi.'],
+ ['Le facteur dit qu’une lettre arrive pour un « Monsieur L. ».', 'Il n’y a pas de Monsieur L. au bourg.', 'Justement. Elle disparaît chaque nuit.', 'Brr. Arrête, j’ai des frissons.'],
+ ['Tu viens au marché dimanche ?', 'Gaspard aura des pommes ?', 'Il a toujours des pommes. Les nôtres, en général.'],
+ ['La fontaine coule enfin.', 'M. Boup a fait son discours ?', 'Non. Il attend qu’il fasse beau.', 'Il fait beau.', 'Il attend qu’il fasse plus beau.'],
+ ['Rose a encore gagné le concours des fenêtres fleuries.', 'Elle gagne tous les ans.', 'C’est parce qu’elle parle à ses fleurs.', 'Moi, je parle à mes fleurs, et elles meurent.'],
+ ['Paulo Ribeiro repeint encore sa porte.', 'Troisième fois ce mois-ci.', 'Il dit qu’il cherche la bonne couleur.', 'Il cherche surtout une excuse pour ne pas réparer la toiture.'],
+ ['Le shérif Nougat est venu boire un café.', 'Au café de Jouanne ?', 'Il a payé en pièces, et il a noté le prix dans son carnet.', 'Il note tout. Même ses cafés.'],
+ ['Les Lenoir campent sur l’aire ce soir.', 'Avec le petit Timéo ?', 'Il veut dormir comme un soldat.', 'Il dormira avec la lampe allumée.', 'Comme un soldat, d’après Mathis.'],
+ ['Sonia a gagné le jambon de la tombola.', 'Elle va le manger toute seule ?', 'Elle a invité la moitié du bourg.', 'J’espère faire partie de la bonne moitié.'],
+ ['Tu as vu la chatte des Morel ?', 'Rillette ? Elle dort sur la boîte aux lettres.', 'Hugo doit la soulever tous les jours pour mettre le courrier.', 'Elle attend une lettre, peut-être.'],
+ ['On dit que le campeur a tenu une semaine.', 'Plus, même.', 'Jouanne a ouvert des paris.', 'J’ai parié sur un mois.', 'Moi, sur toujours.'],
+ ['Théo joue encore de la guitare sur la place.', 'Les volets se ferment un par un.', 'Il ne joue pas si mal.', 'Il joue surtout fort.'],
+ ['La Dr Lina a soigné Bouchon.', 'Le chien de Marius ?', 'Il avait mangé un hameçon. Encore.', 'Ce chien a des goûts de pêcheur.'],
+ ['On devrait faire une fête des pommes.', 'Jules serait d’accord.', 'Gaspard aussi. Il vendrait des pommes.', 'Les nôtres.'],
+ ['Tu as remarqué ? Il y a toujours de la lumière à la mairie le soir.', 'Paulette travaille tard.', 'Ou M. Boup répète son discours.', 'À voix haute. On l’entend depuis la fontaine.'],
+ ['Les nouveaux du bourg se sont bien installés.', 'Les Fournier, les Garnier, les Morel…', 'On dirait qu’ils ont toujours été là.', 'C’est le bourg. Il adopte tout le monde.'],
+ ['Hugo a fait quinze kilomètres hier.', 'Avec Biscotte ?', 'C’est elle qui l’a tiré la moitié du chemin.'],
+ ['Tu as vu passer les Humvee ?', 'Ils ont salué Jules en passant.', 'Il leur a donné tout son pain de la veille.', 'C’est un bon gars, Jules.'],
+ ['Le nouveau panneau a une faute d’orthographe.', '« Bienvenu » sans e.', 'Agathe veut le corriger au feutre.', 'M. Boup dit que c’est « une erreur historique ».'],
+ ['On a retrouvé les poules d’Odette dans le fournil.', 'Elles mangeaient la farine ?', 'Elles couvaient les brioches.', 'Jules n’a rien dit ?', 'Il leur a donné des miettes.'],
+ ['Yasmine a fait un sondage : le lac est-il hanté ?', 'Résultat ?', 'Soixante pour cent oui.', 'Et les quarante pour cent ?', 'Ils n’ont pas osé répondre.'],
+ ['La chorale d’Agathe a donné son premier concert.', 'Ça s’est bien passé ?', 'Préfet a hurlé tout du long.', 'Il chantait, peut-être.', 'C’est ce qu’a dit M. Boup.'],
+ ['Il y a un nouvel élève à l’école.', 'D’où il vient ?', 'D’un bourg plus haut. Il ne parle pas beaucoup.', 'Les enfants vont le faire parler. Ils font parler même les cailloux.'],
+ ['Mathis a fait un banc pour l’aire de camping.', 'Il est solide ?', 'Trop. Personne ne peut le déplacer.', 'Il a construit un banc militaire.'],
+ ['La Villa a envoyé des graines pour le jardin de la mairie.', 'Des graines de quoi ?', 'Personne ne sait. Rose les a plantées.', 'On verra au printemps.', 'Ou on ne verra pas. Avec la Villa, on ne sait jamais.'],
+ ['On m’a dit que Camilla était passée au fournil.', 'La rousse du terrier ?', 'Deux baguettes, comme toujours.', 'Une pour elle, une pour le campeur. Tout le monde le sait.']
+];
+BAV.POOL['ancien|bourg'] = [
+ ['De mon temps, on n’avait pas de supermarché.', 'Vous aviez quoi ?', 'Un colporteur et beaucoup de patience.'],
+ ['Tu sais que j’ai connu la grand-mère de Tod ?', 'Elle était comment ?', 'Têtue et gentille. Comme ses petits-enfants.'],
+ ['Les jeunes ne savent plus faire de confitures.', 'J’en fais, moi.', 'Avec du sucre en poudre du FSM ?', 'Euh… oui.', 'Ce n’est pas de la confiture, c’est un dessert.'],
+ ['Mon dos me dit qu’il va pleuvoir.', 'Il fait grand soleil.', 'Mon dos voit plus loin que toi.'],
+ ['Le bourg d’en bas avait une église. Ici, il n’y en a pas.', 'Il y a la mairie.', 'Ce n’est pas pareil. M. Boup n’a pas de cloches.', 'Il a sa voix.'],
+ ['Quand j’étais jeune, le lac gelait tous les hivers.', 'Vraiment ?', 'On faisait des bals dessus, avec un accordéon.', 'Vous dansiez sur la glace ?', 'On tombait sur la glace. C’était pareil.'],
+ ['Tu as l’air fatigué, mon petit.', 'Je travaille trop.', 'Travailler, ça use. Mais le repos, ça rouille. Choisis bien.'],
+ ['À ton âge, j’avais déjà trois enfants.', 'Les temps ont changé.', 'Les enfants, eux, n’ont pas changé. Ils mangent toujours tout.'],
+ ['Je me souviens du jour où l’électricité est arrivée.', 'C’était comment ?', 'On allumait et on éteignait toute la nuit. Ma mère était furieuse.'],
+ ['Les confitures de Germaine, c’est la recette de sa mère.', 'Elle ne la dira jamais.', 'Je la connais.', 'Vraiment ?', 'Mais je ne la dirai jamais non plus.'],
+ ['Les écus du Bourg, c’est une drôle de monnaie.', 'C’est la Villa qui l’a choisie.', 'De mon temps, on payait en œufs. C’était plus simple.'],
+ ['Le monde va trop vite.', 'Ici, il va doucement.', 'C’est pour ça que je suis monté.'],
+ ['J’ai une recette de soupe qui guérit tout.', 'Tout ?', 'Sauf la bêtise. Pour ça, il n’y a rien.'],
+ ['Tu viens jouer aux cartes ce soir ?', 'Vous trichez.', 'À mon âge, on appelle ça de l’expérience.'],
+ ['Les mélèzes ont été plantés par mon grand-père.', 'Ici ?', 'Non, en bas. Mais ceux-là leur ressemblent. Ce sont peut-être leurs enfants.'],
+ ['On dansait la polka, autrefois.', 'Vous pouvez me montrer ?', 'Avec mes genoux ? Demain. Ou l’an prochain.'],
+ ['Le premier garde forestier des Cimes a disparu en suivant la bête.', 'C’est une légende.', 'Mon père l’a connu. Il n’en parlait jamais. C’est comme ça qu’on sait que c’est vrai.'],
+ ['Il faut toujours avoir un mouchoir propre et une bonne histoire.', 'Pourquoi ?', 'Les deux servent quand quelqu’un pleure.'],
+ ['Les enfants d’aujourd’hui ne grimpent plus aux arbres.', 'Théo grimpe partout.', 'Théo, ce n’est pas un enfant, c’est un écureuil.'],
+ ['J’ai écrit des lettres d’amour pour la moitié du village.', 'Vous ?', 'Je ne signais jamais. Certains couples me doivent tout.', 'Lesquels ?', 'Ça, c’est un secret.'],
+ ['La neige montait jusqu’aux fenêtres, avant.', 'Comment vous sortiez ?', 'Par la lucarne du grenier. Avec une pelle.'],
+ ['Je ne regrette rien.', 'Rien du tout ?', 'Si. Une danse que je n’ai pas dansée. Mais c’est tout.'],
+ ['La Dr Lina dit que je dois marcher plus.', 'Vous marchez déjà beaucoup.', 'Je marche jusqu’au café et retour. C’est un vrai trajet.'],
+ ['Mon mari disait que la vie, c’est une soupe : il faut y mettre de tout.', 'Même ce qu’on n’aime pas ?', 'Surtout ce qu’on n’aime pas. Ça donne du goût.'],
+ ['Tu sais pourquoi je nourris les oiseaux ?', 'Parce que vous les aimez ?', 'Parce qu’ils reviennent. Les gens, pas toujours.'],
+ ['Les jeunes du bourg ont du cœur.', 'Même Théo ?', 'Surtout Théo. Il porte mes courses sans que je demande.'],
+ ['À mon époque, on écrivait des lettres. De vraies lettres.', 'Hugo en distribue encore.', 'Hugo, c’est un homme d’un autre temps. C’est pour ça que je l’aime bien.'],
+ ['J’ai gardé le manteau de mon père trente ans.', 'Il est encore bon ?', 'Il a des trous. Mais il a des souvenirs.'],
+ ['Il faut savoir s’arrêter de travailler.', 'Quand ?', 'Un peu avant d’être fatigué. C’est tout l’art.'],
+ ['Germaine et moi, on se dispute la place au soleil depuis cinquante ans.', 'Qui gagne ?', 'Le soleil. Il change toujours de place.']
+];
+BAV.POOL['ancien|ancien'] = BAV.POOL['ancien|bourg'];
+BAV.POOL['ancien|enfant'] = [
+ ['Dis, tu étais petit, toi, avant ?', 'Bien sûr. Comme toi.', 'Mais il y a très, très longtemps ?', 'Très longtemps. Il n’y avait même pas de supermarché.', 'Wouah.'],
+ ['Tu me racontes une histoire ?', 'Une histoire de loup ?', 'Oui ! Une qui fait peur !', 'Il était une fois un loup qui avait peur des enfants…', 'C’est pas une histoire qui fait peur, ça !'],
+ ['Tu as mal aux genoux ?', 'Un peu. Ils sont vieux.', 'Moi aussi, j’ai mal aux genoux. Je suis tombé à la récré.', 'Alors on est pareils.'],
+ ['C’est vrai que tu as vu la bête du lac ?', 'Une fois, il y a longtemps. Dans le brouillard.', 'Elle était grande ?', 'Grande comme un rêve.'],
+ ['Tu veux un bonbon ?', 'Oui !', 'Il est au fond de ma poche depuis Noël.', 'Je le veux quand même !'],
+ ['Pourquoi tu as des rides ?', 'Ce sont des sourires qui sont restés.', 'Alors tu as beaucoup souri ?', 'Toute ma vie, mon petit.']
+];
+
+// ==== CAMP : BAVARDAGES ENTRE PNJ (3/3) (v0.21) ==================================================
+BAV.POOL['soldat|soldat'] = [
+ ['Tu as dormi ?', 'Trois heures.', 'C’est un record.', 'Depuis Port-Aven, oui.'],
+ ['Ce lac, c’est irréel.', 'On dirait qu’il n’y a jamais eu de guerre.', 'Il n’y en a jamais eu, ici. C’est ça qui est bizarre.'],
+ ['Rivet m’a demandé de vérifier les pneus de FSM02.', 'Il est à des centaines de kilomètres.', 'Il me l’a dit avant de partir. Il pense à tout.'],
+ ['Tu as écrit à ta mère ?', 'Je lui ai dit que j’étais au bord d’un lac.', 'Elle va croire que tu es en vacances.', 'Pour deux nuits, c’est vrai.'],
+ ['La capitaine a l’air fatiguée.', 'Elle porte la colonne 7090 sur les épaules.', 'Elle a eu raison.', 'Avoir raison, ça ne fait pas dormir.'],
+ ['Tu crois qu’on reviendra ici ?', 'À chaque traversée des Cimes.', 'Alors j’espère qu’on traversera souvent.'],
+ ['Dogue a encore raté la popote.', 'Qu’est-ce qu’il a fait ?', 'Des haricots aux haricots.', 'C’est sa spécialité.'],
+ ['Silex nettoie la M134 pour la quatrième fois.', 'Il ne sait pas s’arrêter.', 'C’est sa façon de se calmer.'],
+ ['Le garde forestier est passé trois fois aujourd’hui.', 'Il veut entendre parler de son frère.', 'On a tout raconté. Il veut l’entendre encore.'],
+ ['Tu as vu la chasseuse rousse ?', 'Elle nous a observés depuis la lisière.', 'La capitaine l’a repérée en dix secondes.', 'Et elle, elle nous avait repérés en une.'],
+ ['L’eau est glacée.', 'Cendre s’y est baignée.', 'Cendre est folle.', 'Cendre est la seule d’entre nous qui ne sent pas le sable.'],
+ ['Écho, tu as fini la vidange ?', 'Presque. La vieille dame tousse un peu.', 'Elle tient jusqu’à Kesh ?', 'Elle tiendra. Elle tient toujours.'],
+ ['On repart après-demain.', 'Déjà ?', 'Le désert n’attend pas.', 'Lui, non. Mais nous, on aimerait bien attendre.'],
+ ['Orage, tu as la carte ?', 'Celle avec le lac au crayon ?', 'Celle-là.', 'Je l’ai laissée au campeur.', 'Bon. On fera sans. On connaît la route.'],
+ ['Tu entends ça ?', 'Quoi ?', 'Rien. Pas de moteurs, pas de radio, pas de tirs. Rien.', 'Ça s’appelle le silence. J’avais oublié.'],
+ ['Rivet a encore gagné aux cartes contre Dogue ?', 'Non. Dogue triche.', 'Rivet le laisse tricher.', 'Rivet laisse tout le monde gagner. C’est pour ça qu’on l’aime.'],
+ ['Brume prend la garde de nuit.', 'Encore ?', 'Il dit qu’il ne dort pas de toute façon.', 'Alors autant qu’il veille pour nous.'],
+ ['Le petit du bourg m’a demandé si j’avais tué quelqu’un.', 'Tu as répondu quoi ?', 'Que je protégeais des gens.', 'C’est la vérité.', 'C’est la moitié de la vérité.'],
+ ['Le Résolu a encore tiré au large, hier.', 'Comment tu le sais ?', 'La radio. Vautour 2 relaie tout.', 'Même ici, on n’échappe pas à la guerre.'],
+ ['Tu as gardé la douille « SECTEUR 7 » ?', 'Je l’ai donnée au garde.', 'Il l’a mise sur son bureau ?', 'Comme un trésor.'],
+ ['Talus ronfle.', 'Talus ronfle depuis Port-Aven.', 'Il ronfle plus fort ici.', 'C’est le lac. L’écho.'],
+ ['Cendre, tu nages encore ?', 'Une dernière fois.', 'Tu dis ça depuis une heure.', 'Le lac me retient.'],
+ ['Tu crois que le cessez-le-feu reviendra ?', 'Peut-être.', 'Et cette fois, il tiendra ?', 'Il faudra qu’on le tienne nous-mêmes.'],
+ ['La capitaine a chanté la chanson du pommier.', 'Elle ? Vraiment ?', 'Tout bas, en écrivant son rapport.', 'Rivet a gagné. Même elle, il l’a eue.'],
+ ['On devrait faire une photo de groupe.', 'Avec le lac derrière.', 'Et les Humvee.', 'Pour Rivet. Il dira qu’on a vu son lac sans lui.'],
+ ['Le gamin du bourg veut être pilote d’hélicoptère.', 'Comme Céline.', 'Je lui ai dit de bien travailler à l’école.', 'Céline dirait de bien travailler les atterrissages.'],
+ ['Dogue, tu cuisines quoi ce soir ?', 'Surprise.', 'C’est toujours une surprise.', 'Et c’est toujours des haricots.'],
+ ['Tu as vu le grondement sur le lac, cette nuit ?', 'Brume en parle depuis ce matin.', 'Il dit que c’était énorme.', 'Il dit aussi qu’il ne l’a pas identifié. Alors on ne tire pas.'],
+ ['L’erg me manque.', 'Vraiment ?', 'Non. Mais le soleil, oui. Ici, il fait froid.'],
+ ['Rivet a dit de passer voir le pommier.', 'Quel pommier ?', 'Celui de son frère, près du lac.', 'Il y en a un, là-bas. Allons lui dire bonjour.'],
+ ['On a encore du sable dans les rations.', 'Ça donne du croquant.', 'Tu dis ça depuis trois mois.', 'Et je le dirai jusqu’à la fin.'],
+ ['La radio grésille.', 'C’est le relais de Vautour 2.', 'On aura la fenêtre ce soir ?', 'Si la tempête ne se lève pas là-bas.'],
+ ['Orage, tu t’es rasé ?', 'Pour le garde forestier. Il est très poli.', 'Il le mérite.'],
+ ['Écho parle encore à son moteur.', 'Qu’est-ce qu’il lui dit ?', '« Tiens bon, vieille dame. »', 'Et elle tient ?', 'Toujours.'],
+ ['Tu as la lettre de Rivet ?', 'La capitaine l’a donnée au campeur.', 'Il la portera ?', 'Rivet dit qu’il est fiable.', 'Alors elle arrivera.'],
+ ['La guerre, c’est long.', 'Plus long qu’une patrouille de nuit.', 'Rivet dit que c’est une patrouille de nuit sans lampe.', 'Il a toujours les bonnes phrases.'],
+ ['Silex, tu fais quoi ?', 'J’écoute les oiseaux.', 'Il y en a combien ?', 'Je n’en sais rien. Mais ils sont vivants.'],
+ ['Tu as entendu le bourg, ce soir ?', 'Une guitare.', 'Le jeune Théo.', 'Il joue faux. Mais il joue pour quelqu’un. Ça s’entend.'],
+ ['Je repense à Port-Aven.', 'Pas ici. Pas ce soir.', 'D’accord. … Le lac est beau.', 'Voilà. Le lac est beau.'],
+ ['Cendre a prêté sa lampe frontale au campeur.', 'C’est gentil.', 'Elle dit qu’il en aura plus besoin qu’elle.', 'Elle a raison. Il vit dehors.'],
+ ['Tu as vu le chien qui suit le facteur ?', 'Biscotte. Elle a reniflé mes bottes.', 'Elle sent le désert.', 'Tout sent le désert, chez nous.'],
+ ['Dogue a pêché quelque chose.', 'Un poisson ?', 'Une botte.', 'La gauche ou la droite ?', 'La gauche. Il cherche la droite.'],
+ ['Les étoiles sont plus nombreuses qu’à Kesh.', 'À Kesh, on ne lève jamais la tête.', 'Ici, on a le droit.'],
+ ['Tu crois que Rivet rentrera bientôt chez lui ?', 'Il a demandé une permission.', 'Et ?', 'La maréchale a dit « on verra ».', 'Chez elle, c’est presque oui.'],
+ ['On a encore une heure avant la garde.', 'Une heure de quoi ?', 'Une heure de rien. Une heure de lac.'],
+ ['La chasseuse nous a apporté un lièvre.', 'Dogue a pleuré.', 'Il n’avait pas mangé de viande fraîche depuis Port-Aven.', 'Il a pleuré pour le lièvre ou pour Port-Aven ?', 'Pour les deux.'],
+ ['On aurait dû rester plus longtemps.', 'On n’a jamais assez de temps, ici.', 'C’est pour ça qu’on revient.'],
+ ['Le garde forestier a demandé si Rivet mangeait bien.', 'Tu as dit quoi ?', 'Qu’il mange comme quatre.', 'Il mange comme un oiseau.', 'Je sais. Mais il fallait rassurer le petit frère.'],
+ ['Tu as vu la carte que le campeur garde dans son sac ?', 'Celle d’Orage ?', 'Il a souligné le lac. Deux fois.', 'Comme Rivet souligne tout.'],
+ ['Demain, on démonte tout.', 'En vingt minutes.', 'Et on part avant l’aube.', 'Comme toujours. Sans dire au revoir. C’est plus facile.']
+];
+BAV.POOL['alpha|alpha'] = [
+ ['Tu as trouvé le sel ?', 'Rayon trois, à côté des bougies.', 'Pourquoi à côté des bougies ?', 'Personne ne sait. C’est le FSM.'],
+ ['Le shérif a encore arrêté quelqu’un.', 'Pour quoi ?', 'Un chewing-gum non payé.', 'Il a fait une déposition de trois pages.'],
+ ['Les prix ont encore changé.', 'En hausse ?', 'En écus du Bourg, c’est difficile à dire.'],
+ ['Tu as vu les mangues ?', 'Dans les Cimes ?', 'Le shérif enquête sur leur provenance.', 'Il a conclu quoi ?', 'Un camion.'],
+ ['La caisse trois bipe toute seule.', 'Elle est hantée.', 'Sonia dit que c’est le froid.', 'Le froid, ou un fantôme de caissière.'],
+ ['On a encore perdu un chariot.', 'Il était où ?', 'Au bord du lac.', 'Qui va faire ses courses au lac ?', 'Le campeur, peut-être.'],
+ ['Les agents de nuit jouent aux cartes.', 'Le shérif le sait ?', 'Il fait semblant de ne pas savoir. Il joue avec eux le jeudi.'],
+ ['Un détenu chante l’opéra.', 'Il chante bien ?', 'Assez bien pour que les clients s’arrêtent.', 'Le shérif devrait vendre des billets.'],
+ ['Il y a encore un hérisson dans le rayon légumes.', 'Le même ?', 'Je crois qu’il habite là.', 'Il faudrait lui donner un badge.'],
+ ['Le shérif répète ses interrogatoires dans les toilettes.', 'Devant le miroir ?', 'Il se pose des questions difficiles.', 'Et il se répond ?', 'Il avoue toujours.'],
+ ['La promo du jour, c’est quoi ?', 'Des bottes en caoutchouc.', 'Personne n’en a commandé.', 'La Villa, peut-être. Elle prévoit la pluie.'],
+ ['Le parking est encore vide.', 'Il est trop grand.', 'La Villa attend du monde.', 'Qui ?', 'C’est bien la question.'],
+ ['Les agents ont des lampes neuves.', 'Ils les allument en plein jour.', 'Pour tester.', 'Ils testent depuis une semaine.'],
+ ['Un client a voulu payer avec une truite.', 'Sonia a accepté ?', 'Elle a appelé la mairie pour le taux.', 'Combien vaut une truite ?', 'Sept écus, d’après Marius.'],
+ ['Le chat du shérif s’appelle Mandat.', 'Il l’a trouvé où ?', 'Dans le stock de croquettes.', 'Il ne pouvait pas trouver un meilleur endroit.'],
+ ['On a reçu des tentes.', 'Qui va acheter une tente ici ?', 'Les gens campent déjà tous.', 'Le campeur en a déjà une. Il a l’air de bien l’aimer.'],
+ ['Le shérif a donné une amende à un pigeon.', 'Le pigeon a payé ?', 'Il s’est envolé avec l’amende.', 'Délit de fuite.'],
+ ['La musique d’ambiance est toujours la même.', 'Depuis l’ouverture.', 'Je la fredonne en dormant.', 'Moi aussi. C’est une torture douce.'],
+ ['Les détenus réclament un livre.', 'Le shérif leur a donné quoi ?', 'Le règlement.', 'Ils l’ont lu ?', 'Deux fois. Ils le connaissent mieux que lui.'],
+ ['Tu as vu le panneau « Grande ouverture » ?', 'Il est toujours là.', 'Ça fait trois mois.', 'C’est une très grande ouverture.'],
+ ['Un voleur s’est caché derrière les paquets de lessive.', 'Le shérif l’a trouvé ?', 'Il a éternué. La lessive, ça pique le nez.'],
+ ['La Villa a des places réservées sur le parking.', 'Quelqu’un s’y gare ?', 'Jamais.', 'Alors pourquoi les réserver ?', 'Pour quand ils viendront.'],
+ ['Le shérif est jeune.', 'Vingt-cinq ans.', 'Il fait du bon travail.', 'Il fait beaucoup de travail. C’est pas pareil, mais c’est bien.'],
+ ['Sonia a fermé les yeux sur sa photo de badge.', 'Elle l’a refaite ?', 'Trois fois. Elle ferme toujours les yeux.', 'Elle doit être timide devant l’objectif.'],
+ ['Il y a encore un chariot qui grince.', 'La même roue ?', 'Sur tous les chariots, la même roue.', 'Yasmine devrait en faire un article.']
+];
+BAV.POOL['visiteur|visiteur'] = [
+ ['Tu crois qu’on dérange le campeur ?', 'Il a l’air content d’avoir de la compagnie.', 'Ou il est poli.', 'Les deux, sûrement.'],
+ ['Mes pieds me tuent.', 'Les miens aussi.', 'On n’aurait pas dû prendre le raccourci.', 'Le raccourci faisait deux heures de plus.'],
+ ['Regarde ce lac.', 'On aurait dû venir plus tôt.', 'On reviendra.', 'Tu dis ça de tous les endroits.', 'Celui-là, je le pense.'],
+ ['Tu as pris le réchaud ?', 'Je croyais que c’était toi.', '…', 'Bon. On mangera froid.'],
+ ['Le garde forestier m’a fait un sermon sur le feu.', 'Il était sympa, pourtant.', 'Très sympa. Le sermon a duré vingt minutes.'],
+ ['Il y a un bourg plus bas, avec un fournil.', 'On y passe en redescendant ?', 'Pour le pain.', 'Et pour le café. Il paraît qu’il réveille un mort.'],
+ ['Tu as entendu le grondement cette nuit ?', 'Le campeur dit que c’est le lac.', 'Le lac ne gronde pas.', 'Celui-là, si.'],
+ ['On reste combien de temps ?', 'Jusqu’à ce qu’on n’ait plus de chocolat.', 'Donc jusqu’à ce soir.'],
+ ['J’ai pris trois cents photos.', 'De quoi ?', 'Du lac.', 'Il est pareil sur toutes.', 'Non. Sur chacune, il est différent.'],
+ ['Tu te souviens de la grange ?', 'La vache qui m’a léché la figure ?', 'Je n’oublierai jamais ta tête.', 'Moi non plus. Elle avait une langue énorme.'],
+ ['On a croisé des soldats sur la route.', 'Dans les montagnes ?', 'Deux camions couleur sable. Ils nous ont fait un signe.', 'Ils avaient l’air de savoir où ils allaient.'],
+ ['Le campeur a l’air d’être là depuis toujours.', 'Il est devenu un morceau du lac.', 'Comme un rocher qui parle.'],
+ ['Il fait froid, la nuit.', 'Mets ta deuxième paire de chaussettes.', 'Je les ai déjà mises.', 'Alors mets les miennes.'],
+ ['J’ai vu une chasseuse rousse dans la forêt.', 'Une vraie ?', 'Avec un arc. Elle m’a souri et elle a disparu.', 'Tu as bu l’eau du lac sans la purifier, toi.'],
+ ['Il paraît qu’il y a un supermarché géant plus haut.', 'Au milieu de nulle part ?', 'Avec un shérif et des cellules.', 'Ce pays est bizarre.', 'Il est merveilleux.'],
+ ['On rentre demain.', 'Déjà ?', 'On a du travail lundi.', 'Je ne veux plus jamais entendre le mot lundi.'],
+ ['Le garde forestier a un registre avec tous les visiteurs.', 'On y est ?', 'Page huit. Il a écrit « gentils, mais bruyants ».', 'C’est juste.'],
+ ['J’ai trouvé une plume d’aigle.', 'Garde-la pour la chance.', 'J’en ai déjà besoin : j’ai perdu ma gourde.'],
+ ['On devrait laisser un cadeau au campeur.', 'Quoi ?', 'Nos dernières barres de céréales.', 'Toutes ?', 'Bon, la moitié.'],
+ ['Ce silence me fait peur.', 'C’est la ville qui te manque.', 'Non. C’est moi que j’entends penser, pour une fois.'],
+ ['Tu as lu la carte ?', 'Elle date d’il y a vingt ans.', 'Le lac n’a pas bougé.', 'Mais le bourg n’y est pas.', 'Il est tout neuf. Comme apparu.'],
+ ['On a vu un cerf ce matin.', 'Grand ?', 'Avec un regard qui disait « vous êtes chez moi ».', 'Il avait raison.'],
+ ['Le campeur nous a offert du poisson grillé.', 'C’était bon ?', 'Le meilleur poisson de ma vie.', 'C’est l’air du lac. Il rend tout meilleur.'],
+ ['Tu crois qu’il est seul tout le temps ?', 'Il y a le garde, le bourg, les visiteurs…', 'Et la rousse du terrier, d’après le boulanger.', 'Alors il n’est pas si seul.'],
+ ['Je reviendrai l’année prochaine.', 'Avec moi ?', 'Si tu portes le réchaud.']
+];
+// ---------------- duos nommés ----------------
+BAV.PAIRES = {
+ 'germaine|jules': [['Ma baguette est prête, Jules ?', 'Pas trop cuite, comme d’habitude, Germaine.', 'Tu es un ange.', 'Un ange avec de la farine sur le nez.'], ['Ta brioche était trop sucrée, hier.', 'Tu en as mangé deux.', 'Pour vérifier qu’elle était trop sucrée.']],
+ 'boup|paulette': [['Paulette, le discours de la fontaine…', 'Il fait vingt-sept paragraphes, monsieur le bourgmestre.', 'J’en ai ajouté un.', 'Vingt-huit, alors. Je vais chercher du papier.'], ['Paulette, la Villa a écrit ?', 'Une lettre, ce matin. Sans timbre.', 'Ouvrez-la.', 'Vous d’abord, monsieur le bourgmestre.', '… On la laisse fermée encore un peu.']],
+ 'abel|marius': [['Le bout du ponton est à moi, ce matin.', 'Il était à moi hier.', 'Hier, c’était hier.', 'Alors demain, il est à moi.', 'On verra demain.'], ['Tu as pris quelque chose ?', 'Un gardon. Honnête.', 'Moi, un brochet.', 'Où ça ?', 'Dans mes rêves. Il était énorme.']],
+ 'firmin|jouanne': [['Firmin, la table du fond !', 'Celle de M. Boup ?', 'Elle a une miette. Une seule. C’est une insulte.'], ['Tu as encore cassé une tasse ?', 'Elle était déjà fêlée.', 'Elle était fêlée parce que tu l’avais fait tomber hier.']],
+ 'ines|theo': [['Tu viens te baigner ?', 'L’eau est à onze degrés.', 'C’est pour ça que c’est génial.', 'Tu es fou, Théo.'], ['Tu me racontes une histoire du Hameau, ce soir ?', 'Une vraie ?', 'Elles sont toutes vraies, d’après toi.', 'Alors celle des murs qui chantent.']],
+ 'claireG|hugo': [['Tu as marché combien aujourd’hui ?', 'Quinze kilomètres.', 'Montre-moi tes pieds.', 'Pas ici, Claire. Il y a du monde.'], ['Biscotte a encore suivi un chat.', 'Elle est revenue ?', 'Avec le chat.']],
+ 'luc|sonia': [['Qu’est-ce qui s’est passé au FSM aujourd’hui ?', 'Trois voleurs de chocolat et un hérisson.', 'Le hérisson a volé quoi ?', 'Rien. Il habite là.'], ['Tu as encore planté des fleurs ?', 'Le long du chemin.', 'Les enfants vont les cueillir.', 'C’est pour ça que je les plante.']],
+ 'mathis|yasmine': [['Tu écris un article sur moi ?', 'Sur ta base, sur Shirley, sur la guerre.', 'Ne mets pas mon nom.', 'Je mettrai « un ancien du bourg ». Tout le monde saura.'], ['Timéo veut camper ce soir.', 'Encore ?', 'Il dit qu’il est soldat.', 'Alors on campe. Soldat, ça ne se discute pas.']],
+ 'roseF|abel': [['Tu sens le poisson.', 'Je suis pêcheur.', 'Tu es mon mari. Le pêcheur, il dort dehors.'], ['Théo est encore mouillé.', 'Il s’est baigné.', 'Il va attraper la mort.', 'Il a attrapé un brochet. C’est presque pareil.']],
+ 'celestine|odette': [['Vous avez fini le livre, Odette ?', 'Je l’ai relu trois fois.', 'Vous l’avez aimé ?', 'Je ne m’en souviens pas. C’est pour ça que je le relis.']],
+ 'agathe|ines': [['Les enfants t’adorent, Inès.', 'Ils me prennent pour une magicienne.', 'Tu leur racontes le Hameau ?', 'Juste les jolies choses.']],
+ 'rapace|silex': [['Silex, tu as dormi ?', 'Un œil fermé, capitaine.', 'Ferme l’autre. C’est un ordre.', '… À vos ordres.'], ['La colonne 7090…', 'Vous avez eu raison, capitaine.', 'Tu as attendu, toi aussi.', 'Vous me l’aviez demandé.']],
+ 'echo|talus': [['Ta boîte de vitesses fait un bruit bizarre.', 'C’est une chanson.', 'C’est un appel au secours.', 'C’est une chanson triste, alors.'], ['Qui est le meilleur pilote ?', 'Celui qui casse le moins.', 'Donc moi.', 'Rivet a dit le contraire.']],
+ 'cendre|dogue': [['Tu viens te baigner ?', 'Je nage comme une pierre.', 'Une pierre courageuse ?', 'Une pierre qui reste au bord.'], ['Tes haricots étaient bons.', 'Vraiment ?', 'Non. Mais c’est gentil d’avoir essayé.']],
+ 'brume|orage': [['Tu as vu quelque chose cette nuit ?', 'Quelque chose de grand dans l’eau.', 'Identifié ?', 'Non. Alors je n’ai pas tiré.', 'Bien.'], ['Tu prends la garde de deux heures ?', 'Comme toujours.', 'Je te laisse le thermos.', 'Tu es un frère.']]
+};
+// ---------------- moteur des bavardages ----------------
+BAV.cat = v => { const c = BLA.cats(v)[0]; return c === 'commun' ? 'tous' : c; };
+BAV.choisir = (a, b) => { const ka = BLA.cle(a), kb = BLA.cle(b), cp = [ka, kb].sort().join('|'), cc = [BAV.cat(a), BAV.cat(b)].sort().join('|');
+  const L = []; for (const e of (BAV.PAIRES[cp] || [])) L.push(['p:' + cp, e]); for (const e of (BAV.POOL[cc] || [])) L.push(['c:' + cc, e]);
+  if (cc !== 'soldat|soldat' && !/enfant\|enfant/.test(cc)) for (const e of BAV.POOL.tous) L.push(['t', e]);
+  const libres = L.map((x, i) => [x, i]).filter(([x, i]) => !BAV.vus[x[0] + '#' + (BAV.POOL[x[0].slice(2)] || BAV.PAIRES[x[0].slice(2)] || BAV.POOL.tous).indexOf(x[1])]);
+  const choix = libres.length ? (libres.find(([x]) => x[0].startsWith('p:') && Math.random() < .6) || pick(libres)) : pick(L.map((x, i) => [x, i])); if (!choix) return null;
+  const [x] = choix, src = BAV.POOL[x[0].slice(2)] || BAV.PAIRES[x[0].slice(2)] || BAV.POOL.tous; BAV.vus[x[0] + '#' + src.indexOf(x[1])] = true; return x[1]; };
+BAV.libre = v => v && v.ch && v.ch.visible && v.etat === 'pose' && !v.parti && v.parle !== false && !(VIS.dlg && VIS.dlg.v === v) && !(v.tBav > performance.now()) && v.clipFinal !== 'Swim' && !/Sleep|Lie/.test(v.clipFinal || '');
+BAV.maj = dt => { const now = performance.now(), C = BAV.cur;
+  if (C) { if (UI.dlgOuvert || UI.cineOn || ETAT.dort || !C.a.ch || !C.b.ch) { BAV.fin(); return; } if (now < C.tSuiv) return; if (C.i >= C.L.length) { BAV.fin(); return; }
+    const v = C.i % 2 ? C.b : C.a, w = C.i % 2 ? C.a : C.b, t = texte(C.L[C.i]).replace(/\{A\}/g, C.a.prenom).replace(/\{B\}/g, C.b.prenom); C.i++;
+    v.ch.yaw = Math.atan2(w.ch.pos[0] - v.ch.pos[0], w.ch.pos[2] - v.ch.pos[2]); w.ch.yaw = Math.atan2(v.ch.pos[0] - w.ch.pos[0], v.ch.pos[2] - w.ch.pos[2]);
+    if (VIS.jouer) VIS.jouer(v, 'Talk'); v.bulle = { t: v.prenom + ' : ' + t, fin: now + 2600 + t.length * 52 }; try { if (OPT.voix && !VOIX.parle()) VOIX.dire(t, v.voix); } catch (e) {}
+    C.tSuiv = now + 2900 + t.length * 52; return; }
+  if ((BAV.t -= dt) > 0) return; BAV.t = 1.5; if (UI.dlgOuvert || UI.cineOn || ETAT.dort || VOIX.parle && VOIX.parle()) return;
+  const L = VIS.pnj.filter(v => BAV.libre(v) && Math.hypot(PL.x - v.ch.pos[0], PL.z - v.ch.pos[2]) < 16);
+  for (let i = 0; i < L.length; i++) for (let j = i + 1; j < L.length; j++) { const a = L[i], b = L[j]; if (Math.hypot(a.ch.pos[0] - b.ch.pos[0], a.ch.pos[2] - b.ch.pos[2]) > 3.2 || Math.random() > .35) continue;
+      const E = BAV.choisir(a, b); if (!E) continue; BAV.cur = { a, b, L: E, i: 0, tSuiv: now, clips: [a.clipFinal, b.clipFinal] }; return; } };
+BAV.fin = () => { const C = BAV.cur; if (!C) return; BAV.cur = null; const now = performance.now(); for (const [v, c] of [[C.a, C.clips[0]], [C.b, C.clips[1]]]) { if (!v.ch) continue; v.tBav = now + 45000; if (v.etat === 'pose' && VIS.jouer) VIS.jouer(v, c || 'Idle'); } };
+BAV.total = () => Object.values(BAV.POOL).filter((L, i, A) => A.indexOf(L) === i).reduce((n, L) => n + L.reduce((m, e) => m + e.length, 0), 0) + Object.values(BAV.PAIRES).reduce((n, L) => n + L.reduce((m, e) => m + e.length, 0), 0);
+{ const m0 = VIS.maj; VIS.maj = dt => { m0(dt); try { BAV.maj(dt); } catch (e) {} }; }
+
+// ==== CAMP : JAMAIS DEUX FOIS LA MÊME RÉPLIQUE, TOUJOURS COHÉRENT (v0.21) =========================
+// UNIQ : mémoire globale (toute la partie, sauvegardée 'uniq') des répliques déjà entendues, par empreinte (UNIQ.h).
+//  · Blabla (BLA) et bavardages entre PNJ (BAV) : une réplique ou une suite entendue une fois n'est plus jamais redite, par personne ;
+//    quand un PNJ n'a plus rien de neuf à dire, le choix « On papote un peu ? » disparaît (pas de phrase de remplissage).
+//  · Répliques spontanées (v.d.ambiant) : tirées parmi les inédites, sinon silence.
+//  · Nœuds de dialogue à variantes (tableau ou fonction pure à pick) : on retire au sort une variante inédite.
+// BLA.ok(v, ligne, propre) = filtre de cohérence : on ne parle pas de soi à la 3e personne (prénom, surnoms du rôle), les visiteurs et
+// soldats ne citent pas les gens du bourg hors de leurs propres listes, les enfants n'ont que des sujets d'enfants, les allusions aux
+// soldats / à Camilla / à Mehdy n'arrivent qu'après les événements correspondants, pas de « il fait beau » sous la pluie, pas de neige
+// (il n'y en a pas dans le jeu), accords masculin / féminin à la 1re personne, détails du passage du détachement (lettre, carte, lampe,
+// colonne 7090, douille, bras de Dogue, cessez-le-feu, « demain on démonte ») seulement s'ils se sont produits.
+const UNIQ = { vu: new Set(), h: s => { let h = 5381; s = String(s); for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36); } };
+UNIQ.deja = s => UNIQ.vu.has(UNIQ.h(s)); UNIQ.noter = s => UNIQ.vu.add(UNIQ.h(s));
+// ---------------- cohérence ----------------
+const NOMS_BOURG = /\b(Jules|Germaine|Boup|Préfet|Biscotte|Hugo|Rose|Firmin|Jouanne|Marius|Abel|Lina|Agathe|Célestine|Balzac|Paulette|Mathis|Yasmine|Sonia|Luc|Théo|Inès|Victor|Odette|Ribeiro|Lou|Noé|Jade|Timéo|Gaspard|Villa|fournil|bourg|mairie|shérif|Nougat|FSM|Claire|Morel|Lenoir|Fournier|Garnier|Bouchon|Pompon|Minouche|Rillette|Kiwi|Pilote|Capitaine|Sergent)\b/;
+BLA.SURNOMS = { tod: ['garde forestier', 'le garde', 'Tod'], boup: ['bourgmestre', 'Boup'], jules: ['boulanger', 'Jules'], lina: ['Dr Lina', 'médecin', 'Lina'], hugo: ['facteur', 'Hugo'], gaspardM: ['marchand', 'Gaspard'], celestine: ['libraire', 'Célestine'], agathe: ['maîtresse', 'institutrice', 'Agathe'], camilla: ['rousse', 'chasseuse', 'Camilla', 'terrier'], marius: ['Marius'], germaine: ['Germaine'], claireG: ['infirmière', 'Claire'], sonia: ['caissière', 'Sonia'], jouanne: ['Jouanne'], mathis: ['Mathis'], theo: ['Théo'], ines: ['Inès'], roseF: ['Rose'], abel: ['Abel'], luc: ['Luc', 'cantonnier'], yasmine: ['Yasmine'], paulette: ['Paulette'], firmin: ['Firmin'] };
+BLA.nomsDe = v => { const k = BLA.cle(v), L = (BLA.SURNOMS[k] || []).slice(); for (const w of String(v.prenom || '').split(/\s+/)) if (w.length > 2 && /^[A-ZÉÈÀ]/.test(w)) L.push(w); if (v.garde) L.push('garde forestier', 'le garde', 'Tod'); if (v.dust) L.push(v.prenom); return L; };
+BLA.mentionne = (ligne, mots) => mots.some(m => new RegExp('(^|[^A-Za-zÀ-ÿ])' + m.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '([^A-Za-zÀ-ÿ]|$)', 'i').test(ligne));
+BLA.fem = v => { const g = v.genre || (v.d && v.d.genre) || (v.vie && v.vie.g) || ''; return g === 'f' || v.id === 'camilla'; };
+BLA.k = () => DUST.actif ? ETAT.jour - DUST.actif.jour : -1;
+BLA.CONDS = [
+  [/lettre de Rivet|donnée au campeur/, () => !!DUST.mem('rapace').lettre], [/carte avec le lac|laissée au campeur/, () => !!DUST.mem('orage').carte], [/lampe frontale au campeur/, () => !!DUST.mem('cendre').l],
+  [/douille/, () => DUST.n >= 2], [/colonne 7090/, () => DUST.n >= 2], [/éclat|bras/, () => DUST.n >= 3], [/cessez-le-feu|Acte II/, () => DUST.n >= 3],
+  [/après-demain/, () => BLA.k() === 0], [/Demain, on démonte|repart demain/, () => BLA.k() === 1], [/cette nuit/, () => BLA.k() !== 0 || HORL.h < 6],
+  [/Cendre s’y est baignée|Cendre, tu nages|nages encore/, () => BLA.k() >= 1 && HORL.h >= 13.5], [/grondement sur le lac|Brume en parle/, () => BLA.k() >= 1],
+  [/soldats?|Humvee|camions? couleur sable|détachement|Rivet|militaires/, () => DUST.n > 0 || !!DUST.actif],
+  [/Camilla et Mehdy/, () => CAMILLA.installee && CAMILLA.meh()], [/deux baguettes|kidnapp|rousse du terrier, d’après|chasseuse nous a apporté|lièvre/, () => !!CAMILLA.installee],
+  [/Camilla|rousse|chasseuse/, () => !CAMILLA.univers || CAMILLA.univers()],
+  [/il fait (grand )?(soleil|beau)|grand soleil|soleil tape|ciel est si bleu|Il fait beau\./i, () => ETAT.meteo === 'clair' && HORL.h > 7 && HORL.h < 19],
+  [/il a plu|il pleut\b|sous la pluie, aujourd/i, () => ETAT.meteo === 'pluie'], [/arc-en-ciel au-dessus/, () => ETAT.meteo === 'pluie' || ETAT.meteo === 'couvert'],
+  [/est gelé|il neige|a neigé|gelé au bord|thermomètre .* gelé|premiers flocons tombent/i, () => false],
+  [/Bonne nuit/, () => HORL.h >= 18 || HORL.h < 3], [/Les Lenoir campent/, () => [4, 5].includes(VIE.dow ? VIE.dow() : -1)], [/Demain c’est mercredi/, () => (VIE.dow ? VIE.dow() : -1) === 1] ];
+BLA.ENFANT_OK = ['lac', 'meteo', 'animaux', 'foret', 'nuit', 'saisons', 'eau', 'peche2'];
+BLA.ADULTE = /mon mari|ma femme|mes enfants|petits-enfants|retraite|mon travail|je travaille|patron|ma paie|mon métier|amoureu|mariée?|baiser/i;
+BLA.MASC = /^(content|heureux|fatigué|sûr|prêt|allé|parti|venu|tombé|resté|né|amoureux|seul|perdu|arrivé|monté|descendu|rentré|marié|vieux|fier|certain|désolé|inquiet|curieux|jaloux|gentil|un)$/;
+BLA.FEMI = /^(contente|heureuse|fatiguée|sûre|prête|allée|partie|venue|tombée|restée|née|amoureuse|seule|perdue|arrivée|montée|descendue|rentrée|mariée|vieille|fière|certaine|désolée|inquiète|curieuse|jalouse|gentille|une)$/;
+BLA.genreOk = (v, l) => { const m = l.match(/\b(?:je suis|j’étais|je serai|j’ai été|je me suis|je suis très|je suis si)\s+(?:très |si |trop |un peu |bien |toujours |encore )?([a-zàâçéèêëîïôûùüÿ]+)/i); if (!m) return true; const w = m[1].toLowerCase(); return BLA.fem(v) ? !BLA.MASC.test(w) : !BLA.FEMI.test(w); };
+BLA.ok = (v, ligne, propre, sujet) => { if (!ligne) return false; const cat = BLA.cats(v)[0];
+  if (BLA.mentionne(ligne, BLA.nomsDe(v))) return false;
+  if (!propre && (cat === 'visiteur' || cat === 'soldat') && NOMS_BOURG.test(ligne)) return false;
+  if (cat === 'enfant' && !propre && (!sujet || !BLA.ENFANT_OK.includes(sujet))) return false; if (cat === 'enfant' && BLA.ADULTE.test(ligne)) return false;
+  for (const [re, f] of BLA.CONDS) if (re.test(ligne)) { try { if (!f()) return false; } catch (e) { return false; } }
+  return BLA.genreOk(v, ligne); };
+// ---------------- blabla : candidats inédits et cohérents ----------------
+BLA.candidats = v => { const k = BLA.cle(v), cats = BLA.cats(v), pub = BLA.publics ? BLA.publics(v) : ['tous'], L = [];
+  (BLA.PERSO[k] || []).forEach(e => L.push({ r: e[0], s: [e[1]], propre: true }));
+  for (const c of cats) (BLA.POOL[c] || []).forEach(e => L.push({ r: e[0], s: [e[1]], propre: c !== 'commun' && c !== 'bourg' || cats[0] === 'bourg' && c === 'bourg', sujet: c === 'commun' ? 'commun' : c }));
+  for (const s of (BLA.SUJETS || [])) { const pour = s.pour.includes('tous') ? !(s.id === 'philo' && pub.includes('enfant')) : s.pour.some(p => pub.includes(p)); if (!pour) continue; const propre = !s.pour.includes('tous'); s.r.forEach(r => L.push({ r, s: s.s, propre, sujet: s.id })); }
+  return L.filter(e => !UNIQ.deja(e.r) && BLA.ok(v, e.r, e.propre, e.sujet)); };
+BLA.dispo = v => { try { return BLA.candidats(v).length > 0; } catch (e) { return false; } };
+BLA.tirer = v => { const L = BLA.candidats(v); if (!L.length) return null; const perso = L.filter(e => e.propre); const e = perso.length && Math.random() < .55 ? pick(perso) : pick(L); UNIQ.noter(e.r);
+  const suites = e.s.filter(s => !UNIQ.deja(s) && BLA.ok(v, s, e.propre, e.sujet)); const s = suites.length ? pick(suites) : null; return [e.r, s]; };
+BLA.injecter = (D, v) => { if (!D || !D.noeuds || D._bla) return; const N = D.noeuds, deb = N[D.debut || 'debut'] || N.d; if (!deb || !Array.isArray(deb.choix)) return; D._bla = true; const ret = D.debut || (N.debut ? 'debut' : 'd'); let cur = null;
+  N.bla = { unique: false, dit: () => { const vv = (VIS.dlg && VIS.dlg.v) || v; cur = BLA.tirer(vv) || ['…', null]; N.bla.choix[0].t = pick(BLA.REACT); return cur[0]; },
+    choix: [{ t: 'Ah bon ?', go: 'bla2', si: { test: () => !!(cur && cur[1]) } }, { t: 'Encore un peu de blabla ?', go: 'bla', si: { test: () => !(cur && cur[1]) && BLA.dispo((VIS.dlg && VIS.dlg.v) || v) } }, { t: 'On parle d’autre chose.', go: ret }] };
+  N.bla2 = { unique: false, dit: () => { const s = cur && cur[1] ? cur[1] : '…'; if (cur && cur[1]) UNIQ.noter(cur[1]); return s; }, choix: [{ t: 'Encore un peu de blabla ?', go: 'bla', si: { test: () => BLA.dispo((VIS.dlg && VIS.dlg.v) || v) } }, { t: 'Revenons à nos moutons.', go: ret }] };
+  const iFin = deb.choix.findIndex(c => c.fin); deb.choix.splice(iFin < 0 ? deb.choix.length : iFin, 0, { t: 'On papote un peu ?', go: 'bla', ico: 'parler', si: { test: () => BLA.dispo((VIS.dlg && VIS.dlg.v) || v) } }); };
+// ---------------- bavardages entre PNJ : inédits et cohérents ----------------
+BAV.choisir = (a, b) => { const ca = BAV.cat(a), cb = BAV.cat(b), enf = ca === 'enfant' || cb === 'enfant', cc = [ca, cb].sort().join('|'); if (enf && cc !== 'enfant|enfant' && cc !== 'ancien|enfant') return null;
+  const ka = BLA.cle(a), kb = BLA.cle(b), cp = [ka, kb].sort().join('|'), L = [];
+  (BAV.PAIRES[cp] || []).forEach(e => L.push({ e, propre: true, paire: true })); (BAV.POOL[cc] || []).forEach(e => L.push({ e, propre: true }));
+  if (!enf && ca !== 'soldat' && cb !== 'soldat') BAV.POOL.tous.forEach(e => L.push({ e, propre: false }));
+  if (ca === 'soldat' && cb === 'soldat') BAV.POOL.tous.forEach(e => L.push({ e, propre: false }));
+  const ok = x => { if (x.e.some(l => UNIQ.deja('bav:' + l))) return false; return x.e.every((l, i) => { const v = i % 2 ? b : a, w = i % 2 ? a : b; if (!BLA.ok(v, l, x.propre, null)) return false; if (!x.paire && BLA.mentionne(l, BLA.nomsDe(w))) return false; return true; }); };
+  const libres = L.filter(ok); if (!libres.length) return null; const p = libres.filter(x => x.paire), x = p.length && Math.random() < .6 ? pick(p) : pick(libres); x.e.forEach(l => UNIQ.noter('bav:' + l)); return x.e; };
+// ---------------- répliques spontanées : jamais deux fois ----------------
+VIS.direAmb = (v, L) => { const c = (L || []).filter(l => !UNIQ.deja('amb:' + l) && BLA.ok(v, l, true, null)); if (!c.length) return; const l = pick(c); UNIQ.noter('amb:' + l); VIS.dire(v, l); };
+// ---------------- variantes de nœuds de dialogue : une variante inédite si possible ----------------
+UNIQ.pur = f => { const s = String(f); return /pick\(/.test(s) && !/\+\+|\.plus\(|push\(|splice|=\s*true|\.run\(|SAC\.|BES\.|historique|note\(|marque\(|sujets\[|ecrire\(/.test(s); };
+UNIQ.texte = n => { const brut = () => typeof n.dit === 'function' ? n.dit() : Array.isArray(n.dit) ? pick(n.dit) : n.dit; let t = brut();
+  if (n.unique !== false && (Array.isArray(n.dit) || (typeof n.dit === 'function' && UNIQ.pur(n.dit)))) { for (let i = 0; i < 14 && UNIQ.deja('dlg:' + t); i++) t = brut(); }
+  if (n.unique !== false) UNIQ.noter('dlg:' + t); return texte(t); };
+// sauvegarde de la mémoire (partie en cours) ; remise à zéro en nouvelle partie
+{ const s0 = sauver; sauver = function () { s0(); if (ETAT.enJeu && !ETAT.mort) ecrire('uniq', [...UNIQ.vu]); }; }
+{ const c0 = charger; charger = function () { const r = c0(); const L = lire('uniq'); UNIQ.vu = new Set(Array.isArray(L) ? L : []); return r; }; }
+{ const n0 = nouvellePartie; nouvellePartie = function () { UNIQ.vu = new Set(); BLA.vus = {}; BAV.vus = {}; return n0.apply(this, arguments); }; }
+
 // ==== CAMP : CINÉMATIQUES (randonnée d'ouverture, réveil) ======================================
 const CINE = { plans: [], t: 0, i: 0, on: false, marcheur: null, apres: null, cam: null };
 CINE.passer = () => { if (!CINE.on) return; CINE.finir(); };
@@ -11219,7 +12282,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 
 </script>
 <!--
-NOTE-INTERNE (Claude) · HDF : CAMPING v0.17 · F.S.M Game House · 3 nov. 2026
+NOTE-INTERNE (Claude) · HDF : CAMPING v0.21 · F.S.M Game House · 3 nov. 2026
 À lire avant de modifier ce fichier. Ne pas relire le fichier en entier : chercher les ancres « ==== CAMP : » (grep), puis ne lire que la section utile.
 
 STRUCTURE DU FICHIER
@@ -11332,6 +12395,14 @@ v0.16 (suite) — ICÔNES (module « CAMP : ICÔNES », src/97_icones.js) : ICO.
   TOD (src/99_tod_bourg.js) : sujet « Et le bourg, en bas ? » (tB : gens GENS×14, shérif tBs, aire tBc, baigneurs tBb, Villa tBv, Inès tBh, animaux tBa, Node tBn, Camilla tBk, maison bleue tBm) ; T(tu, vous). BULLES : « … » au-dessus des PNJ qui parlent (BULLES.maj dans VIS.maj, liseré ambré = interlocuteur).
 
 v0.17 — AEGIS PROTOCOL AU LAC (module « CAMP : AEGIS PROTOCOL — LE DÉTACHEMENT FSMOPERATOR AU LAC », src/9a_dustline.js) : DUST.maj (dans ALPHA.maj) tire l'événement (1er passage J4-J7, puis DUST.prochain = +6 à 10 j, 40 %/jour, 16 h 30-19 h 30, sans visiteur ni menu) → DUST.arriver → cinématique 'arrivee' (DUST.cine, 4 plans, Humvee DUST.humvee sur DUST.CHEMINS, son DUST.moteur) → camp DUST.construireCamp (apparition progressive DUST.majMontage) + 8 soldats DUST.SOLDATS (noms Dustline) pilotés par DUST.act(id, k = jour − arrivée, h) : montage, réveil musculaire, entretien, popote, pêche, baignade de Cendre, sieste, veillée en cercle (DUST.siege), rondes de nuit à la lampe (DUST.RONDES) ; dialogues DUST.dialogue + DUST.PERSO (communs : d'où / pourquoi / guerre / Rivet ; propres : 7090, Bouclier de Silex, AT4, carte d'état-major, bras de Dogue, lampe frontale…), mémoire DUST.mem (par passage). Chapitres DUST.CH (1 La lettre de Rivet, 2 Le convoi sanitaire, 3 Le cessez-le-feu brisé, 4 La route de Kesh) puis DUST.SUITE. Appel radio de nuit DUST.appel (21-23 h 30 près de FSM01 ou sur demande) ; lettre de Rivet à remettre à Tod (objet lettreRivet, nœud tLettre) ; départ k = 2 à 8 h 36 (cinématique 'depart' ou mot au réveil). VIS.planifier / VIS.arriver suspendus pendant le passage ; collisions véhicules + camp dans obstacles() ; marqueur m_dust ; Tod (tDust, tDust3, tLettre, tDust2), Camilla (cDust), ragots du bourg. Sauvegarde 'dust'. NODE = indicatif RIVET (prêté par la base de la maréchale Shirley au détachement, base avancée Orion).
+
+v0.18 — BLABLA (src/9b_blabla.js) : VIS.parler injecte une fois par dialogue (D._bla) le choix « On papote un peu ? » → nœuds bla / bla2 ; BLA.POOL (commun ×30, tod, camilla, soldat, enfant, ancien, bourg, alpha, visiteur) + BLA.PERSO[id] ; BLA.cats(v) choisit les catégories (v.garde, Camilla, v.dust, v.vie enfant/elder, Alpha, visiteur) ; pas de blabla chez les visiteurs de danger ≥ 2 ; BLA.vus = mémoire sans répétition. Ajouter des répliques : une paire [réplique, suite] dans la bonne liste.
+
+v0.19 — BLABLA ÉTENDU (src/9c_blabla_sujets_a/b/c.js) : BLA.SUJETS = 29 sujets × 20 répliques d'ouverture (580) + 6 suites chacun (174) ; publics : tous, enfant, ancien, bourg, soldat, tod, camilla, visiteur, alpha (BLA.publics) ; BLA.tirer (enveloppé) : 70 % sujets, 30 % ancien pool/PERSO ; suite tirée au hasard dans le sujet ; mémoire BLA.vus['s_'+clé]. BLA.total() compte les répliques d'ouverture.
+
+v0.20 — BLABLA ×1000 (src/9c_blabla_sujets_d/e.js) : 17 sujets de plus (jardin, montagne, livres, amour, mystères, voyages, enfance3, soldat2, tod3, camilla3, bourg3, ancien2, visiteur3, alpha3, cuisine2, métiers, eau) ; BLA.total() > 1000 répliques d'ouverture.
+
+v0.21 — BAVARDAGES ENTRE PNJ (src/9d_bavardages_a/b/c.js : BAV.POOL par paires de catégories + BAV.PAIRES de duos nommés, BAV.maj dans VIS.maj : deux PNJ posés à < 3,2 m, joueur à < 16 m, un échange à la fois, sous-titre « Nom : … ») et RÈGLE « JAMAIS DEUX FOIS, TOUJOURS COHÉRENT » (src/9e_coherence.js) : UNIQ (empreintes des répliques entendues, sauvegarde 'uniq', vidée en nouvelle partie) appliqué au blabla (le choix disparaît quand il n'y a plus d'inédit), aux bavardages, aux répliques spontanées (VIS.direAmb, appel patché dans VIS.maj) et aux variantes des nœuds (UNIQ.texte dans VIS.noeud ; seulement les fonctions « pures » à pick, n.unique === false pour exclure) ; BLA.ok = filtre de cohérence (soi à la 3e personne, connaissances du bourg, enfants, conditions d'événements BLA.CONDS, météo, pas de neige, accords 1re personne).
 
 À FAIRE / IDÉES v1.0 : sauvegarde du visiteur en cours ; météo visible (pluie déjà possible via A.meteo) ; deux emplacements de sauvegarde ; branchement History Sens pour les dialogues libres.
 
