@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HDF : CAMPING">
 <meta name="theme-color" content="#0b0f0a">
-<title>HDF : CAMPING — v0.15.1</title>
+<title>HDF : CAMPING — v0.17</title>
 <style>
 :root{--lin:#f3efe6;--ambre:#f2c66d;--mousse:#8fb37a;--nuit:#0b0f0a;--verre:rgba(10,14,10,.62);--rouge:#e0665a;--bleu:#7fb6d8;
   --sans:-apple-system,BlinkMacSystemFont,"Avenir Next","Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
@@ -170,7 +170,7 @@ body.cine #cine .bande{height:11vh}
 <div id="cine"><div class="bande h"></div><div class="bande b"></div></div>
 <button id="cinePasser" hidden>Passer ›</button>
 <div id="hud" hidden>
-  <div id="titreJeu">HDF : CAMPING · v0.15.1</div>
+  <div id="titreJeu">HDF : CAMPING · v0.17</div>
   <div id="marqueurs"></div>
   <canvas id="boussole" width="1120" height="108"></canvas>
   <div id="heureJour"><b id="hHeure">07:00</b><span id="hJour">Jour 1 · lundi</span></div>
@@ -204,14 +204,14 @@ body.cine #cine .bande{height:11vh}
 </div>
 <div id="fin" hidden><h2 id="finTitre">Fin de partie</h2><p id="finTexte"></p><div class="stats" id="finStats"></div><div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><button class="gros" id="finRejouer">Recommencer une partie</button><button class="gros discret" id="finMenu">Menu</button></div></div>
 <div id="menu" hidden>
-  <div class="version">v0.15.1 · FSM-3D 2.10</div>
+  <div class="version">v0.17 · FSM-3D 2.10</div>
   <h1><small>F.S.M GAME HOUSE</small>HDF : CAMPING</h1>
   <p class="accroche">Seul au bord d'un lac de montagne. Chaque jour, quelqu'un passe. Tenez le plus longtemps possible.</p>
   <div class="ligne"><input id="prenom" maxlength="16" placeholder="Votre prénom" autocomplete="off" spellcheck="false"></div>
   <div class="ligne"><button class="gros" id="bNouvelle">Nouvelle partie</button><button class="gros discret" id="bContinuer" hidden>Continuer</button></div>
   <div class="opts"><button id="oSon" class="on">Son</button><button id="oVoix" class="on">Voix des PNJ</button><button id="oMusique" class="on">Musique</button><button id="oQualite">Qualité : auto</button><button id="oTexte">Texte : grand</button><button id="oMarq" class="on">Marqueurs de collecte</button><button id="oPerf">Performances</button></div>
   <div class="aideCtrl" id="aideCtrl">Manette PS : <b>stick gauche</b> marcher · <b>stick droit</b> regarder · <b>✕</b> action / choisir · <b>○</b> s'accroupir / partir · <b>△</b> sauter · <b>□</b> sac à dos · <b>R2</b> courir · <b>L1</b> lampe · <b>OPTIONS</b> menu.<br>Tactile : stick à gauche, glisser à droite pour regarder, boutons à droite. Clavier : ZQSD / flèches, souris (clic pour viser), Espace, C, Maj, E, Tab, F, Échap.</div>
-  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.15.1</div>
+  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.17</div>
 </div>
 
 <script>
@@ -4992,7 +4992,7 @@ self.JOE_DATA = { animals: 'Z2xURgIAAAD8HQQAtNIBAEpTT057ImFzc2V0Ijp7InZlcnNpb24i
    ===================================================================================== */
 'use strict';
 // ==== CAMP : OUTILS ===================================================================
-const JEU = { nom: 'HDF : CAMPING', version: '0.15.1', cle: 'hdfc-' };
+const JEU = { nom: 'HDF : CAMPING', version: '0.17', cle: 'hdfc-' };
 const $ = id => document.getElementById(id);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, k) => a + (b - a) * k;
@@ -10378,7 +10378,7 @@ BOURG.GENS = [
       histoire: [[10, 'En bas, on soignait les gardes, les chasseurs, et André le Terrible, une fois. Il a dit merci. Lina en a parlé pendant un mois.'], [35, 'Les soldats de la maréchale Shirley passent parfois se faire recoudre. Louana, surtout. Elle ne se plaint jamais, elle demande juste si Node va bien.'], [60, 'Si tu tombes malade au lac, allume trois feux en ligne. Tod les verra de son poste et il viendra me chercher. C’est notre code.']],
       service: { seuil: 40, t: 'Un petit soin, Claire ?', dit: () => 'Montre. … Rien de grave. Un pansement, et tu ne cours pas pendant une heure. Je t’en donne pour ta trousse.', f: () => { BES.sante = clamp(BES.sante + 20, 0, 100); } } } },
   { id: 'luc', nom: 'Luc Morel', role: 'cantonnier du bourg', g: 'h', morph: 'man', tenue: 'craftsman', col: { top: '#c86a1e' }, maison: 'h7',
-    plan: [[7, 8.5, 'fontaine', 'Dig_Spade'], [8.5, 10, [-44, 216.5], 'Harvest_Pull'], [10, 11.5, [16, 232], 'Dig_Spade'], [11.5, 12, 'cour', 'Idle_LookAround'], [12, 13.5, MZ('h7'), 'Idle'], [13.5, 15.5, [-19, 219.8], 'Harvest_Pull'], [15.5, 17, [38, 247], 'Dig_Spade'], [17, 18, 'terrasse', 'Drink'], [18, 31, MZ('h7'), 'Idle']],
+    plan: [[7, 8.5, [-27.5, 221.4], 'Harvest_Pull'], [8.5, 10, [-44, 217.8], 'Dig_Spade'], [10, 11.5, [16, 232], 'Dig_Spade'], [11.5, 12, 'cour', 'Idle_LookAround'], [12, 13.5, MZ('h7'), 'Idle'], [13.5, 15.5, [-19, 219.8], 'Harvest_Pull'], [15.5, 17, [38, 247], 'Dig_Spade'], [17, 18, 'terrasse', 'Drink'], [18, 31, MZ('h7'), 'Idle']],
     P: { intro: 'Luc, cantonnier. Les chemins, la fontaine, les massifs. Si c’est par terre et que ça pousse, c’est moi.', bavard: ['La Villa a tout construit, mais personne n’a pensé aux massifs. Alors je plante.', 'Je ratisse l’aire de camping le matin. Les campeurs laissent toujours une chaussette.', 'Sonia rapporte des histoires du FSM tous les soirs. Le shérif Nougat a encore couru après un voleur de saucisson.'],
       histoire: [[10, 'En bas, je taillais les pommiers du verger. Il y avait toujours deux garçons dans le grand pommier. Un à casquette bleue, un qui parlait sans arrêt.'], [35, 'J’ai trouvé des traces larges comme une main près du sentier, au printemps. Pas un sanglier. Roméo et Marc n’ont rien voulu dire.'], [60, 'Je t’ai gardé un plant de pommier. Plante-le près de ta tente. Dans dix ans, on se fera des pommes grillées.']],
       service: { seuil: 50, t: 'Tu as quelque chose pour mon camp ?', dit: () => 'Une hache bien affûtée et du bois sec, ça te va ? Je te le dépose au sentier.', f: () => { SAC.buches = (SAC.buches || 0) + 4; } } } },
@@ -10404,7 +10404,7 @@ BOURG.GENS = [
       histoire: [[10, 'En bas, Roméo et Marc me prenaient mes vers pour leurs collets. Je les laissais faire. On ne se dispute pas avec des chasseurs.'], [35, 'Il y a soixante ans, mon père a vu une tête sortir du lac des Cimes. Il a jeté sa canne et il n’est jamais remonté. Moi, je suis remonté.'], [60, 'Tiens. Ma vieille cuillère de cuivre. Les brochets ne lui résistent pas. Ne le dis pas à Marius.']],
       service: { seuil: 50, t: 'Un conseil de pêche, Abel ?', dit: () => 'Prends ces appâts. Bout du ponton, à l’aube, et pas un mot.', f: () => { SAC.appats = (SAC.appats || 0) + 3; } } } },
   { id: 'roseF', nom: 'Rose Fournier', role: 'habitante, jardinière', g: 'f', morph: 'elder', tenue: 'villager_f', col: { top: '#c85a7a' }, maison: 'h9',
-    plan: [[8, 9.5, MZ('h9'), 'Idle'], [9.5, 11, 'fontaine', 'Harvest_Pull'], [11, 12, BT('fournil', -1, -2.2), 'Idle'], [12, 14, MZ('h9'), 'Idle'], [14, 16, BT('medecin', -1, -2), 'Talk'], [16, 18, 'terrasse', 'Sit_Talk'], [18, 31, MZ('h9'), 'Idle']],
+    plan: [[8, 9.5, MZ('h9'), 'Idle'], [9.5, 11, [-33.5, 254.2], 'Harvest_Pull'], [11, 12, BT('fournil', -1, -2.2), 'Idle'], [12, 14, MZ('h9'), 'Idle'], [14, 16, BT('medecin', -1, -2), 'Talk'], [16, 18, 'terrasse', 'Sit_Talk'], [18, 31, MZ('h9'), 'Idle']],
     P: { intro: 'Rose. La femme d’Abel, la mère de Firmin et de Théo, et la seule ici qui sache faire pousser des roses à mille mètres d’altitude.', bavard: ['Germaine et moi, on se dispute la place au soleil sur la terrasse depuis cinquante ans.', 'Théo rentre toujours mouillé. Il dit qu’il se baigne au lac. Je dis qu’il va attraper la mort, ou pire, la bête.', 'Une pomme grillée, un peu de miel, une pincée de cannelle. La recette de Jules, mais c’est la mienne.'],
       histoire: [[10, 'J’ai connu la mère de Node et de Tod. Une femme courageuse. Elle chantait en étendant le linge.'], [35, 'La Villa nous a donné la maison, les clés et une lettre : « Bienvenue chez vous. » Sans signature. Je l’ai encadrée. Abel dit que je suis folle.'], [60, 'Prends ce bouquet. Pose-le dans ta tente. Les fleurs, au lac, ça éloigne les mauvaises pensées.']] } },
   { id: 'theo', nom: 'Théo Fournier', role: 'apprenti de Marius, 17 ans', g: 'h', morph: 'man', tenue: 'villager', col: { top: '#3aa0a0' }, maison: 'h9',
@@ -10559,6 +10559,568 @@ VIE.majBetes = dt => { if (!JOE || !JOE.pack.animals) return; let n = 0; const j
 { const m0 = VIE.maj; VIE.maj = dt => { m0(dt); const L = Object.values(VIE.pnj).filter(v => v.ch && v.ch.visible && v.etat === 'pose' && v.clipFinal !== 'Swim'); for (let i = 0; i < L.length; i++) for (let j = i + 1; j < L.length; j++) { const a = L[i].ch.pos, b = L[j].ch.pos, dx = b[0] - a[0], dz = b[2] - a[2], d = Math.hypot(dx, dz); if (d < .95) { const k = (.95 - d) / 2 + .01, ux = d > .01 ? dx / d : Math.cos(i + j), uz = d > .01 ? dz / d : Math.sin(i + j); a[0] -= ux * k; a[2] -= uz * k; b[0] += ux * k; b[2] += uz * k; } } }; }
 { const r0 = GARDE.recaler; GARDE.recaler = function () { r0.apply(this, arguments); for (const k in VIE.BETES) BOURG.retirerBete(k); }; }
 
+// ==== CAMP : CAMILLA — DIALOGUES ENRICHIS (v0.16) ===============================================
+// Ajoute à CAMILLA.dialogue : « Le bourg neuf, tu y es allée ? » (lié au Bourg vivant v0.15) et « On parle du bon vieux temps ? »
+// (sous-menu 'souv' : rencontre, terrier/chalet, verger, caméra d'André, Lucien et sa brigade, base de Shirley, Roméo et Marc, Gaspard,
+// Handram/Ilona, la Villa et le Hameau, la bête du lac, Node). Sujets mémorisés dans CAMILLA.mem.sujets (s_*) : la 1re fois une
+// réplique longue, ensuite des variantes courtes. Répliques spontanées et nouvelles du matin ajoutées à CAMILLA.AMB / NOUV / NOUV_C.
+{ const N = CAMILLA.dialogue.noeuds, M = () => CAMILLA.mem, vu = k => ({ run: () => { M().sujets[k] = true; } }), deja = k => !!M().sujets[k];
+  const lien = id => (typeof ALPHA !== 'undefined' && ALPHA.niv) ? ALPHA.niv(id) : 0, retour = { t: 'Parlons d’autre chose.', go: 'souv' }, fin = { t: 'Merci, Camilla.', go: 'debut' };
+  const P = (k, premiere, ensuite) => () => { const r = deja(k) ? pick(ensuite) : premiere; M().sujets[k] = true; return r; };
+  // --- point d'entrée
+  const D = N.debut, iFin = D.choix.findIndex(c => c.fin);
+  D.choix.splice(iFin, 0,
+    { t: 'Le bourg neuf, tu y es allée ?', go: 'bn', si: { test: () => CAMILLA.installee } },
+    { t: 'On parle du bon vieux temps ?', go: 'souv', si: { test: () => CAMILLA.installee } });
+  // --- le bourg neuf (Bourg vivant)
+  N.bn = { dit: () => pick(['Le bourg neuf ? J’y descends pour le pain. Jules a remonté son four brique par brique. Il m’a reconnue tout de suite : « La rousse du terrier ! Deux baguettes ? » Une pour moi, une pour l’affamé du lac. Toi.',
+      'J’y suis passée ce matin. Hugo, le facteur, m’a dit qu’il y a une lettre sans timbre chaque semaine pour la maison bleue. Germaine la pose sur la cheminée. Elle fait les poussières tous les midis. Pour toi, Mehdy.',
+      'Tout est neuf, tout est propre, et tout le monde est là : M. Boup, Germaine, Lina, Jules… La Villa a tout payé. Moi, ça me gratte. Personne ne paie un village entier sans raison.']),
+    choix: [{ t: 'Et la maison bleue ?', go: 'bn1' }, { t: 'Qui sont les nouveaux ?', go: 'bn2' }, { t: 'La Villa, ça t’inquiète ?', go: 'villa' }, { t: 'Tu veux qu’on y aille ensemble ?', go: 'bn3' }, fin] };
+  N.bn1 = { dit: 'La numéro quatre. M. Boup l’a gardée libre, « pour quelqu’un qui arrivera ». Germaine y fait les poussières. Il y a une photo sur la cheminée : un pommier, Node qui fait sa tête sérieuse, et toi qui ris avec la casquette bleue. Elle t’attend, Mehdy. Moi aussi, mais moi, je suis là.', choix: [{ t: 'On pourrait y vivre, un jour.', go: 'bn1b' }, retour] };
+  N.bn1b = { dit: 'Un jour. L’hiver, peut-être, quand le lac gèlera. Une maison avec un interrupteur. Clic. Je l’allumerais et je l’éteindrais toute la soirée. Et tu dirais « arrête » et je ne m’arrêterais pas.', eff: { run: () => { M().amour = (M().amour || 0) + 1; } }, choix: [{ t: 'Marché conclu.', go: 'debut' }] };
+  N.bn2 = { dit: () => pick(['Il y a Mathis Lenoir, un ancien de la base de Shirley. Il a servi avec Node. Il parle de lui comme d’un petit frère qui répare tout, même le moral des autres. Il fend du bois près de l’aire de camping, avec son chien Sergent.',
+      'Il y a Inès, une fille du Hameau. Elle aide Agathe à l’école. Elle m’a regardée comme si elle me connaissait. Elle a une liste de noms, d’après Germaine. Je n’aime pas les listes de noms.',
+      'Les Fournier : Abel pêche à l’aube avec son chien Capitaine, Rose fait pousser des roses à mille mètres, Firmin sert au café et Théo se baigne dans ton lac. Ton lac, Mehdy. Il faudra lui apprendre les bonnes manières.',
+      'Le dimanche, Gaspard vient avec sa charrette sur la place. Il m’a proposé une caméra « sans questions ». Je lui ai demandé d’où elle venait. Il a dit « André ». Mehdy… c’était la tienne.']),
+    choix: [{ t: 'Ma caméra ?!', go: 'cam', si: { test: () => !deja('s_cam') } }, { t: 'Inès et sa liste…', go: 'ines' }, { t: 'Mathis a connu Node ?', go: 'base' }, retour] };
+  N.bn3 = { dit: () => HORL.h >= 6 && HORL.h < 13 ? 'Maintenant ? Le fournil est ouvert. Prends des écus, Jules ne fait pas crédit. Même à toi. Surtout à toi, avec ce que tu as fait à sa vitrine.' : 'Demain matin, quand le fournil ouvre. Et on passe dire bonjour à Germaine. Elle me regarde toujours comme si j’allais lui voler ses confitures. Une fois. C’était une fois.', choix: [{ t: 'D’accord.', go: 'debut' }] };
+  N.ines = { dit: 'Elle dit que le Hameau « attend » certaines personnes. Au Hameau, on vit entre des murs, Mehdy. Personne n’y attend personne pour lui offrir des fleurs. Si elle prononce ton nom, tu me le dis. Je ne rate jamais un sanglier.', eff: vu('s_ines'), choix: [{ t: 'Tu es jalouse ?', go: 'ines2' }, retour] };
+  N.ines2 = { dit: 'Jalouse ? D’une fille qui a peur du ciel ? … Un peu. Elle est jolie. Tu as vu ? Non, tu n’as pas vu. Bonne réponse.', choix: [{ t: 'Je n’ai rien vu.', go: 'debut' }] };
+  // --- le bon vieux temps
+  N.souv = { dit: () => pick(['Le bon vieux temps ? Tu veux dire quand Lucien te courait après tous les jours ? D’accord. Choisis.', 'Assieds-toi. Je me souviens de tout, moi. Toi, tu te souviens de ce qui t’arrange.', 'Le bon vieux temps… Il n’est pas si vieux. Deux étés. On dirait dix ans.']),
+    choix: [
+      { t: 'Comment on s’est rencontrés, déjà ?', go: 'renc' }, { t: 'Ton terrier, à l’ouest…', go: 'terrier' }, { t: 'Le verger de Node et Tod', go: 'verger' },
+      { t: 'La caméra d’André', go: 'cam' }, { t: 'Lucien et sa brigade', go: 'brig' }, { t: 'La base de la maréchale Shirley', go: 'base' },
+      { t: 'Roméo et Marc', go: 'chass' }, { t: 'Gaspard le marchand', go: 'gasp' }, { t: 'Handram, Ilona…', go: 'hand' },
+      { t: 'La Villa et le Hameau', go: 'villa' }, { t: 'Et la bête du lac ?', go: 'bete' }, { t: 'Tu crois qu’on reverra Node ?', go: 'revoir' }, { t: 'Une autre fois.', go: 'debut' } ] };
+  N.renc = { dit: P('s_renc', 'Tu étais dans un arbre. Avec la caméra d’André. Tu filmais Lucien qui cherchait ses pneus. Moi, je chassais en dessous. Tu as éternué, la perdrix est partie, et je t’ai visé. Tu as dit : « Mehdy. Avec un Y. Ne tirez pas, je suis trop jeune et trop beau. » Je n’ai pas tiré. C’était ta seule bonne idée de l’année.', ['Dans un arbre, avec une caméra, en train d’éternuer. Le début d’une grande histoire.', 'Tu m’as dit ton prénom avant même de dire bonjour. Et tu l’as épelé.', 'Tu m’avais promis une perdrix pour remplacer celle que tu avais fait fuir. J’attends toujours.']),
+    choix: [{ t: 'Et après ?', go: 'renc2' }, retour] };
+  N.renc2 = { dit: 'Après, tu es revenu tous les jours au terrier. « Par hasard. » Tu m’apportais des pommes du verger de Node et Tod. Tod les comptait, il en manquait toujours. Il accusait la Dame blanche du bois. C’était toi. Puis c’était moi. On était deux voleurs de pommes.', choix: [{ t: 'On l’est toujours.', go: 'souv' }] };
+  N.terrier = { dit: P('s_terrier', 'Mon chalet, tout à l’ouest, après la rivière. Node l’appelait « le terrier », parce que j’en sortais toujours quand on ne m’attendait pas. J’y faisais sécher les peaux, je fumais le gibier, et je laissais la lumière allumée pour toi. Clic. Lina a les clés, maintenant.', ['Le terrier me manque le soir. Pas le reste. Ici, j’ai le lac et toi.', 'Lina arrose mes plantes. Enfin, elle me l’a promis. Elle est médecin, elle sait ce que c’est, une promesse.', 'Si un jour on rentre, on rentre par le terrier. Il y a encore ta brosse à dents. Bleue. Évidemment.']),
+    choix: [{ t: 'Pourquoi tu l’as quitté ?', go: 'terrier2' }, retour] };
+  N.terrier2 = { dit: 'Parce qu’André rôdait trop près. Parce que Roméo et Marc posaient leurs collets sur mon chemin. Et parce qu’un idiot à capuche était parti « réfléchir » dans les Cimes avec trois rations. Trois. Je ne pouvais pas te laisser mourir de faim au bord d’un lac plein de poissons.', choix: [{ t: 'Je pêche mieux maintenant.', go: 'terrier3' }] };
+  N.terrier3 = { dit: () => (SAC.poisson || 0) > 0 ? `Tu as ${SAC.poisson} poisson${SAC.poisson > 1 ? 's' : ''} dans ton seau. Bon. Je retire « mourir de faim ». Je garde « idiot ».` : 'Ton seau est vide, Mehdy. Je retire rien du tout.', choix: [{ t: '…', go: 'souv' }] };
+  N.verger = { dit: P('s_verger', 'Le grand pommier, la réserve à trente pommes, le puits. Node et Tod sciaient les sapins à deux, et le soir ils faisaient griller des pommes sur le feu. Ils m’en devaient toujours une. « On te doit une pomme grillée. » Ils me la doivent encore, d’ailleurs.', ['Trente pommes, pas une de plus. Tod comptait tous les matins. Il en restait vingt-neuf.', 'L’hiver où ils ont scié leur premier sapin, Node s’est coincé le pouce. Il n’a pas crié. Tod a crié pour lui.', 'Une pomme grillée avec le pain de Jules… Tu te souviens ? On en mangeait trois chacun.']),
+    choix: [{ t: 'Et la Dame blanche du bois ?', go: 'dame' }, retour] };
+  N.dame = { dit: 'La Dame blanche… c’était moi, avec un drap de Germaine, une nuit de pleine lune. Node a fait un bond de deux mètres. Tod a dit « elle invente tout, hein ? ». Depuis, je l’ai racontée si souvent que je ne sais plus où s’arrête le drap.', choix: [{ t: 'Raconte-la encore, ce soir.', go: 'souv', eff: { run: () => { M().histoires = (M().histoires || 0); } } }] };
+  N.cam = { dit: P('s_cam', 'La caméra. Celle qu’André t’avait confiée. Tu filmais tout : Lucien, les gardes, Germaine et ses pigeons, et moi quand je ne regardais pas. Le jour où tu as quitté André, tu l’as laissée sur une souche. Gaspard la vend au marché du dimanche, maintenant. « Sans questions. »', ['Il y a peut-être encore nos vidéos dedans. Toi dans l’arbre. Moi qui te vise.', 'Si Lucien tombe sur cette caméra, il retrouve la moitié de ses pneus crevés en vidéo. Rachète-la.', 'Gaspard en veut trop cher. Je lui ai proposé un faisan. Il a dit qu’il ne pose pas de questions, mais qu’il a des principes.']),
+    choix: [{ t: 'Il faut la racheter.', go: 'cam2' }, retour] };
+  N.cam2 = { dit: 'Oui. Avant Lucien. Et avant Yasmine, la fille du Journal du Bourg : elle cherche un scoop, et toi en train de crever des pneus avec une capuche, c’est la une pour un mois. Le dimanche, sur la place. Prends des écus.', choix: [{ t: 'Dimanche.', go: 'souv' }] };
+  N.brig = { dit: P('s_brig', 'Lucien, le capitaine. Moustache, papiers, « Badaoui, encore toi ». Et sa brigade : Sophie qui conduit trop vite, Karim qui rit de tout, Bernard qui a les cheveux gris depuis qu’il te connaît. Et le cachot. Il sent l’hydromel froid. Tu y as dormi combien de fois ?', ['Lucien a dit à Sophie que tu t’étais « bien rangé ». Il avait l’air presque déçu.', 'Tu lui disais « Salut Moustache ! », il répondait « Capitaine. Pour toi, c’est capitaine. » Tous les jours. Pendant un an.', 'La pierre parlante du commissariat… Lucien l’appelle encore « la radio ». Elle grésille à chaque orage.']),
+    choix: [{ t: 'Six fois. Sept, avec les pneus.', go: 'brig2' }, retour] };
+  N.brig2 = { dit: 'Sept. Et à chaque fois, tu épelais ton nom. « Le Y est important. » Karim l’a écrit sur la porte du cachot. Il y est encore. Lucien n’a jamais voulu le repeindre. Je crois qu’au fond, tu lui manques.', choix: [{ t: 'Moi aussi, il me manque. Un peu.', go: 'souv' }] };
+  N.base = { dit: P('s_base', 'La base de la maréchale Shirley, à l’est, après la grande forêt. Louana l’artilleuse, l’amie de Node et Tod. Céline qui pilote « le grand aigle », l’hélicoptère. Mike et son blindé, le TAN 01, qui écrase toutes les boîtes aux lettres. Et Node au milieu, qui répare tout et ne se plaint jamais.', ['Louana m’a dit que Node mange mal. Je lui ai envoyé du lièvre séché. Il a tout partagé avec son unité, évidemment.', 'Mathis, au bourg, était artilleur là-bas. Il dit que Node réparait même le moral des autres.', 'Quand « le grand aigle » passe au-dessus du lac, je fais un signe. Céline ne me voit sûrement pas. Je le fais quand même.']),
+    choix: [{ t: 'Node est heureux, là-bas ?', go: 'base2' }, retour] };
+  N.base2 = { dit: 'Heureux… Il est utile. Pour Node, c’est pareil. Il porte ta casquette bleue sous son casque. Louana l’a vue. Il dit que c’est pour la chance. Moi, je crois que c’est pour se souvenir qu’il a un ami qui parle trop.', choix: [{ t: 'Je lui écrirai.', go: 'souv', eff: { run: () => { M().sujets.s_lettre = true; } } }] };
+  N.chass = { dit: P('s_chass', 'Roméo et Marc, les chasseurs de sangliers de la grande forêt. Ils posent des collets, ils braconnent, Lucien les verbalise, ils recommencent. Ils m’ont proposé de chasser avec eux. J’ai dit non. Ils tirent sur tout ce qui bouge, même sur ce qui ne bouge pas.', ['Marius vend du fil de pêche à Roméo. Pour les collets. Tout le monde le sait.', 'Ils ont pris un sanglier de cent kilos l’an dernier. Moi j’en ai pris un de cent vingt. Ils ne me parlent plus.', 'Si tu vois deux types en orange avec des fusils au bord du lac, tu m’appelles. Ici, c’est mon territoire de chasse.']),
+    choix: [{ t: 'Ils pourraient venir jusqu’ici ?', go: 'chass2' }, retour] };
+  N.chass2 = { dit: 'Ils viendront. Ils viennent partout où il y a du gibier. Mais ici, il y a moi. Et un garde forestier qui s’appelle Tod et qui a lu le règlement trois fois. Ils n’ont aucune chance.', choix: [{ t: 'Pauvres sangliers.', go: 'souv' }] };
+  N.gasp = { dit: P('s_gasp', 'Gaspard ne pose jamais de questions. Il achète à André, il revend à Germaine, il rachète à Roméo, il revend à Lucien. Une fois, André a volé Gaspard : il lui a repris ce que Gaspard lui avait déjà acheté. Personne n’a jamais compris qui devait quoi à qui.', ['Le dimanche, au bourg neuf, sur la place. Il rachète les pommes. Il me rachèterait le lac, si je le lui vendais.', 'Gaspard m’a payé un faisan dix pièces d’or. En bas, c’était de l’or. Ici, ce sont des écus du Bourg. Même faisan, même arnaque.', 'Sa charrette n’a plus d’âne depuis dix ans. C’est lui qui la tire. Il ne veut pas en parler.']),
+    choix: [retour] };
+  N.hand = { dit: P('s_hand', 'Handram, la capitale. La reine a disparu un printemps, et sa fille Ilona gouverne avec des « conseillers de métal ». La forêt royale ferme la nuit. Tod y a servi deux saisons. Il dit qu’Ilona lui a parlé, une fois, des sapins qui chuchotent. Depuis, il rougit quand on dit « sapin ».', ['Sapin. … Tu as vu ? Même toi tu as rougi. C’est contagieux.', 'Tod garde un ruban de la forêt royale dans son registre. Il croit que personne ne l’a vu.', 'Les conseillers de métal… Node dit qu’à la base, on en parle à voix basse. Je n’aime pas quand Node parle à voix basse.']),
+    choix: [{ t: 'Tu crois que Tod l’aime ?', go: 'hand2' }, retour] };
+  N.hand2 = { dit: 'Tod aime les sapins, les registres, le café imbuvable et une princesse qu’il a vue une fois. C’est le garçon le plus fidèle du monde. Ne lui dis pas que je t’en ai parlé. Il me ferait un rapport.', choix: [{ t: 'Promis.', go: 'souv' }] };
+  N.villa = { dit: P('s_villa', 'La Villa… Personne ne l’a jamais vue de près. Elle a construit le bourg neuf, le FSM, le commissariat du shérif Nougat, et une ligne dans le contrat de M. Boup : « Accueillir quiconque viendra du Hameau. » Et une semaine après, tu arrivais au lac. Je ne crois pas aux coïncidences, Mehdy. Je suis chasseuse.', ['Yasmine, au Journal du Bourg, prépare un dossier sur la Villa. Paulette lui a dit de faire attention. Quand Paulette dit de faire attention, je fais attention.', 'Le courrier de la Villa arrive sans timbre. Hugo dit qu’il ne pose pas de questions. Tout le monde ne pose pas de questions, dans ce bourg. C’est ça qui m’inquiète.', 'Si la Villa nous veut quelque chose, elle viendra. Je préfère l’attendre ici, avec mon arc, qu’au bourg avec une baguette.']),
+    choix: [{ t: 'Et le Hameau ?', go: 'hameau' }, retour] };
+  N.hameau = { dit: 'Le Hameau, de l’autre côté des montagnes. Des murs, des gardes, des gens qui partent et qui ne reviennent pas. Inès en vient. Elle dit que la première nuit ici, elle n’a pas dormi : trop de ciel. Moi, je ne pourrais pas vivre sans ciel. Ni sans toi. Dans cet ordre-là, ne te vexe pas.', choix: [{ t: 'Je ne me vexe pas.', go: 'souv' }] };
+  N.bete = { dit: () => { const vue = typeof CREATURE !== 'undefined' && (CREATURE.vues || CREATURE.nbVues || 0) > 0, d0 = deja('s_bete'); M().sujets.s_bete = true; return d0 ? pick(['Avec le brouillard, je reste près de toi. Pas pour toi. Pour moi.', 'Abel Fournier dit que son père a vu une tête sortir du lac, il y a soixante ans. Il n’est jamais remonté. Abel, lui, est remonté.', 'Je ne chasse pas ce que je ne peux pas manger. Et ça, je ne pourrais pas le manger. Même avec le pain de Jules.']) : (vue ? 'Je l’ai vue, moi aussi. Le cou, le dos, le brouillard qui roule sur l’eau, et ce grondement… J’avais une flèche encochée. Je n’ai pas tiré. On ne tire pas sur quelque chose qui vous regarde comme ça. Comme si elle nous connaissait.' : 'La bête du lac ? Les enfants du bourg la dessinent tous pareil : un long cou dans le brouillard. Même ceux qui ne l’ont jamais vue. Moi, j’ai trouvé des traces au bord de l’eau. Larges comme deux mains. Pas un sanglier, Mehdy.'); },
+    choix: [{ t: 'Tu as peur ?', go: 'bete2' }, retour] };
+  N.bete2 = { dit: 'Peur ? Je suis la Dame blanche du bois. C’est moi qui fais peur. … Un peu. Quand le brouillard tombe, rentre près du feu. Et si tu entends le grondement, ne cours pas vers l’eau. Cours vers moi.', choix: [{ t: 'Vers toi. Toujours.', go: 'souv', eff: { run: () => { M().amour = (M().amour || 0) + 1; } } }] };
+  N.revoir = { dit: P('s_revoir', 'Node ? Oui. Il viendra. Il arrive toujours au moment où on ne l’attend plus, avec une égratignure et un sourire désolé. Tod descendra de son poste en courant, il trébuchera sur sa propre lanterne, et on fera griller des pommes. Toutes les trente. Je compterai.', ['Il viendra quand le lac gèlera. Ou avant. Node n’a jamais su attendre.', 'Louana dit qu’il a demandé une permission. La maréchale a dit « on verra ». Chez Shirley, « on verra », c’est presque oui.', 'Quand il viendra, tu lui rends sa casquette ? … Non. Garde-la. Il t’en a fait cadeau. Il en a une autre.']),
+    choix: [{ t: 'On lui gardera une place au feu.', go: 'revoir2' }, retour] };
+  N.revoir2 = { dit: 'Une place au feu, une pomme grillée et le pire café de Tod. Et je lui raconterai la Dame blanche, encore, pour le voir sauter. Ça, ça ne change jamais.', choix: [{ t: 'Ça ne change jamais.', go: 'debut' }] };
+  // --- répliques spontanées et nouvelles du matin
+  CAMILLA.AMB.jour.push('Jules m’a gardé deux baguettes. Une pas trop cuite, pour toi. Il dit que tu as les goûts de Germaine.', 'Le facteur du bourg a une chienne qui s’appelle Biscotte. Elle m’a reniflée comme un faisan. Vexant.', 'Mathis, au bourg, a servi avec Node à la base. Il dit qu’il réparait tout. Même le moral. Ça lui ressemble.', 'Gaspard vend ta caméra le dimanche. Ta caméra, Mehdy. Celle de nos vidéos.', 'Théo, le petit Fournier, se baigne dans ton lac l’après-midi. Il m’a demandé si j’étais la Dame blanche. J’ai dit oui.',
+    'Lucien a dû passer une semaine sans crever de pneus. Il doit s’ennuyer.', 'Quand « le grand aigle » de Céline passe, je lui fais signe. Elle ne me voit jamais. Un jour.', 'Inès, la fille du Hameau, m’a demandé si tu avais toujours ta capuche. Comment elle sait, pour ta capuche ?', 'Le Journal du Bourg dit que tu tiens bon au lac. Yasmine a écrit « le campeur ». Pas « le Badaoui ». Tu es célèbre, et anonyme. Ton rêve.', 'Préfet, le basset de M. Boup, aboie sur toutes les moustaches. Lucien ne vient plus au bourg sans chapeau.');
+  CAMILLA.AMB.nuit.push('Au terrier, à cette heure-là, j’allumais la lumière pour que tu trouves le chemin. Clic. Ici, je ne peux allumer que toi.', 'Tu entends les campeurs du bourg ? La guitare de Théo. Il joue faux. C’est joli quand même.', 'Si la Villa nous regarde, elle voit deux voleurs de pommes près d’un feu. Ça ne doit pas l’impressionner.', 'Node dirait : « Tu as vérifié la fermeture de la tente ? » Je l’ai vérifiée trois fois. Pour lui.');
+  CAMILLA.NOUV.push('Tod, à la radio : « Lucien demande si quelqu’un a vu une caméra. Il dit "pour l’enquête". Il a l’air pressé. »', 'Un mot de Tod : « Mathis Lenoir a reçu une lettre de la base. Node va bien. Il a encore réparé le blindé de Mike. »', 'La radio du bourg : le marché de Gaspard, dimanche, sur la place. « Rachat de pommes, et autres choses, sans questions. »');
+  CAMILLA.NOUV_C.push('Camilla, en ramenant du bois : « J’ai rêvé que la Villa était un pommier. Géant. Avec trente pommes. Et il en manquait une. »', 'Camilla, la tasse à la main : « Jules m’a dit que tu pétrissais bien, avant. Tu me feras du pain, un jour ? Pas trop cuit. »', 'Camilla, à moitié endormie : « Tu as dit "Moustache" en dormant. Lucien te hante. C’est mignon. »');
+}
+
+// ==== CAMP : ICÔNES (v0.16) ======================================================================
+// Une icône colorée et unique devant chaque objet du sac, chaque article des boutiques, chaque choix de menu ou de dialogue
+// et chaque action proposée à l'écran (invite ✕). ICO.G : glyphes 24×24 (s:1 = tracé au trait) ; ICO.R : règles texte → icône
+// (la première qui correspond gagne, ordre = priorité) ; ICO.badge(texte | clé). Ajouter une icône : une entrée dans G + une règle dans R.
+const ICO = { G: {
+  gourde: ['#2f9e9a', 'M9 3h6v3l2 2v12a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V8l2-2Z'],
+  bouteille: ['#4a9fe0', 'M10 2h4v4l2 3v12H8V9l2-3Z'],
+  eau: ['#3b82d6', 'M12 3c3 4.5 6 8 6 11a6 6 0 0 1-12 0c0-3 3-6.5 6-11Z'],
+  purif: ['#6a6fe0', 'M12 3c3 4.5 6 8 6 11a6 6 0 0 1-12 0c0-3 3-6.5 6-11ZM11 11v3H8v2h3v3h2v-3h3v-2h-3v-3Z'],
+  jerrican: ['#3f8f4a', 'M6 6h8l4 4v10H6ZM9 3h4v3H9ZM9 11l6 6M15 11l-6 6'],
+  ration: ['#e07b2a', 'M5 7h14v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2ZM5 6.5a7 2.2 0 0 1 14 0'],
+  baies: ['#8a3fb8', 'M5 15a3 3 0 1 0 6 0a3 3 0 1 0-6 0ZM13 15a3 3 0 1 0 6 0a3 3 0 1 0-6 0ZM9 9a3 3 0 1 0 6 0a3 3 0 1 0-6 0Z'],
+  pomme: ['#d63b34', 'M12 7.5C9 5.5 5 7 5 12s3 9 5 9c1 0 1.4-.5 2-.5s1 .5 2 .5c2 0 5-4 5-9s-4-6.5-7-4.5ZM12 7c0-2 1-3.5 3-4l.5 1c-1.5.6-2.3 1.5-2.5 3Z'],
+  noisette: ['#9a6a3a', 'M12 5c4 0 7 3 7 7 0 5-4 8-7 8s-7-3-7-8c0-4 3-7 7-7ZM8 8h8l-1-3H9Z'],
+  poisson: ['#2bb3c9', 'M2 12c3-5 9-6 13-3l5-3-1.5 6 1.5 6-5-3c-4 3-10 2-13-3Z'],
+  grille: ['#d0582a', 'M2 12c3-5 9-6 13-3l5-3-1.5 6 1.5 6-5-3c-4 3-10 2-13-3ZM7 9l3 6M10 8l3 7'],
+  pain: ['#d9a443', 'M3 15a9 6 0 0 1 18 0v3H3ZM8 10l1.5 4M12 9.5V14M16 10l-1.5 4'],
+  chouquette: ['#e8b85a', 'M4 15a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0-7 0ZM13 15a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0-7 0ZM8.5 8.5a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0-7 0Z'],
+  tarte: ['#c9762f', 'M3 13h18l-2 6H5ZM4 12a8 5 0 0 1 16 0Z'],
+  repas: ['#c4573a', 'M3 11h18a9 7 0 0 1-18 0ZM8 3c-1 2 1 3 0 6h1.5c1-3-1-4 0-6ZM14 3c-1 2 1 3 0 6h1.5c1-3-1-4 0-6Z'],
+  cafe: ['#7a4a2a', 'M4 8h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5ZM17 9.5h1.5a2.5 2.5 0 0 1 0 5H17v-2h1.5a.5.5 0 0 0 0-1H17Z'],
+  hydromel: ['#c8902a', 'M7 6h10v13a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2ZM6 3h12v3H6Z'],
+  confiture: ['#b0324a', 'M7 8h10v11a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2ZM6 4h12v4H6Z'],
+  buche: ['#8a5a2a', 'M4 8h13a3 3 0 0 1 0 6H4a3 3 0 0 1 0-6ZM6 15h13a3 3 0 0 1 0 6H6a3 3 0 0 1 0-6Z'],
+  hache: ['#7a6a5a', 'M5 21 15 8l2 2L7 22ZM13 3c4 0 7 3 7 7l-5-1-2-2Z'],
+  gaz: ['#e0662a', 'M8 7h8v13a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1ZM10 3h4v4h-4Z'],
+  feu: ['#e8501f', 'M12 2c2 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-5 3-7 1 2 2 3 3 3 0-3-1-5 0-7Z'],
+  cuisine: ['#b8582a', 'M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4ZM2 10h20v2H2ZM9 4h6v4H9Z'],
+  lampe: ['#e8c22a', 'M7 3h10l-2 6v12H9V9ZM11 12h2v3h-2Z'],
+  lanterne: ['#f0a830', 'M9 2h6v2h2v4l-1 1v10h1v2H7v-2h1V9L7 8V4h2ZM10 10v7h4v-7Z'],
+  peche: ['#1f8fb0', 'M14 3v10a4 4 0 0 1-8 0v-2M14 3l6 1', 1],
+  appat: ['#7aa83a', 'M5 16c2-6 6-2 8-6s5-3 6-1-2 4-5 5-6 6-9 2Z'],
+  hamecon: ['#5a7a9a', 'M15 3v10a4 4 0 0 1-8 0l2-2', 1],
+  soin: ['#e04848', 'M9 3h6v6h6v6h-6v6H9v-6H3V9h6Z'],
+  livre: ['#b8903a', 'M4 4h6a3 3 0 0 1 2 1 3 3 0 0 1 2-1h6v15h-6a2 2 0 0 0-2 1 2 2 0 0 0-2-1H4Z'],
+  journal: ['#6a7a8a', 'M4 4h13v14a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2ZM17 8h3v10a2 2 0 0 1-4 0ZM7 7h7v3H7Zm0 5h7v1.5H7Zm0 3h7v1.5H7Z'],
+  carte: ['#3a9a6a', 'M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2ZM9 4v14M15 6v14', 0],
+  lettre: ['#d07a9a', 'M3 6h18v12H3ZM3 6l9 7 9-7', 1],
+  photo: ['#8a6ac8', 'M3 6h18v13H3ZM5 17l5-6 4 4 2-2 3 4ZM16 9a1.5 1.5 0 1 0 .1 0Z'],
+  camera: ['#4a4a5a', 'M3 8h4l2-3h6l2 3h4v11H3ZM12 10a4 4 0 1 0 .1 0Z'],
+  dessin: ['#e07ab8', 'M12 3a9 9 0 0 0 0 18c1 0 1.5-.7 1.5-1.5 0-1.5-1.5-1.5-1.5-3s1-2 2.5-2H17a4 4 0 0 0 4-4c0-4-4-7.5-9-7.5ZM7.5 12a1.5 1.5 0 1 0 .1 0ZM10 7.5a1.5 1.5 0 1 0 .1 0ZM15 7.5a1.5 1.5 0 1 0 .1 0Z'],
+  corde: ['#a88a5a', 'M12 4a8 8 0 1 0 8 8M12 8a4 4 0 1 0 4 4', 1],
+  tente: ['#d58ab8', 'M12 3.5 2.6 20h18.8ZM12 11.2 9.2 20h5.6Z'],
+  caillou: ['#c0503a', 'M5 16c0-5 3-9 8-9 4 0 6 3 6 6 0 4-3 6-7 6s-7-1-7-3Z'],
+  fleur: ['#e8608a', 'M12 8a3 3 0 1 1 3-3 3 3 0 1 1-3 3ZM12 8a3 3 0 1 0-3-3 3 3 0 1 0 3 3ZM11 9h2v12h-2ZM13 15c2-3 5-3 6-2-1 2-4 3-6 2Z'],
+  ecus: ['#e0b030', 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM10 7h5v2h-3v2h2.5v2H12v2h3v2h-5Z'],
+  vendre: ['#2fa060', 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM12 6l4 5h-3v6h-2v-6H8Z'],
+  acheter: ['#4a7ae0', 'M3 4h3.2l.6 2H21l-2.2 8H8.4ZM9 17a2 2 0 1 1 0 4 2 2 0 0 1 0-4Zm8 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z'],
+  travail: ['#8a6a3a', 'M9 5h6v2h5v12H4V7h5ZM10 7h4V6h-4Z'],
+  dormir: ['#5a5ac8', 'M15 3a8 8 0 1 0 6 13A7 7 0 0 1 15 3Z'],
+  assis: ['#8a7a5a', 'M6 3h2v9h8v2H8v7H6ZM14 14h2v7h-2Z'],
+  porte: ['#9a5a3a', 'M6 3h12v18H6ZM14 12a1 1 0 1 0 .1 0Z'],
+  frapper: ['#b07a3a', 'M6 3h12v18H6ZM10 9c1-1 3-1 4 0M9 12c2-2 4-2 6 0', 1],
+  parler: ['#4a8ad0', 'M4 4h16v11H9l-5 4Z'],
+  question: ['#6aa0c8', 'M4 4h16v11H9l-5 4ZM12 7a2 2 0 0 0-2 2h1.5a.5.5 0 1 1 1 0c0 .8-1.3 1-1.3 2.5h1.6c0-1 1.2-1.3 1.2-2.5a2 2 0 0 0-2-2ZM11.2 12.5h1.6V14h-1.6Z'],
+  patte: ['#b0784a', 'M12 12c3 0 5 3 5 5s-2 3-5 3-5-1-5-3 2-5 5-5ZM6 8a2 2 0 1 0 .1 0ZM18 8a2 2 0 1 0 .1 0ZM9.5 4a2 2 0 1 0 .1 0ZM14.5 4a2 2 0 1 0 .1 0Z'],
+  radio: ['#5a6a4a', 'M7 8h10v13H7ZM9 2h2v6H9ZM9 11h6v3H9ZM9 16h2v2H9Zm4 0h2v2h-2Z'],
+  registre: ['#6a8a5a', 'M6 4h12v17H6ZM9 2h6v4H9ZM8 9h8v1.5H8Zm0 3h8v1.5H8Zm0 3h5v1.5H8Z'],
+  linge: ['#5ab0d0', 'M8 3 4 6l2 3 2-1v13h8V8l2 1 2-3-4-3c-1 1.5-2.5 2-4 2s-3-.5-4-2Z'],
+  baignade: ['#2a90d0', 'M2 17c2-2 4-2 5 0s3 2 5 0 3-2 5 0 3 2 5 0v3c-2 2-4 2-5 0s-3-2-5 0-3 2-5 0-3-2-5 0ZM14 4a2 2 0 1 0 .1 0ZM8 13l4-5 3 3-2 2', 0],
+  coffre: ['#a8743a', 'M3 9h18v11H3ZM3 9a9 5 0 0 1 18 0ZM10 12h4v3h-4Z'],
+  marche: ['#c08a3a', 'M2 10h20v3H2ZM4 13h16v6H4ZM6 20a2 2 0 1 0 .1 0ZM18 20a2 2 0 1 0 .1 0ZM6 4h12l2 6H4Z'],
+  reculer: ['#7a7a80', 'M10 6 4 12l6 6v-4h10v-4H10Z'],
+  merci: ['#6a9a7a', 'M4 13l5 5L20 7l-2-2-9 9-3-3Z'],
+  sauver: ['#3a7ab0', 'M5 3h12l3 3v15H4V4ZM8 4v5h8V4ZM8 13h8v6H8Z'],
+  reglages: ['#7a7a90', 'M10 2h4l.6 3 2.4 1.4 2.8-1.2 2 3.5-2.3 2v2.6l2.3 2-2 3.5-2.8-1.2L14.6 19l-.6 3h-4l-.6-3-2.4-1.4-2.8 1.2-2-3.5 2.3-2v-2.6L2.2 8.7l2-3.5L7 6.4 9.4 5ZM12 9a3 3 0 1 0 .1 0Z'],
+  quitter: ['#c84a4a', 'M4 4h9v3h-2V6H6v12h5v-1h2v3H4ZM15 8l5 4-5 4v-3H9v-2h6Z'],
+  arc: ['#7a5a2a', 'M6 3c6 3 6 15 0 18M6 3v18M9 12h12M18 9l3 3-3 3', 1],
+  amour: ['#e8486a', 'M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-3 4.5 4.5 0 0 1 8 3c0 6-8 11-8 11Z'],
+  histoire: ['#a0a0c0', 'M12 3a7 7 0 0 0-7 7v11l2.3-2 2.3 2 2.4-2 2.4 2 2.3-2 2.3 2V10a7 7 0 0 0-7-7ZM9 9a1.3 1.3 0 1 0 .1 0ZM15 9a1.3 1.3 0 1 0 .1 0Z'],
+  aide: ['#d0a030', 'M7 11V5a1.5 1.5 0 0 1 3 0v5V3.5a1.5 1.5 0 0 1 3 0V10V5a1.5 1.5 0 0 1 3 0v8c0 4-3 8-7 8-3 0-5-2-6-5l-1.5-3a1.5 1.5 0 0 1 2.5-1.5Z'],
+  police: ['#2a4a9a', 'M12 2.5l2.8 6.2 6.7.6-5.1 4.4 1.6 6.6L12 17l-6 3.3 1.6-6.6-5.1-4.4 6.7-.6Z'],
+  ecole: ['#e0b83a', 'M12 3 1 8l11 5 9-4.1V15h2V8ZM5 12v4c0 2 3.5 4 7 4s7-2 7-4v-4l-7 3.2Z'],
+  maison: ['#c89a6a', 'M12 3 2 11h3v9h5v-6h4v6h5v-9h3Z'],
+  regarder: ['#4ab0a0', 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12ZM12 8.5a3.5 3.5 0 1 0 .1 0Z'],
+  ramasser: ['#5aa04a', 'M6 20c0-6 2-10 6-12M12 8c3-1 6 0 8 3-3 1-6 1-8-3ZM12 8C11 5 8 3 4 4c1 3 4 5 8 4Z', 0],
+  outil: ['#8a8a9a', 'M14 3a5 5 0 0 0-4.6 7L3 16.4 7.6 21 14 14.6A5 5 0 0 0 21 10l-3 3-4-1-1-4 3-3a5 5 0 0 0-2-2Z'],
+  sac: ['#6a7a4a', 'M8 6a4 4 0 0 1 8 0h3l1 15H4L5 6ZM10 6a2 2 0 0 1 4 0Z'],
+  boussole: ['#c87a3a', 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20ZM15.5 8.5l-2 5-5 2 2-5Z'] },
+  R: [
+    [/reculer|terminer|fermer|annuler|plus tard|une autre fois|^non\b|retour|au revoir|à tout à l|bonne journée|à plus|laisse|^…$|^\.\.\.$/, 'reculer'], [/merci|d’accord|d'accord|promis|marché conclu|ça marche|^oui\b/, 'merci'],
+    [/sauvegard/, 'sauver'], [/réglage|options|qualité graphique|volume/, 'reglages'], [/quitter|abandonner|nouvelle partie|menu principal/, 'quitter'],
+    [/vendre|vendez|vente|rachat/, 'vendre'],
+    [/caresser|biscotte|sergent|capitaine\b|préfet|balzac|bouchon|pompon|minouche|pilote|rillette|kiwi|chien|\bchat\b|\bchats\b/, 'patte'],
+    [/frapper/, 'frapper'], [/parler à|discuter/, 'parler'], [/comptoir|charrette|marché|boutique|magasin|shopy|carte du café|acheter|courses|achat|panier/, 'acheter'],
+    [/gourde/, 'gourde'], [/bouteille/, 'bouteille'], [/purifier|traiter|filtr|pastille/, 'purif'], [/jerrican/, 'jerrican'], [/limonade|boire|\beau\b|puiser|tonneau/, 'eau'],
+    [/poisson grillé|griller le poisson|truite meunière/, 'grille'], [/poisson|truite|perche|brochet|omble|gardon|seau/, 'poisson'], [/appât|asticot/, 'appat'], [/hameçon/, 'hamecon'], [/pêche|pêcher|canne|ligne/, 'peche'],
+    [/chouquette/, 'chouquette'], [/tarte/, 'tarte'], [/baguette|\bpains?\b|fournil|croissant/, 'pain'], [/café|\bthé\b|tisane/, 'cafe'], [/hydromel/, 'hydromel'], [/confiture/, 'confiture'],
+    [/ration|conserve|biscuits/, 'ration'], [/baie|mûre|myrtille|framboise/, 'baies'], [/pomme/, 'pomme'], [/noisette/, 'noisette'], [/plat du jour|soupe|potée|repas|manger|déjeuner|dîner|cuisiner|marmite|réchaud/, 'repas'],
+    [/bûche|\bbois\b|fendre/, 'buche'], [/hache/, 'hache'], [/\bgaz\b/, 'gaz'], [/\bfeu\b|allumer|braise/, 'feu'],
+    [/lanterne/, 'lanterne'], [/lampe|torche/, 'lampe'],
+    [/trousse|soin|soigner|pansement|médecin|consult|ausculter|infirm/, 'soin'], [/journal|avis du bourg|affiche/, 'journal'], [/carte\b|carte des|carte de/, 'carte'], [/livre|légende|guide|lire|récit|handram|bibliothèque|librairie/, 'livre'],
+    [/lettre|courrier/, 'lettre'], [/photo/, 'photo'], [/caméra/, 'camera'], [/dessin/, 'dessin'], [/corde/, 'corde'], [/piquet|tente/, 'tente'], [/caillou/, 'caillou'], [/bouquet|fleur|\broses?\b/, 'fleur'],
+    [/travail|boulot|courrier dans|archives|cantine|petits travaux/, 'travail'], [/dormir|sieste|\blit\b|se coucher|couchage|nuit au poste/, 'dormir'], [/s’asseoir|s'asseoir|asseoir|se lever|banc|chaise/, 'assis'],
+    [/coffre|ranger|stocker|déposer|récupérer/, 'coffre'], [/\bentrer\b|\bporte\b|trappe/, 'porte'],
+    [/radio|talkie/, 'radio'], [/registre|rapport|notes/, 'registre'], [/linge|laver|étendre/, 'linge'], [/baign|nager|plonger/, 'baignade'],
+    [/\barc\b|\btirer\b|flèche/, 'arc'], [/aime|amour|embrass|câlin/, 'amour'], [/histoire|peur|fantôme|dame blanche/, 'histoire'], [/coup de main|aide|aider|service/, 'aide'],
+    [/shérif|police|lucien|cellule|garde à vue|détenu/, 'police'], [/école|élève|classe/, 'ecole'], [/maison|habitation|chalet|terrier|bourg/, 'maison'],
+    [/regarder|observer|examiner|admirer|contempler|guetter/, 'regarder'], [/cueillir|ramasser|récolter/, 'ramasser'], [/outil|réparer|piège|collet/, 'outil'], [/\bsac\b/, 'sac'], [/boussole|itinéraire/, 'boussole'], [/écus|pièces d|payer|monnaie|argent/, 'ecus']],
+  cache: new Map(),
+  cle(t) { const s = (t || '').toLowerCase(); if (ICO.cache.has(s)) return ICO.cache.get(s); let k = null; for (const [re, c] of ICO.R) if (re.test(s)) { k = c; break; } if (ICO.cache.size > 800) ICO.cache.clear(); ICO.cache.set(s, k); return k; },
+  badge(t, defaut) { const k = ICO.G[t] ? t : (ICO.cle(t) || defaut); const g = k && ICO.G[k]; if (!g) return ''; const [c, d, trait] = g; return `<span class="ico" style="--c:${c}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"${trait ? ' fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"' : ''}/></svg></span>`; },
+  esc: s => String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])) };
+{ const st = document.createElement('style'); st.textContent = '.ico{display:inline-flex;align-items:center;justify-content:center;width:1.55em;height:1.55em;min-width:1.55em;border-radius:.45em;background:var(--c);box-shadow:inset 0 -2px 0 rgba(0,0,0,.25),0 1px 2px rgba(0,0,0,.35);margin-right:.55em;vertical-align:-.4em}.ico svg{width:74%;height:74%;fill:#fff}#dlgChoix li{display:flex;align-items:center}#dlgChoix li.off .ico{filter:grayscale(.8)}.item .icoL{display:flex;align-items:center;gap:.2em}.item .icoL>div{display:flex;flex-direction:column}#invite .ico{width:1.35em;height:1.35em;min-width:1.35em;margin:0 .4em 0 .25em;vertical-align:-.32em}'; document.head.appendChild(st); }
+// choix de menus et de dialogues
+{ const r0 = rendreChoix; rendreChoix = function () { r0.apply(this, arguments); const ul = $('dlgChoix'); [...ul.children].forEach((li, i) => { const c = UI.items[i]; if (!c) return; li.innerHTML = ICO.badge(c.ico || String(c.t).replace(/ — .*$/, ''), UI.dlgMode === 'menu' ? 'aide' : 'question') + `<span>${ICO.esc(c.t)}</span>`; }); }; }
+// sac à dos, menu pause, coffre : une icône par ligne
+{ const r0 = rendrePanneau; rendrePanneau = function () { r0.apply(this, arguments); const id = UI.panneauOuvert; if (!id) return; const box = $(id === 'sac' ? 'sacListe' : 'pauseListe'); [...box.children].forEach((d, i) => { const it = UI.items[i], c0 = d.firstElementChild; if (!it || !c0) return; const w = document.createElement('div'); w.className = 'icoL'; w.innerHTML = ICO.badge(it.ico || it.nom, 'outil'); c0.replaceWith(w); w.appendChild(c0); }); }; }
+// invite d'action à l'écran (✕ + icône + action)
+{ const m0 = majInvite; majInvite = function () { m0.apply(this, arguments); const el = $('invite'); if (el.hidden || !INVITE || !INVITE.nom) return; const b = ICO.badge(INVITE.ico || INVITE.nom, 'regarder'); if (b && !el.querySelector('.ico')) el.innerHTML = el.innerHTML.replace('</i> ', '</i>' + b); }; }
+
+// ==== CAMP : TRAJETS DES PNJ SANS BLOCAGE (v0.16) ================================================
+// ALPHA.aller (habitants du bourg, clients du FSM, agents…) : on garde le passage par les portes (dIn/dOut), puis chaque segment est
+// contourné autour des obstacles réels : rectangles locaux des bâtiments du bourg (murs avec l'ouverture de porte + meubles),
+// rectangles du chantier Alpha (CHANTIER.rects), cercles COLL ≥ 0,4 m (fontaine, parasols, tables, billot…). Détour par les coins
+// élargis (TRAJ.M), récursif (8 niveaux). Gardien anti-blocage : PNJ « en marche » qui n'avance plus pendant 3,5 s → posé à sa cible.
+// Animaux : si le maître est dans un autre bâtiment, l'animal va à la porte au lieu de traverser les murs.
+const TRAJ = { m: .32, M: .6, cadres() { const k = BATS.length + ':' + COLL.length + ':' + (CHANTIER.rects ? CHANTIER.rects.length : 0); if (TRAJ._k === k) return TRAJ._F; const F = [];
+    for (const b of BATS) if (!b.alpha && b.rects) F.push({ loc: (x, z) => batLocal(b, x, z), mon: (u, w) => batMonde(b, u, w), R: b.rects, x: b.x, z: b.z, r: b.rmax + 4 });
+    if (CHANTIER.rects && CHANTIER.rects.length) F.push({ loc: CHANTIER.loc, mon: CHANTIER.mon, R: CHANTIER.rects, x: CHANTIER.O[0], z: CHANTIER.O[1], r: 90 });
+    const C = COLL.filter(c => c.r >= .4).map(c => [c.x - c.r, c.x + c.r, c.z - c.r, c.z + c.r]); F.push({ loc: (x, z) => [x, z], mon: (u, w) => [u, w], R: C, x: 0, z: 0, r: 1e9 }); TRAJ._k = k; TRAJ._F = F; return F; },
+  // Liang-Barsky : entrée du segment AB (repère local) dans le rectangle élargi de m ; -1 si pas d'intersection
+  entre(a, b, R, m) { let t0 = 0, t1 = 1; const dx = b[0] - a[0], dz = b[1] - a[1];
+    for (const [p, q] of [[-dx, a[0] - (R[0] - m)], [dx, (R[1] + m) - a[0]], [-dz, a[1] - (R[2] - m)], [dz, (R[3] + m) - a[1]]]) { if (Math.abs(p) < 1e-9) { if (q < 0) return -1; continue; } const r = q / p; if (p < 0) { if (r > t1) return -1; if (r > t0) t0 = r; } else { if (r < t0) return -1; if (r < t1) t1 = r; } }
+    return t0 <= t1 ? t0 : -1; },
+  dans: (p, R, m) => p[0] > R[0] - m && p[0] < R[1] + m && p[1] > R[2] - m && p[1] < R[3] + m,
+  premier(A, B, F) { let best = null; const mx = (A[0] + B[0]) / 2, mz = (A[1] + B[1]) / 2, L = Math.hypot(B[0] - A[0], B[1] - A[1]);
+    for (const f of F) { if (Math.hypot(mx - f.x, mz - f.z) > f.r + L / 2) continue; const a = f.loc(A[0], A[1]), b = f.loc(B[0], B[1]);
+      for (const R of f.R) { if (R[4] && !R[4]()) continue; if (TRAJ.dans(a, R, TRAJ.m - .02) || TRAJ.dans(b, R, TRAJ.m - .02)) continue; const t = TRAJ.entre(a, b, R, TRAJ.m); if (t >= 0 && t < 1 && (!best || t < best.t)) best = { t, f, R, a, b }; } }
+    return best; },
+  route(A, B, F, n = 0) { if (n > 8) return [B]; const h = TRAJ.premier(A, B, F); if (!h) return [B]; const { f, R, a, b } = h, M = TRAJ.M;
+    const coins = [[R[0] - M, R[2] - M], [R[1] + M, R[2] - M], [R[1] + M, R[3] + M], [R[0] - M, R[3] + M]];
+    let best = null, bs = 1e9; for (const c of coins) { const ok = TRAJ.entre(a, c, R, TRAJ.m) < 0, s = Math.hypot(c[0] - a[0], c[1] - a[1]) + Math.hypot(b[0] - c[0], b[1] - c[1]) + (ok ? 0 : 50); if (s < bs) { bs = s; best = c; } }
+    // deux coins si le premier ne voit pas la destination (contourner un long mur)
+    const C1 = f.mon(best[0], best[1]); return TRAJ.route(A, C1, F, n + 1).concat(TRAJ.route(C1, B, F, n + 1)); },
+  // point d'arrivée posé dans un meuble ou un mur : on le ressort au bord le plus proche
+  libre(p) { const F = TRAJ.cadres(); let q = p.slice(); for (let k = 0; k < 5; k++) { let moved = false; for (const f of F) { if (Math.hypot(q[0] - f.x, q[1] - f.z) > f.r) continue; const a = f.loc(q[0], q[1]);
+        for (const R of f.R) { if (R[4] && !R[4]()) continue; const m = TRAJ.m; if (!TRAJ.dans(a, R, m)) continue; const d = [a[0] - (R[0] - m), (R[1] + m) - a[0], a[1] - (R[2] - m), (R[3] + m) - a[1]], i = d.indexOf(Math.min(...d));
+          if (i === 0) a[0] = R[0] - m - .05; else if (i === 1) a[0] = R[1] + m + .05; else if (i === 2) a[1] = R[2] - m - .05; else a[1] = R[3] + m + .05; q = f.mon(a[0], a[1]); moved = true; break; } if (moved) break; } if (!moved) break; } return q; },
+  chemin(pts) { const F = TRAJ.cadres(), out = []; for (let i = 1; i < pts.length; i++) out.push(...TRAJ.route(pts[i - 1], pts[i], F)); return out; } };
+{ ALPHA.aller = (v, p, clip = 'Idle', court) => { if (!v || !v.ch || !Array.isArray(p)) { if (v && v.ch) ALPHA.allerBase(v, p, clip, court); return; }
+    const S = [v.ch.pos[0], v.ch.pos[2]], de = ALPHA.batObj(S[0], S[1]), vers = ALPHA.batObj(p[0], p[1]), pts = [S];
+    try { p = TRAJ.libre(p); } catch (e) {} if (de !== vers) { if (de) pts.push(de.dIn, de.dOut); if (vers) pts.push(vers.dOut, vers.dIn); } pts.push(p);
+    let L; try { L = TRAJ.chemin(pts); } catch (e) { L = pts.slice(1); }
+    L = L.filter((q, i) => i === L.length - 1 || Math.hypot(q[0] - (i ? L[i - 1][0] : S[0]), q[1] - (i ? L[i - 1][1] : S[1])) > .25);
+    const first = L.shift(); v.wp = L.map((q, i) => i === L.length - 1 ? { p: q, clip, court } : { p: q, clip: 'Idle', court }); ALPHA.allerBase(v, first, L.length ? 'Idle' : clip, court); }; }
+// points de plan dans un bâtiment : ressortis des meubles (mémorisés)
+{ const p0 = VIE.point, memo = new Map(); VIE.point = l => { const q = p0(l); if (q && typeof l === 'string' && /^(cour|fontaine|terrasse|camping|marche|sable|atelierBois)$/.test(l)) { try { return TRAJ.libre(q); } catch (e) { return q; } } if (!q || !Array.isArray(l) || l[0] !== 'bat') return q; const k = l.join(','); if (!memo.has(k)) { try { memo.set(k, TRAJ.libre(q)); } catch (e) { return q; } } return memo.get(k); }; }
+// gardien anti-blocage (habitants et PNJ du secteur Alpha)
+{ const m0 = ALPHA.maj; ALPHA.maj = dt => { m0(dt); const L = Object.values(VIE.pnj || {}).concat(ALPHA.pnj || []);
+    for (const v of L) { if (!v || !v.ch || v.etat !== 'marche') { if (v) v.tBloq = 0; continue; } const p = v.ch.pos, q = v.dernierePos || (v.dernierePos = [p[0], p[2]]);
+      if (Math.hypot(p[0] - q[0], p[2] - q[1]) > .15) { q[0] = p[0]; q[1] = p[2]; v.tBloq = 0; continue; }
+      if ((v.tBloq = (v.tBloq || 0) + dt) > 3.5 && v.cible) { v.tBloq = 0; TRAJ.recal = (TRAJ.recal || 0) + 1; (TRAJ.qui = TRAJ.qui || []).push((v.id || v.prenom) + '@' + p[0].toFixed(0) + ',' + p[2].toFixed(0)); p[0] = v.cible[0]; p[2] = v.cible[1]; q[0] = p[0]; q[1] = p[2]; if (VIS.arrive) VIS.arrive(v); if (v.yawCible != null) v.ch.yaw = v.yawCible; } } }; }
+// animaux : passer par la porte quand le maître est dans un autre bâtiment
+{ const mb = VIE.majBetes; VIE.majBetes = dt => { const sav = []; for (const C of VIE.PERS) { const v = VIE.pnj[C.id], B = VIE.BETES && VIE.BETES[C.id]; if (!v || !v.ch || !B) continue;
+      const bv = ALPHA.batObj(v.ch.pos[0], v.ch.pos[2]), ba = ALPHA.batObj(B.an.pos[0], B.an.pos[2]); if (bv === ba) continue; const porte = ba ? ba.dIn : bv.dOut, porte2 = ba ? ba.dOut : bv.dIn;
+      const d1 = Math.hypot(B.an.pos[0] - porte[0], B.an.pos[2] - porte[1]); const cible = d1 > .8 ? porte : porte2; sav.push([v, v.ch.pos[0], v.ch.pos[2]]); v.ch.pos[0] = cible[0]; v.ch.pos[2] = cible[1]; }
+    try { mb(dt); } finally { for (const [v, x, z] of sav) { v.ch.pos[0] = x; v.ch.pos[2] = z; } } }; }
+
+// ==== CAMP : TOD ET LE BOURG (v0.16) ============================================================
+// Nouveau sujet dans le dialogue de Tod : « Et le bourg, en bas ? » (nœud tB) → gens du bourg (une fiche par habitant, tirée au sort
+// parmi les non entendues), shérif Nougat et FSM, aire de camping, baigneurs, la Villa, le Hameau et Inès, animaux, lettres de Node,
+// Camilla au bourg, la maison bleue (Med / Mehdy). Tutoiement / vouvoiement selon GARDE.tu() via T(tu, vous). Sujets : GARDE.mem.sujets.b_*.
+{ const N = GARDE.dialogue.noeuds, D = N.debut, iFin = D.choix.findIndex(c => c.fin), M = () => GARDE.mem, S = () => GARDE.mem.sujets, T = (a, b) => GARDE.tu() ? a : b;
+  const marque = k => { S()[k] = true; };
+  D.choix.splice(iFin < 0 ? D.choix.length : iFin, 0, { t: 'Et le bourg, en bas ?', go: 'tB' });
+  const back = () => ({ t: 'Autre chose sur le bourg…', go: 'tB' }), fin = () => ({ t: 'Merci, Tod.', go: 'debut' });
+  N.tB = { dit: () => pick([T('Le bourg neuf ? La Villa l’a fait construire en un mois. Les maisons, la mairie, l’école, le fournil de Jules. Tout le village de M. Boup est remonté de la vallée. Je descends deux fois par semaine : pain, courrier, et le shérif Nougat qui veut toujours « coordonner ».', 'Le bourg neuf ? La Villa l’a fait construire en un mois. Tout le village de M. Boup est remonté de la vallée. J’y descends deux fois par semaine, pour le pain et le courrier.'),
+      'Le bourg, c’est mon secteur aussi, maintenant. Avant, c’était la forêt, le lac et le sentier. Maintenant, c’est la forêt, le lac, le sentier, vingt-huit habitants, onze animaux et un shérif de vingt-cinq ans.', 'Tu veux savoir quoi ? J’ai tout noté dans le registre. Enfin… presque tout. Il y a des choses qu’on ne note pas.']),
+    choix: [{ t: 'Parle-moi des gens du bourg.', go: 'tBg' }, { t: 'Le shérif Nougat et le FSM ?', go: 'tBs' }, { t: 'L’aire de camping du bourg', go: 'tBc' }, { t: 'Des gens se baignent au lac…', go: 'tBb' },
+      { t: 'La Villa, tu en sais quoi ?', go: 'tBv' }, { t: 'Inès, la fille du Hameau ?', go: 'tBh' }, { t: 'Les animaux du bourg', go: 'tBa' }, { t: 'Des nouvelles de Node, par le courrier ?', go: 'tBn' },
+      { t: 'Camilla va souvent au bourg ?', go: 'tBk', si: { test: () => CAMILLA.installee } }, { t: 'La maison bleue… elle est à moi ?', go: 'tBm', si: { test: () => CAMILLA.meh() } }, fin()] };
+  // --- une fiche par habitant (les moins entendues d'abord)
+  const GENS = {
+    jules: 'Jules a remonté son four brique par brique. Il me garde un pain de campagne le mardi. Il dit que Node lui volait des chouquettes. Node dit qu’il les « testait ». Le tribunal n’a jamais tranché.',
+    germaine: 'Germaine fait les poussières dans la maison bleue tous les midis. Il n’y a personne dedans. Elle dit : « Pour quand il viendra. » Je n’ose pas lui demander qui.',
+    boup: 'M. Boup a son bureau à la mairie, et il appelle ça « le manoir ». Il a un basset, Préfet, qui aboie sur Lucien à cause de sa moustache. M. Boup jure qu’il ne l’a pas dressé. Il l’a dressé.',
+    lina: 'La Dr Lina et Claire, l’infirmière, ont un vélo pour toute ambulance. Si quelqu’un se blesse au lac, j’allume trois feux en ligne devant le poste. C’est notre code. Retiens-le.',
+    agathe: 'Mlle Agathe fait la classe à douze élèves. Le mercredi, on fait une sortie nature ensemble. Les enfants me demandent tous de leur montrer la bête. Je leur montre des écureuils.',
+    mathis: 'Mathis Lenoir était artilleur à la base de la maréchale Shirley. Il a servi avec Node. Il ne parle pas beaucoup, mais quand il parle de mon frère, il sourit. Il fend le bois près de l’aire de camping, avec son chien Sergent.',
+    yasmine: 'Yasmine écrit le Journal du Bourg à la main. Elle m’a interviewé : « Le garde du secteur sept ». J’ai parlé vingt minutes. Elle a gardé une phrase : « Il faut fermer sa glacière. »',
+    hugo: 'Hugo, le facteur, monte jusqu’au poste avec Biscotte. Je lui offre un café. Il le boit. C’est le seul. Il m’apporte les lettres de Node et celles de la Villa, sans timbre.',
+    marius: 'Marius et Abel Fournier se disputent le bout du ponton depuis que le bourg est arrivé. Moi, je ne dis rien : le ponton est dans mon secteur, mais les poissons, eux, n’ont pas de secteur.',
+    theo: 'Théo Fournier veut devenir garde forestier. Il m’a demandé ma tenue. Je lui ai dit qu’il fallait d’abord apprendre à fermer une glacière. Il a ri. Il a raison, c’est moins facile que ça en a l’air.',
+    gaspard: 'Gaspard monte le dimanche avec sa charrette. Il vend sur la place, il rachète les pommes, il ne pose jamais de questions. Je lui en pose, moi. C’est mon métier. Il ne répond jamais. C’est le sien.',
+    jouanne: 'Au café, Jouanne parie sur toi. Elle a ouvert un cahier : « Combien de jours le campeur du lac ». Elle a écrit ton chiffre au crayon, comme ça elle peut le changer.',
+    sonia: 'Sonia, la caissière du FSM, me raconte les vols du jour. Chocolat, lessive, saucisson. Le shérif Nougat court après tout le monde. Il a de bonnes jambes, je dois le reconnaître.',
+    abel: 'Abel Fournier dit que son père a vu une tête sortir du lac, il y a soixante ans. Il ne pêche jamais dans le brouillard. Moi non plus. Toi non plus, d’accord ?' };
+  N.tBg = { dit: () => { const K = Object.keys(GENS), pas = K.filter(k => !S()['b_g_' + k]); const k = pick(pas.length ? pas : K); marque('b_g_' + k); return GENS[k]; },
+    choix: [{ t: 'Et quelqu’un d’autre ?', go: 'tBg' }, back(), fin()] };
+  N.tBs = { dit: () => { const d = !S().b_sherif; marque('b_sherif'); return d ? 'Le shérif Nougat… vingt-cinq ans, une étoile toute neuve, et un ordre de la Villa : « sécuriser la zone ». Il patrouille, il contrôle, il enquête. Il a beaucoup de travail avec les voleurs du FSM SHOPYMARKET, et des détenus qui parlent trop. Lucien, en bas, dit que c’est « un gamin avec un badge ». Nougat dit que Lucien est « un badge avec une moustache ». On coordonne. Par radio. Poliment.' : pick(['Nougat vient pêcher au ponton, parfois, et il campe une nuit quand il a congé. Il m’a demandé de ne pas le dire. Je te le dis à toi.', 'Ses deux agents font la ronde devant le commissariat, la nuit, à la lampe torche. Ils descendent jusqu’au sentier. S’ils te contrôlent, montre ta tente. Ils adorent les tentes.', 'Au FSM, le vol le plus fréquent, c’est le chocolat. Le plus étrange : vingt kilos de pommes, payés en pièces anciennes, par un homme très grand. Nougat n’a pas fait le lien. Moi, si : André.']); },
+    choix: [{ t: 'André ? Ici ?', go: 'tBs2', si: { test: () => S().b_sherif } }, back(), fin()] };
+  N.tBs2 = { dit: 'André le Terrible. Il compte les choses à voix haute, maintenant, et il paie. Parfois. S’il vient au camp, ne lui prête rien et appelle-moi au talkie. Je ne suis pas Lucien, je n’ai pas de gourdin. Mais j’ai un registre, et André déteste les registres.', choix: [back(), fin()] };
+  N.tBc = { dit: () => pick(['L’aire de camping du bourg, au nord-ouest du village : un cercle de pierres, des bûches et une table. Les Lenoir y campent le vendredi et le samedi, avec le petit Timéo qui veut dormir « comme un soldat ». Il dort avec la lampe allumée.', 'Le mercredi et le samedi, Théo et Inès montent la tente sur l’aire. Guitare, histoires du Hameau, pommes grillées. Je passe vers onze heures vérifier que le feu est bien éteint. Il ne l’est jamais. Je l’éteins.', T('Si tu veux de la compagnie un soir, descends à l’aire. Ils t’accueilleront au feu. Mais rentre au lac avant que le brouillard monte.', 'Si vous voulez de la compagnie un soir, descendez à l’aire. On vous accueillera au feu. Mais rentrez avant le brouillard.')]), choix: [back(), fin()] };
+  N.tBb = { dit: () => pick(['Théo et Inès se baignent au lac l’après-midi, quand il n’y a pas de visiteur. L’eau est à onze degrés. Je leur ai dit : dix minutes, pas plus, et jamais quand le brouillard tombe. Ils m’ont dit oui. Ils disent toujours oui.', 'Le mercredi, Mlle Agathe libère les enfants l’après-midi et ils viennent jouer sur la plage. Je fais une ronde de plus. Si tu les vois s’approcher de l’eau profonde, siffle. Ils connaissent le sifflet.', T('Ta plage, ta tente, ton feu… et des gamins du bourg qui viennent faire des châteaux de sable. Tu n’es plus vraiment seul au lac, hein ?', 'Votre plage, votre feu… et des gamins du bourg qui viennent jouer. Vous n’êtes plus vraiment seul, au lac.')]), choix: [{ t: 'Et la bête, avec eux dans l’eau ?', go: 'tBb2' }, back(), fin()] };
+  N.tBb2 = { dit: 'C’est ce qui m’empêche de dormir. Elle n’a jamais fait de mal à personne. Mais elle n’a jamais vu autant de monde au bord de son lac, non plus. Au premier brouillard, je sors tout le monde de l’eau. C’est écrit dans le règlement. Enfin, je l’ai écrit dans le règlement.', choix: [back(), fin()] };
+  N.tBv = { dit: () => { const d = !S().b_villa; marque('b_villa'); return d ? 'La Villa… Je reçois ses ordres par courrier, sans timbre et sans signature. « Agrandir le secteur sept. » « Accueillir le bourg. » « Ne pas déranger le campeur du lac. » Ce dernier ordre est arrivé le jour de ton arrivée. Le jour même.' : pick(['Yasmine enquête sur la Villa. Paulette, à la mairie, lui a dit d’arrêter. Quand Paulette dit d’arrêter, d’habitude, on arrête. Yasmine n’arrête pas.', 'Le contrat de M. Boup tient sur une page : « Accueillir quiconque viendra du Hameau. » Il l’a signé sans comprendre. Moi, je l’ai lu trois fois. Je ne comprends pas non plus.', 'Personne ne l’a jamais vue, la Villa. Même pas Gaspard, et Gaspard va partout.']); },
+    choix: [{ t: '« Ne pas déranger le campeur » ?', go: 'tBv2', si: { test: () => S().b_villa } }, back(), fin()] };
+  N.tBv2 = { dit: T('Je n’ai pas su quoi en penser. Alors j’ai fait ce que je fais toujours : je t’ai observé, et j’ai noté. Tu fermes ta glacière, tu éteins ton feu, tu dis bonjour aux visiteurs. Si la Villa te surveille, elle ne verra rien de méchant. Moi non plus.', 'Je n’ai pas su quoi en penser. Alors je vous ai observé, et j’ai noté. Vous fermez votre glacière, vous éteignez votre feu. Si la Villa vous surveille, elle ne verra rien de méchant.'), choix: [back(), fin()] };
+  N.tBh = { dit: 'Inès vient du Hameau, de l’autre côté des montagnes. Elle aide à l’école et elle loue une chambre chez Germaine. Elle m’a demandé si le sentier du lac menait « ailleurs ». Je lui ai dit : au lac. Elle a eu l’air déçue. Elle a une liste de noms, d’après Germaine. Je n’aime pas les listes que je n’ai pas écrites moi-même.', choix: [{ t: 'Une liste de noms ?', go: 'tBh2' }, back(), fin()] };
+  N.tBh2 = { dit: T('Des prénoms. « Si tu les vois, dis-leur que le Hameau les attend. » Elle ne m’a pas montré la liste. Mais elle t’a regardé longtemps, la première fois qu’elle t’a vu au bourg. Si elle te parle du Hameau, viens me voir.', 'Des prénoms. « Si tu les vois, dis-leur que le Hameau les attend. » Elle ne m’a pas montré la liste. Si elle vous parle du Hameau, venez me voir.'), choix: [back(), fin()] };
+  N.tBa = { dit: () => pick(['Onze animaux au bourg. Je les ai tous notés : Préfet le basset de M. Boup, Biscotte la chienne du facteur, Sergent le chien de Mathis, Capitaine celui d’Abel, Bouchon celui de Marius, Pilote, le vieux chien de Victor… et les chats : Balzac, Pompon, Minouche, Rillette et Kiwi.', 'Bouchon, le chien de Marius, a mangé une truite entière avec l’hameçon. Il va bien. La Dr Lina l’a soigné. Elle dit qu’elle n’est pas vétérinaire. Elle l’est un peu, maintenant.', 'Balzac, le chat de la librairie, dort sur les dictionnaires. Mme Célestine dit qu’il a lu toute la bibliothèque. Il a surtout dormi dessus.']), choix: [{ t: 'Et toi, tu n’as pas d’animal ?', go: 'tBa2' }, back(), fin()] };
+  N.tBa2 = { dit: 'Moi ? J’ai un registre et une forêt. Node voulait un chien, quand on était petits. On a eu un hérisson, à la place. Il s’appelait Garde. Il a fugué. C’était peut-être un signe.', choix: [back(), fin()] };
+  N.tBn = { dit: () => pick(['Hugo m’a monté une lettre de Node, mardi. Il va bien. Il a réparé le blindé de Mike, encore, et Céline l’a emmené faire un tour dans « le grand aigle ». Il a eu le mal de l’air. Il dit que c’était « une turbulence ».', T('Node écrit : « Le campeur du lac pêche toujours aussi mal ? » Je lui ai répondu que tu progressais. J’ai un peu menti. Pas beaucoup.', 'Node écrit : « Le campeur du lac pêche toujours aussi mal ? » Je lui ai répondu que vous progressiez. J’ai un peu menti.'), 'Mathis Lenoir reçoit aussi des lettres de la base. Il me lit les passages sur Node. La maréchale Shirley dit que mon frère est « fiable ». Venant d’elle, c’est une médaille.', 'Node a demandé une permission. Shirley a dit « on verra ». Louana dit que chez Shirley, « on verra », c’est presque un oui. Je garde une place au feu.']), choix: [back(), fin()] };
+  N.tBk = { dit: () => pick(['Camilla descend au fournil presque tous les matins. Deux baguettes, toujours : « une pour moi, une pour l’affamé du lac ». Jules a fini par lui faire un prix. Il ne fait de prix à personne.', 'Camilla a fait peur à Théo en se cachant derrière l’aire de camping avec un drap. « La Dame blanche du bois ! » Il a lâché sa guitare. Elle fait ça depuis qu’on est petits. Node sursaute encore quand on parle de draps.', 'Au bourg, tout le monde l’appelle « la rousse du terrier ». Préfet, le basset de M. Boup, la suit partout. Elle dit que c’est parce qu’elle sent le gibier.']), choix: [back(), fin()] };
+  N.tBm = { dit: 'La maison bleue, la numéro quatre. M. Boup l’a gardée libre, sur ordre de la Villa : « pour quelqu’un qui arrivera ». Germaine y fait les poussières. Il y a une photo sur la cheminée : le verger, Node et toi. Elle est à toi, Mehdy. Elle t’attend. La porte n’est même pas fermée à clé.', choix: [{ t: 'Pourquoi la Villa m’a gardé une maison ?', go: 'tBm2' }, back(), fin()] };
+  N.tBm2 = { dit: 'Je ne sais pas. Personne ne sait ce que veut la Villa. Mais si elle t’a gardé une maison avec une photo de mon frère sur la cheminée… alors elle nous connaît. Tous les trois. Et ça, ça ne me plaît pas du tout.', choix: [back(), fin()] };
+}
+
+// ==== CAMP : BULLES « … » AU-DESSUS DES PNJ QUI PARLENT (v0.16) ==================================
+// Une bulle blanche animée au-dessus de la tête de chaque PNJ qui parle : interlocuteur du dialogue en cours (liseré ambré),
+// répliques spontanées (v.bulle). Recalcul à chaque image dans VIS.maj ; masquée hors écran ou au-delà de 28 m.
+const BULLES = { pool: [] };
+{ const st = document.createElement('style'); st.textContent = '.bulleP{position:fixed;left:0;top:0;transform:translate(-50%,-100%);background:#fbf8f1;color:#2a2622;border-radius:16px;padding:3px 11px 7px;font:800 24px/1 -apple-system,system-ui,sans-serif;letter-spacing:3px;box-shadow:0 2px 8px rgba(0,0,0,.4);pointer-events:none;z-index:25;transition:opacity .2s}.bulleP:after{content:"";position:absolute;left:50%;bottom:-8px;margin-left:-8px;border:8px solid transparent;border-top-color:#fbf8f1;border-bottom:0}.bulleP.moi{outline:3px solid #f2b04a}.bulleP i{font-style:normal;animation:bulleP 1.2s infinite}.bulleP i:nth-child(2){animation-delay:.2s}.bulleP i:nth-child(3){animation-delay:.4s}@keyframes bulleP{0%,100%{opacity:.25}40%{opacity:1}}'; document.head.appendChild(st); }
+BULLES.el = i => { let d = BULLES.pool[i]; if (!d) { d = document.createElement('div'); d.className = 'bulleP'; d.innerHTML = '<i>•</i><i>•</i><i>•</i>'; document.body.appendChild(d); BULLES.pool[i] = d; } return d; };
+BULLES.maj = () => { const now = performance.now(), L = [], G = VIS.dlg && UI.dlgOuvert ? VIS.dlg : null;
+  if (G && G.v && G.v.ch) { let q = G.v; try { const n = $('dlgNom').querySelector('b'); const c = n && VIS.courant && VIS.courant.pnj.find(p => p.prenom === n.textContent); if (c) q = c; } catch (e) {} L.push([q, true]); }
+  for (const v of VIS.pnj) if (v.ch && v.ch.visible && v.bulle && v.bulle.fin > now && !L.some(x => x[0] === v)) L.push([v, false]);
+  let n = 0; for (const [v, moi] of L) { const ch = v.ch; if (Math.hypot(PL.x - ch.pos[0], PL.z - ch.pos[2]) > 28) continue; const s = A.project([ch.pos[0], ch.pos[1] + 2.3 * (ch.rootScale || 1), ch.pos[2]]); if (!s || s[0] < 0 || s[0] > innerWidth || s[1] < 20 || s[1] > innerHeight) continue;
+    const d = BULLES.el(n++); d.style.opacity = 1; d.style.left = s[0] + 'px'; d.style.top = s[1] + 'px'; d.classList.toggle('moi', moi); }
+  for (let i = n; i < BULLES.pool.length; i++) BULLES.pool[i].style.opacity = 0; };
+{ const m0 = VIS.maj; VIS.maj = dt => { m0(dt); try { BULLES.maj(); } catch (e) {} }; }
+
+// ==== CAMP : AEGIS PROTOCOL — LE DÉTACHEMENT FSMOPERATOR AU LAC (v0.17) ==========================
+// Événement aléatoire et récurrent (premier passage entre les jours 4 et 7, puis tous les 6 à 10 jours, 40 % par jour éligible) :
+// cinématique d'arrivée des deux Humvee de Dustline (FSM01 / FSM02, Task Force FSMOPERATOR du Commando Territoire), montage d'un
+// vrai camp militaire à l'est de la clairière (tentes, filet, mât radio, sacs de sable, popote…), 2 jours de vie (rondes, entretien,
+// popote, baignade, veillée), appel radio de nuit avec RIVET (= Node, prêté par la base de la maréchale Shirley au détachement),
+// lettre pour Tod, puis départ à l'aube du 3e jour vers le désert de Kesh (cinématique). Chaque passage suit un chapitre (DUST.CH) :
+// raison de passage, nouvelles du front, lettre, appel et adieux différents ; au-delà du 4e, chapitres « route de Kesh » tirés sans répétition.
+// Équipages (noms de Dustline) : FSM01 Rapace (Cne Hélène Marest, cheffe), Silex (Sgt-chef Karim Benali, M134), Écho (Cal-chef Thomas
+// Lerat, pilote), Dogue (Sgt Victor Ancel, grenadier) ; FSM02 Orage (chef de bord, AT4), Brume (M2), Talus (pilote), Cendre (grenadière).
+// Les visiteurs du jour sont suspendus pendant le passage (VIS.planifier). Sauvegarde : clé 'dust'.
+const DUST = { n: 0, prochain: 4 + Math.floor(Math.random() * 3), actif: null, nodes: [], props: [], veh: [], pnj: {}, cine: null, appelFait: false };
+DUST.C = { fsm01: [16, 104.5], fsm02: [24.5, 105.5], tenteA: [15.3, 116.6], tenteB: [24.8, 117.2], table: [18.4, 108.9], mat: [26.6, 111.2], popote: [19.6, 112.6], gen: [12.6, 110.6], caisses: [27.4, 107.4] };
+DUST.TAN = [.69, .6, .43];
+// ---------------- modèle de Humvee (FSM-3D, primitives) ----------------
+DUST.humvee = (num, m2) => { const nd = new Node('humvee' + num); nd.pickable = false; const T = M3.translate, S = M3.scale, mul = M3.mul, P = (mesh, M, c, mat = 4) => nd.addPart(mesh, M, c, mat), TAN = DUST.TAN, SOMBRE = [.13, .13, .14], VITRE = [.16, .2, .23];
+  P(MESH.cube, mul(T(0, .78, 0), S(2.18, .5, 4.75)), TAN); P(MESH.cube, mul(T(0, 1.12, 1.5), S(2.12, .32, 1.72)), TAN); P(MESH.cube, mul(T(0, 1.47, -.35), S(2.08, .78, 2.35)), TAN); P(MESH.cube, mul(T(0, 1.13, -1.92), S(2.1, .42, 1.0)), TAN);
+  P(MESH.cube, mul(T(0, 1.52, .83), S(1.86, .56, .05)), VITRE, 3); for (const s of [-1, 1]) { P(MESH.cube, mul(T(s * 1.045, 1.52, -.15), S(.03, .46, .8)), VITRE, 3); P(MESH.cube, mul(T(s * 1.045, 1.52, -1.0), S(.03, .46, .7)), VITRE, 3); P(MESH.cube, mul(T(s * 1.05, .95, -.55), S(.04, .02, 2.2)), [.55, .48, .34]); }
+  P(MESH.cube, mul(T(0, 1.0, 2.37), S(1.6, .42, .06)), SOMBRE, 7); for (let i = 0; i < 7; i++) P(MESH.cube, mul(T(-.6 + i * .2, 1.0, 2.41), S(.04, .36, .02)), [.3, .28, .22], 7);
+  for (const s of [-1, 1]) { P(MESH.cube, mul(T(s * .78, 1.03, 2.39), S(.2, .14, .04)), [1, .95, .8], 8); P(MESH.cube, mul(T(s * .95, .62, 2.4), S(.18, .08, .04)), [.9, .3, .1], 8); P(MESH.cube, mul(T(s * .9, 1.0, -2.42), S(.16, .12, .04)), [.8, .1, .08], 8); }
+  for (const [x, z] of [[-1, 1.55], [1, 1.55], [-1, -1.55], [1, -1.55]]) { P(MESH.cyl, mul(T(x, .47, z), mul(M3.rotZ(PI / 2), S(.94, .36, .94))), SOMBRE, 7); P(MESH.cyl, mul(T(x * 1.03, .47, z), mul(M3.rotZ(PI / 2), S(.42, .38, .42))), [.42, .38, .28], 7); P(MESH.cube, mul(T(x * .98, .98, z), S(.42, .08, 1.05)), TAN); }
+  P(MESH.cyl, mul(T(0, 1.94, -.45), S(1.15, .16, 1.15)), [.5, .44, .32], 7); P(MESH.cube, mul(T(0, 2.25, -.05), S(1.0, .55, .07)), [.55, .48, .34], 7); for (const s of [-1, 1]) P(MESH.cube, mul(T(s * .6, 2.2, -.25), mul(M3.rotY(s * .5), S(.45, .48, .06))), [.55, .48, .34], 7);
+  if (m2) { P(MESH.cyl, mul(T(0, 2.22, .55), mul(M3.rotX(PI / 2), S(.09, 1.25, .09))), SOMBRE, 7); P(MESH.cube, mul(T(0, 2.2, -.25), S(.26, .24, .55)), SOMBRE, 7); }
+  else { for (let i = 0; i < 6; i++) { const a = i / 6 * PI * 2; P(MESH.cyl, mul(T(Math.cos(a) * .05, 2.2 + Math.sin(a) * .05, .5), mul(M3.rotX(PI / 2), S(.03, .95, .03))), SOMBRE, 7); } P(MESH.cyl, mul(T(0, 2.2, -.1), mul(M3.rotX(PI / 2), S(.2, .55, .2))), SOMBRE, 7); P(MESH.cube, mul(T(.25, 2.12, -.15), S(.25, .3, .35)), [.25, .27, .2], 7); }
+  P(MESH.cyl6, mul(T(-.92, 2.9, -2.15), S(.025, 2.9, .025)), SOMBRE, 7); P(MESH.cyl6, mul(T(.92, 2.5, -2.15), S(.02, 2.1, .02)), SOMBRE, 7);
+  P(MESH.cyl, mul(T(0, 1.3, -2.47), mul(M3.rotX(PI / 2), S(.8, .3, .8))), SOMBRE, 7); for (const s of [-1, 1]) P(MESH.cube, mul(T(s * .78, 1.45, -2.2), S(.32, .45, .18)), [.3, .35, .22], 4);
+  for (let i = 0; i < 4; i++) P(MESH.cube, mul(T(-.7 + i * .46, 1.42, -1.9), S(.42, .14, .7)), [.36, .4, .28], 4);
+  for (const s of [-1, 1]) texteQuad(nd, num, .95, .3, mul(T(s * 1.058, 1.2, .35), M3.rotY(s * PI / 2)), { fond: '#b6a07a', bord: '#b6a07a', encre: '#2a241a' });
+  texteQuad(nd, num, .6, .2, mul(T(0, .78, 2.42), M3.rotY(0)), { fond: '#b6a07a', bord: '#b6a07a', encre: '#2a241a' }); texteQuad(nd, '▲ TERRITOIRE', .9, .2, mul(T(0, 1.15, -2.46), M3.rotY(PI)), { fond: '#3a4a2a', bord: '#3a4a2a', encre: '#e8e0c8' });
+  nd.visible = false; A.add(nd); return nd; };
+// ---------------- le camp militaire (apparition progressive au montage) ----------------
+DUST.construireCamp = () => { const T = M3.translate, S = M3.scale, mul = M3.mul, H = (x, z) => SOL(x, z), L = [];
+  const objet = (x, z, yaw, f, coll) => { const nd = new Node('dustP'); nd.pickable = false; nd.pos = [x, H(x, z), z]; nd.rot[1] = yaw; f(nd); nd.visible = false; A.add(nd); L.push({ nd, coll, x, z }); return nd; };
+  const KAKI = [.36, .38, .26], KAKI2 = [.3, .32, .22], SABLE = [.62, .56, .42];
+  for (const [k, yw] of [['tenteA', .12], ['tenteB', -.1]]) { const [x, z] = DUST.C[k]; objet(x, z, yw, nd => { nd.addPart(MESH.cube, mul(T(0, .05, 0), mul(M3.rotZ(PI / 4), S(2.5, 2.5, 4.6))), KAKI, 4); nd.addPart(MESH.cube, mul(T(0, .9, -2.31), S(1.1, 1.6, .03)), [.12, .12, .1], 4); nd.addPart(MESH.cube, mul(T(0, 1.8, 0), S(.06, .06, 4.8)), KAKI2, 4); for (const s of [-1, 1]) nd.addPart(MESH.cyl6, mul(T(0, .9, s * 2.4), S(.04, 1.8, .04)), [.25, .22, .15], 13); }, 2.1); }
+  // filet de camouflage entre les véhicules
+  objet(20.3, 105, 0, nd => { for (let i = 0; i < 4; i++) for (let j = 0; j < 3; j++) nd.addPart(MESH.cube, mul(T(-4.6 + i * 3.1, 2.75 + ((i + j) % 2) * .12, -2.2 + j * 2.2), mul(M3.rotY((i * 7 + j) % 3 * .3), S(3.2, .06, 2.4))), (i + j) % 2 ? KAKI : [.42, .4, .28], 4); for (const [a, b] of [[-5.8, -3.2], [5.8, -3.2], [-5.8, 3.2], [5.8, 3.2]]) nd.addPart(MESH.cyl6, mul(T(a, 1.4, b), S(.05, 2.8, .05)), [.25, .22, .15], 13); });
+  // table de campagne + carte, caisses-sièges
+  { const [x, z] = DUST.C.table; objet(x, z, .1, nd => { nd.addPart(MESH.cube, mul(T(0, .76, 0), S(1.8, .06, .9)), [.42, .4, .3], 13); for (const [a, b] of [[-.8, -.38], [.8, -.38], [-.8, .38], [.8, .38]]) nd.addPart(MESH.cyl6, mul(T(a, .38, b), S(.04, .76, .04)), [.25, .25, .25], 7); texteQuad(nd, 'KESH · ROUTE DES CIMES', 1.4, .7, mul(T(0, .8, 0), M3.rotX(-PI / 2)), { fond: '#d8cba8', bord: '#6a5a3a', encre: '#3a2a1a' }); nd.addPart(MESH.cube, mul(T(.6, .86, .2), S(.2, .14, .12)), [.2, .22, .18], 7); }, 1.1); }
+  // mât radio + fanion
+  { const [x, z] = DUST.C.mat; objet(x, z, 0, nd => { nd.addPart(MESH.cyl6, mul(T(0, 3, 0), S(.06, 6, .06)), [.3, .3, .3], 7); nd.addPart(MESH.cube, mul(T(0, .35, 0), S(.6, .7, .45)), [.25, .28, .2], 7); nd.addPart(MESH.cube, mul(T(0, 5.6, .45), S(.02, .5, .8)), [.25, .33, .22], 4); nd.addPart(MESH.cube, mul(T(0, 5.6, .45), S(.025, .16, .8)), [.85, .8, .6], 4); for (let i = 0; i < 3; i++) nd.addPart(MESH.cyl6, mul(T(0, 4 + i * .6, 0), mul(M3.rotZ(PI / 2), S(.02, .9 - i * .2, .02))), [.3, .3, .3], 7); }, .5); }
+  // popote : réchaud, marmite, caisses autour
+  { const [x, z] = DUST.C.popote; objet(x, z, 0, nd => { nd.addPart(MESH.cube, mul(T(0, .3, 0), S(.6, .6, .45)), [.3, .3, .32], 7); nd.addPart(MESH.cyl, mul(T(0, .72, 0), S(.42, .3, .42)), [.25, .25, .25], 7); for (let i = 0; i < 6; i++) { const a = i / 6 * PI * 2; nd.addPart(MESH.cube, mul(T(Math.cos(a) * 1.75, .22, Math.sin(a) * 1.75), mul(M3.rotY(a), S(.55, .44, .4))), [.4, .36, .24], 13); } }, .5); }
+  // groupe électrogène, caisses de munitions, jerricans
+  { const [x, z] = DUST.C.gen; objet(x, z, .3, nd => { nd.addPart(MESH.cube, mul(T(0, .4, 0), S(1.1, .8, .7)), [.28, .34, .22], 7); nd.addPart(MESH.cyl6, mul(T(.35, 1, .1), S(.05, .4, .05)), SOMBRE_(), 7); }, .8); }
+  { const [x, z] = DUST.C.caisses; objet(x, z, -.2, nd => { for (let i = 0; i < 3; i++) for (let j = 0; j < 2 - (i > 1 ? 1 : 0); j++) nd.addPart(MESH.cube, mul(T(-.6 + i * .62, .2 + j * .4, 0), S(.58, .38, .4)), [.34, .38, .24], 4); for (let i = 0; i < 4; i++) nd.addPart(MESH.cube, mul(T(-.7 + i * .42, .28, .7), S(.32, .56, .2)), [.3, .35, .22], 4); }, 1); }
+  // sacs de sable : arc côté forêt et devant les véhicules
+  for (let i = 0; i < 9; i++) { const z = 102.5 + i * 1.6, x = 28.1 - Math.abs(i - 4) * .18; objet(x, z, PI / 2, nd => { for (let r = 0; r < 2; r++) for (let k = 0; k < 2; k++) nd.addPart(MESH.rb || MESH.cube, mul(T(-.42 + k * .84 + r * .4, .17 + r * .3, 0), S(.8, .28, .45)), SABLE, 4); }, .7); }
+  for (let i = 0; i < 6; i++) { const x = 13.5 + i * 2.4; objet(x, 101.3, 0, nd => { for (let k = 0; k < 2; k++) nd.addPart(MESH.rb || MESH.cube, mul(T(-.42 + k * .84, .17, 0), S(.8, .28, .45)), SABLE, 4); }, .6); }
+  // bâtons lumineux de nuit
+  DUST.lum = objet(20.5, 110, 0, nd => { for (const [a, b] of [[-6, -4], [6, -3.5], [-4.5, 6], [5, 6.8], [0, -8]]) nd.addPart(MESH.cyl6, mul(T(a, .15, b), S(.04, .3, .04)), [.4, 1, .5], 8); });
+  DUST.props = L; };
+function SOMBRE_() { return [.13, .13, .14]; }
+// collisions des véhicules et du camp (actives seulement pendant le passage)
+{ const ob = obstacles; obstacles = function (x, z, r) { let o = ob(x, z, r); if (!DUST.actif) return o; const pousse = (cx, cz, R) => { const dx = o.x - cx, dz = o.z - cz, d = Math.hypot(dx, dz), m = R + r; if (d < m && d > 1e-4) { o = { x: cx + dx / d * m, z: cz + dz / d * m, hit: true }; } };
+    for (const V of DUST.veh) { const p = V.nd.pos, yw = V.nd.rot[1]; for (const k of [-1.5, 0, 1.5]) pousse(p[0] + Math.sin(yw) * k, p[2] + Math.cos(yw) * k, 1.15); }
+    for (const P of DUST.props) if (P.coll && P.nd.visible) pousse(P.x, P.z, P.coll); return o; }; }
+// ---------------- son du moteur ----------------
+DUST.moteur = { on: false, init() { if (this.g || !SON.ac) return; try { const ac = SON.ac; this.o = ac.createOscillator(); this.o.type = 'sawtooth'; this.o.frequency.value = 42; this.o2 = ac.createOscillator(); this.o2.type = 'square'; this.o2.frequency.value = 21; this.f = ac.createBiquadFilter(); this.f.type = 'lowpass'; this.f.frequency.value = 260; this.g = ac.createGain(); this.g.gain.value = 0; this.o.connect(this.f); this.o2.connect(this.f); this.f.connect(this.g); this.g.connect(SON.g || ac.destination); this.o.start(); this.o2.start(); } catch (e) {} },
+  regler(v, r) { this.init(); if (!this.g) return; const t = SON.ac.currentTime; this.g.gain.setTargetAtTime(v, t, .3); this.o.frequency.setTargetAtTime(38 + r * 30, t, .3); this.o2.frequency.setTargetAtTime(19 + r * 15, t, .3); } };
+// ---------------- chapitres (un par passage) ----------------
+DUST.CH = [
+  { titre: 'La lettre de Rivet', raison: 'La route de la côte est minée depuis Port-Aven. On remonte par les Cimes, et on s’arrête au lac : un de nos hommes nous l’a fait promettre.',
+    pourquoi: 'On cherche Tod, le garde forestier du secteur sept. Son frère roule avec nous depuis la base avancée Orion. Indicatif RIVET. Il répare tout ce qu’on casse, et on casse beaucoup.',
+    front: 'Pendant « Pilote à terre », FSM02 a perdu une roue sous le feu. Rivet est descendu, a changé la roue en quatre minutes sous les tirs de Kesh, et il est remonté en disant « c’était un écrou capricieux ».',
+    lettre: 'Tod. Je vais bien. Je mange mal, je dors peu, je répare beaucoup. Le désert, c’est comme la forêt sans les arbres : on s’y perd pareil. Le détachement est bien. La capitaine Marest est juste. Garde le secteur sept, je garde la piste. Embrasse Camilla, dis bonjour au pommier. — Node, indicatif Rivet.',
+    appel: ['RIVET (grésillements) : … Écho, ici Rivet, relais Vautour 2… vous m’entendez ?', 'RAPACE : Rivet, on est au lac. Ton frère est au talkie. Tu as deux minutes.', 'TOD (au talkie, la voix qui tremble) : Node ? C’est… c’est moi. Tu vas bien ?', 'RIVET : Tod ! Le garde du secteur sept ! Tu as encore ton registre ? Note : « Node va bien. »', 'TOD : Je note. Je note tout. Reviens, d’accord ? Le pommier t’attend.', 'RIVET : Bientôt. Il reste des écrous à serrer à Kesh. … Prends soin du campeur. Terminé.'],
+    adieu: 'À l’aube, les moteurs toussent. Direction le désert de Kesh. Sur le billot, quelqu’un a laissé une douille gravée : « SECTEUR 7 ».', tod: 'Ils m’ont apporté une lettre de Node. Une vraie, avec son écriture de travers. Il va bien. Il dit qu’il répare tout. Évidemment qu’il répare tout.' },
+  { titre: 'Le convoi sanitaire', raison: 'On redescend sur Tal Rakh après une mauvaise semaine. La capitaine voulait une nuit au calme. Et Rivet nous a donné une adresse : « le lac du secteur sept, mon frère y veille ».',
+    pourquoi: 'On repasse voir Tod. Rivet a un message pour lui, et un cadeau. Il a demandé qu’on le donne au garde en main propre, et au campeur s’il n’est pas là.',
+    front: 'La colonne 7090. L’état-major voulait qu’on tire. La capitaine a exigé une vérification. C’était un convoi sanitaire. Rivet a sorti deux blessés d’une ambulance SAN-2 renversée. Personne n’est resté derrière.',
+    lettre: 'Tod. On a failli faire une chose terrible, et une femme courageuse a dit non. Je pense à toi quand je vois des arbres, et ici il n’y en a pas. Alors je pense à toi tout le temps. Je t’envoie ma boussole : elle marche mieux dans une forêt que dans un erg. — Node.',
+    appel: ['RIVET : … relais Vautour 2, ici Rivet. Rapace, vous êtes au lac ?', 'RAPACE : Affirmatif. Ton frère t’écoute.', 'TOD (au talkie) : Node ! On m’a dit pour le convoi. Tu as sorti des blessés. Tu aurais pu…', 'RIVET : J’aurais pu rester assis. Je n’ai jamais su rester assis. Tu le sais.', 'TOD : Maman disait pareil. … Je garde ta boussole sur mon bureau. Elle indique le sud. Vers toi.', 'RIVET : Elle indique le nord, idiot. Le sud, c’est moi. Terminé.'],
+    adieu: 'Les Humvee repartent dans la brume du matin. Écho klaxonne deux fois, pour Tod. FSM02 laisse derrière lui deux rations de combat et un dessin d’enfant de Kesh : un arbre, un soleil, un camion couleur sable.', tod: 'Ils m’ont apporté la boussole de Node. Et une histoire : une colonne de blessés que personne n’a laissée derrière. Mon frère était dedans jusqu’au cou. Ça ne m’étonne pas.' },
+  { titre: 'Le cessez-le-feu brisé', raison: 'Le cessez-le-feu n’a tenu que trois jours. Acte II, disent les officiers. On remonte vers Kesh par les Cimes avant que la route ne ferme. Une nuit ici, une seule, puis le désert.',
+    pourquoi: 'On a promis à Rivet de passer chaque fois qu’on traverse les Cimes. Il a été nommé caporal. Il a dit : « Dites-le à Tod en premier, avant ma mère, avant tout le monde. »',
+    front: 'Tempête sur l’erg, visibilité nulle. Dogue a pris un éclat au bras. Rivet a tenu la tourelle de Silex pendant que Silex pansait Dogue. Le Résolu a tiré depuis le large. On a tenu la piste.',
+    lettre: 'Caporal Node, s’il te plaît. Tod, le cessez-le-feu est mort, mais personne d’entre nous. Je voudrais te dire que je rentre bientôt. Je ne peux pas encore. Tiens le secteur sept. Moi, je tiens la ligne. Et si tu vois Camilla, dis-lui que sa Dame blanche me fait toujours peur. — Node.',
+    appel: ['RIVET : Rapace, Rivet. Le relais est mauvais, la tempête est sur nous. Vite.', 'RAPACE : Tod est en ligne. Vas-y.', 'TOD (au talkie) : Caporal ! Caporal Node ! Je l’ai écrit dans le registre, en majuscules.', 'RIVET : Tu as souligné ? … Tu as souligné deux fois. Je te connais.', 'TOD : Trois fois. Node… reviens entier. C’est tout ce que je demande.', 'RIVET : Entier, et avec des pommes. Promis. Terminé… (grésillements)'],
+    adieu: 'Avant l’aube, les moteurs grondent. Les Humvee remontent le sentier, phares éteints, vers le désert de Kesh. Sur le billot, un galon de caporal cousu sur un carré de toile : « pour le registre de Tod ».', tod: 'Node est caporal. Caporal ! Je l’ai écrit trois fois dans le registre. Et le cessez-le-feu est mort. Les deux nouvelles sont arrivées dans la même phrase. Je ne sais pas laquelle garder.' },
+  { titre: 'La route de Kesh', raison: 'Retour vers le désert de Kesh. On remonte un convoi de pièces pour la base avancée Orion, et on fait halte au lac, comme d’habitude. Le lac est devenu notre étape.',
+    pourquoi: 'Rivet a demandé des nouvelles du campeur, de Camilla et de Tod. Dans cet ordre-là, d’ailleurs. Il dit que le campeur est « la seule personne qui pêche plus mal que lui ».',
+    front: 'Les lanceurs de la côte menaçaient les navires au large. Vautour 2 a frappé, le Résolu a fini le travail. Rivet a remis en route FSM03, le renfort blindé, avec du fil de fer et du sparadrap.',
+    lettre: 'Tod. La guerre ressemble à une très longue patrouille de nuit, sans lampe torche. Le détachement me fait rire, parfois. Dogue m’apprend à jouer aux cartes. Je perds. Je pense au pommier, à la réserve de trente pommes. Gardes-en une pour moi. — Node.',
+    appel: ['RIVET : Rapace, Rivet, relais Vautour 2. Le campeur est là ?', 'RAPACE : Il écoute. Et Tod est en ligne.', 'TOD (au talkie) : Node. Tout va bien au lac. Il y a un village neuf, en bas. Le bourg de M. Boup est remonté. Jules a son fournil.', 'RIVET : Les chouquettes de Jules… dis-lui que je les « testerai » en rentrant.', 'TOD : Je lui dirai. … Tu me manques, tu sais.', 'RIVET : Toi aussi, petit frère. Rivet, terminé.'],
+    adieu: 'Les Humvee disparaissent dans le sentier, direction le désert de Kesh. Le silence revient au lac, plus lourd qu’avant.', tod: 'Node va bien. Il perd aux cartes contre Dogue. Il garde le moral des autres, comme d’habitude. Et il demande une pomme. Je lui en garde une.' }];
+DUST.SUITE = [ // chapitres suivants, tirés sans répétition (front, lettre, appel courts)
+  ['Khirbet Nour est tombée, puis reprise. Rivet a dormi deux heures en trois jours.', 'Tod. Khirbet Nour, Sabkhat Ouarda, des noms que tu ne connais pas et que je ne veux plus connaître. Je pense à la forêt. — Node.'],
+  ['Un 8×8 de Kesh a barré l’oued. Orage l’a arrêté à l’AT4, Rivet a réparé l’AT4 juste avant. On appelle ça le travail d’équipe.', 'Tod. On a croisé une caravane de civils qui fuyait vers la côte. Ils avaient un pommier en pot. Je l’ai arrosé. — Node.'],
+  ['La maréchale Shirley a envoyé Louana sur la ligne, avec une batterie d’artillerie. Rivet et elle se disputent pour savoir qui protège qui.', 'Tod. Louana est là. Elle te dit bonjour, et elle dit que tu ronfles. Comment elle le sait ? — Node.'],
+  ['Une tempête de sable a duré quatre jours. Le Humvee de Rivet a fini ensablé jusqu’aux portières. Il a creusé à la pelle en chantant.', 'Tod. J’ai chanté la chanson du pommier, celle de maman. Les gars l’ont apprise. Maintenant tout le détachement la chante. — Node.'],
+  ['FAUCON 6 a été abattu au-dessus de l’erg. Le pilote est vivant : le détachement l’a récupéré avant Kesh. Rivet a porté le parachute en guise de couverture.', 'Tod. On a sauvé un pilote. Il m’a demandé comment on rentre chez soi. J’ai dit : par le sentier des Cimes. — Node.']];
+DUST.ch = n => { if (n <= DUST.CH.length) return DUST.CH[n - 1]; const B = DUST.CH[3], S = DUST.SUITE[(n - DUST.CH.length - 1) % DUST.SUITE.length]; return Object.assign({}, B, { titre: 'La route de Kesh · ' + (n - 3), front: S[0], lettre: S[1] }); };
+// ---------------- soldats ----------------
+const DLOOK = (fem, extra = [], col = {}) => ({ parts: ['Helmet', 'Cargo_Pants', 'Boots', 'Duty_Belt', ...extra], retire: ['Cap', 'Beanie', 'Bucket_Hat', 'Straw_Hat', 'Headscarf', 'Scarf', 'Satchel', 'Apron', 'Dress', 'Skirt', 'Police_Cap', 'Hair_Long', 'Hair_Curly', 'Hair_Bun', 'Hair_Bob'].concat(fem ? [] : ['Hair_Ponytail']), colors: Object.assign({ top: '#7d6e4c', top2: '#6a5c3e', bottom: '#86765a', shoes: '#3a2e22', hat: '#6c6146', accent: '#4a4430' }, col), build: 'average' });
+DUST.SOLDATS = [
+  { id: 'rapace', prenom: 'Rapace', role: 'capitaine Hélène Marest, cheffe du détachement', genre: 'f', morph: 'woman', look: DLOOK(true, ['Hair_Ponytail', 'Gloves']), props: ['Radio'], veh: 'fsm01' },
+  { id: 'silex', prenom: 'Silex', role: 'sergent-chef Karim Benali, tourelle M134', genre: 'h', morph: 'man', look: DLOOK(false, ['Beard', 'Glasses']), props: ['Rifle'], veh: 'fsm01' },
+  { id: 'echo', prenom: 'Écho', role: 'caporal-chef Thomas Lerat, pilote de FSM01', genre: 'h', morph: 'man', look: DLOOK(false, ['Beard']), props: [], veh: 'fsm01' },
+  { id: 'dogue', prenom: 'Dogue', role: 'sergent Victor Ancel, grenadier', genre: 'h', morph: 'man', look: DLOOK(false, ['Glasses', 'Backpack']), props: ['Rifle'], veh: 'fsm01' },
+  { id: 'orage', prenom: 'Orage', role: 'chef de bord de FSM02, AT4', genre: 'h', morph: 'man', look: DLOOK(false, ['Beard']), props: ['Rifle'], veh: 'fsm02' },
+  { id: 'brume', prenom: 'Brume', role: 'mitrailleur M2 de FSM02', genre: 'h', morph: 'man', look: DLOOK(false, ['Beard', 'Glasses']), props: ['Rifle'], veh: 'fsm02' },
+  { id: 'talus', prenom: 'Talus', role: 'pilote de FSM02', genre: 'h', morph: 'man', look: DLOOK(false), props: [], veh: 'fsm02' },
+  { id: 'cendre', prenom: 'Cendre', role: 'grenadière de FSM02', genre: 'f', morph: 'woman', look: DLOOK(true, ['Hair_Ponytail']), props: ['Rifle'], veh: 'fsm02' }];
+// emplacements par soldat (travail, sièges de la veillée en cercle autour de la popote)
+DUST.siege = i => { const [x, z] = DUST.C.popote, a = i / 8 * PI * 2; return [x + Math.cos(a) * 1.75, z + Math.sin(a) * 1.75 + .02]; };
+DUST.SPOT = { rapace: { radio: [25.9, 110.4], table: [18.4, 108.1], veh: [13.9, 104.5], pt: [15.4, 103.3] }, silex: { tour: [16, 101.9], veh: [14.6, 106.4], pt: [16.6, 103.3] }, echo: { roue: [14.7, 106.3], veh: [17.3, 103] , pt: [17.8, 103.3], guitare: DUST.siege(2) },
+  dogue: { popote: [19.6, 113.5], caisses: [26.6, 106.7], peche: [21.5, 95.8], pt: [19, 103.3] }, orage: { table: [18.4, 109.8], ronde: [[13, 100.4], [27.3, 100.6]], radio: [26.1, 112], pt: [20.2, 103.3] },
+  brume: { m2: [24.5, 102.9], rive: [23, 97.6], pt: [21.4, 103.3] }, talus: { roue: [23.1, 107.2], repos: [27.3, 108.6], pt: [22.6, 103.3] }, cendre: { caisses: [27.2, 106.2], bain: null, plage: null, pt: [23.8, 103.3] } };
+DUST.RONDES = { a: [[13, 100.4], [27.3, 100.6], [28.6, 112], [26, 119.4], [13.5, 119]], b: [[27.6, 101.5], [28.6, 116], [20, 121], [11.5, 114], [12.4, 102.5]] };
+// emploi du temps : [lieu, clip, props?] ; cache = sous la tente / parti au poste de garde
+DUST.act = (id, k, h, i) => { const S = DUST.SPOT[id], hh = h < 5 ? h + 24 : h, A0 = DUST.actif, dep = k >= 2, ronde = r => { const R = DUST.RONDES[r], j = Math.floor(performance.now() / 22000 + (r === 'b' ? 2 : 0)) % R.length; return [R[j], 'Patrol_Walk', ['Flashlight']]; };
+  if (dep) return hh < 8.6 ? [S.pt || DUST.siege(i), 'Carry_Walk'] : ['cache'];
+  if (k === 0 && hh < A0.h + 1.3) return [DUST.montageSpot(i), ['Hammer_Work', 'Carry_Walk', 'Dig_Spade', 'Pick_Up'][i % 4]];
+  const garde1 = id === 'brume' || id === 'silex', garde2 = id === 'orage' || id === 'cendre';
+  if (hh >= 22.5 && hh < 26) return garde1 ? ronde(id === 'brume' ? 'a' : 'b') : ['cache'];
+  if (hh >= 26 || hh < 6.5) return garde2 ? ronde(id === 'orage' ? 'a' : 'b') : ['cache'];
+  if (hh >= 19.5) return id === 'echo' ? [DUST.siege(i), 'Play_Guitar'] : [DUST.siege(i), i % 2 ? 'Sit_Talk' : 'Sit_Ground'];
+  if (hh >= 12 && hh < 13) return [DUST.siege(i), 'Sit_Ground'];
+  if (hh < 7.2) return [S.pt || DUST.siege(i), 'Stretch_Idle'];
+  switch (id) {
+    case 'rapace': return hh < 9 ? [S.radio, 'Radio_Talk', ['Radio']] : hh < 12 ? [S.table, 'Write_Notes'] : hh < 15 ? [S.veh, 'Examine'] : hh < 17 && k === 1 ? ['cache'] : [S.table, 'Write_Notes'];
+    case 'silex': return hh < 10 ? [S.tour, 'Use'] : hh < 12 ? [S.veh, 'Kneel_Care'] : hh < 16 ? ['cache'] : [S.tour, 'Reload', ['Rifle']];
+    case 'echo': return hh < 11 ? [S.roue, 'Kneel_Care'] : hh < 12 ? [S.veh, 'Hammer_Work'] : hh < 15 ? [DUST.SPOT.talus.roue, 'Talk'] : hh < 17 && k === 1 ? ['cache'] : [S.roue, 'Kneel_Care'];
+    case 'dogue': return hh < 8.5 ? [S.popote, 'Cook_Pan'] : hh < 11 ? [S.caisses, 'Carry_Walk'] : hh < 12 ? [S.popote, 'Cook_Pan'] : hh < 16 ? [VIS.bordEau(21.5, 98) , 'Fish_Wait', ['Fishing_Rod']] : hh < 18 ? [DUST.siege(i), 'Talk'] : [S.popote, 'Cook_Pan'];
+    case 'orage': return hh < 10 ? [S.table, 'Examine'] : hh < 12 ? [ronde('a')[0], 'Patrol_Walk'] : hh < 16 ? [S.table, 'Write_Notes'] : [S.radio, 'Radio_Talk', ['Radio']];
+    case 'brume': return hh < 13 ? ['cache'] : hh < 15 ? [S.m2, 'Reload'] : hh < 17 ? [S.rive, 'Stretch_Idle'] : [S.m2, 'Use'];
+    case 'talus': return hh < 11 ? [S.roue, 'Kneel_Care'] : hh < 12 ? [S.repos, 'Rest'] : hh < 15 ? [[23.4, 109.4], 'Sleep_Lie'] : [S.roue, 'Kneel_Care'];
+    case 'cendre': { const brume = ETAT.meteo === 'brume' || (typeof CREATURE !== 'undefined' && CREATURE.actif); return hh < 10 ? [S.caisses, 'Carry_Walk'] : hh < 12 ? [S.caisses, 'Reload'] : hh < 13.5 ? [DUST.siege(i), 'Talk'] : hh < 15 && !brume ? [VIS.bordEau(19.5, 97, true), 'Swim'] : hh < 16 ? [[19.8, 97.6], 'Beach_Lie'] : [S.caisses, 'Examine']; } }
+  return [DUST.siege(i), 'Idle']; };
+DUST.montageSpot = i => [[15.3, 114.2], [24.8, 114.8], [20.3, 102.6], [26.2, 110.2], [19.6, 110.4], [13.4, 109.4], [27.1, 105.6], [27.8, 110]][i];
+// ---------------- dialogues ----------------
+DUST.dialogue = S => { const N = {}, ch = () => DUST.ch(DUST.n), M = () => DUST.mem(S.id), rep = (k, L) => () => { const m = M(); m[k] = (m[k] || 0) + 1; return L[(m[k] - 1) % L.length]; };
+  const fin = { t: 'Bonne route.', fin: true }, retour = { t: 'Autre chose…', go: 'd' };
+  const COMMUN = [
+    { t: 'Vous venez d’où ?', go: 'ou' }, { t: 'Parlez-moi de la guerre contre Kesh.', go: 'guerre' }, { t: 'Le frère de Tod est avec vous ?', go: 'rivet' } ];
+  N.ou = { dit: () => ch().raison, choix: [{ t: 'Et pourquoi ce lac ?', go: 'pourquoi' }, retour] };
+  N.pourquoi = { dit: () => ch().pourquoi, choix: [retour, fin] };
+  N.rivet = { dit: () => ch().front, choix: [{ t: 'Il va bien, alors ?', go: 'rivet2' }, retour] };
+  N.rivet2 = { dit: rep('rv', ['Il va bien. Il maigrit, il rit, il répare. Il parle de son frère tous les soirs. Le pommier, la réserve de trente pommes, la Dame blanche du bois… on connaît tout par cœur.', 'Mieux que nous. Rivet a ce truc : quand tout s’écroule, il sort une clé de douze et il dit « on va voir ». Et on voit.', 'Il porte une casquette bleue sous son casque. Personne n’a le droit d’y toucher. Il dit que c’est celle d’un ami qui parle trop.']), choix: [retour, fin] };
+  N.guerre = { dit: rep('g', ['Kesh a attaqué la côte. On a évacué Port-Aven, convoi après convoi, sous le feu. Le cuirassé Résolu attendait au large. On a tenu le puits de Tal Rakh pour que les colonnes passent.', 'La guerre, vue d’un Humvee : des pistes, des « contacts » à quatre heures, des identifications. On ne tire que sur ce qui est identifié. C’est la règle de la capitaine. C’est pour ça qu’on dort encore.', 'Il y a l’état-major, loin, à la radio. Il y a Vautour 2, le drone, au-dessus. Il y a le Résolu au large. Et il y a nous, au milieu, sur la piste. On s’appelle la Task Force FSMOPERATOR. Ça fait sérieux. On est quatre par véhicule.', 'Le cessez-le-feu a duré trois jours. Les officiers disent « Acte II ». Nous, on dit « encore ».']), choix: [{ t: 'Vous avez peur ?', go: 'peur' }, retour] };
+  N.peur = { dit: rep('p', ['Tout le temps. La peur, c’est un instrument de bord. Le jour où elle tombe en panne, on fait des bêtises.', 'Ici, non. Ici, il y a un lac, des arbres et un garde forestier qui fait des rondes. C’est la première nuit depuis des semaines où je n’écoute pas le ciel.', 'Pas pendant. Après. Au calme. Comme maintenant. C’est pour ça qu’on s’occupe les mains.']), choix: [retour, fin] };
+  N.d = { dit: () => { const m = M(); if (!m.vu) { m.vu = true; return S.intro(); } return pick(S.salut); }, choix: [...COMMUN, ...S.choix, fin] };
+  for (const k in S.noeuds) N[k] = S.noeuds[k];
+  return { debut: 'd', retour: 'd', apres: [], noeuds: N }; };
+DUST.memo = {}; DUST.mem = id => { const k = DUST.n + ':' + id; return DUST.memo[k] || (DUST.memo[k] = {}); };
+DUST.PERSO = {
+  rapace: { intro: () => DUST.n === 1 ? 'Capitaine Marest, indicatif Rapace. Commando Territoire, Task Force FSMOPERATOR. Pardon pour le bruit : on campe deux nuits à l’est de votre clairière, et on repart. Vous êtes le campeur du lac ? Rivet nous a parlé de vous.' : 'Rapace. On se connaît, maintenant. Deux nuits, comme d’habitude. Si on dérange, dites-le. On ne dérangera pas.', salut: ['Repos. Je veux dire… bonjour.', 'Le lac est calme. Profitez-en, ça ne dure jamais.', 'Vous avez vu Tod aujourd’hui ? Il passe dix fois par jour « par hasard ».'],
+    choix: [{ t: 'La colonne 7090 ?', go: 'c7090', si: { test: () => DUST.n >= 2 } }, { t: 'Vous avez quelque chose pour Tod ?', go: 'lettre', si: { test: () => !DUST.mem('rapace').lettre } }, { t: 'Vous pouvez joindre Rivet par radio ?', go: 'appel', si: { test: () => !DUST.appelFait && (HORL.h >= 19 || HORL.h < 1) } }, { t: 'Des rations à échanger ?', go: 'mre', si: { test: () => !DUST.mem('rapace').mre } }],
+    noeuds: { c7090: { dit: 'La colonne 7090. L’état-major disait « véhicules hostiles ». J’ai exigé une vérification. Silex avait le doigt sur la détente, il a attendu. C’étaient des ambulances. Je ne dors pas mieux pour autant. Je dors, c’est déjà ça.', choix: [{ t: 'Vous avez eu raison.', go: 'c7090b' }, { t: 'Autre chose…', go: 'd' }] }, c7090b: { dit: 'Peut-être. On m’a donné une médaille, « Sang-froid ». Je l’ai donnée à Rivet. Il l’a accrochée au rétroviseur de FSM02. Il dit que c’est pour que le camion se souvienne.', choix: [{ t: 'Autre chose…', go: 'd' }] },
+      lettre: { dit: () => 'Oui. Une lettre de Rivet, pour son frère. Si Tod passe, je la lui donne. Sinon… vous la lui portez ? Il paraît que vous allez souvent au poste de garde. Rivet dit que vous êtes « fiable ». Venant de lui, c’est presque un grade.', eff: { run: () => { DUST.mem('rapace').lettre = true; SAC.objets.push({ nom: 'Lettre de Rivet pour Tod', d: 'Une enveloppe sable, cornée, l’écriture de travers de Node. À remettre à Tod.', lettreRivet: DUST.n }); note('Vous gardez la lettre de Rivet pour Tod dans votre sac.', 3000); } }, choix: [{ t: 'Je la lui porterai.', go: 'd' }] },
+      appel: { dit: 'On a une fenêtre radio vers vingt et une heures, par le relais de Vautour 2. Si Tod est au talkie, on lui passe son frère. Restez près de FSM01 ce soir. Ce n’est pas un ordre. C’est une invitation.', eff: { run: () => { DUST.appelDemande = true; } }, choix: [{ t: 'Je serai là.', go: 'd' }] },
+      mre: { dit: 'Deux rations de combat contre… rien. Vous êtes en zone civile, on est en dotation. Prenez. Le « bœuf aux haricots », c’est le meilleur. Le « poulet au curry », évitez.', eff: { run: () => { DUST.mem('rapace').mre = true; SAC.rations += 2; } }, choix: [{ t: 'Merci, capitaine.', go: 'd' }] } } },
+  silex: { intro: () => 'Silex. La tourelle de FSM01, la M134. Six canons, trois mille coups minute. Ici, je la bâche. Le lac n’a rien fait de mal.', salut: ['Ça va, campeur ?', 'Tu veux un café de section ? Il est mauvais. Il est chaud.', 'Chut. J’écoute les oiseaux. Ça faisait longtemps.'],
+    choix: [{ t: 'Le « Bouclier de Silex » ?', go: 'bouclier' }, { t: 'Un café de section ?', go: 'cafe', si: { test: () => !DUST.mem('silex').cafe } }],
+    noeuds: { bouclier: { dit: 'Des missiles de Kesh, en vol, abattus au minigun. Cinq. On m’a donné une distinction avec ce nom-là. Je préfère ne pas compter. Rivet compte pour moi. Il dit que je suis le seul à avoir un bouclier qui fait du bruit.', choix: [{ t: 'Autre chose…', go: 'd' }] }, cafe: { dit: 'Tiens. Lyophilisé, eau du lac bouillie, une pastille de sucre. Ça ne vaut pas le café de Tod. Il paraît que celui de Tod est imbuvable. Alors ça vaut le café de Tod.', eff: { run: () => { DUST.mem('silex').cafe = true; BES.energie = clamp(BES.energie + 15, 0, 100); } }, choix: [{ t: 'Merci.', go: 'd' }] } } },
+  echo: { intro: () => 'Écho, le pilote de FSM01. Si vous entendez des gros mots, c’est que je parle à la boîte de vitesses. On est descendus par votre sentier en première courte. Joli sentier. Trop étroit.', salut: ['Le moteur refroidit. Moi aussi.', 'La route des Cimes, c’est la plus belle route que j’aie conduite. Et la plus lente.', 'Vous jouez de la guitare ? Moi, mal. Ce soir, je joue quand même.'],
+    choix: [{ t: 'Comment on conduit dans le désert ?', go: 'desert' }],
+    noeuds: { desert: { dit: 'On ne conduit pas, on négocie. Le sable décide. Pendant « Tempête sur l’erg », je voyais à cinq mètres. Rivet était à l’arrière avec une boussole, il me criait « gauche, gauche, droite ». On est arrivés. Il dit que c’est la boussole de son frère qui nous a guidés. Ça ne m’étonnerait pas.', choix: [{ t: 'Autre chose…', go: 'd' }] } } },
+  dogue: { intro: () => 'Dogue ! Le grenadier, le cuisinier, le comique. Pas forcément dans cet ordre. Vous avez faim ? Moi, toujours.', salut: ['La popote est ouverte. Le menu, c’est « ce qu’il reste ».', 'Il y a des poissons dans votre lac ? Moi, je n’en vois pas. Je pêche quand même.', 'Rivet m’a appris un truc de son frère : « on ne range pas la glacière, la glacière te range ». Je n’ai rien compris.'],
+    choix: [{ t: 'Votre bras ?', go: 'bras', si: { test: () => DUST.n >= 3 } }, { t: 'Vous pêchez ?', go: 'peche' }, { t: 'Une gamelle pour moi ?', go: 'gamelle', si: { test: () => !DUST.mem('dogue').g } }],
+    noeuds: { bras: { dit: 'Un éclat, pendant la tempête. Silex m’a pansé, Rivet a pris la tourelle. Le toubib dit que je garderai une cicatrice en forme de… il ne sait pas. Moi, je dis une étoile. Ça fait plus militaire.', choix: [{ t: 'Autre chose…', go: 'd' }] }, peche: { dit: 'J’essaie. Rivet dit que son frère pêche mal et que le campeur pêche encore plus mal. Alors j’ai de l’espoir : je ne peux pas être le pire.', choix: [{ t: 'Autre chose…', go: 'd' }] },
+      gamelle: { dit: 'Bœuf aux haricots réchauffé, une galette, un sachet de sel. Mangez chaud. La guerre, c’est froid.', eff: { run: () => { DUST.mem('dogue').g = true; BES.faim = clamp(BES.faim + 30, 0, 100); } }, choix: [{ t: 'Merci, Dogue.', go: 'd' }] } } },
+  orage: { intro: () => 'Orage, chef de bord de FSM02. On couvre l’arrière de FSM01 depuis Port-Aven. Ici, on couvre l’arrière de votre clairière. Les ours n’ont qu’à bien se tenir.', salut: ['Rien à signaler.', 'La carte des Cimes est mal faite. Votre lac n’y figure même pas.', 'Vous avez vu passer des véhicules ? Non ? Tant mieux.'],
+    choix: [{ t: 'L’AT4, c’est quoi ?', go: 'at4' }, { t: 'Je peux voir la carte ?', go: 'carte', si: { test: () => !DUST.mem('orage').carte } }],
+    noeuds: { at4: { dit: 'Un lance-roquettes à un coup. Contre un blindé de Kesh, sur la piste de l’oued, il n’y avait que ça. Rivet l’avait réparé la veille : la gâchette collait. Sans lui, on ne serait pas là. Je ne lui ai jamais dit. Ne le lui dites pas.', choix: [{ t: 'Autre chose…', go: 'd' }] },
+      carte: { dit: 'Tenez. Une copie de la carte d’état-major. Le Territoire, la côte de Port-Aven, Tal Rakh, la base avancée Orion, et le désert de Kesh. Votre lac, je l’ai ajouté au crayon. Gardez-la.', eff: { run: () => { DUST.mem('orage').carte = true; SAC.objets.push({ nom: 'Carte d’état-major (copie)', d: 'Le Territoire, Port-Aven, Tal Rakh, Orion, le désert de Kesh. Le lac ajouté au crayon.', f: () => VILLAGE.lire('Carte d’état-major', 'Au nord : la côte et Port-Aven, d’où partaient les convois d’évacuation, et le cuirassé Résolu au large. À l’est : Tal Rakh et son puits, la piste côtière, l’oued. Plus loin : la base avancée Orion et l’erg. Tout au bout, souligné deux fois : le désert de Kesh. En bas, au crayon, d’une autre écriture : « Les Cimes — le lac — le secteur 7 — TOD ».') }); } }, choix: [{ t: 'Merci.', go: 'd' }] } } },
+  brume: { intro: () => 'Brume, la douze-sept de FSM02. Je prends la garde de nuit. Le jour, je dors, ou je regarde le lac. Le lac ne demande rien. Ça repose.', salut: ['Je n’ai pas dormi. Je ne dors jamais avant la garde.', 'Vous entendez le grondement, parfois, sur le lac ? Moi oui. Ce n’est pas un moteur.', 'Bonne nuit d’avance.'],
+    choix: [{ t: 'Le grondement sur le lac ?', go: 'bete' }],
+    noeuds: { bete: { dit: 'La nuit dernière, pendant ma garde. Du brouillard, et quelque chose de grand qui bougeait dans l’eau. Je n’ai pas tiré. On ne tire que sur ce qui est identifié. Ça, je n’ai pas su l’identifier. Le garde forestier m’a dit : « Elle ne fait de mal à personne. » Je l’ai noté.', choix: [{ t: 'Autre chose…', go: 'd' }] } } },
+  talus: { intro: () => 'Talus. Je conduis FSM02. Avec Écho, on se dispute le titre du meilleur pilote. Rivet nous départage : il dit que le meilleur, c’est celui qui casse le moins. Je casse plus.', salut: ['Vous avez une clé de douze ? Non ? Rivet en a toujours une.', 'Je dors un peu après la popote. Ne le dites pas à Orage.', 'Le Humvee est content, ici. Il n’y a pas de sable.'],
+    choix: [{ t: 'Rivet répare vraiment tout ?', go: 'tout' }],
+    noeuds: { tout: { dit: 'Tout. Un alternateur avec un fil de clôture. Une radio avec du papier d’alu. Le moral de Dogue avec une blague nulle. Il dit que c’est son frère qui lui a appris : « si ça bouge et que ça ne devrait pas, sangle. Si ça ne bouge pas et que ça devrait, graisse. »', choix: [{ t: 'Autre chose…', go: 'd' }] } } },
+  cendre: { intro: () => 'Cendre, grenadière de FSM02. Votre lac, c’est le premier lac que je vois depuis des mois. Je vais m’y baigner, même s’il est glacé. Surtout s’il est glacé.', salut: ['L’eau est à onze degrés. C’est parfait.', 'Le désert, ça vous colle à la peau. Ici, ça se lave.', 'Vous nagez ? Venez.'],
+    choix: [{ t: 'Ça ne vous manque pas, chez vous ?', go: 'maison' }, { t: 'Une lampe en trop ?', go: 'lampe', si: { test: () => !DUST.mem('cendre').l } }],
+    noeuds: { maison: { dit: 'Chez moi, c’est Port-Aven. On l’a évacué, rue après rue. Ma mère est partie dans le troisième convoi, avec le chat. Elle m’écrit que le chat va bien. Elle ne parle jamais d’elle. On est pareilles.', choix: [{ t: 'Autre chose…', go: 'd' }] },
+      lampe: { dit: 'Tenez, une lampe frontale de dotation. Mains libres pour la nuit. Rivet en a donné une à chaque gamin des villages qu’on a traversés. On en a commandé d’autres.', eff: { run: () => { DUST.mem('cendre').l = true; SAC.objets.push({ nom: 'Lampe frontale (dotation)', d: 'Mains libres. « TERRITOIRE » gravé sur le côté.' }); } }, choix: [{ t: 'Merci, Cendre.', go: 'd' }] } } } };
+// ---------------- apparition / retrait des soldats ----------------
+DUST.creerSoldats = () => { DUST.retirerSoldats(); DUST.SOLDATS.forEach((S, i) => { const P = DUST.PERSO[S.id], p = DUST.siege(i); const d = { id: 'dust_' + S.id, prenom: S.prenom, role: S.role, genre: S.genre, morph: S.morph, tenue: 'guard', graine: 900 + i * 17, look: S.look, vitesse: 1.35, dialogue: DUST.dialogue(Object.assign({ id: S.id }, P)), ambiant: P.salut };
+    const v = ALPHA.creer(d, p, { v: { dust: S.id } }); if (!v) return; ALPHA.pnj = ALPHA.pnj.filter(w => w !== v); v.dust = S.id; v.dustI = i; v.act = null; DUST.pnj[S.id] = v; }); };
+DUST.retirerSoldats = () => { for (const k in DUST.pnj) ALPHA.retirer(DUST.pnj[k]); DUST.pnj = {}; };
+DUST.majSoldats = dt => { const A0 = DUST.actif; if (!A0) return; const k = ETAT.jour - A0.jour;
+  for (const S of DUST.SOLDATS) { const v = DUST.pnj[S.id]; if (!v || !v.ch) continue; const i = v.dustI, a = DUST.act(S.id, k, HORL.h, i), cle = JSON.stringify(a);
+    if (cle === v.dustCle) continue; v.dustCle = cle; if (a[0] === 'cache') { v.ch.visible = false; v.parle = false; continue; }
+    if (!v.ch.visible) { v.ch.visible = true; const q = a[0]; v.ch.pos[0] = q[0]; v.ch.pos[2] = q[1]; } v.parle = true; if (VIS.dlg && VIS.dlg.v === v) continue;
+    VIS.allerA(v, a[0], a[1]); ALPHA.props(v, a[2] || (a[1] === 'Patrol_Walk' ? ['Flashlight'] : S.props)); } };
+// ---------------- véhicules : trajets ----------------
+DUST.CHEMINS = { fsm01: [[8, 182], [7.8, 160], [7.6, 140], [7.5, 126], [9.2, 118.5], [16, 112.5], [16, 104.5]], fsm02: [[8, 196], [8, 182], [7.8, 160], [7.6, 140], [7.5, 126], [11.5, 120.5], [24.5, 114], [24.5, 105.5]] };
+DUST.long = P => { let L = 0; for (let i = 1; i < P.length; i++) L += Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]); return L; };
+DUST.surChemin = (P, s) => { s = clamp(s, 0, DUST.long(P)); for (let i = 1; i < P.length; i++) { const l = Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]); if (s <= l || i === P.length - 1) { const t = l ? Math.min(1, s / l) : 1; return [P[i - 1][0] + (P[i][0] - P[i - 1][0]) * t, P[i - 1][1] + (P[i][1] - P[i - 1][1]) * t, Math.atan2(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1])]; } s -= l; } return [P[0][0], P[0][1], 0]; };
+DUST.poser = (V, x, z, yaw) => { const nd = V.nd, f = [x + Math.sin(yaw) * 1.6, z + Math.cos(yaw) * 1.6], b = [x - Math.sin(yaw) * 1.6, z - Math.cos(yaw) * 1.6]; nd.pos = [x, Math.max(SOL(x, z), (SOL(f[0], f[1]) + SOL(b[0], b[1])) / 2) + .02, z]; nd.rot[1] = yaw; };
+DUST.vehicules = () => { if (!DUST.veh.length) DUST.veh = [{ id: 'fsm01', nd: DUST.humvee('FSM01', false) }, { id: 'fsm02', nd: DUST.humvee('FSM02', true) }]; return DUST.veh; };
+DUST.garer = () => { for (const V of DUST.vehicules()) { const P = DUST.CHEMINS[V.id], q = P[P.length - 1], r = P[P.length - 2]; DUST.poser(V, q[0], q[1], Math.atan2(q[0] - r[0], q[1] - r[1])); V.nd.visible = true; V.s = DUST.long(P); } };
+DUST.rouler = (dt, sens) => { let bouge = false; for (const V of DUST.veh) { const P = sens > 0 ? DUST.CHEMINS[V.id] : DUST.CHEMINS[V.id].slice().reverse(), L = DUST.long(P); V.s = (V.s == null ? 0 : V.s); const reste = L - V.s, vmax = reste < 14 ? Math.max(1.2, reste * .35) : 5.2; V.v = lerp(V.v || 0, vmax, Math.min(1, dt * 1.2)); V.s = Math.min(L, V.s + V.v * dt * (V.attente > 0 ? 0 : 1)); if (V.attente > 0) V.attente -= dt;
+    const [x, z, yw] = DUST.surChemin(P, V.s); DUST.poser(V, x, z, sens > 0 ? yw : yw); V.nd.visible = true; if (V.s < L - .05) bouge = true; if (A.nuit() > .15 && V.nd.visible) A.addLight({ p: [x + Math.sin(yw) * 3, SOL(x, z) + 1.2, z + Math.cos(yw) * 3], c: [1, .95, .82], i: 26, r: 22, dir: [Math.sin(yw), -.15, Math.cos(yw)], cone: [.45, .8] }); }
+  return bouge; };
+// ---------------- cinématiques ----------------
+DUST.cineDemarrer = (type) => { const ch = DUST.ch(DUST.n); UI.cineOn = true; $('hud').hidden = true; $('cinePasser').hidden = false; document.body.classList.add('cine'); $('voile').classList.remove('off'); setTimeout(() => $('voile').classList.add('off'), 400);
+  DUST.cine = { type, t: 0, i: -1, savePL: [PL.x, PL.z, PL.yaw, PL.pitch] }; DUST.moteur.regler(.05, .3);
+  if (type === 'arrivee') { for (const V of DUST.vehicules()) { V.s = 0; V.v = 0; V.attente = V.id === 'fsm02' ? 2.2 : 0; V.nd.visible = true; } DUST.cine.plans = [
+      { d: 6.5, txt: 'Un grondement de moteurs descend le sentier des Cimes.', cam: () => { const p = DUST.veh[0].nd.pos; return [[10.6, SOL(10.6, 146) + 1.1, 146], [p[0], p[1] + 1.2, p[2]]]; } },
+      { d: 6, txt: 'Deux Humvee couleur sable. FSM01. FSM02. Commando Territoire.', cam: (t) => { const V = DUST.veh[1].nd, p = V.pos, y = V.rot[1], d = 7.5 - t * .25; return [[p[0] - Math.sin(y) * d, p[1] + 3.4, p[2] - Math.cos(y) * d], [p[0] + Math.sin(y) * 8, p[1] + 1.2, p[2] + Math.cos(y) * 8]]; } },
+      { d: 6.5, txt: `AEGIS PROTOCOL · Task Force FSMOPERATOR — en transit vers le désert de Kesh. « ${ch.titre} »`, cam: (t) => [[7 + t * .3, 4.6, 95.5], [19, 3.6, 109]] },
+      { d: 7, txt: '« ' + ch.pourquoi + ' »', cam: (t) => [[12.6 - t * .1, SOL(12.6, 102.6) + 1.7, 102.6], [16.2, SOL(16, 104.5) + 1.7, 104.8]] }]; }
+  else { DUST.cine.plans = [
+      { d: 6, txt: 'Le camp est démonté en vingt minutes. Les sacs de sable retournent dans les coffres.', cam: (t) => [[8, 4.8, 96], [20, 3.4, 109]] },
+      { d: 7, txt: ch.adieu, cam: (t) => { const p = DUST.veh[0].nd.pos; return [[10.8, SOL(10.8, 128) + 1.4, 128], [p[0], p[1] + 1.4, p[2]]]; } }];
+    for (const V of DUST.veh) { V.s = 0; V.v = 0; V.attente = V.id === 'fsm02' ? 3.5 : 0; } } };
+DUST.cineMaj = dt => { const C = DUST.cine; if (!C) return; C.t += dt; let acc = 0, i = 0; for (; i < C.plans.length; i++) { if (C.t < acc + C.plans[i].d) break; acc += C.plans[i].d; }
+  if (C.type === 'arrivee') { DUST.rouler(dt, 1); if (i >= 3 && !C.soldats) { C.soldats = true; DUST.garer(); DUST.creerSoldats(); for (const k in DUST.pnj) { const v = DUST.pnj[k], S = DUST.SOLDATS[v.dustI], V = DUST.veh.find(w => w.id === S.veh).nd, yw = V.rot[1], cote = v.dustI % 2 ? 1 : -1, lg = -1.1 + Math.floor((v.dustI % 4) / 2) * 1.7; v.ch.pos[0] = V.pos[0] + Math.cos(yw) * 1.8 * cote + Math.sin(yw) * lg; v.ch.pos[2] = V.pos[2] - Math.sin(yw) * 1.8 * cote + Math.cos(yw) * lg; v.ch.yaw = yw + cote * PI / 2; VIS.jouer(v, v.dustI === 0 ? 'Salute' : 'Stretch_Idle'); } } }
+  else { if (C.t > 6) DUST.rouler(dt, -1); }
+  DUST.moteur.regler(C.type === 'arrivee' ? (C.t < 19 ? .07 : .025) : (C.t > 6 ? .07 : .02), C.t < 19 ? .6 : .1);
+  if (i >= C.plans.length || IN.act || IN.menu) { DUST.cineFin(); return; }
+  const P = C.plans[i], lt = C.t - acc; if (C.i !== i) { C.i = i; sousTitre(P.txt); if (i > 0) { $('voile').classList.remove('off'); setTimeout(() => $('voile').classList.add('off'), 250); } }
+  const [eye, look] = P.cam(lt); const g = SOL(eye[0], eye[2]) + .6; if (eye[1] < g) eye[1] = g; A.camera.fixed.eye = eye; A.camera.fixed.look = look; PL.eye = eye; if (lt > P.d - 1) sousTitre(null); };
+DUST.cineFin = () => { const C = DUST.cine; if (!C) return; DUST.cine = null; sousTitre(null); $('cinePasser').hidden = true; document.body.classList.remove('cine'); UI.cineOn = false; $('hud').hidden = false; DUST.moteur.regler(0, 0); [PL.x, PL.z, PL.yaw, PL.pitch] = C.savePL; PL.y = solJoueur(PL.x, PL.z);
+  if (C.type === 'arrivee') { DUST.garer(); if (!Object.keys(DUST.pnj).length) DUST.creerSoldats(); note(`Le détachement FSMOPERATOR s’installe à l’est de la clairière pour deux nuits. « ${DUST.ch(DUST.n).titre} »`, 6000); historique('Le détachement FSMOPERATOR (Aegis Protocol) campe au lac'); }
+  else DUST.nettoyer(); };
+setTimeout(() => { const p0 = CINE.passer; CINE.passer = () => { if (DUST.cine) { DUST.cineFin(); return; } p0(); }; }, 0);   // CINE est déclaré plus loin dans le fichier
+// ---------------- déroulement ----------------
+DUST.arriver = () => { DUST.n++; DUST.actif = { jour: ETAT.jour, h: HORL.h }; DUST.appelFait = false; DUST.appelDemande = false; if (!DUST.props.length) DUST.construireCamp(); for (const P of DUST.props) P.nd.visible = false;
+  OBJETS.push({ id: 'm_dust', x: 20.3, z: 106, r: 0, nom: '', cond: () => false, f: () => {} }); DUST.cineDemarrer('arrivee'); };
+DUST.partir = () => { DUST.retirerSoldats(); for (const P of DUST.props) P.nd.visible = false; DUST.garer(); const loin = Math.hypot(PL.x - 20, PL.z - 106) > 70 || ETAT.dort || UI.ouvert() || UI.dlgOuvert;
+  if (loin) { DUST.nettoyer(); DUST.mot = DUST.ch(DUST.n).adieu; return; } DUST.cineDemarrer('depart'); };
+DUST.nettoyer = () => { DUST.retirerSoldats(); for (const V of DUST.veh) V.nd.visible = false; for (const P of DUST.props) P.nd.visible = false; DUST.actif = null; DUST.prochain = ETAT.jour + 6 + Math.floor(Math.random() * 5); const i = OBJETS.findIndex(o => o.id === 'm_dust'); if (i >= 0) OBJETS.splice(i, 1); DUST.moteur.regler(0, 0); };
+DUST.majMontage = () => { const A0 = DUST.actif; if (!A0) return; const t = (ETAT.jour - A0.jour) * 24 + HORL.h - A0.h, N = DUST.props.length; DUST.props.forEach((P, i) => { if (P === DUST.propsLum) return; const vis = t > .1 + i / N * 1.1; if (vis && !P.nd.visible) { P.nd.visible = true; P.nd.scale = [1, .05, 1]; P.anim = 0; } if (P.nd.visible && P.anim != null && P.anim < 1) { P.anim = Math.min(1, P.anim + .04); P.nd.scale = [1, .05 + .95 * P.anim, 1]; } });
+  if (DUST.lum) DUST.lum.visible = DUST.lum.visible && A.nuit() > .2; };
+DUST.appel = () => { if (DUST.appelFait) return; DUST.appelFait = true; const L = DUST.ch(DUST.n).appel; let i = 0; const r = DUST.pnj.rapace; if (r && r.ch.visible) { VIS.allerA(r, [17.6, 102.6], 'Radio_Talk'); ALPHA.props(r, ['Radio']); }
+  const suiv = () => { if (i >= L.length) { sousTitre(null); GARDE.plus && GARDE.plus(6, 'appel radio avec Node'); historique('Tod a parlé à Node par la radio du détachement'); note('La radio se tait. Au poste de garde, une lampe reste allumée tard.', 4500); return; } SON.tic && SON.tic(.25, 1800 + Math.random() * 800, .05); sousTitre(L[i++]); setTimeout(suiv, 4600); }; note('Un grésillement sort de FSM01. La fenêtre radio est ouverte.', 2500); setTimeout(suiv, 1500); };
+DUST.maj = dt => { if (DUST.cine) { DUST.cineMaj(dt); return; } if (!ETAT.enJeu) return; const A0 = DUST.actif;
+  if (!A0) { if (ETAT.jour >= DUST.prochain && HORL.h >= 16.5 && HORL.h < 19.5 && !VIS.courant && !ETAT.dort && !UI.ouvert() && !UI.dlgOuvert && !UI.cineOn && !ETAT.mort && !CINE.on) { if (DUST.tirage !== ETAT.jour) { DUST.tirage = ETAT.jour; DUST.go = DUST.n === 0 ? (ETAT.jour >= 7 || Math.random() < .5) : Math.random() < .4; if (!DUST.go) DUST.prochain = ETAT.jour + 1; } if (DUST.go) { DUST.go = false; DUST.arriver(); } } return; }
+  DUST.majMontage(); DUST.majSoldats(dt); if (DUST.lum) DUST.lum.visible = A.nuit() > .2 && DUST.props.some(P => P.nd.visible);
+  if (A.nuit() > .25 && Math.hypot(PL.x - 20, PL.z - 108) < 60) A.addLight({ p: [19.6, SOL(19.6, 112.6) + 1.6, 112.6], c: [1, .75, .45], i: 8, r: 10 });
+  const k = ETAT.jour - A0.jour; if (!DUST.appelFait && k <= 1 && HORL.h >= 21 && HORL.h < 23.5 && (DUST.appelDemande || Math.hypot(PL.x - 16, PL.z - 104.5) < 18) && !UI.dlgOuvert && !ETAT.dort) DUST.appel();
+  if (k >= 2 && HORL.h >= 8.6 && !UI.dlgOuvert) DUST.partir(); else if (k >= 3) DUST.partir(); };
+{ const m0 = ALPHA.maj; ALPHA.maj = dt => { m0(dt); try { DUST.maj(dt); } catch (e) { console.warn('[dust]', e); } }; }
+// le jeu met ALPHA.maj en pause pendant les menus : la cinématique a besoin de tourner aussi quand UI.cineOn bloque le joueur (ALPHA.maj tourne toujours)
+{ const a0 = VIS.arriver; VIS.arriver = function () { if (DUST.actif || DUST.cine) { VIS.prochain = null; return; } return a0.apply(this, arguments); }; }
+{ const p0 = VIS.planifier; VIS.planifier = function () { if (DUST.actif || DUST.cine) return; return p0.apply(this, arguments); }; }
+// mot laissé au réveil quand le départ a eu lieu sans le joueur
+{ const r0 = VIS.reveil; VIS.reveil = function () { let r = r0.apply(this, arguments) || ''; if (DUST.mot) { r = (r ? r + ' ' : '') + 'Les Humvee sont repartis dans la nuit. ' + DUST.mot; DUST.mot = null; } return r; }; }
+// ---------------- Tod, Camilla, le bourg, marqueur ----------------
+{ const N = GARDE.dialogue.noeuds, D = N.debut, iFin = D.choix.findIndex(c => c.fin);
+  D.choix.splice(iFin < 0 ? D.choix.length : iFin, 0, { t: 'Les soldats au bord du lac…', go: 'tDust', si: { test: () => !!DUST.actif } }, { t: 'J’ai une lettre de ton frère pour toi.', go: 'tLettre', si: { test: () => SAC.objets.some(o => o.lettreRivet) } }, { t: 'Le détachement reviendra ?', go: 'tDust2', si: { test: () => !DUST.actif && DUST.n > 0 } });
+  N.tDust = { dit: () => DUST.appelFait ? DUST.ch(DUST.n).tod : pick(['Le détachement de Node ! Ils sont venus jusqu’ici pour moi. Pour me dire qu’il va bien. Je n’arrive pas à rester au poste, je descends toutes les heures « vérifier le périmètre ».', 'La capitaine Marest m’a serré la main. Elle a dit : « Votre frère nous a sauvé la mise plus d’une fois. » J’ai répondu « je sais ». Comme un idiot. Je ne savais pas.', 'Ils ont une radio qui porte jusqu’au désert, par un drone, Vautour 2. Ce soir, peut-être… Non. Je ne veux pas trop espérer.']), choix: [{ t: 'Ce soir, tu pourrais lui parler.', go: 'tDust3', si: { test: () => !DUST.appelFait } }, { t: 'Autre chose.', go: 'debut' }] };
+  N.tDust3 = { dit: 'Par la radio de FSM01 ? … Je serai au talkie à vingt et une heures. Si tu es près du Humvee, tu entendras. Je préfère que quelqu’un soit là. Juste… que quelqu’un soit là.', choix: [{ t: 'Je serai là.', go: 'debut', eff: { run: () => { DUST.appelDemande = true; } } }] };
+  N.tLettre = { dit: () => { const o = SAC.objets.find(o => o.lettreRivet), ch = DUST.ch(o ? o.lettreRivet : DUST.n); SAC.objets = SAC.objets.filter(x => !x.lettreRivet); GARDE.plus && GARDE.plus(8, 'lettre de Node'); historique('Vous avez remis à Tod la lettre de Node'); return 'Il ouvre l’enveloppe avec précaution, comme on ouvre un registre neuf. Il lit à voix basse. « ' + ch.lettre + ' » … Il replie la lettre. Il la range dans la poche de sa chemise, côté cœur. « Merci. Vraiment. »'; }, choix: [{ t: 'Il t’aime, tu sais.', go: 'tLettre2' }] };
+  N.tLettre2 = { dit: 'Je sais. On ne se le dit jamais. Chez nous, on dit « fais attention » et « mange ». Ça veut dire la même chose.', choix: [{ t: '…', go: 'debut' }] };
+  N.tDust2 = { dit: () => pick(['Ils reviendront. La route des Cimes est la seule qui reste ouverte vers Kesh. Et Node leur fait promettre, à chaque fois. Je laisse le billot propre, pour la douille suivante.', 'Je garde leurs cadeaux sur mon bureau. ' + (DUST.n >= 2 ? 'La boussole de Node indique le nord. Je la regarde quand même vers le sud.' : 'La douille « SECTEUR 7 » sert de presse-papier au registre.'), 'Quand j’entends un moteur sur le sentier, je cours. Neuf fois sur dix, c’est le camion de livraison du FSM.']), choix: [{ t: 'Autre chose.', go: 'debut' }] }; }
+{ const N = CAMILLA.dialogue.noeuds, D = N.debut, iFin = D.choix.findIndex(c => c.fin); D.choix.splice(iFin, 0, { t: 'Les soldats, là-bas…', go: 'cDust', si: { test: () => CAMILLA.installee && !!DUST.actif } });
+  N.cDust = { dit: () => pick(['Le détachement de Node. Je les ai observés depuis la lisière, avant de me montrer. La capitaine m’a repérée en dix secondes. Elle m’a fait un signe. Respect.', 'Cendre, la grenadière, se baigne dans ton lac. Elle m’a dit que le désert colle à la peau. Je lui ai prêté mon savon de chasseuse. On est amies, maintenant.', 'Ils disent que Node porte ta casquette bleue sous son casque, Mehdy. Il ne l’a jamais quittée. Tu vois ? Je te l’avais dit.', 'Dogue m’a demandé si je chassais. Je lui ai rapporté un lièvre. Il a pleuré. Pas pour le lièvre : il n’avait pas mangé de viande fraîche depuis Port-Aven.']), choix: [{ t: 'Autre chose.', go: 'debut' }] };
+  CAMILLA.AMB.jour.push('Les Humvee de Node, au bord du lac… Je n’aime pas les moteurs. J’aime bien ceux-là.'); }
+if (typeof BOURG !== 'undefined') { const r0 = BOURG.ragots; BOURG.ragots = () => { const R = r0(); if (DUST.actif) R.push('Deux Humvee couleur sable sont passés devant le fournil, direction le lac. Jules leur a donné tout son pain de la veille. Ils ont salué.', 'Mathis Lenoir est monté au lac voir les soldats. Il connaît le chef de bord du second véhicule. Ils ont parlé de la base de Shirley jusqu’à minuit.'); else if (DUST.n > 0) R.push('Les soldats du Territoire reviendront, dit Tod. Il a gardé une douille gravée sur son bureau.'); return R; }; }
+Object.assign(ICONES, { humvee: { col: '#c8b27a', d: 'M2 14h2l2-5h9l3 3h3v4h-1a2.5 2.5 0 0 0-5 0H9a2.5 2.5 0 0 0-5 0H2ZM8 10v2h6v-2Z' } });
+MARQ.sites.push({ id: 'm_dust', ico: 'humvee', nom: 'Détachement FSMOPERATOR', h: 4 });
+{ const e0 = MARQ.etat; MARQ.etat = m => m.id === 'm_dust' ? { t: DUST.actif ? 'deux nuits' : '', vide: false } : e0(m); }
+// sauvegarde
+{ const s0 = sauver; sauver = function () { s0(); if (ETAT.enJeu && !ETAT.mort) ecrire('dust', { n: DUST.n, prochain: DUST.prochain, actif: DUST.actif, appelFait: DUST.appelFait, memo: DUST.memo }); }; }
+{ const c0 = charger; charger = function () { const r = c0(); const s = lire('dust'); if (s) { DUST.n = s.n || 0; DUST.prochain = s.prochain || DUST.prochain; DUST.appelFait = !!s.appelFait; DUST.memo = s.memo || {}; if (s.actif) { DUST.actif = s.actif; setTimeout(() => { try { if (!DUST.props.length) DUST.construireCamp(); DUST.garer(); for (const P of DUST.props) P.nd.visible = true; DUST.creerSoldats(); if (!OBJETS.some(o => o.id === 'm_dust')) OBJETS.push({ id: 'm_dust', x: 20.3, z: 106, r: 0, nom: '', cond: () => false, f: () => {} }); } catch (e) {} }, 2500); } } return r; }; }
+{ const n0 = nouvellePartie; nouvellePartie = function () { const r = n0.apply(this, arguments); DUST.nettoyer(); DUST.n = 0; DUST.memo = {}; DUST.prochain = 4 + Math.floor(Math.random() * 3); return r; }; }
+
 // ==== CAMP : CINÉMATIQUES (randonnée d'ouverture, réveil) ======================================
 const CINE = { plans: [], t: 0, i: 0, on: false, marcheur: null, apres: null, cam: null };
 CINE.passer = () => { if (!CINE.on) return; CINE.finir(); };
@@ -10657,7 +11219,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 
 </script>
 <!--
-NOTE-INTERNE (Claude) · HDF : CAMPING v0.15.1 · F.S.M Game House · 3 nov. 2026
+NOTE-INTERNE (Claude) · HDF : CAMPING v0.17 · F.S.M Game House · 3 nov. 2026
 À lire avant de modifier ce fichier. Ne pas relire le fichier en entier : chercher les ancres « ==== CAMP : » (grep), puis ne lire que la section utile.
 
 STRUCTURE DU FICHIER
@@ -10762,6 +11324,14 @@ v0.15 — LE BOURG VIVANT (Node Opening 3D), module « CAMP : LE BOURG VIVANT »
   VIE.maj : MAX 9, apparition hors du village permise (plage, ponton, chantier), trajet > 70 m → retiré (pas de traversée de forêt). Animaux BOURG.BETES / C.animal → VIE.majBetes (Joe.Animal Dog/Cat, suivent le maître, ou couchés devant la porte de 7 h à 21 h, 6 au plus, « Caresser » +lien). Ragots BOURG.RAGOTS + BOURG.ragots() (état de partie) ajoutés au bavardage ; BOURG.PLUS (répliques Opening des anciens) ; BOURG.MEH (Med/Mehdy Badaoui) ; VIE.gazette() dans le Journal ; panneau « Avis du bourg ». Marqueurs m_fournil, m_aireCamp, m_marche, m_avis, m_habN, m_habS.
 
 v0.15.1 — Mathis fend le bois à son atelier ('atelierBois', billot + bûches + chevalet près de l'aire de camping) au lieu du parking du FSM ; construireBat : soubassement coupé à la porte + marche en bois (S.marche) ; VIE.maj : écartement des habitants posés à moins de 0,95 m. Manette : détection plus tolérante (connected !== false), note « Manette détectée ».
+
+v0.16 — CAMILLA enrichie (module « CAMP : CAMILLA — DIALOGUES ENRICHIS », src/96_camilla_plus.js) : choix « Le bourg neuf, tu y es allée ? » (bn, bn1-3, ines) et « On parle du bon vieux temps ? » (souv → renc, terrier, verger/dame, cam, brig, base, chass, gasp, hand, villa/hameau, bete, revoir). P(k, 1re fois, variantes) marque CAMILLA.mem.sujets.s_* après la réplique (un eff de nœud passe AVANT le texte : ne pas l'utiliser pour « déjà vu »). +AMB jour/nuit, +NOUV, +NOUV_C.
+
+v0.16 (suite) — ICÔNES (module « CAMP : ICÔNES », src/97_icones.js) : ICO.G (glyphes colorés), ICO.R (règles texte → icône, ordre = priorité ; prix « — X écus » retiré avant le test), ICO.badge ; branché sur rendreChoix (menus + dialogues), rendrePanneau (sac, pause), majInvite (✕ + icône).
+  TRAJETS (src/98_pnj_trajets.js) : ALPHA.aller réécrit (portes puis TRAJ.chemin : détour par les coins des rectangles des bâtiments, de CHANTIER.rects et des COLL ≥ 0,4 m), TRAJ.libre (points d'arrivée sortis des meubles ; VIE.point mémorisé pour ['bat'…], recalculé pour cour/fontaine/terrasse…), gardien anti-blocage v.tBloq > 3,5 s → posé à la cible (TRAJ.recal / TRAJ.qui pour les tests), animaux qui passent par la porte.
+  TOD (src/99_tod_bourg.js) : sujet « Et le bourg, en bas ? » (tB : gens GENS×14, shérif tBs, aire tBc, baigneurs tBb, Villa tBv, Inès tBh, animaux tBa, Node tBn, Camilla tBk, maison bleue tBm) ; T(tu, vous). BULLES : « … » au-dessus des PNJ qui parlent (BULLES.maj dans VIS.maj, liseré ambré = interlocuteur).
+
+v0.17 — AEGIS PROTOCOL AU LAC (module « CAMP : AEGIS PROTOCOL — LE DÉTACHEMENT FSMOPERATOR AU LAC », src/9a_dustline.js) : DUST.maj (dans ALPHA.maj) tire l'événement (1er passage J4-J7, puis DUST.prochain = +6 à 10 j, 40 %/jour, 16 h 30-19 h 30, sans visiteur ni menu) → DUST.arriver → cinématique 'arrivee' (DUST.cine, 4 plans, Humvee DUST.humvee sur DUST.CHEMINS, son DUST.moteur) → camp DUST.construireCamp (apparition progressive DUST.majMontage) + 8 soldats DUST.SOLDATS (noms Dustline) pilotés par DUST.act(id, k = jour − arrivée, h) : montage, réveil musculaire, entretien, popote, pêche, baignade de Cendre, sieste, veillée en cercle (DUST.siege), rondes de nuit à la lampe (DUST.RONDES) ; dialogues DUST.dialogue + DUST.PERSO (communs : d'où / pourquoi / guerre / Rivet ; propres : 7090, Bouclier de Silex, AT4, carte d'état-major, bras de Dogue, lampe frontale…), mémoire DUST.mem (par passage). Chapitres DUST.CH (1 La lettre de Rivet, 2 Le convoi sanitaire, 3 Le cessez-le-feu brisé, 4 La route de Kesh) puis DUST.SUITE. Appel radio de nuit DUST.appel (21-23 h 30 près de FSM01 ou sur demande) ; lettre de Rivet à remettre à Tod (objet lettreRivet, nœud tLettre) ; départ k = 2 à 8 h 36 (cinématique 'depart' ou mot au réveil). VIS.planifier / VIS.arriver suspendus pendant le passage ; collisions véhicules + camp dans obstacles() ; marqueur m_dust ; Tod (tDust, tDust3, tLettre, tDust2), Camilla (cDust), ragots du bourg. Sauvegarde 'dust'. NODE = indicatif RIVET (prêté par la base de la maréchale Shirley au détachement, base avancée Orion).
 
 À FAIRE / IDÉES v1.0 : sauvegarde du visiteur en cours ; météo visible (pluie déjà possible via A.meteo) ; deux emplacements de sauvegarde ; branchement History Sens pour les dialogues libres.
 
