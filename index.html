@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HDF : CAMPING">
 <meta name="theme-color" content="#0b0f0a">
-<title>HDF : CAMPING — v0.9</title>
+<title>HDF : CAMPING — v0.11</title>
 <style>
 :root{--lin:#f3efe6;--ambre:#f2c66d;--mousse:#8fb37a;--nuit:#0b0f0a;--verre:rgba(10,14,10,.62);--rouge:#e0665a;--bleu:#7fb6d8;
   --sans:-apple-system,BlinkMacSystemFont,"Avenir Next","Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
@@ -170,7 +170,7 @@ body.cine #cine .bande{height:11vh}
 <div id="cine"><div class="bande h"></div><div class="bande b"></div></div>
 <button id="cinePasser" hidden>Passer ›</button>
 <div id="hud" hidden>
-  <div id="titreJeu">HDF : CAMPING · v0.9</div>
+  <div id="titreJeu">HDF : CAMPING · v0.11</div>
   <div id="marqueurs"></div>
   <canvas id="boussole" width="1120" height="108"></canvas>
   <div id="heureJour"><b id="hHeure">07:00</b><span id="hJour">Jour 1 · lundi</span></div>
@@ -204,14 +204,14 @@ body.cine #cine .bande{height:11vh}
 </div>
 <div id="fin" hidden><h2 id="finTitre">Fin de partie</h2><p id="finTexte"></p><div class="stats" id="finStats"></div><div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><button class="gros" id="finRejouer">Recommencer une partie</button><button class="gros discret" id="finMenu">Menu</button></div></div>
 <div id="menu" hidden>
-  <div class="version">v0.9 · FSM-3D 2.10</div>
+  <div class="version">v0.11 · FSM-3D 2.10</div>
   <h1><small>F.S.M GAME HOUSE</small>HDF : CAMPING</h1>
   <p class="accroche">Seul au bord d'un lac de montagne. Chaque jour, quelqu'un passe. Tenez le plus longtemps possible.</p>
   <div class="ligne"><input id="prenom" maxlength="16" placeholder="Votre prénom" autocomplete="off" spellcheck="false"></div>
   <div class="ligne"><button class="gros" id="bNouvelle">Nouvelle partie</button><button class="gros discret" id="bContinuer" hidden>Continuer</button></div>
-  <div class="opts"><button id="oSon" class="on">Son</button><button id="oVoix" class="on">Voix des PNJ</button><button id="oQualite">Qualité : auto</button><button id="oTexte">Texte : grand</button><button id="oMarq" class="on">Marqueurs de collecte</button><button id="oPerf">Performances</button></div>
+  <div class="opts"><button id="oSon" class="on">Son</button><button id="oVoix" class="on">Voix des PNJ</button><button id="oMusique" class="on">Musique</button><button id="oQualite">Qualité : auto</button><button id="oTexte">Texte : grand</button><button id="oMarq" class="on">Marqueurs de collecte</button><button id="oPerf">Performances</button></div>
   <div class="aideCtrl" id="aideCtrl">Manette PS : <b>stick gauche</b> marcher · <b>stick droit</b> regarder · <b>✕</b> action / choisir · <b>○</b> s'accroupir / partir · <b>△</b> sauter · <b>□</b> sac à dos · <b>R2</b> courir · <b>L1</b> lampe · <b>OPTIONS</b> menu.<br>Tactile : stick à gauche, glisser à droite pour regarder, boutons à droite. Clavier : ZQSD / flèches, souris (clic pour viser), Espace, C, Maj, E, Tab, F, Échap.</div>
-  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.9</div>
+  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.11</div>
 </div>
 
 <script>
@@ -4992,7 +4992,7 @@ self.JOE_DATA = { animals: 'Z2xURgIAAAD8HQQAtNIBAEpTT057ImFzc2V0Ijp7InZlcnNpb24i
    ===================================================================================== */
 'use strict';
 // ==== CAMP : OUTILS ===================================================================
-const JEU = { nom: 'HDF : CAMPING', version: '0.9', cle: 'hdfc-' };
+const JEU = { nom: 'HDF : CAMPING', version: '0.11', cle: 'hdfc-' };
 const $ = id => document.getElementById(id);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, k) => a + (b - a) * k;
@@ -5011,7 +5011,7 @@ function texte(t) { // remplace {JOUEUR} et {prenom}
   return String(t || '').replace(/\{JOUEUR\}/g, JOUEUR.prenom || 'vous').replace(/\{jour\}/g, String(ETAT.jour)); }
 
 // ==== CAMP : OPTIONS ET SAUVEGARDE ======================================================
-const OPT = Object.assign({ son: true, voix: true, qualite: 'auto', texte: 'grand', perf: false, invY: false, marqueurs: true }, lire('options') || {});
+const OPT = Object.assign({ musique: true, son: true, voix: true, qualite: 'auto', texte: 'grand', perf: false, invY: false, marqueurs: true }, lire('options') || {});
 function lire(k) { try { return JSON.parse(localStorage.getItem(JEU.cle + k)); } catch (e) { return null; } }
 function ecrire(k, v) { try { localStorage.setItem(JEU.cle + k, JSON.stringify(v)); } catch (e) {} }
 function effacer(k) { try { localStorage.removeItem(JEU.cle + k); } catch (e) {} }
@@ -5952,6 +5952,7 @@ function fermerPanneau() { if (!UI.panneauOuvert) return; $(UI.panneauOuvert).hi
 UI.fermer = () => { fermerPanneau(); if (UI.dlgOuvert) fermerDlg(); };
 function ouvrirPause() { UI.pauseOuvert = true; const L = [
   { nom: 'Reprendre', d: '', f: () => {} },
+  { nom: 'Musique : ' + (OPT.musique ? 'activée' : 'coupée'), d: 'Musique douce qui suit l’heure et l’ambiance', garde: true, f: function () { OPT.musique = !OPT.musique; sauverOptions(); this.nom = 'Musique : ' + (OPT.musique ? 'activée' : 'coupée'); } },
   { nom: 'Son : ' + (OPT.son ? 'activé' : 'coupé'), d: 'Ambiance et effets', garde: true, f: function () { OPT.son = !OPT.son; SON.volume(); sauverOptions(); this.nom = 'Son : ' + (OPT.son ? 'activé' : 'coupé'); } },
   { nom: 'Voix des visiteurs : ' + (OPT.voix ? 'activées' : 'coupées'), d: 'Synthèse vocale', garde: true, f: function () { OPT.voix = !OPT.voix; if (!OPT.voix) VOIX.stop(); else VOIX.test(); sauverOptions(); this.nom = 'Voix des visiteurs : ' + (OPT.voix ? 'activées' : 'coupées'); } },
   { nom: 'Tester la voix', d: 'Dit une phrase et affiche l’état de la synthèse vocale', garde: true, f: () => { VOIX.test(); } },
@@ -9432,6 +9433,115 @@ VISITEURS.push({
   depart: { texte: 'Louana remonte au pas de course vers le poste de garde, où Tod l’attend avec sa soupe.' }
 });
 
+// ==== CAMP : LA CRÉATURE DU LAC (v0.10) =======================================================
+// Une énorme créature (dos à bosses, long cou, tête) fait parfois surface : le brouillard tombe d'abord sur le lac, des bulles et des remous,
+// elle émerge loin du bord, nage une quarantaine de mètres, replonge, puis un grondement sourd monte des profondeurs et le brouillard se lève.
+// Au plus une apparition par jour (≈ 45 % des jours à partir du jour 2), surtout à l'aube, au crépuscule et la nuit. Rien n'est expliqué au joueur.
+// Maillage léger (≈ 3 k triangles, visible seulement pendant l'apparition). Test : CREATURE.lancer().
+const CREATURE = { nd: null, actif: null, jourPlan: 0, h: -1, vues: 0, tMeteo: 0 };
+CREATURE.construire = () => { const nd = new Node('creature'); nd.pickable = false; nd.castShadow = false; const G = 1.7, T = (x, y, z) => M3.translate(x * G, y * G, z * G), S = (x, y, z) => M3.scale(x * G, y * G, z * G), mul = M3.mul, peau = [.1, .12, .11], ventre = [.16, .17, .14];
+  CREATURE.bosses = []; for (let i = 0; i < 7; i++) { const k = 1 - i / 8, b = new Node('bosse'); b.pickable = false; b.addPart(MESH.sph, S(2.4 * k, 1.5 * k, 3.2 * k), peau, 12, { cast: false }); b.addPart(MESH.sph, mul(T(0, -.35 * k, 0), S(2.2 * k, 1.1 * k, 3 * k)), ventre, 5, { cast: false });
+    for (let j = 0; j < 2; j++) b.addPart(MESH.cone, mul(T(0, .7 * k, (j - .5) * 1.1 * k), S(.35 * k, .9 * k, .35 * k)), [.07, .08, .07], 12, { cast: false }); nd.add(b); CREATURE.bosses.push(b); }   // crête dorsale
+  const t = new Node('tete'); t.pickable = false;
+  // cou : chapelet de sphères qui se chevauchent le long d'une courbe (base épaisse dans l'eau → tête), pour une forme lisse et organique
+  const P0 = [0, -7.2, -3.2], P1 = [0, -2.6, -2.4], P2 = [0, -.05, .15], bez = u => [0, (1 - u) * (1 - u) * P0[1] + 2 * u * (1 - u) * P1[1] + u * u * P2[1], (1 - u) * (1 - u) * P0[2] + 2 * u * (1 - u) * P1[2] + u * u * P2[2]];
+  for (let k = 0; k <= 18; k++) { const u = k / 18, q = bez(u), r = 1.25 - u * .62; t.addPart(MESH.sph, mul(T(q[0], q[1], q[2]), S(r, r * 1.05, r * 1.1)), k % 2 ? peau : [.11, .13, .12], 12, { cast: false }); }
+  // tête : crâne allongé, museau, mâchoire, arcades ; yeux sombres à reflet
+  t.addPart(MESH.sph, mul(T(0, .15, .35), S(1.05, .85, 1.55)), peau, 12, { cast: false }); t.addPart(MESH.sph, mul(T(0, -.05, 1.35), S(.75, .55, 1.2)), peau, 12, { cast: false }); t.addPart(MESH.sph, mul(T(0, -.38, .95), S(.7, .32, 1.15)), ventre, 5, { cast: false });
+  for (const s2 of [-.38, .38]) { t.addPart(MESH.sph, mul(T(s2, .42, .55), S(.34, .2, .4)), [.08, .09, .08], 12, { cast: false }); t.addPart(MESH.sph8, mul(T(s2 * 1.12, .3, .72), S(.13, .12, .13)), [.02, .02, .02], 14, { cast: false }); t.addPart(MESH.sph8, mul(T(s2 * 1.2, .34, .78), S(.04, .04, .04)), [.55, .5, .3], 8, { cast: false }); t.addPart(MESH.sph8, mul(T(s2 * .3, .02, 1.88), S(.07, .05, .07)), [.03, .03, .03], 7, { cast: false }); }
+  nd.add(t); CREATURE.tete = t; nd.visible = false; A.add(nd); CREATURE.nd = nd; };
+// point d'eau profonde, loin du joueur
+CREATURE.pointLac = (rmin, rmax) => { for (let k = 0; k < 40; k++) { const a = rnd(0, TAU), r = rnd(rmin, rmax), x = PL.x + Math.sin(a) * r, z = PL.z + Math.cos(a) * r; if (SOL(x, z) < -5 && Math.hypot(x - LAC.x, z - LAC.z) < LAC.r - 12) return [x, z]; } return null; };
+CREATURE.lancer = () => { if (CREATURE.actif || !A || !A.water) return false; if (!CREATURE.nd) CREATURE.construire(); const p0 = CREATURE.pointLac(28, 55); if (!p0) return false;
+  let dir = rnd(0, TAU), pts = [p0]; for (let i = 0; i < 6; i++) { dir += rnd(-.45, .45); const q = pts[pts.length - 1], n = [q[0] + Math.sin(dir) * 8, q[1] + Math.cos(dir) * 8]; if (SOL(n[0], n[1]) > -4 || Math.hypot(n[0] - LAC.x, n[1] - LAC.z) > LAC.r - 10) { dir += PI * .6; continue; } pts.push(n); }
+  if (pts.length < 4) return false; CREATURE.actif = { t: 0, pts, trace: [], tRem: 0, gronde: false, bulles: 0 }; CREATURE.vues++; ETAT.drapeaux.creature = (ETAT.drapeaux.creature || 0) + 1; historique('a vu quelque chose dans le lac'); return true; };
+// chemin : position à la distance s le long des points
+CREATURE.surChemin = (pts, s) => { let d = s; for (let i = 0; i < pts.length - 1; i++) { const a = pts[i], b = pts[i + 1], L = Math.hypot(b[0] - a[0], b[1] - a[1]); if (d <= L) { const k = d / L; return [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, Math.atan2(b[0] - a[0], b[1] - a[1])]; } d -= L; } const a = pts[pts.length - 2], b = pts[pts.length - 1]; return [b[0], b[1], Math.atan2(b[0] - a[0], b[1] - a[1])]; };
+CREATURE.longueur = pts => { let L = 0; for (let i = 0; i < pts.length - 1; i++) L += Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]); return L; };
+CREATURE.brume = k => { CREATURE.tMeteo -= A.dt || .016; if (CREATURE.tMeteo > 0) return; CREATURE.tMeteo = .4; if (k > .02) { A.meteo('brume', clamp(k, 0, 1)); A.brouillard *= 1 + 2.2 * clamp(k, 0, 1); } else { const m = ETAT.meteo; if (m === 'pluie') A.meteo('pluie', .7); else if (m === 'couvert') A.meteo('brume', .35); else if (m === 'brume') A.meteo('brume', .5); else A.meteo('clair', 1); } };
+// grondement sourd (deux basses + souffle filtré), depuis les profondeurs
+CREATURE.grondement = (v = 1) => { if (!SON.ok) return; const ac = SON.ac, t = ac.currentTime, out = ac.createGain(); out.gain.setValueAtTime(.0001, t); out.gain.linearRampToValueAtTime(.55 * v, t + 1.4); out.gain.exponentialRampToValueAtTime(.0001, t + 6.5); out.connect(SON.sfx);
+  for (const [f, w] of [[36, .9], [52, .5], [27, .7]]) { const o = ac.createOscillator(), g = ac.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(f, t); o.frequency.linearRampToValueAtTime(f * .8, t + 6); g.gain.value = w; o.connect(g); g.connect(out); o.start(t); o.stop(t + 6.6); }
+  const s = ac.createBufferSource(); s.buffer = SON.bruit; s.loop = true; const fl = ac.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = 110; const g = ac.createGain(); g.gain.value = 1.2; s.connect(fl); fl.connect(g); g.connect(out); s.start(t); s.stop(t + 6.6); };
+// déroulé (secondes réelles) : 0-7 brouillard · 7-12 bulles · 12-17 émerge · 17-… nage · replonge · grondement · brouillard qui se lève
+CREATURE.maj = dt => { if (!ETAT.enJeu || !A || !A.water) return;
+  if (CREATURE.jourPlan !== ETAT.jour) { CREATURE.jourPlan = ETAT.jour; const r = Math.random(); CREATURE.h = ETAT.jour >= 2 && r < .45 ? pick([rnd(5.2, 8), rnd(18.5, 21.5), rnd(21.5, 23.8), rnd(1, 4), rnd(10, 16)]) : -1; }
+  if (!CREATURE.actif && CREATURE.h >= 0 && Math.abs(HORL.h - CREATURE.h) < .25 && !ETAT.dort && !UI.cineOn && !SALLE.ici) { CREATURE.h = -1; CREATURE.lancer(); }
+  const C = CREATURE.actif; if (!C) return; C.t += dt; const t = C.t, nd = CREATURE.nd, W = A.water, L = CREATURE.longueur(C.pts), V = 1.25, tNage = L / V, tFin = 17 + tNage;
+  // brouillard
+  CREATURE.brume(t < 7 ? t / 7 : t < tFin + 4 ? 1 : 1 - (t - tFin - 4) / 14);
+  if (t > 1 && !C.vuBrume) { C.vuBrume = true; note('Un brouillard épais tombe d’un coup sur le lac.', 3500); SON.ducker(.4); }
+  const p0 = C.pts[0];
+  if (t > 7 && t < 17) { C.tRem -= dt; if (C.tRem <= 0) { C.tRem = rnd(.2, .6); const x = p0[0] + rnd(-3, 3), z = p0[1] + rnd(-3, 3); A.fx.emit('ring', [x, W.heightAt(x, z) + .02, z], [0, 0, 0], 2.5, .5, [.8, .85, .88], .3, { grow: 3 }); if (Math.random() < .3) SON.plouf(.06); } }
+  if (t > 9 && !C.gronde1) { C.gronde1 = true; CREATURE.grondement(.35); }
+  // corps : la tête suit le chemin, les bosses suivent la trace de la tête
+  const emerge = t < 12 ? 0 : t < 17 ? (t - 12) / 5 : t < tFin ? 1 : t < tFin + 6 ? 1 - (t - tFin) / 6 : 0, s = clamp(t - 15, 0, tNage + 6) * V;
+  if (emerge <= 0 && t > tFin) { nd.visible = false; } else if (emerge > 0) { nd.visible = true; const [hx, hz, hy] = CREATURE.surChemin(C.pts, s); C.trace.unshift([hx, hz, hy]); if (C.trace.length > 400) C.trace.pop();
+    const e = emerge * emerge * (3 - 2 * emerge), surf = W.heightAt(hx, hz);
+    CREATURE.tete.pos = [hx, surf - 7 + e * (12.5 + Math.sin(A.time * .7) * .5), hz]; CREATURE.tete.rot = [Math.sin(A.time * .5) * .06, hy, Math.sin(A.time * .4) * .06];
+    CREATURE.bosses.forEach((b, i) => { const k = Math.min(C.trace.length - 1, Math.round((i + 1.6) * 3.6 / Math.max(.02, V * dt))), q = C.trace[k] || C.trace[C.trace.length - 1], sb = W.heightAt(q[0], q[1]), ond = Math.sin(A.time * 1.1 - i * .9);
+      b.pos = [q[0], sb - 3.6 + e * (3.2 + ond * .8) * (1 - i * .06), q[1]]; b.rot = [ond * .08, q[2], 0];
+      if (e > .3 && Math.random() < dt * .7) A.fx.emit('ring', [q[0], sb + .02, q[1]], [0, 0, 0], 3, .5, [.7, .76, .8], .12, { grow: 2.2 }); });
+    if (e > .5 && Math.random() < dt * 1.2) A.fx.emit('spray', [hx + rnd(-1, 1), surf + .2, hz + rnd(-1, 1)], [rnd(-.8, .8), rnd(.6, 1.4), rnd(-.8, .8)], rnd(.5, .9), rnd(.1, .22), [.8, .85, .9], .35);
+    if (!C.vu && t > 13) { C.vu = true; const dP = Math.hypot(hx - PL.x, hz - PL.z); setTimeout(() => note(pick(['Là-bas, dans le brouillard… quelque chose d’énorme fend l’eau.', 'Une masse sombre crève la surface. Puis une autre. Puis une tête, sur un long cou.', 'Le lac respire. Quelque chose de gigantesque nage dans la brume.']), 5000), 300); SON.plouf(.4); CREATURE.reactions(dP); } }
+  if (t > tFin + 2 && !C.gronde) { C.gronde = true; CREATURE.grondement(1); const [x, z] = CREATURE.surChemin(C.pts, s); for (let i = 0; i < 4; i++) setTimeout(() => A.fx.emit('ring', [x, .02, z], [0, 0, 0], 4, 2, [.85, .9, .92], .5, { grow: 4 }), i * 400); note('Elle replonge. Un grondement sourd monte des profondeurs… puis plus rien.', 4500); }
+  if (t > tFin + 18) { CREATURE.actif = null; nd.visible = false; CREATURE.tMeteo = 0; CREATURE.brume(0); SON.ducker(1); } };
+// ceux qui la voient réagissent (Tod, Camilla, le visiteur du jour)
+CREATURE.reactions = () => { const n = ETAT.drapeaux.creature || 1, parle = (v, t) => { if (v && v.ch && v.ch.visible && !v.cache && Math.hypot(v.ch.pos[0] - PL.x, v.ch.pos[2] - PL.z) < 40) { VIS.dire(v, t); return true; } return false; };
+  setTimeout(() => { if (CAMILLA.v && parle(CAMILLA.v, n > 1 ? 'Encore elle… Mehdy, viens près de moi. Je ne rigole pas, cette fois. Ce n’est pas une histoire.' : 'Mehdy… Mehdy, tu vois ce que je vois ? Ce n’est PAS la Dame blanche. Ça, je ne l’ai pas inventé.')) return;
+    if (GARDE.v && parle(GARDE.v, n > 1 ? 'Elle est revenue. Je le note au registre. Personne ne me croit au bourg.' : 'Vous… vous avez vu ça ? Ne dites rien à la radio. Ils vont me prendre pour un fou.')) return;
+    const C = VIS.courant; if (C && !C.part) { const w = C.pnj.find(v => v.ch && v.ch.visible && !v.parti); if (w) parle(w, pick(['Qu’est-ce que… c’était QUOI, ça ?!', 'Non. Non, non, non. J’ai rien vu. Vous avez rien vu.', 'Le lac… le lac a bougé !'])); } }, 2500); };
+{ const n0 = nouvellePartie; nouvellePartie = function () { CREATURE.actif = null; CREATURE.jourPlan = 0; if (CREATURE.nd) CREATURE.nd.visible = false; return n0.apply(this, arguments); }; }
+
+// ==== CAMP : MUSIQUE ADAPTATIVE (v0.11) =======================================================
+// Musique synthétique très douce, très basse (bus MUS.out ≈ 0,03 dans SON.g) : nappes d'accords lents + quelques notes cristallines avec écho.
+// L'humeur suit le joueur et l'heure : aube/jour (pentatonique majeure, claire), crépuscule (plus lente), nuit (mineure, grave, rare), veillée au feu (chaude),
+// faiblesse (santé/faim/soif basses : clairsemée), danger (visiteur dangereux : bourdon sourd, sans mélodie), créature du lac : silence.
+// Atténuée pendant les dialogues et quand un PNJ parle ; coupée en pause, au menu et pendant le sommeil. OPT.musique (menu titre + pause).
+const MUS = { ok: false, out: null, wet: null, tAcc: 0, tNote: 0, i: 0, humeur: 'jour', vol: 0 };
+MUS.HUMEURS = {
+  //            accords (demi-tons au-dessus de la base), base (Hz), gamme de la mélodie, filtre, intervalle mélodie [min,max] s, durée d'accord s, volume
+  aube:     { acc: [[0, 4, 7, 11], [9, 12, 16, 19], [5, 9, 12, 16], [7, 11, 14, 17]], base: 130.8, gamme: [0, 2, 4, 7, 9, 12, 14, 16], filtre: 1100, mel: [3, 6], duree: 11, v: .9 },
+  jour:     { acc: [[0, 4, 7, 11], [5, 9, 12, 16], [9, 12, 16, 19], [7, 11, 14, 19]], base: 130.8, gamme: [0, 2, 4, 7, 9, 12, 14, 16, 19], filtre: 1300, mel: [2.5, 5], duree: 9, v: 1 },
+  soir:     { acc: [[0, 4, 7, 11], [9, 12, 16, 19], [2, 5, 9, 12], [7, 11, 14, 17]], base: 116.5, gamme: [0, 2, 4, 7, 9, 12, 14], filtre: 900, mel: [4, 8], duree: 12, v: .85 },
+  nuit:     { acc: [[0, 3, 7, 10], [8, 12, 15, 19], [5, 8, 12, 15], [3, 7, 10, 14]], base: 110, gamme: [0, 3, 5, 7, 10, 12, 15], filtre: 650, mel: [6, 12], duree: 14, v: .75 },
+  veillee:  { acc: [[0, 4, 7, 9], [5, 9, 12, 14], [7, 11, 14, 16], [0, 4, 7, 11]], base: 98, gamme: [0, 2, 4, 7, 9, 12], filtre: 800, mel: [3, 6], duree: 10, v: .9 },
+  faible:   { acc: [[0, 3, 7], [5, 8, 12], [3, 7, 10]], base: 103.8, gamme: [0, 3, 7, 12], filtre: 600, mel: [9, 16], duree: 15, v: .7 },
+  danger:   { acc: [[0, 1, 7], [0, 6, 7]], base: 73.4, gamme: [], filtre: 380, mel: [99, 99], duree: 13, v: .8 },
+  silence:  { acc: [], base: 0, gamme: [], filtre: 300, mel: [99, 99], duree: 6, v: 0 }
+};
+MUS.init = () => { if (MUS.ok || !SON.ok) return MUS.ok; const ac = SON.ac; MUS.out = ac.createGain(); MUS.out.gain.value = 0; MUS.out.connect(SON.g);
+  // écho doux pour les notes : délai + retour + filtre
+  const d = ac.createDelay(2), fb = ac.createGain(), lp = ac.createBiquadFilter(); d.delayTime.value = .48; fb.gain.value = .32; lp.type = 'lowpass'; lp.frequency.value = 1800; d.connect(lp); lp.connect(fb); fb.connect(d); MUS.wet = ac.createGain(); MUS.wet.gain.value = .45; lp.connect(MUS.wet); MUS.wet.connect(MUS.out); MUS.delai = d; MUS.ok = true; return true; };
+MUS.f = (H, demi, oct = 0) => H.base * Math.pow(2, demi / 12 + oct);
+// nappe : chaque note de l'accord = sinus + triangle légèrement désaccordés, filtre passe-bas, attaque et relâche lentes
+MUS.accord = H => { const ac = SON.ac, t = ac.currentTime, A = H.acc[MUS.i++ % H.acc.length], dur = H.duree, lp = ac.createBiquadFilter(), g = ac.createGain(); lp.type = 'lowpass'; lp.frequency.value = H.filtre; lp.Q.value = .4;
+  g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(.16 / A.length, t + dur * .35); g.gain.setValueAtTime(.16 / A.length, t + dur * .7); g.gain.linearRampToValueAtTime(.0001, t + dur * 1.25); lp.connect(g); g.connect(MUS.out);
+  for (const n of A) for (const [type, det, w] of [['sine', 0, 1], ['triangle', 4 + Math.random() * 3, .35]]) { const o = ac.createOscillator(), og = ac.createGain(); o.type = type; o.frequency.value = MUS.f(H, n); o.detune.value = det; og.gain.value = w; o.connect(og); og.connect(lp); o.start(t); o.stop(t + dur * 1.3); }
+  if (H === MUS.HUMEURS.danger) { const o = ac.createOscillator(), og = ac.createGain(); o.type = 'sine'; o.frequency.value = H.base / 2; og.gain.value = .6; o.connect(og); og.connect(lp); o.start(t); o.stop(t + dur * 1.3); } };
+// note de mélodie : sinus cristallin, attaque courte, longue décroissance, un peu d'écho
+MUS.note = (H, fort = 1) => { if (!H.gamme.length) return; const ac = SON.ac, t = ac.currentTime, n = pick(H.gamme), oct = Math.random() < .3 ? 2 : 1, o = ac.createOscillator(), o2 = ac.createOscillator(), g = ac.createGain();
+  o.type = 'sine'; o.frequency.value = MUS.f(H, n, oct); o2.type = 'sine'; o2.frequency.value = MUS.f(H, n, oct + 1); const g2 = ac.createGain(); g2.gain.value = .12; o2.connect(g2); g2.connect(g); o.connect(g);
+  g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(.09 * fort, t + .03); g.gain.exponentialRampToValueAtTime(.0001, t + 3.2); g.connect(MUS.out); g.connect(MUS.delai); o.start(t); o2.start(t); o.stop(t + 3.3); o2.stop(t + 3.3);
+  if (Math.random() < .25) setTimeout(() => { if (MUS.humeur !== 'danger' && MUS.humeur !== 'silence') MUS.noteSeule(H, pick(H.gamme), oct, .6 * fort); }, rnd(250, 600)); };
+MUS.noteSeule = (H, n, oct, fort) => { const ac = SON.ac, t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain(); o.type = 'sine'; o.frequency.value = MUS.f(H, n, oct); g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(.08 * fort, t + .03); g.gain.exponentialRampToValueAtTime(.0001, t + 2.6); o.connect(g); g.connect(MUS.out); g.connect(MUS.delai); o.start(t); o.stop(t + 2.7); };
+// humeur courante d'après le joueur, l'heure et ce qui se passe
+MUS.choisir = () => { const h = HORL.h, C = VIS.courant;
+  if (CREATURE && CREATURE.actif) return 'silence';
+  if (C && !C.part && C.type.danger >= 2 && C.pnj.some(v => v.ch && v.ch.visible && Math.hypot(v.ch.pos[0] - PL.x, v.ch.pos[2] - PL.z) < 35)) return 'danger';
+  if (BES.sante < 30 || BES.faim < 15 || BES.soif < 15) return 'faible';
+  const nuit = h < 5.5 || h >= 21.5, auFeu = ETAT.feu > 0 && Math.hypot(PL.x - LIEUX.feu[0], PL.z - LIEUX.feu[1]) < 6;
+  if (auFeu && (h >= 19 || h < 2)) return 'veillee';
+  if (nuit) return 'nuit'; if (h < 8.5) return 'aube'; if (h >= 18.5) return 'soir'; return 'jour'; };
+MUS.maj = dt => { if (!SON.ok) return; if (!MUS.ok && !MUS.init()) return; const ac = SON.ac, off = !OPT.musique || !OPT.son || ETAT.pause || UI.menuOuvert || ETAT.dort || ETAT.mort || !ETAT.enJeu || UI.cineOn || (typeof SALLE !== 'undefined' && SALLE.ici && false);
+  const nouv = MUS.choisir(); if (nouv !== MUS.humeur) { MUS.humeur = nouv; MUS.tAcc = Math.min(MUS.tAcc, 1.5); MUS.tNote = rnd(2, 4); }
+  const H = MUS.HUMEURS[MUS.humeur], parle = UI.dlgOuvert || (VOIX.parle && VOIX.parle()), cible = off ? 0 : .032 * H.v * (parle ? .45 : 1) * (SALLE.ici ? .6 : 1);
+  if (Math.abs(cible - MUS.vol) > .001) { MUS.vol = cible; MUS.out.gain.setTargetAtTime(cible, ac.currentTime, off ? .8 : 2.5); }
+  if (off || !H.acc.length) return;
+  MUS.tAcc -= dt; if (MUS.tAcc <= 0) { MUS.tAcc = H.duree * rnd(.85, 1); MUS.accord(H); }
+  MUS.tNote -= dt; if (MUS.tNote <= 0) { MUS.tNote = rnd(H.mel[0], H.mel[1]); if (!parle) MUS.note(H, MUS.humeur === 'nuit' ? .7 : 1); } };
+if (OPT.musique === undefined) OPT.musique = true;
+
 // ==== CAMP : CINÉMATIQUES (randonnée d'ouverture, réveil) ======================================
 const CINE = { plans: [], t: 0, i: 0, on: false, marcheur: null, apres: null, cam: null };
 CINE.passer = () => { if (!CINE.on) return; CINE.finir(); };
@@ -9490,7 +9600,7 @@ let perfT = 0;
 function majPerf(dt) { if (!OPT.perf) return; perfT += dt; if (perfT < .5) return; perfT = 0; const s = A.stats; $('perf').textContent = `${s.fps} ips · ${(s.tris / 1000) | 0} k tri · ${s.draws} dessins · ${s.quality} · ×${(s.scale || 1).toFixed(2)} · ${IN.dernier}${IN.gp ? ' · ' + IN.gp.id.slice(0, 18) : ''}`; }
 // ==== CAMP : BOUCLE PRINCIPALE ===================================================================
 let objT = 0, sauveT = 0;
-function boucle(dt) { const now = performance.now(); manette(); gardeAudio(now, ETAT.pause || UI.menuOuvert);
+function boucle(dt) { const now = performance.now(); manette(); gardeAudio(now, ETAT.pause || UI.menuOuvert); try { MUS.maj(dt); } catch (e) {}
   A._cycle = { h0: HORL.h, rate: 0, t0: 0 };                      // l'ambiance du moteur suit l'horloge du jeu
   if (CINE.on) { CINE.maj(dt); majUI(); consommerEntrees(); return; }
   if (!ETAT.enJeu) { consommerEntrees(); return; }
@@ -9498,7 +9608,7 @@ function boucle(dt) { const now = performance.now(); manette(); gardeAudio(now, 
   const actif = !ETAT.pause && !ETAT.dort && !UI.ouvert() && !ETAT.mort;
   if (ETAT.dort) majSommeil(dt);
   else if (actif) { if (REVEIL.on) majReveil(dt); else if (!UI.cineOn) majJoueur(dt); if (!UI.dlgOuvert) { tick(dt * HORL.VITESSE / 3600); majAction(dt); } alertesBesoins(); }
-  if (!ETAT.pause && !ETAT.mort) { VIS.maj(dt); GARDE.maj(dt); PECHE.maj(dt); SALLE.lumiere(); CAMILLA.maj(dt); majFaune(dt, PL); majFeu(dt); if (!ETAT.dort) majMains(dt, PL); if (VIS.dlg) VIS.majNom(); }
+  if (!ETAT.pause && !ETAT.mort) { VIS.maj(dt); GARDE.maj(dt); PECHE.maj(dt); SALLE.lumiere(); CAMILLA.maj(dt); CREATURE.maj(dt); majFaune(dt, PL); majFeu(dt); if (!ETAT.dort) majMains(dt, PL); if (VIS.dlg) VIS.majNom(); }
   majJauges(); majBoussole(); majInvite(); MARQ.maj(); majPerf(dt);
   objT += dt; if (objT > 2) { objT = 0; if (ETAT.drapeaux.alerte) {} } sauveT += dt; if (sauveT > 60) { sauveT = 0; sauver(); }
   consommerEntrees(); }
@@ -9516,7 +9626,7 @@ function initMenu() { montrerMenu();
   $('oQualite').addEventListener('click', () => { const Q = ['auto', 'basse', 'moyenne', 'haute', 'ultra']; OPT.qualite = Q[(Q.indexOf(OPT.qualite) + 1) % Q.length]; $('oQualite').textContent = 'Qualité : ' + OPT.qualite; if (OPT.qualite === 'auto') A.autoQuality = true; else { A.autoQuality = false; A.setQuality(OPT.qualite); } sauverOptions(); }); $('oQualite').textContent = 'Qualité : ' + OPT.qualite;
   $('oTexte').addEventListener('click', () => { OPT.texte = OPT.texte === 'grand' ? 'normal' : 'grand'; $('oTexte').textContent = 'Texte : ' + OPT.texte; appliquerTexte(); sauverOptions(); }); $('oTexte').textContent = 'Texte : ' + OPT.texte;
   $('finRejouer').addEventListener('click', () => { location.reload(); }); $('finMenu').addEventListener('click', () => { location.reload(); });
-  $('cinePasser').addEventListener('click', () => CINE.passer()); $('perf').hidden = !OPT.perf; tog('oMarq', 'marqueurs'); }
+  $('cinePasser').addEventListener('click', () => CINE.passer()); $('perf').hidden = !OPT.perf; tog('oMarq', 'marqueurs'); tog('oMusique', 'musique'); }
 function chargement(p, t) { $('chargeBarre').style.width = Math.round(p * 100) + '%'; if (t) $('chargeTexte').textContent = t; }
 async function lancer() { appliquerTexte(); addEventListener('resize', appliquerTexte); chargement(.05, 'Préparation du lac…'); await new Promise(r => setTimeout(r, 30));
   try { creerMonde(); } catch (e) { $('chargeTexte').textContent = 'Erreur 3D : ' + (e && e.message || e); console.error(e); return; }
@@ -9530,7 +9640,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 
 </script>
 <!--
-NOTE-INTERNE (Claude) · HDF : CAMPING v0.9 · F.S.M Game House · 3 nov. 2026
+NOTE-INTERNE (Claude) · HDF : CAMPING v0.11 · F.S.M Game House · 3 nov. 2026
 À lire avant de modifier ce fichier. Ne pas relire le fichier en entier : chercher les ancres « ==== CAMP : » (grep), puis ne lire que la section utile.
 
 STRUCTURE DU FICHIER
@@ -9608,6 +9718,11 @@ v0.9 — CAMILLA ET L'UNIVERS DE NODE OPENING (sections « ==== CAMP : CAMILLA �
   Source du lore : Node_Opening_3.5 (Camilla : 23 ans, rousse, veste prune, chasseuse à l'arc, chalet tout à l'ouest, baignoire, histoires de la Dame blanche du bois, fait peur à Node ; Mehdy Badaoui 27 ans « avec un Y », ex-complice d'André le Terrible (guet, « Les keufs ! »), rangé : fournil de Jules, maison bleue achetée à M. Boup à côté de Germaine, compagnon de Camilla, a offert sa casquette bleue à Node, meilleur ami de Node ; Lucien chef de la police (moustache, Sophie conduit trop vite, Karim, Bernard) ; Dr Lina ; Roméo et Marc chasseurs de sanglier ; Gaspard marchand receleur ; base militaire de la commandante Shirley, Louana, blindé TAN 01 ; camp de Node et Tod au pommier (30 pommes, 6 coffres, tenue de garde forestier offerte à Node)). Lexique moderne (la v3.5 d'Opening est habillée en médiéval : ne pas reprendre charrette/pierre parlante).
   CAMILLA.meh() = prénom « Med » ou « Mehdy » → arrivée (J1 ≥ 14,8 h ou J≥2 9,5-18,5 h), retrouvailles (r1…r6) → CAMILLA.installer() → tente prune LIEUX.tenteC [-7,8 ; 116,4] (PDG.lieux.tenteC), PNJ permanent (v.camilla), plan journalier faitPlan, v.cache en chasse/nuit, gibier, repas, aide, histoire h1-h5, secours à l'arc (GARDE.secours enveloppé, 1/4 j), réactions CAMILLA.SALUT aux visiteurs. Sinon visiteuse camilla_visite (drapeau global camillaVue).
   CAMILLA.univers() : visiteurs opening:true (VIS.choisirType enveloppé, 1 visite sur 2), nouvelles du matin (VIS.reveil enveloppé), sujets de Tod tMeh/tCam/tPom/tBourg (insérés dans GARDE.dialogue.noeuds.debut), répliques de Tod AMB_TOD. Sauvegarde clé 'camilla'.
+
+v0.10 — CRÉATURE DU LAC (section « ==== CAMP : LA CRÉATURE DU LAC », src/89_creature.js) : CREATURE.maj (boucle, après CAMILLA.maj) tire une heure par jour (45 % des jours dès J2, CREATURE.h), CREATURE.lancer() (test) choisit un chemin en eau profonde (SOL < -5) à 35-70 m du joueur.
+  Déroulé en secondes réelles : brouillard (A.meteo('brume', k), restauré selon ETAT.meteo) → bulles → émergence (tête sur long cou + 7 bosses à crête qui suivent la trace) → nage 1,25 m/s → replonge → CREATURE.grondement() (basses 27-52 Hz + souffle filtré via SON.ac/SON.sfx) → le brouillard se lève. Réactions de Camilla, Tod ou du visiteur. Aucun marqueur ni explication. ETAT.drapeaux.creature = nombre d'apparitions.
+
+v0.11 — MUSIQUE ADAPTATIVE (section « ==== CAMP : MUSIQUE ADAPTATIVE », src/90_musique.js) : MUS.maj(dt) en tête de boucle() (try). Bus MUS.out (≈ 0,032 × humeur) → SON.g ; nappes MUS.accord (sinus + triangle, passe-bas) + notes MUS.note (écho MUS.delai). Humeurs MUS.HUMEURS : aube, jour, soir, nuit, veillee (feu allumé, < 6 m, 19-2 h), faible (santé < 30 ou faim/soif < 15), danger (visiteur danger ≥ 2 à < 35 m : bourdon), silence (créature). Atténuée en dialogue/voix (× 0,45) et dans la salle, coupée en pause/menu/sommeil/cinématique. OPT.musique (bouton #oMusique du menu titre, entrée du menu pause).
 
 À FAIRE / IDÉES v1.0 : sauvegarde du visiteur en cours ; météo visible (pluie déjà possible via A.meteo) ; deux emplacements de sauvegarde ; branchement History Sens pour les dialogues libres.
 
