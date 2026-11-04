@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HDF : CAMPING">
 <meta name="theme-color" content="#0b0f0a">
-<title>HDF : CAMPING — v0.35</title>
+<title>HDF : CAMPING — v0.36</title>
 <style>
 :root{--lin:#f3efe6;--ambre:#f2c66d;--mousse:#8fb37a;--nuit:#0b0f0a;--verre:rgba(10,14,10,.62);--rouge:#e0665a;--bleu:#7fb6d8;
   --sans:-apple-system,BlinkMacSystemFont,"Avenir Next","Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
@@ -170,7 +170,7 @@ body.cine #cine .bande{height:11vh}
 <div id="cine"><div class="bande h"></div><div class="bande b"></div></div>
 <button id="cinePasser" hidden>Passer ›</button>
 <div id="hud" hidden>
-  <div id="titreJeu">HDF : CAMPING · v0.35</div>
+  <div id="titreJeu">HDF : CAMPING · v0.36</div>
   <div id="marqueurs"></div>
   <canvas id="boussole" width="1120" height="108"></canvas>
   <div id="heureJour"><b id="hHeure">07:00</b><span id="hJour">Jour 1 · lundi</span></div>
@@ -204,14 +204,14 @@ body.cine #cine .bande{height:11vh}
 </div>
 <div id="fin" hidden><h2 id="finTitre">Fin de partie</h2><p id="finTexte"></p><div class="stats" id="finStats"></div><div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><button class="gros" id="finRejouer">Recommencer une partie</button><button class="gros discret" id="finMenu">Menu</button></div></div>
 <div id="menu" hidden>
-  <div class="version">v0.35 · FSM-3D 2.10</div>
+  <div class="version">v0.36 · FSM-3D 2.10</div>
   <h1><small>F.S.M GAME HOUSE</small>HDF : CAMPING</h1>
   <p class="accroche">Seul au bord d'un lac de montagne. Chaque jour, quelqu'un passe. Tenez le plus longtemps possible.</p>
   <div class="ligne"><input id="prenom" maxlength="16" placeholder="Votre prénom" autocomplete="off" spellcheck="false"></div>
   <div class="ligne"><button class="gros" id="bNouvelle">Nouvelle partie</button><button class="gros discret" id="bContinuer" hidden>Continuer</button></div>
   <div class="opts"><button id="oSon" class="on">Son</button><button id="oVoix" class="on">Voix des PNJ</button><button id="oMusique" class="on">Musique</button><button id="oQualite">Qualité : auto</button><button id="oTexte">Texte : grand</button><button id="oMarq" class="on">Marqueurs de collecte</button><button id="oPerf">Performances</button></div>
   <div class="aideCtrl" id="aideCtrl">Manette PS : <b>stick gauche</b> marcher · <b>stick droit</b> regarder · <b>✕</b> action / choisir · <b>○</b> s'accroupir / partir · <b>△</b> sauter · <b>□</b> sac à dos · <b>R2</b> courir · <b>L1</b> lampe · <b>OPTIONS</b> menu.<br>Tactile : stick à gauche, glisser à droite pour regarder, boutons à droite. Clavier : ZQSD / flèches, souris (clic pour viser), Espace, C, Maj, E, Tab, F, Échap.</div>
-  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.35</div>
+  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.36</div>
 </div>
 
 <script>
@@ -4992,7 +4992,7 @@ self.JOE_DATA = { animals: 'Z2xURgIAAAD8HQQAtNIBAEpTT057ImFzc2V0Ijp7InZlcnNpb24i
    ===================================================================================== */
 'use strict';
 // ==== CAMP : OUTILS ===================================================================
-const JEU = { nom: 'HDF : CAMPING', version: '0.35', cle: 'hdfc-' };
+const JEU = { nom: 'HDF : CAMPING', version: '0.36', cle: 'hdfc-' };
 const $ = id => document.getElementById(id);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, k) => a + (b - a) * k;
@@ -13544,6 +13544,98 @@ FIN.lumieres = dt => { if (!A.fx) return; FIN.tL = (FIN.tL || 0) - dt; if (FIN.t
 { const m0 = ALPHA.maj; ALPHA.maj = dt => { m0(dt); if (!FIN.ok) return; try { FIN.son(dt); FIN.nuages(dt); FIN.eauMaj(dt); FIN.lumieres(dt); } catch (e) { if (!FIN.err) { FIN.err = 1; console.warn('[finitions]', e); } } }; }
 { const c0 = VILLAGE.construire; VILLAGE.construire = () => { if (VILLAGE.ok) return; c0(); try { FIN.camp(); FIN.sousbois(); FIN.eauInit(); FIN.sk = undefined; NAT.saison(true); FIN.ok = true; } catch (e) { console.warn('[finitions]', e); } }; }
 
+// ==== CAMP : MONDE VIVANT — MÉTÉO, CIEL, OISEAUX, SAISONS, EAU, BOURG EN FÊTE, BANCS, MODE PHOTO (v0.36) =====
+// VIV.* — orages (éclairs, tonnerre), brouillard du matin sur le lac et le ruisseau, arc-en-ciel après la pluie, étoiles filantes ;
+// nuées d'étourneaux au coucher du soleil ; fleurs au printemps, bords du lac gelés et traces de pas dans la neige l'hiver ;
+// reflet de la lune sur le lac ; marché du samedi matin sur la place DELTA (chalets de Noël l'hiver, en fin de journée),
+// guirlandes de lampions l'été, bonshommes de neige ; bancs-belvédères (s'asseoir) ; mode photo (interface masquée, heure figée).
+const VIV = { t: 0, orage: false, tE: 8, arc: 0, prev: '', photo: false, pas: [], ip: 0, lastP: null };
+VIV.T = M3.translate; VIV.S = M3.scale; VIV.mul = M3.mul;
+VIV.nd = (nom, m) => { const nd = new Node(nom); nd.pickable = false; for (const p of m.build(mk)) nd.addPart(p.mesh, null, p.color, p.mat); A.add(nd); return nd; };
+// ---------------- son : tonnerre ----------------
+VIV.tonnerre = (dl, v) => { if (!SON.ok || !SON.ac) return; const ac = SON.ac, t = ac.currentTime + dl, s = ac.createBufferSource(); s.buffer = SON.bruit; const f = ac.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 160 + Math.random() * 120; const g = ac.createGain();
+  g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(v, t + .08); g.gain.linearRampToValueAtTime(v * .5, t + .6); g.gain.linearRampToValueAtTime(v * .8, t + 1); g.gain.exponentialRampToValueAtTime(.0001, t + 3.2); s.connect(f); f.connect(g); g.connect(SON.sfx); s.start(t, Math.random()); s.stop(t + 3.3); };
+// ---------------- arc-en-ciel ----------------
+VIV.arcEnCiel = () => { const c = document.createElement('canvas'); c.width = 8; c.height = 64; const g = c.getContext('2d'); g.clearRect(0, 0, 8, 64); const C = ['#b04a6a', '#c46a3a', '#c9b24a', '#5f9e55', '#4a7fb0', '#5a4f9a']; C.forEach((k, i) => { g.fillStyle = k; g.fillRect(0, 8 + i * 8, 8, 8); });
+  const a = [], R = 110, W = 9, N = 40; for (let i = 0; i < N; i++) { const a0 = PI * i / N, a1 = PI * (i + 1) / N, P = (an, r) => [Math.cos(an) * r, Math.sin(an) * r]; const q = [[...P(a0, R), 0], [...P(a1, R), 0], [...P(a1, R + W), 1], [...P(a0, R + W), 1]];
+    for (const k of [0, 1, 2, 0, 2, 3]) a.push(q[k][0], q[k][1], 0, 0, 0, 1, .5, q[k][2]); }
+  const m = A.R.makeMesh(new Float32Array(a), { uv: true, noWeld: true }); m.tex = A.R.texture(c, { repeat: false, srgb: false }); m.alphaCut = .5; const nd = new Node('arcenciel'); nd.pickable = false; nd.pos = [10, -14, -150]; nd.addPart(m, null, [.75, .75, .75], 31, { cast: false, op: .5 }); nd.visible = false; A.add(nd); VIV.nArc = nd; };
+// ---------------- étourneaux ----------------
+VIV.nuee = () => { VIV.ois = []; for (let i = 0; i < 26; i++) { const nd = new Node('etourneau'); nd.pickable = false; nd.addPart(GEO.cube(), M3.scale(.28, .05, .12), [.08, .08, .1], 4, { cast: false }); nd.addPart(GEO.cube(), M3.scale(.1, .06, .3), [.08, .08, .1], 4, { cast: false }); nd.visible = false; A.add(nd); VIV.ois.push({ nd, o: [Math.random() * 6, Math.random() * 6, Math.random() * 6] }); } };
+VIV.nueeMaj = dt => { const h = HORL.h, on = h > 18.3 && h < 20.6 && A.meteoNom !== 'pluie' && NAT.sk !== 2; VIV.tN = (VIV.tN || 0) + dt; const t = VIV.tN;
+  const cx = 30 + Math.sin(t * .05) * 60, cz = 60 + Math.cos(t * .037) * 50, cy = 32 + Math.sin(t * .11) * 6;
+  for (const b of VIV.ois) { b.nd.visible = on; if (!on) continue; const [a, c, e] = b.o, r = 6 + 4 * Math.sin(t * .4 + a); b.nd.pos = [cx + Math.sin(t * .9 + a) * r, cy + Math.sin(t * 1.3 + c) * 3, cz + Math.cos(t * .8 + e) * r * 1.4]; b.nd.rot[1] = t * .9 + a + PI / 2; b.nd.rot[2] = Math.sin(t * 18 + a) * .5; } };
+// ---------------- saisons : fleurs, glace, traces, bonshommes de neige ----------------
+VIV.saisonnier = () => { const r = BEAU.alea(5151), m = GEO.merger(), T = VIV.T, S = VIV.S, mul = VIV.mul, SPH = GEO.sphere(5, 3), CYL = GEO.cylinder(5), COUL = [[.9, .85, .3], [.95, .95, .95], [.75, .3, .55], [.55, .5, .9], [.95, .55, .25]];
+  const fleur = (x, z) => { const y = SOL(x, z); if (y < .3) return; const c = COUL[(r() * COUL.length) | 0]; for (let k = 0; k < 5; k++) { const ox = (r() - .5) * .9, oz = (r() - .5) * .9, hh = .12 + r() * .14; m.add(CYL, mul(T(x + ox, y + hh / 2, z + oz), S(.015, hh, .015)), [.3, .5, .2], 4); m.add(SPH, mul(T(x + ox, y + hh, z + oz), S(.07, .04, .07)), c, 4); } };
+  for (let i = 0; i < 110; i++) { const a = r() * TAU, R = 6 + r() * 20, x = ENCLOS.x + Math.sin(a) * R, z = ENCLOS.z + Math.cos(a) * R; if (Math.hypot(x - LIEUX.feu[0], z - LIEUX.feu[1]) < 5 || Math.hypot(x - LIEUX.tenteJ[0], z - LIEUX.tenteJ[1]) < 3 || Math.abs(x - SENTIER.x(z)) < 2) continue; fleur(x, z); }
+  for (let z = 120; z < 205; z += 2.2) { const x = SENTIER.x(z) + (r() < .5 ? -1 : 1) * (2.6 + r() * 2.5); if (!DELTA.couloir(x, z, 1)) fleur(x, z); }
+  VIV.nFleurs = VIV.nd('fleursPrintemps', m);
+  // glace au bord du lac
+  const a = [], N = 64, R0 = 83, R1 = 96; for (let i = 0; i < N; i++) { const a0 = TAU * i / N, a1 = TAU * (i + 1) / N, w = .35 + .25 * Math.sin(i * 1.7); const P = (an, rr) => [LAC.x + Math.cos(an) * rr, .045, LAC.z + Math.sin(an) * rr]; const ri = R0 + w * 4;
+    const q = [P(a0, ri), P(a1, ri), P(a1, R1), P(a0, R1)]; for (const k of [0, 2, 1, 0, 3, 2]) a.push(...q[k], 0, 1, 0, 0, 0); }
+  const mg = A.R.makeMesh(new Float32Array(a), { uv: true, noWeld: true }); const ng = new Node('glaceLac'); ng.pickable = false; ng.addPart(mg, null, [.82, .9, .96], 23, { cast: false }); ng.visible = false; A.add(ng); VIV.nGlace = ng;
+  // bonshommes de neige (camp, place du bourg, place DELTA)
+  const mb = GEO.merger(); for (const [x, z] of [[-6.5, 112], [22.5, 236.5], [66, 151.5]]) { const y = SOL(x, z) + (x > 50 ? CHANTIER.Hs - SOL(x, z) : 0), yy = Math.max(y, SOL(x, z));
+    mb.add(SPH, mul(T(x, yy + .38, z), S(.8, .75, .8)), [.95, .96, .98], 23); mb.add(SPH, mul(T(x, yy + .98, z), S(.58, .55, .58)), [.95, .96, .98], 23); mb.add(SPH, mul(T(x, yy + 1.42, z), S(.42, .42, .42)), [.95, .96, .98], 23);
+    mb.add(GEO.cylinder(6), mul(T(x, yy + 1.42, z + .27), mul(M3.rotX(PI / 2), S(.06, .22, .06))), [.9, .45, .1], 4); for (const s of [-1, 1]) { mb.add(SPH, mul(T(x + s * .08, yy + 1.5, z + .19), S(.05, .05, .05)), [.08, .08, .08], 4); mb.add(GEO.cylinder(5), mul(T(x + s * .5, yy + 1.08, z), mul(M3.rotZ(s * 1.1), S(.03, .7, .03))), PAL.ecorce, 13); }
+    mb.add(GEO.cylinder(10), mul(T(x, yy + 1.72, z), S(.42, .3, .42)), [.15, .15, .17], 4); mb.add(GEO.cube(), mul(T(x, yy + 1.2, z + .06), S(.62, .1, .56)), [.75, .15, .15], 4); }
+  VIV.nNeige = VIV.nd('bonshommes', mb); VIV.nNeige.visible = false;
+  // traces de pas (réutilisées en boucle)
+  for (let i = 0; i < 48; i++) { const nd = new Node('trace'); nd.pickable = false; nd.addPart(GEO.cube(), M3.scale(.11, .012, .26), [.7, .74, .8], 4, { cast: false }); nd.visible = false; A.add(nd); VIV.pas.push(nd); } };
+VIV.saisonMaj = () => { const sk = NAT.sk; if (VIV.nFleurs) VIV.nFleurs.visible = sk === 3 || sk === 0; if (VIV.nGlace) VIV.nGlace.visible = sk === 2; if (VIV.nNeige) VIV.nNeige.visible = sk === 2; if (sk !== 2) for (const p of VIV.pas) p.visible = false; };
+VIV.traces = () => { if (NAT.sk !== 2 || SALLE.ici || PL.assis) return; const L = VIV.lastP; if (L && Math.hypot(PL.x - L[0], PL.z - L[1]) < .7) return; VIV.lastP = [PL.x, PL.z]; if (!L) return;
+  const nd = VIV.pas[VIV.ip++ % VIV.pas.length], yaw = Math.atan2(PL.x - L[0], PL.z - L[1]), s = (VIV.ip % 2 ? 1 : -1) * .14; nd.pos = [PL.x + Math.cos(yaw) * s, SOL(PL.x, PL.z) + .03, PL.z - Math.sin(yaw) * s]; if (PL.x > 46 && PL.z > 98 && PL.z < 186) nd.pos[1] = Math.max(nd.pos[1], CHANTIER.Hs + .03); nd.rot[1] = yaw; nd.visible = true; };
+// ---------------- bourg : marché, chalets de Noël, lampions ----------------
+VIV.bourg = () => { const H = CHANTIER.Hs, m = GEO.merger(), T = VIV.T, S = VIV.S, mul = VIV.mul, CUBE = GEO.cube(), CYL = GEO.cylinder(6), BOIS = [.5, .36, .22];
+  const TOILES = [[.75, .2, .2], [.2, .45, .3], [.85, .65, .2], [.25, .35, .6]], PROD = [[.85, .3, .2], [.95, .75, .2], [.4, .6, .25], [.6, .35, .5], [.9, .55, .3]]; VIV.etals = [];
+  [140, 146.5, 153, 159].forEach((z, i) => { const x = 62.6; for (const [dx, dz] of [[-1.1, -1.2], [1.1, -1.2], [-1.1, 1.2], [1.1, 1.2]]) m.add(CYL, mul(T(x + dx, H + 1.1, z + dz), S(.07, 2.2, .07)), BOIS, 13);
+    m.add(CUBE, mul(T(x, H + .8, z), S(2.4, .08, 2.6)), BOIS, 13); m.add(CUBE, mul(T(x + .2, H + 2.25, z), mul(M3.rotZ(-.18), S(2.9, .06, 3))), TOILES[i], 4);
+    for (let k = 0; k < 8; k++) m.add(GEO.sphere(5, 3), mul(T(x + .7 - (k % 2) * .5, H + .9, z - 1 + (k >> 1) * .65), S(.38, .18, .38)), PROD[(i + k) % PROD.length], 4); VIV.etals.push([x, z]); });
+  VIV.nMarche = VIV.nd('marche', m); VIV.nMarche.visible = false;
+  // chalets de Noël (même emplacement, toits en pente enneigés)
+  const mc = GEO.merger(); [140, 146.5, 153, 159].forEach(z => { const x = 62.6; mc.add(CUBE, mul(T(x, H + 1.1, z), S(2.2, 2.2, 2.6)), [.45, .3, .2], 13); mc.add(CUBE, mul(T(x + .9, H + 1, z), S(.5, 1, 2.2)), [.98, .95, .88], 4); for (const s of [-1, 1]) mc.add(CUBE, mul(T(x, H + 2.55, z + s * .72), mul(M3.rotX(s * .55), S(2.6, .1, 1.7))), [.93, .95, .97], 23); });
+  VIV.nNoel = VIV.nd('chaletsNoel', mc); VIV.nNoel.visible = false;
+  // lampions (guirlandes au-dessus de la place)
+  const ml = GEO.merger(); VIV.lamp = []; const C2 = [[.95, .35, .2], [.95, .75, .25], [.35, .7, .9], [.9, .4, .7]]; for (const [z0, z1] of [[118, 160], [125, 155]]) { const xa = z0 === 118 ? 59 : 83, xb = z0 === 118 ? 83 : 59;
+    for (let i = 0; i <= 16; i++) { const t = i / 16, x = xa + (xb - xa) * t, z = z0 + (z1 - z0) * t, y = H + 5.2 - Math.sin(t * PI) * 1.2; ml.add(GEO.sphere(6, 4), mul(T(x, y - .25, z), S(.32, .38, .32)), C2[i % 4], 8); if (i < 16) { const x2 = xa + (xb - xa) * (i + 1) / 16, z2 = z0 + (z1 - z0) * (i + 1) / 16, y2 = H + 5.2 - Math.sin((i + 1) / 16 * PI) * 1.2; ml.add(CYL, matTube([x, y, z], [x2, y2, z2], .015), [.2, .2, .2], 7); } VIV.lamp.push([x, y - .25, z, C2[i % 4]]); } }
+  VIV.nLamp = VIV.nd('lampions', ml); VIV.nLamp.visible = false; };
+VIV.bourgMaj = () => { const h = HORL.h, sam = jourSemaine() === 'samedi', sk = NAT.sk; if (VIV.nMarche) VIV.nMarche.visible = sam && h >= 7 && h < 13.5 && sk !== 2; if (VIV.nNoel) VIV.nNoel.visible = sk === 2; if (VIV.nLamp) VIV.nLamp.visible = sk === 0 || sk === 3; };
+// ---------------- bancs-belvédères ----------------
+VIV.bancs = () => { const m = GEO.merger(), T = VIV.T, S = VIV.S, mul = VIV.mul, CUBE = GEO.cube(), BOIS = [.55, .38, .22], FER = [.18, .18, .2];
+  const L = [['bancLac', 14.5, 99.2, versLac(14.5, 99.2), 'le banc du lac'], ['bancPlace', 66.4, 131, angleVers(71 - 66.4, 135.5 - 131), 'le banc de la place'], ['bancFontaine', 24.2, 237.2, angleVers(29 - 24.2, 242.5 - 237.2), 'le banc de la fontaine']];
+  for (const [id, x, z, yaw, nom] of L) { const y = Math.max(SOL(x, z), x > 50 ? CHANTIER.Hs : -99), R = M3.rotY(yaw), P = (u, v, w) => mul(T(x, y, z), mul(R, T(u, v, w)));
+    m.add(CUBE, mul(P(0, .45, 0), S(1.8, .06, .45)), BOIS, 13); m.add(CUBE, mul(P(0, .8, -.24), mul(M3.rotX(-.15), S(1.8, .35, .05))), BOIS, 13); for (const s of [-.8, .8]) { m.add(CUBE, mul(P(s, .22, 0), S(.06, .45, .45)), FER, 7); m.add(CUBE, mul(P(s, .62, -.22), S(.06, .5, .05)), FER, 7); }
+    COLL.push({ x, z, r: .55 }); const f = [Math.sin(yaw), Math.cos(yaw)]; SIEGES.push({ id, p: [x + f[0] * .05, z + f[1] * .05], yaw, h: y - SOL(x, z) + 1.16, nom }); OBJETS.push({ id: id + 'O', x, z, r: 1.5, nom: 'Banc · s’asseoir et regarder', f: () => sAsseoir([id]) }); }
+  VIV.nd('belvederes', m); };
+// ---------------- ciel, eau, orage ----------------
+VIV.ciel = dt => { if (!A.fx) return; const h = HORL.h, nt = A.nuit ? +A.nuit() || 0 : 0, K = (DVIE.pg && DVIE.pg.knobs && DVIE.pg.knobs.particles) || 1, mt = A.meteoNom, dehors = !SALLE.ici;
+  // orage : un jour de pluie sur trois
+  VIV.orage = mt === 'pluie' && (ETAT.jour % 3 === 0); if (VIV.orage && dehors) { VIV.tE -= dt; if (VIV.tE <= 0) { VIV.tE = 7 + Math.random() * 18; const e = VIV.flash; if (e) { e.style.transition = 'none'; e.style.opacity = .55; requestAnimationFrame(() => { e.style.transition = 'opacity .5s'; e.style.opacity = 0; }); setTimeout(() => { e.style.transition = 'none'; e.style.opacity = .3; requestAnimationFrame(() => { e.style.transition = 'opacity .7s'; e.style.opacity = 0; }); }, 160); }
+      const d = .6 + Math.random() * 2.5; A.addLight && A.addLight({ p: [PL.x + (Math.random() - .5) * 80, 60, PL.z + (Math.random() - .5) * 80], c: [.8, .85, 1], i: 40, r: 140 }); VIV.tonnerre(d, .5 / d); } }
+  // arc-en-ciel quand la pluie s'arrête en journée
+  if (VIV.prev === 'pluie' && mt !== 'pluie' && h > 8 && h < 19) VIV.arc = 150; VIV.prev = mt; VIV.arc = Math.max(0, VIV.arc - dt); if (VIV.nArc) VIV.nArc.visible = VIV.arc > 0 && NAT.sk !== 2 && nt < .35;
+  VIV.tC = (VIV.tC || 0) - dt; if (VIV.tC > 0) return; VIV.tC = .2;
+  // brouillard du matin sur le lac et le ruisseau
+  if (h > 5 && h < 8.5 && dehors) { for (let i = 0; i < 3 * K; i++) { const a = Math.random() * TAU, R = Math.sqrt(Math.random()) * 88, x = LAC.x + Math.cos(a) * R, z = LAC.z + Math.sin(a) * R; if (Math.hypot(x - PL.x, z - PL.z) < 110) A.fx.emit('smoke', [x, .4, z], [.15, .05, .05], 7, 7, [.9, .92, .95], .1); }
+    if (Math.abs(PL.x - 50) < 40) { const z = clamp(PL.z + (Math.random() - .5) * 40, 92, 186); A.fx.emit('smoke', [NAT.ruX(z), SOL(NAT.ruX(z), z) + .3, z], [0, .04, .1], 6, 3, [.9, .92, .95], .1); } }
+  // étoiles filantes (nuits claires)
+  if (nt > .6 && mt !== 'pluie' && dehors && Math.random() < .03) { const a = Math.random() * TAU, x = PL.x + Math.cos(a) * 120, z = PL.z + Math.sin(a) * 120, v = [(Math.random() - .5) * 90, -18, (Math.random() - .5) * 90];
+    for (let k = 0; k < 6; k++) A.fx.emit('glow', [x - v[0] * k * .012, 115 - v[1] * k * .012, z - v[2] * k * .012], v, .7 - k * .08, 1.6 - k * .2, [.95, .97, 1], .9 - k * .12); }
+  // reflet de la lune sur le lac
+  if (nt > .5 && mt !== 'pluie' && dehors && Math.hypot(PL.x - LAC.x, PL.z - LAC.z) < 130) { const dx = LAC.x - PL.x, dz = LAC.z - PL.z - 40, dd = Math.hypot(dx, dz) || 1; for (let i = 0; i < 4 * K; i++) { const t = 20 + Math.random() * 90, x = PL.x + dx / dd * t + (Math.random() - .5) * t * .06, z = PL.z + dz / dd * t; if (Math.hypot(x - LAC.x, z - LAC.z) < 92) A.fx.emit('glow', [x, .06, z], [0, 0, 0], .5, .9, [.8, .85, 1], .35); } }
+  // lampions allumés la nuit
+  if (nt > .3 && VIV.nLamp && VIV.nLamp.visible && Math.hypot(PL.x - 71, PL.z - 138) < 60) for (let i = 0; i < 4 * K; i++) { const p = VIV.lamp[(Math.random() * VIV.lamp.length) | 0]; A.fx.emit('glow', [p[0], p[1], p[2]], [0, 0, 0], .45, 1, p[3], .5); }
+  if (nt > .3 && VIV.nNoel && VIV.nNoel.visible && Math.hypot(PL.x - 63, PL.z - 150) < 60) for (let i = 0; i < 3 * K; i++) { const z = 138 + Math.random() * 23; A.fx.emit('glow', [62.6 + (Math.random() < .5 ? -1.15 : 1.15), CHANTIER.Hs + 2.2, z], [0, 0, 0], .45, .5, [1, .8, .4], .6); } };
+// ---------------- mode photo ----------------
+VIV.basculePhoto = () => { VIV.photo = !VIV.photo; document.body.classList.toggle('photo', VIV.photo); VIV.hPhoto = HORL.h; if (VIV.btn) VIV.btn.textContent = VIV.photo ? '✕ Photo' : 'Photo'; };
+VIV.ui = () => { const st = document.createElement('style'); st.textContent = '#bPhoto{position:absolute;left:calc(var(--sal) + 96px);top:calc(var(--sat) + 34px);padding:7px 14px;border-radius:999px;background:rgba(10,14,10,.5);border:1px solid rgba(255,255,255,.25);color:#fff;font:600 14px system-ui;pointer-events:auto;z-index:6}body.photo #hud>*:not(#bPhoto){visibility:hidden!important}body.photo #bPhoto{opacity:.35}#eclair{position:fixed;inset:0;background:#eef2ff;opacity:0;pointer-events:none;z-index:4}'; document.head.appendChild(st);
+  const b = document.createElement('button'); b.id = 'bPhoto'; b.textContent = 'Photo'; b.addEventListener('click', e => { e.stopPropagation(); VIV.basculePhoto(); }); const hud = document.getElementById('hud'); (hud || document.body).appendChild(b); VIV.btn = b;
+  const e = document.createElement('div'); e.id = 'eclair'; document.body.appendChild(e); VIV.flash = e; addEventListener('keydown', ev => { if (ev.key === 'p' && ETAT.enJeu) VIV.basculePhoto(); }); };
+// ---------------- boucle et construction ----------------
+{ const m0 = ALPHA.maj; ALPHA.maj = dt => { m0(dt); if (!VIV.ok) return; try { if (VIV.photo) HORL.h = VIV.hPhoto; VIV.ciel(dt); VIV.nueeMaj(dt); VIV.traces(); VIV.tS = (VIV.tS || 0) - dt; if (VIV.tS <= 0) { VIV.tS = 1; VIV.saisonMaj(); VIV.bourgMaj(); } } catch (e) { if (!VIV.err) { VIV.err = 1; console.warn('[vivant]', e); } } }; }
+{ const c0 = VILLAGE.construire; VILLAGE.construire = () => { if (VILLAGE.ok) return; c0(); try { VIV.arcEnCiel(); VIV.nuee(); VIV.saisonnier(); VIV.bourg(); VIV.bancs(); VIV.ui(); VIV.saisonMaj(); VIV.bourgMaj(); VIV.ok = true; } catch (e) { console.warn('[vivant]', e); } }; }
+
 // ==== CAMP : CINÉMATIQUES (randonnée d'ouverture, réveil) ======================================
 const CINE = { plans: [], t: 0, i: 0, on: false, marcheur: null, apres: null, cam: null };
 CINE.passer = () => { if (!CINE.on) return; CINE.finir(); };
@@ -13642,7 +13734,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 
 </script>
 <!--
-NOTE-INTERNE (Claude) · HDF : CAMPING v0.35 · F.S.M Game House · 3 nov. 2026
+NOTE-INTERNE (Claude) · HDF : CAMPING v0.36 · F.S.M Game House · 3 nov. 2026
 À lire avant de modifier ce fichier. Ne pas relire le fichier en entier : chercher les ancres « ==== CAMP : » (grep), puis ne lire que la section utile.
 
 STRUCTURE DU FICHIER
@@ -13798,6 +13890,7 @@ v0.33 — BEAUTÉ DES LIEUX (src/9q_beaute.js, objet BEAU) : textures toile (pav
 v0.34 — NATURE ET VIE DU DÉCOR (src/9r_nature.js, objet NAT) : murets de pierre sèche (lisières BRAVO/CHARLIE), cascade rive nord (NAT.CASC) + embruns, ruisseau NAT.ruX (z 186 → lac) et 2 ponts (z 136 et 162,8), fontaine qui coule (spray), ronds de pluie, nénuphars, 5 canards (NAT.cn) ; construireBat enveloppé (NAT.bat) : boîtes aux lettres, potagers clôturés + épouvantails si la place est libre, linge, vélos, caisses/tonneaux, bancs, stores rayés ; ancrages NAT.chem (fumée), NAT.toits (14 oiseaux qui s'envolent), NAT.massifs (8 papillons) ; feuilles au vent, lucioles (été/printemps), nuages variables (ENVS.jour.cloud) ; SAISONS NAT.saison (3 jours chacune : été, automne, hiver, printemps — setBiome + V.palette, neige au lieu de pluie l'hiver). FSM PerfGuard v0.3 intégré tel quel (DVIE.pg) : renderer factice → A.renderScale, A.frame enveloppé (tick/afterRender), knobs.particles pour les effets, knobs.npc pour le nombre de PNJ ; bandeau : 5 touchers sur le titre (clé 'perf'). BEAU.mesh mis en cache (un maillage partagé = un appel de dessin).
 
 v0.35 — FINITIONS (FIN, src/9s_finition.js) : son des lieux (ruisseau, fontaine, cascade, terrasses, train, orgue du manège, accordéon de Tino, cloche de mairie horaire, chouette), pas sur pavés/terre/neige (wrap SON.pas) ; saisons complètes (recolor mat 20 via p._c0, neige sur toits BEAU 'tuile:' via m._t0) ; passages nuageux (ENVS.jour.sunI) ; eau animée (NAT.mRu, NAT.mCasc, 4 textures) ; intérieurs pêche/librairie/médecin/mairie/école/fournil (wrap construireBat) ; camp (bancs rondins, lanternes, galets jusqu'à la rive) ; sous-bois (fougères alpha, champignons, troncs, souches, rochers moussus) ; collines FIN.COLLINES (wrap relief, hors rail) ; lumières (glow fenêtres, rayons du matin, reflets lampadaires 2 h après pluie).
+v0.36 — MONDE VIVANT (VIV, src/9t_vivant.js) : orage 1 jour de pluie sur 3 (#eclair, A.addLight, VIV.tonnerre) ; arc-en-ciel mat 31 (VIV.nArc, 150 s après la pluie) ; brouillard matinal lac/ruisseau ; étoiles filantes ; reflet de lune ; étourneaux 18 h 20–20 h 35 (26 nœuds) ; fleurs (printemps/été), glace du lac, bonshommes de neige, traces de pas (48 nœuds recyclés) l'hiver ; marché du samedi 7–13 h 30 place DELTA x 62.6 (chalets de Noël l'hiver), lampions été/printemps ; 3 bancs-belvédères (SIEGES/OBJETS, sAsseoir) ; mode photo #bPhoto / touche P (body.photo, HORL.h figé). Déjà présents avant : cerfs, renard, lucioles, poissons qui sautent, chouette, ronds de pluie, feuilles au vent, fumée des cheminées.
 À FAIRE / IDÉES v1.0 : sauvegarde du visiteur en cours ; météo visible (pluie déjà possible via A.meteo) ; deux emplacements de sauvegarde ; branchement History Sens pour les dialogues libres.
 
 -->
