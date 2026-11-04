@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HDF : CAMPING">
 <meta name="theme-color" content="#0b0f0a">
-<title>HDF : CAMPING — v0.44.1</title>
+<title>HDF : CAMPING — v0.44.3</title>
 <style>
 :root{--lin:#f3efe6;--ambre:#f2c66d;--mousse:#8fb37a;--nuit:#0b0f0a;--verre:rgba(10,14,10,.62);--rouge:#e0665a;--bleu:#7fb6d8;
   --sans:-apple-system,BlinkMacSystemFont,"Avenir Next","Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
@@ -170,7 +170,7 @@ body.cine #cine .bande{height:11vh}
 <div id="cine"><div class="bande h"></div><div class="bande b"></div></div>
 <button id="cinePasser" hidden>Passer ›</button>
 <div id="hud" hidden>
-  <div id="titreJeu">HDF : CAMPING · v0.44.1</div>
+  <div id="titreJeu">HDF : CAMPING · v0.44.3</div>
   <div id="marqueurs"></div>
   <canvas id="boussole" width="1120" height="108"></canvas>
   <div id="heureJour"><b id="hHeure">07:00</b><span id="hJour">Jour 1 · lundi</span></div>
@@ -204,14 +204,14 @@ body.cine #cine .bande{height:11vh}
 </div>
 <div id="fin" hidden><h2 id="finTitre">Fin de partie</h2><p id="finTexte"></p><div class="stats" id="finStats"></div><div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><button class="gros" id="finRejouer">Recommencer une partie</button><button class="gros discret" id="finMenu">Menu</button></div></div>
 <div id="menu" hidden>
-  <div class="version">v0.44.1 · FSM-3D 2.10</div>
+  <div class="version">v0.44.3 · FSM-3D 2.10</div>
   <h1><small>F.S.M GAME HOUSE</small>HDF : CAMPING</h1>
   <p class="accroche">Seul au bord d'un lac de montagne. Chaque jour, quelqu'un passe. Tenez le plus longtemps possible.</p>
   <div class="ligne"><input id="prenom" maxlength="16" placeholder="Votre prénom" autocomplete="off" spellcheck="false"></div>
   <div class="ligne"><button class="gros" id="bNouvelle">Nouvelle partie</button><button class="gros discret" id="bContinuer" hidden>Continuer</button></div>
   <div class="opts"><button id="oSon" class="on">Son</button><button id="oVoix" class="on">Voix des PNJ</button><button id="oMusique" class="on">Musique</button><button id="oQualite">Qualité : auto</button><button id="oTexte">Texte : grand</button><button id="oMarq" class="on">Marqueurs de collecte</button><button id="oPerf">Performances</button></div>
   <div class="aideCtrl" id="aideCtrl">Manette PS : <b>stick gauche</b> marcher · <b>stick droit</b> regarder · <b>✕</b> action / choisir · <b>○</b> s'accroupir / partir · <b>△</b> sauter · <b>□</b> sac à dos · <b>R2</b> courir · <b>L1</b> lampe · <b>OPTIONS</b> menu.<br>Tactile : stick à gauche, glisser à droite pour regarder, boutons à droite. Clavier : ZQSD / flèches, souris (clic pour viser), Espace, C, Maj, E, Tab, F, Échap.</div>
-  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.44.1</div>
+  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.44.3</div>
 </div>
 
 <script>
@@ -5014,7 +5014,7 @@ self.JOE_DATA = { animals: 'Z2xURgIAAAD8HQQAtNIBAEpTT057ImFzc2V0Ijp7InZlcnNpb24i
    ===================================================================================== */
 'use strict';
 // ==== CAMP : OUTILS ===================================================================
-const JEU = { nom: 'HDF : CAMPING', version: '0.44.1', cle: 'hdfc-' };
+const JEU = { nom: 'HDF : CAMPING', version: '0.44.3', cle: 'hdfc-' };
 const $ = id => document.getElementById(id);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, k) => a + (b - a) * k;
@@ -13666,7 +13666,7 @@ VIV.ui = () => { const st = document.createElement('style'); st.textContent = '#
 const PBR = { k: 1, lac: [LAC.x, LAC.z, 93.5] };
 globalThis.FSM_EXPO = 1;
 PBR.dedans = () => { if (SALLE.ici) return 2; for (const b of BATS) { if (!b.lu || !b.lw || b.alpha) continue; if (Math.abs(PL.x - b.x) > 30 || Math.abs(PL.z - b.z) > 30) continue; const [u, w] = batLocal(b, PL.x, PL.z); if (Math.abs(u) < b.lu / 2 - .1 && Math.abs(w) < b.lw / 2 - .1) return 1; } return 0; };
-PBR.maj = dt => { PBR.tD = (PBR.tD || 0) - dt; if (PBR.tD <= 0) { PBR.tD = .25; PBR.in = PBR.dedans(); } const nt = A.nuit ? +A.nuit() || 0 : 0, cible = PBR.in === 2 ? .72 : PBR.in ? (nt > .4 ? 1.2 : 1.4) : 1;// v0.39.1 : salle secrète déjà très éclairée → on baisse
+PBR.maj = dt => { PBR.tD = (PBR.tD || 0) - dt; if (PBR.tD <= 0) { PBR.tD = .25; PBR.in = PBR.dedans(); } const nt = A.nuit ? +A.nuit() || 0 : 0, cible = (typeof INS2 !== 'undefined' && INS2.tunnel) ? .9 : PBR.in === 2 ? .72 : PBR.in ? (nt > .4 ? 1.2 : 1.4) : 1;// v0.39.1 : salle secrète déjà très éclairée → on baisse
   const v = cible > PBR.k ? 1.1 : 2.2; PBR.k += (cible - PBR.k) * Math.min(1, dt * v); globalThis.FSM_EXPO = PBR.k; };
 PBR.IV = new Float32Array(9); PBR.VL = new Float32Array(32); PBR.VC = new Float32Array(32);
 PBR.comp = (L, gl, o) => { const p = o.proj, v = o.view, e = o.eye, env = o.env || {}; if (!L.uProjP) return;
@@ -13708,10 +13708,11 @@ INS.voile = (on, s = 1.2) => new Promise(ok => { let v = document.getElementById
   v.style.transition = 'opacity ' + s + 's'; requestAnimationFrame(() => { v.style.opacity = on ? 1 : 0; v.style.pointerEvents = on ? 'auto' : 'none'; }); setTimeout(ok, s * 1000 + 60); });
 INS.lancer = async (reprise) => { if (INS.fr) return; INS.actif = true; INS.sauver(); try { sauver(); } catch (e) {} UI.fermer && UI.fermer();
   await INS.voile(true, reprise ? .01 : 1.4); try { A.stop(); } catch (e) {} try { if (SON.ac) SON.ac.suspend(); } catch (e) {} try { VOIX.stop(); } catch (e) {}
-  let html; try { html = await INS.html(); } catch (e) { console.warn('[inside]', e); note('Le passage est bloqué.'); INS.actif = false; INS.sauver(); try { A.start(); SON.ac && SON.ac.resume(); } catch (e2) {} INS.voile(false); return; }
+  try { INS.avantIframe && INS.avantIframe(); } catch (e) {} const vL = document.getElementById('insVoile'); if (vL && !vL.textContent) vL.textContent = '…';
+  let html; try { html = await INS.html(); } catch (e) { console.warn('[inside]', e); try { const cv = A.canvas || document.getElementById('c'); cv.style.visibility = ''; if (INS2.rs) A.renderScale = INS2.rs; INS2.libre = false; } catch (e3) {} note('Le passage est bloqué.'); INS.actif = false; INS.sauver(); try { A.start(); SON.ac && SON.ac.resume(); } catch (e2) {} INS.voile(false); return; }
   const f = document.createElement('iframe'); f.id = 'insideFrame'; f.allow = 'autoplay; gamepad; fullscreen'; f.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;border:0;background:#000;z-index:9999';
   const LS = {}; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (/^blocc\./.test(k)) LS[k] = localStorage.getItem(k); } } catch (e) {} html = html.replace('<head>', '<head>\n<script>self.HDF_LS = ' + JSON.stringify(LS).replace(/</g, '\\u003c') + '; self.HDF_CAMP_VER = ' + JSON.stringify('v' + JEU.version) + ';<\/script>');
-  INS.url = URL.createObjectURL(new Blob([html], { type: 'text/html' })); f.src = INS.url; document.body.appendChild(f); INS.fr = f; f.addEventListener('load', () => { try { f.contentWindow.focus(); } catch (e) {} }); };
+  INS.url = URL.createObjectURL(new Blob([html], { type: 'text/html' })); f.src = INS.url; document.body.appendChild(f); INS.fr = f; INS.vu = false; f.addEventListener('load', () => { INS.vu = true; }); setTimeout(() => { if (INS.fr === f && !INS.vu && typeof INS2 !== 'undefined' && INS2.erreur) INS2.erreur('chargement', 'INSIDE ne répond pas'); }, 30000); f.addEventListener('load', () => { try { f.contentWindow.focus(); } catch (e) {} }); };
 INS.retour = async () => { if (!INS.fr) return; INS.actif = false; INS.coups = 0; INS.sauver(); await INS.voile(true, .01); INS.fr.remove(); INS.fr = null; try { URL.revokeObjectURL(INS.url); } catch (e) {}
   const v = document.getElementById('insVoile'); v.textContent = ''; try { if (SON.ac) SON.ac.resume(); } catch (e) {} try { A.start(); } catch (e) {}
   ETAT.pause = false; setTimeout(() => { v.style.transition = 'none'; v.textContent = 'Mauvais rêve ?'; try { VOIX.dire('Mauvais rêve ?', { rate: .92, pitch: 1 }); } catch (e) {} }, 400);
@@ -13861,35 +13862,40 @@ INS2.couloir = () => { const D = SALLE.P2; if (!D) return; const m = GEO.merger(
   const a = [], q = [[-.5, -.16, 0, 1], [.5, -.16, 1, 1], [.5, .16, 1, 0], [-.5, .16, 0, 0]]; for (const i of [0, 1, 2, 0, 2, 3]) a.push(0, q[i][1], q[i][0], 1, 0, 0, 1 - q[i][2], q[i][3]);
   const mh = A.R.makeMesh(new Float32Array(a), { uv: true, noWeld: true }); mh.tex = A.R.texture(c, { repeat: false, srgb: false }); INS2.nC.addPart(mh, M3.translate(x1 + .07, sol + 2.25, z), [1, 1, 1], 31, { cast: false });
   INS2.C = { x0, x1, z, sol }; };
-INS2.lumCouloir = () => { if (!INS2.nC || !INS2.nC.visible) return; const C = INS2.C, f = Math.random() < .12 ? .1 : 1; for (let i = 0; i < 2; i++) A.addLight({ p: [C.x0 - 2 - i * 5, C.sol + 2.1, C.z], c: [.85, .9, 1], i: 9 * f, r: 6 }); };
+INS2.lumCouloir = () => { if (!INS2.nC || !INS2.nC.visible || !INS2.C) return; const C = INS2.C, f = Math.random() < .12 ? .25 : 1; if (INS2.tunnel) { { const h = PL.hauteur || 1.68, cp = Math.cos(PL.pitch), e = [PL.x, PL.y + h, PL.z]; PL.eye = e; const F = A.camera.fixed || (A.camera.fixed = {}); F.eye = e.slice(); F.look = [e[0] + Math.sin(PL.yaw) * cp * 10, e[1] + Math.sin(PL.pitch) * 10, e[2] + Math.cos(PL.yaw) * cp * 10]; } A.addLight({ p: [PL.x - .6, C.sol + 2.2, C.z], c: [.9, .93, 1], i: 7 * f, r: 6 }); A.addLight({ p: [C.x1 + 1.2, C.sol + 2.3, C.z], c: [1, .95, .85], i: 9, r: 6 }); A.addLight({ p: [(C.x0 + C.x1) / 2, C.sol + 2.2, C.z], c: [.85, .9, 1], i: 6 * f, r: 6 }); return; } for (let i = 0; i < 2; i++) A.addLight({ p: [C.x0 - 2 - i * 5, C.sol + 2.1, C.z], c: [.85, .9, 1], i: 9 * f, r: 6 }); };
 // la cinématique
-INS2.cine = async () => { if (INS2.enCine) return; INS2.enCine = true; const C = INS2.C; UI.fermer && UI.fermer(); UI.cineOn = true; document.body.classList.add('cine');  $('hud').hidden = true; INS.nM.visible = true; INS2.nC.visible = true; INS2.tunnel = true;
-  PL.assis = null; PL.accroupi = false; PL.z = C.z; PL.yaw = angleVers(-1, 0); PL.pitch = 0; await INS.voile(true, .5); PL.x = C.x0 - .5; PL.y = SALLE.sol; INS.voile(false, .9); const T0 = performance.now(), dur = 13.4;
+INS2.cine = async () => { if (INS2.enCine) return; if (!INS2.C) { try { INS2.couloir(); } catch (e) { INS2.errC = e; } } if (!INS2.C) throw new Error('couloir absent' + (INS2.errC ? ' : ' + INS2.errC.message : '')); INS2.enCine = true; const C = INS2.C; UI.fermer && UI.fermer(); UI.cineOn = true; document.body.classList.add('cine');  $('hud').hidden = true; INS.nM.visible = true; INS2.nC.visible = true; INS2.tunnel = true;
+  PL.assis = null; PL.accroupi = false; PL.z = C.z; PL.yaw = angleVers(-1, 0); PL.pitch = 0; await INS.voile(true, .5); PL.x = C.x0 - .5; PL.y = SALLE.sol; try { INS.html().catch(() => {}); } catch (e) {} { const v0 = document.getElementById('insVoile'); if (v0) { v0.style.transition = 'opacity .9s'; v0.style.opacity = 0; v0.style.pointerEvents = 'none'; } } const T0 = performance.now(), dur = 13.4;
   try { SON.ton(58, 12, 'sawtooth', .015); SON.ton(116, 12, 'sine', .01); } catch (e) {}
   // le scientifique : blouse blanche, sort par la porte du fond (v0.44)
   let sci = null; try { const J = joePack(); if (J) { const L = lookJoe(J.pack.catalog, 'doctor', 'man', 311); L.parts = L.parts.filter(p => !/Hat|Cap|Beanie|Satchel|Scarf|Backpack/.test(p)); L.colors.top = '#eef0ee'; L.colors.bottom = '#55585c'; sci = new Joe.Character(J.pack, L); sci.visible = false; J.pnj.push(sci); } } catch (e) { sci = null; }
   const jouer = (c, n) => { try { c.play(n); } catch (e) {} }, dire = (t, p) => { try { VOIX.dire(t, Object.assign({ rate: .92, pitch: .85, voix: VOIX.choisir('h') }, p || {})); } catch (e) {} }; let t0 = performance.now();
-  await new Promise(ok => { const pas = () => { const now = performance.now(), t = (now - T0) / 1000, dt = Math.min(.1, (now - t0) / 1000); t0 = now; $('hud').hidden = true; if (typeof ZN !== 'undefined' && ZN.el) ZN.el.style.display = 'none'; if (t > dur && INS2.v3 && INS2.v7) return ok(); const k = Math.min(1, t / 6.2);
-      const xa = C.x0 - .5 - k * k * (3 - 2 * k) * (C.x0 - C.x1 - 4.2); PL.x = xa; PL.y = SALLE.sol; PL.yaw = angleVers(-1, 0) + Math.sin(t * .9) * .03; if (t < 10.8) PL.pitch = Math.sin(t * 1.7) * .02;
+  await new Promise(ok => { let fini = false; const fin = () => { if (!fini) { fini = true; ok(); } }; setTimeout(fin, (dur + 5) * 1000); const pas = () => { if (fini) return; try { pas2(); } catch (e) { console.warn('[cineINS]', e); fin(); return; } requestAnimationFrame(pas); }; const pas2 = () => { const now = performance.now(), t = (now - T0) / 1000, dt = Math.min(.1, (now - t0) / 1000); t0 = now; $('hud').hidden = true; if (typeof ZN !== 'undefined' && ZN.el) ZN.el.style.display = 'none'; if (t > dur && INS2.v3 && INS2.v7) return fin(); const k = Math.min(1, t / 6.2);
+      const xa = C.x0 - .5 - k * k * (3 - 2 * k) * (C.x0 - C.x1 - 4.2); PL.x = xa; PL.y = SALLE.sol; PL.yaw = angleVers(-1, 0) + Math.sin(t * .9) * .03; if (t < 10.65) PL.pitch = Math.sin(t * 1.7) * .02;
       if (t > 1.4 && !INS2.v1) { INS2.v1 = 1; try { SON.pas('cailloux', .4); } catch (e) {} } if (t > 4.2 && !INS2.v2) { INS2.v2 = 1; dire('Sujet quatre quatre un sept. Vous êtes en retard.', { rate: .85, pitch: .7, voix: VOIX.choisir('f') }); }
       if (sci) { if (t > 6.6 && !sci.visible) { sci.visible = true; sci.pos = [C.x1 + .4, C.sol, C.z + .2]; sci.yaw = angleVers(1, 0); jouer(sci, 'Walk'); try { SON.tic(.4, 120, .2); } catch (e) {} }
-        if (sci.visible) { const cible = xa - 1.05; if (sci.pos[0] < cible - .05 && t < 10.4) { sci.pos = [Math.min(cible, sci.pos[0] + dt * 1.3), C.sol, C.z + .2 * (1 - (t - 6.6) / 3)]; } else if (!INS2.v5) { INS2.v5 = 1; jouer(sci, 'Talk'); } sci.yaw = angleVers(1, 0); sci.update(dt); } }
+        if (sci.visible) { const cible = xa - 1.45; if (sci.pos[0] < cible - .05 && t < 10.1) { sci.pos = [Math.min(cible, sci.pos[0] + dt * 1.3), C.sol, C.z + .2 * (1 - (t - 6.6) / 3)]; } else if (!INS2.v5) { INS2.v5 = 1; jouer(sci, 'Talk'); } sci.yaw = angleVers(1, 0); try { sci.update(dt); } catch (e) { sci.visible = false; sci = null; } } }
       if (t > 7.3 && !INS2.v4) { INS2.v4 = 1; sousTitre('Le scientifique : Tiens. Le campeur. Vous êtes en avance.'); dire('Tiens. Le campeur. Vous êtes en avance.'); }
       if (t > 9.4 && !INS2.v6) { INS2.v6 = 1; sousTitre('Le scientifique : Ne bougez pas. Ça ne fera presque pas mal.'); dire('Ne bougez pas. Ça ne fera presque pas mal.'); }
-      if (t > 10.8 && !INS2.v3) { INS2.v3 = 1; sousTitre(null); if (sci) jouer(sci, 'Punch'); try { SON.tic(.9, 55, .5); SON.tic(.5, 90, .3); } catch (e) {} const v = document.getElementById('insVoile') || (INS.voile(false, .01), document.getElementById('insVoile')); if (v) { v.style.transition = 'opacity .25s'; v.style.background = '#3a0606'; v.style.opacity = .85; setTimeout(() => { v.style.transition = 'opacity 1.6s'; v.style.background = '#000'; v.style.opacity = 1; }, 260); } }
-      if (t > 10.8) { const u = Math.min(1, (t - 10.8) / 1.2); PL.pitch = -u * .9; PL.y = SALLE.sol - u * 1.1; PL.yaw = angleVers(-1, 0) + u * .5; }
+      if (t > 10.2 && !INS2.v8) { INS2.v8 = 1; sousTitre(null); if (sci) jouer(sci, 'Punch_Cross'); try { SON.ton(220, .25, 'sine', .01); } catch (e) {} }
+      if (t > 10.65 && !INS2.v3) { INS2.v3 = 1; try { SON.tic(.9, 55, .5); SON.tic(.5, 90, .3); } catch (e) {} const v = document.getElementById('insVoile') || (INS.voile(false, .01), document.getElementById('insVoile')); if (v) { v.style.transition = 'opacity .06s'; v.style.background = '#5a0808'; v.style.opacity = .55; setTimeout(() => { v.style.transition = 'opacity .5s'; v.style.opacity = .25; }, 120); setTimeout(() => { v.style.transition = 'opacity 1.3s'; v.style.background = '#000'; v.style.opacity = 1; }, 700); } }
+      if (t > 10.65) { const w = t - 10.65, u = Math.min(1, w / 1.4), sec = Math.exp(-w * 6) * Math.sin(w * 55) * .06; PL.pitch = .25 * Math.exp(-w * 5) - u * u * .9 + sec; PL.y = SALLE.sol - u * u * 1.15; PL.yaw = angleVers(-1, 0) + u * .45 + sec; }
       if (t > 12.2 && !INS2.v7) { INS2.v7 = 1; const v = document.getElementById('insVoile'); if (v) v.textContent = '…'; }
-      requestAnimationFrame(pas); }; pas(); });
+      { const h = PL.hauteur || 1.68, cp = Math.cos(PL.pitch), e = [PL.x, PL.y + h, PL.z]; PL.eye = e; const F = A.camera.fixed || (A.camera.fixed = {}); F.eye = e.slice(); F.look = [e[0] + Math.sin(PL.yaw) * cp * 10, e[1] + Math.sin(PL.pitch) * 10, e[2] + Math.cos(PL.yaw) * cp * 10]; }
+      }; pas(); });
   if (sci) sci.visible = false; if (sci && JOE) { const i = JOE.pnj.indexOf(sci); if (i >= 0) JOE.pnj.splice(i, 1); }
-  const v = document.getElementById('insVoile'); if (v) { v.style.background = '#000'; v.textContent = ''; } INS2.v1 = INS2.v2 = INS2.v3 = INS2.v4 = INS2.v5 = INS2.v6 = INS2.v7 = 0; INS2.tunnel = false; INS2.enCine = false; UI.cineOn = false; document.body.classList.remove('cine'); if (typeof ZN !== 'undefined' && ZN.el) ZN.el.style.display = ''; $('hud').hidden = false; };
+  const v = document.getElementById('insVoile'); if (v) { v.style.background = '#000'; v.textContent = ''; } INS2.v1 = INS2.v2 = INS2.v3 = INS2.v4 = INS2.v5 = INS2.v6 = INS2.v7 = INS2.v8 = 0; INS2.tunnel = false; INS2.enCine = false; UI.cineOn = false; document.body.classList.remove('cine'); if (typeof ZN !== 'undefined' && ZN.el) ZN.el.style.display = ''; $('hud').hidden = false; };
 { const b0 = SALLE.borner; SALLE.borner = () => { if (INS2.tunnel) return; b0(); }; }
-{ const l0 = INS.lancer; INS.lancer = async reprise => { if (INS.fr) return; if (!reprise) { await INS2.cine(); INS2.visites++; INS.sauver(); } return l0(true); }; }
+{ const l0 = INS.lancer; INS.lancer = async reprise => { if (INS.fr) return; if (!reprise) { try { await INS2.cine(); } catch (e) { console.warn('[cineINS]', e); INS2.erreur('scène', e); INS2.enCine = false; INS2.tunnel = false; UI.cineOn = false; document.body.classList.remove('cine'); $('hud').hidden = false; } INS2.visites++; INS.sauver(); } try { return await l0(true); } catch (e) { console.warn('[INSIDE]', e); INS2.erreur('lancement', e); } };
+INS2.erreur = (ou, e) => { INS2.derniereErreur = ou + ' : ' + (e && e.message || e); let d = document.getElementById('insErr'); if (!d) { d = document.createElement('div'); d.id = 'insErr'; d.style.cssText = 'position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:10001;background:rgba(20,10,10,.92);color:#f3d7c8;font:13px/1.4 -apple-system,sans-serif;padding:10px 14px;border-radius:10px;max-width:86vw;pointer-events:auto'; document.body.appendChild(d); }
+  d.textContent = 'INSIDE — erreur (' + INS2.derniereErreur + '). Touchez pour revenir au camping.'; d.onclick = () => { d.remove(); try { if (INS.fr) { INS.fr.remove(); INS.fr = null; } } catch (x) {} try { const cv = A.canvas || document.getElementById('c'); cv.style.visibility = ''; if (INS2.rs && INS2.libre) A.renderScale = INS2.rs; INS2.libre = false; A.start(); SON.ac && SON.ac.resume(); } catch (x) {} INS.actif = false; INS.sauver(); UI.cineOn = false; $('hud').hidden = false; const v = document.getElementById('insVoile'); if (v) { v.textContent = ''; v.style.opacity = 0; v.style.pointerEvents = 'none'; } }; }; }
 // ---------------- 4) mémoire : rendu réduit pendant INSIDE ----------------
-{ const l0 = INS.lancer; INS.lancer = async reprise => { await l0(reprise); if (!INS.fr) return; INS.txt = null; try { const cv = A.canvas || document.getElementById('c'); cv.style.visibility = 'hidden'; const rs = A.renderScale; INS2.rs = rs; A.renderScale = .05; A.skipUpdate = true; A.frame(performance.now()); A.skipUpdate = false; A.stop(); if (A.vegetation) A.vegetation.chunks.clear(); } catch (e) {} }; }
+INS.avantIframe = () => { if (INS2.libre) return; INS2.libre = true; try { const cv = A.canvas || document.getElementById('c'); cv.style.visibility = 'hidden'; INS2.rs = A.renderScale; A.renderScale = .05; A.skipUpdate = true; A.frame(performance.now()); A.skipUpdate = false; A.stop(); if (A.vegetation) A.vegetation.chunks.clear(); } catch (e) {} };
+{ const l0 = INS.lancer; INS.lancer = async reprise => { await l0(reprise); if (!INS.fr) return; INS.txt = null; INS.avantIframe(); }; }
 // ---------------- 3) retour : bracelet, phrase qui change ----------------
 INS2.PHRASES = n => n <= 1 ? 'Mauvais rêve ?' : n === 2 ? 'Encore ce rêve…' : 'Ce n’était peut-être pas un rêve.';
 INS2.FINS = { A: 'Une porte ouverte. Une lettre sous la vôtre.', B: 'L’air froid du dehors, encore sur la peau.', C: 'Une main serrée, dans le noir.', D: 'Le bruit d’une porte blindée qui se referme.', E: 'Un nom murmuré. Le vôtre.', F: 'Un silence qui ne finit pas.' };
-{ const r0 = INS.retour; INS.retour = async () => { if (!INS.fr) return; try { const cv = A.canvas || document.getElementById('c'); cv.style.visibility = ''; if (INS2.rs) A.renderScale = INS2.rs; } catch (e) {}
+{ const r0 = INS.retour; INS.retour = async () => { if (!INS.fr) return; try { const cv = A.canvas || document.getElementById('c'); cv.style.visibility = ''; if (INS2.rs) A.renderScale = INS2.rs; INS2.libre = false; } catch (e) {}
   const phrase = INS2.PHRASES(INS2.visites);
   const rt = reveilTente; reveilTente = (apres, m) => { reveilTente = rt; return rt(() => { if (!INS2.bracelet) { INS2.bracelet = true; INS2.donnerBracelet(); note('À votre poignet, un bracelet de plastique blanc : « S-4417 ». Vous ne l’aviez pas en vous couchant.'); } else note(phrase); INS.sauver(); }, m); };
   const v0 = VOIX.dire; VOIX.dire = (t, p) => { VOIX.dire = v0; return v0(t === 'Mauvais rêve ?' ? phrase : t, p); };
@@ -13898,7 +13904,7 @@ INS2.donnerBracelet = () => { if (SAC.objets.some(o => o.bracelet)) return; SAC.
 addEventListener('message', e => { const d = e.data; if (d && d.hdf === 'fin' && d.code) { INS2.fin = d.code; } });
 // ---------------- branchements ----------------
 { const l0 = SALLE.lumiere; SALLE.lumiere = () => { l0(); try { INS2.majSalle(); INS2.lumCouloir(); if (INS2.nC && !INS2.tunnel) INS2.nC.visible = SALLE.ici && INS.mur; } catch (e) {} }; }
-{ const c0 = VILLAGE.construire; VILLAGE.construire = () => { if (VILLAGE.ok) return; c0(); try { INS2.indices(); INS2.couloir(); } catch (e) { console.warn('[inside+]', e); } }; }
+{ const c0 = VILLAGE.construire; VILLAGE.construire = () => { if (VILLAGE.ok) return; c0(); try { INS2.indices(); } catch (e) { console.warn('[inside+ indices]', e); } try { INS2.couloir(); } catch (e) { console.warn('[inside+ couloir]', e); INS2.errC = e; } }; }
 { const c0 = charger; charger = function () { const r = c0.apply(this, arguments); const L = lire('inside2') || {}; INS2.visites = L.visites || 0; INS2.fin = L.fin || null; INS2.bracelet = !!L.bracelet; if (INS2.bracelet) INS2.donnerBracelet(); return r; }; }
 { const n0 = nouvellePartie; nouvellePartie = function () { INS2.visites = 0; INS2.fin = null; INS2.bracelet = false; ecrire('inside2', null); return n0.apply(this, arguments); }; }
 
@@ -14245,7 +14251,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 
 </script>
 <!--
-NOTE-INTERNE (Claude) · HDF : CAMPING v0.44.1 · F.S.M Game House · 4 nov. 2026
+NOTE-INTERNE (Claude) · HDF : CAMPING v0.44.3 · F.S.M Game House · 4 nov. 2026
 À lire avant de modifier ce fichier. Ne pas relire le fichier en entier : chercher les ancres « ==== CAMP : » (grep), puis ne lire que la section utile.
 
 STRUCTURE DU FICHIER
@@ -14414,6 +14420,8 @@ v0.41 — TEXTES INSIDE (src/9z_textes_inside.js) : BLA.POOL mystere (10, bourg/
 v0.42 — VITRES ET PORTES (VT, src/9za_vitres_portes.js) : moteur S.collect met de côté les parts p.vitre (A.scene.vitres), dessinées par VT.dessiner (onAfterOpaque, blend, depthMask false) ; VT.scan marque mat 2/3 (+ mat 8 des nœuds fen*) toutes les 4 s ; portes vitrées ouvertes + encadrement pour chaque commerce construireBat (nœud porteC+id).
 v0.42 — BANDEAUX DE ZONES (ZN, src/9zb_zones.js) : 16 zones (ZN.Z, ordre = priorité), bandeau plein écran #zoneBan, stable 1,2 s, pas pendant dialogues/menus/cinés/INSIDE/photo, 2 min entre deux bandeaux de la même zone, « Découverte » la 1re fois (clé zones). Portes des commerces : ouverture vers l'intérieur (signe corrigé).
 v0.43 — TRAIN POUR VILLE DE FERAL (TRF, src/9zc_train_feral.js) : guichet (gare dIn, 12 écus, billetFeral), « Monter à bord » si train à quai i 1/3, voitures 1-2 à parois (patch DELTA.train) + intérieur wagonInt (enfant du train), cinématique 4 plans dans CINE.maj (TRF.monde = repère du train), contrôleur (voix), départ vu du quai, fondu noir ; suite Feral à faire : retour sur le quai, billet composté.
+v0.44.3 — VRAIE CAUSE de l'écran noir : pendant UI.cineOn, boucle() ne lance pas majJoueur → la caméra (A.camera.fixed) restait figée sur la petite pièce. INS2.cine écrit maintenant PL.eye + A.camera.fixed à chaque image (dans pas2 ET dans INS2.lumCouloir, appelé par SALLE.lumiere dans la boucle, donc avant le rendu). Lumières du couloir renforcées pendant la scène, exposition .9 (PBR). Erreurs de scène/lancement affichées (INS2.erreur, #insErr, touche = retour camping), garde 30 s si l'iframe ne charge pas, couloir reconstruit au besoin.
+v0.44.2 — écran noir figé + coup invisible : INSIDE décompressé pendant la scène (INS.html() dès le début), INS.avantIframe() libère la mémoire AVANT de créer l'iframe (idempotent, INS2.libre remis à false au retour / en cas d'échec), « … » sur le voile pendant le chargement ; boucle de scène protégée (try + délai de secours dur+5 s) ; vrai clip Punch_Cross à 10,2 s, impact 10,65 s avec voile rouge partiel (.55→.25) puis noir à 0,7 s, secousse + chute visibles ; scientifique à 1,45 m.
 v0.44.1 — vérif. cinématique : blouse 'doctor', HUD + bandeau de zone masqués pendant la scène (réaffirmés à chaque image), coup garanti même si une image saute, panneau BLOC C remis à l'endroit (UV inversés).
 v0.44 — transition mur → cellule : INS2.cine 13,4 s, le scientifique (Joe, blouse blanche) sort par la porte du bloc C, « Tiens. Le campeur. Vous êtes en avance. », « Ne bougez pas… », coup (voile rouge puis noir, caméra qui tombe), « … » → INSIDE. LIENS 2 (L2, src/9zd_liens2.js) : ancien foyer + pin gravé (camp), consigne n° 17 (gare b.p(9,-4.5), code 7319 si INS2.visites/fin), dessins de l'école (Jade L.), livre de P. Sorel (librairie), registre de la chapelle, lettres de I. au réveil (reveilTente matin, 45 %), porte du train de 3 h 10 ; clé liens2 ; INSIDE : 3 répliques sur S-4418 / la consigne.
 À FAIRE / IDÉES v1.0 : sauvegarde du visiteur en cours ; météo visible (pluie déjà possible via A.meteo) ; deux emplacements de sauvegarde ; branchement History Sens pour les dialogues libres.
