@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HDF : CAMPING">
 <meta name="theme-color" content="#0b0f0a">
-<title>HDF : CAMPING — v0.37</title>
+<title>HDF : CAMPING — v0.39.2</title>
 <style>
 :root{--lin:#f3efe6;--ambre:#f2c66d;--mousse:#8fb37a;--nuit:#0b0f0a;--verre:rgba(10,14,10,.62);--rouge:#e0665a;--bleu:#7fb6d8;
   --sans:-apple-system,BlinkMacSystemFont,"Avenir Next","Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
@@ -170,7 +170,7 @@ body.cine #cine .bande{height:11vh}
 <div id="cine"><div class="bande h"></div><div class="bande b"></div></div>
 <button id="cinePasser" hidden>Passer ›</button>
 <div id="hud" hidden>
-  <div id="titreJeu">HDF : CAMPING · v0.37</div>
+  <div id="titreJeu">HDF : CAMPING · v0.39.2</div>
   <div id="marqueurs"></div>
   <canvas id="boussole" width="1120" height="108"></canvas>
   <div id="heureJour"><b id="hHeure">07:00</b><span id="hJour">Jour 1 · lundi</span></div>
@@ -204,14 +204,14 @@ body.cine #cine .bande{height:11vh}
 </div>
 <div id="fin" hidden><h2 id="finTitre">Fin de partie</h2><p id="finTexte"></p><div class="stats" id="finStats"></div><div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><button class="gros" id="finRejouer">Recommencer une partie</button><button class="gros discret" id="finMenu">Menu</button></div></div>
 <div id="menu" hidden>
-  <div class="version">v0.37 · FSM-3D 2.10</div>
+  <div class="version">v0.39.2 · FSM-3D 2.10</div>
   <h1><small>F.S.M GAME HOUSE</small>HDF : CAMPING</h1>
   <p class="accroche">Seul au bord d'un lac de montagne. Chaque jour, quelqu'un passe. Tenez le plus longtemps possible.</p>
   <div class="ligne"><input id="prenom" maxlength="16" placeholder="Votre prénom" autocomplete="off" spellcheck="false"></div>
   <div class="ligne"><button class="gros" id="bNouvelle">Nouvelle partie</button><button class="gros discret" id="bContinuer" hidden>Continuer</button></div>
   <div class="opts"><button id="oSon" class="on">Son</button><button id="oVoix" class="on">Voix des PNJ</button><button id="oMusique" class="on">Musique</button><button id="oQualite">Qualité : auto</button><button id="oTexte">Texte : grand</button><button id="oMarq" class="on">Marqueurs de collecte</button><button id="oPerf">Performances</button></div>
   <div class="aideCtrl" id="aideCtrl">Manette PS : <b>stick gauche</b> marcher · <b>stick droit</b> regarder · <b>✕</b> action / choisir · <b>○</b> s'accroupir / partir · <b>△</b> sauter · <b>□</b> sac à dos · <b>R2</b> courir · <b>L1</b> lampe · <b>OPTIONS</b> menu.<br>Tactile : stick à gauche, glisser à droite pour regarder, boutons à droite. Clavier : ZQSD / flèches, souris (clic pour viser), Espace, C, Maj, E, Tab, F, Échap.</div>
-  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.37</div>
+  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.39.2</div>
 </div>
 
 <script>
@@ -5014,7 +5014,7 @@ self.JOE_DATA = { animals: 'Z2xURgIAAAD8HQQAtNIBAEpTT057ImFzc2V0Ijp7InZlcnNpb24i
    ===================================================================================== */
 'use strict';
 // ==== CAMP : OUTILS ===================================================================
-const JEU = { nom: 'HDF : CAMPING', version: '0.37', cle: 'hdfc-' };
+const JEU = { nom: 'HDF : CAMPING', version: '0.39.2', cle: 'hdfc-' };
 const $ = id => document.getElementById(id);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, k) => a + (b - a) * k;
@@ -5487,7 +5487,7 @@ function construireCamp() { meshes(); const m = GEO.merger(), T = M3.translate, 
     const sapin = (x, z, h) => { if (z > 138.5) COLL.push({ x, z, r: .35 }); const gy = y(x, z), c = SAPINS[(g() * 3) | 0], n = h > 11 ? 4 : 3; addF(TRONC, mul(T(x, gy + h * .12, z), S(h * .045, h * .3, h * .045)), PAL.ecorce, 13);
       for (let i = 0; i < n; i++) { const k = i / n, r = (1 - k * .75) * h * .23, hh = h * .36 * (1 - k * .25); addF(CONE, mul(T(x, gy + h * .2 + k * h * .62 + hh / 2, z), mul(RY(g() * 6), S(r * 2, hh, r * 2))), c, 20); } };
     const feuillu = (x, z, h) => { if (z > 138.5) COLL.push({ x, z, r: .35 }); const gy = y(x, z), c = FEUILLUS[(g() * 3) | 0]; addF(TRONC, mul(T(x, gy + h * .28, z), S(h * .05, h * .6, h * .05)), PAL.ecorce2, 13);
-      for (let i = 0; i < 2; i++) { const a = g() * TAU, r = i ? h * .14 : 0, sc = h * (.5 - i * .1); addF(BOULE[(g() * 4) | 0], mul(T(x + Math.cos(a) * r, gy + h * .66 + i * h * .1, z + Math.sin(a) * r), S(sc, sc * .8, sc)), c, 20); } };
+      for (let i = 0; i < 5; i++) { const a = g() * TAU, r = i ? h * (.12 + g() * .12) : 0, sc = h * (i ? .27 + g() * .08 : .4); addF(BOULE[(g() * 4) | 0], mul(T(x + Math.cos(a) * r, gy + h * (i ? .6 + g() * .22 : .7), z + Math.sin(a) * r), S(sc, sc * .82, sc)), c, 20); } };
     const buisson = (x, z, sc) => addF(BUIS[(g() * 3) | 0], mul(T(x, y(x, z) + sc * .3, z), S(sc * 1.35, sc, sc * 1.35)), FEUILLUS[(g() * 3) | 0], 20);
     // anneaux successifs : lisière très serrée, puis futaie plus claire (au-delà, la forêt procédurale prend le relais)
     for (let r = ENCLOS.r + 1.3, k = 0; r < 41; k++) { const pas = r < 35 ? 2.4 : 3.3, n = Math.floor(TAU * r / pas);
@@ -12710,8 +12710,9 @@ VERDURE.construire = () => { if (VERDURE.ok) return; VERDURE.ok = true; const T 
   const lots = new Map(), lot = (x, z) => { const k = Math.floor(x / 40) + ',' + Math.floor(z / 40); if (!lots.has(k)) lots.set(k, GEO.merger()); return lots.get(k); };
   const arbres = [], loinDe = (x, z, d) => arbres.every(([a, b]) => Math.hypot(x - a, z - b) > d);
   const sapin = (m, x, z, h) => { const c = SAPINS[(g() * 3) | 0]; m.add(TRONC, mul(T(x, H + h * .12, z), S(h * .045, h * .3, h * .045)), PAL.ecorce, 13); for (let i = 0; i < 3; i++) { const k = i / 3, r = (1 - k * .75) * h * .23, hh = h * .36 * (1 - k * .25); m.add(CONE, mul(T(x, H + h * .2 + k * h * .62 + hh / 2, z), mul(RY(g() * 6), S(r * 2, hh, r * 2))), c, 20); } };
-  const feuillu = (m, x, z, h, pommier) => { const c = FEUILLUS[(g() * 4) | 0]; m.add(TRONC, mul(T(x, H + h * .28, z), S(h * .05, h * .6, h * .05)), PAL.ecorce2, 13);
-    for (let i = 0; i < 3; i++) { const a = g() * TAU, r = i ? h * .16 : 0, sc = h * (.48 - i * .09); m.add(BOULE[(g() * 4) | 0], mul(T(x + Math.cos(a) * r, H + h * .64 + i * h * .09, z + Math.sin(a) * r), S(sc, sc * .8, sc)), c, 20); }
+  const feuillu = (m, x, z, h, pommier) => { const bouleau = !pommier && g() < .22, c = bouleau ? [.4, .47, .22] : FEUILLUS[(g() * 4) | 0], tr = bouleau ? [.86, .84, .78] : PAL.ecorce2; m.add(TRONC, mul(T(x, H + h * .28, z), S(h * (bouleau ? .035 : .05), h * .6, h * (bouleau ? .035 : .05))), tr, 13);
+    if (bouleau) for (let i = 0; i < 4; i++) m.add(GEO.cube(), mul(T(x, H + h * (.12 + i * .11), z), S(h * .037, .05, h * .037)), [.15, .14, .13], 4);
+    for (let i = 0; i < 6; i++) { const a = g() * TAU, r = i ? h * (.13 + g() * .12) : 0, sc = h * (i ? .25 + g() * .09 : .38) * (bouleau ? .8 : 1); m.add(BOULE[(g() * 4) | 0], mul(T(x + Math.cos(a) * r, H + h * (i ? .58 + g() * .24 : .7), z + Math.sin(a) * r), S(sc, sc * .82, sc)), c, 20); }
     if (pommier) for (let i = 0; i < 9; i++) { const a = g() * TAU, rr = h * (.2 + g() * .22); m.add(FLEUR, mul(T(x + Math.cos(a) * rr, H + h * (.58 + g() * .3), z + Math.sin(a) * rr), S(.18, .18, .18)), i % 3 ? [.97, .9, .92] : [.85, .2, .15], 4); } };
   const buisson = (m, x, z, sc, fleuri) => { m.add(BUIS[(g() * 3) | 0], mul(T(x, H + sc * .3, z), mul(RY(g() * 6), S(sc * 1.35, sc, sc * 1.35))), FEUILLUS[(g() * 4) | 0], 20); if (fleuri) { const c = FLEURS[(g() * 5) | 0]; for (let i = 0; i < 6; i++) { const a = g() * TAU, r = sc * (.3 + g() * .35); m.add(FLEUR, mul(T(x + Math.cos(a) * r, H + sc * (.55 + g() * .3), z + Math.sin(a) * r), S(.13, .13, .13)), c, 4); } } };
   for (const Z of VILLAGE.zones) { const aire = (Z.x1 - Z.x0) * (Z.z1 - Z.z0), nA = Math.round(aire / 95), nB = Math.round(aire / 55);
@@ -12898,7 +12899,7 @@ DECOR.fanions = (m, a, b, y0, f = .6, n = 18) => { const CUBE = DECOR.CUBE || (D
 DECOR.ville = () => { if (DECOR.ok) return; DECOR.ok = true; const H = CHANTIER.Hs, T = M3.translate, S = M3.scale, mul = M3.mul, CUBE = DECOR.CUBE || (DECOR.CUBE = GEO.cube()), SPH = DECOR.SPH || (DECOR.SPH = GEO.sphere(5, 3)), CYL = GEO.cylinder(14), m = GEO.merger(), Bo = (x, y, z, sx, sy, sz, c, mat = 12) => m.add(CUBE, mul(T(x, H + y, z), S(sx, sy, sz)), c, mat);
   const PIERRE = [.7, .66, .58], BOULE = [0, 1, 2].map(i => GEO.rock(470 + i, 1, .25));
   const arbre = (x, z, h) => { m.add(CYL, mul(T(x, H + .3, z), S(2.6, .6, 2.6)), PIERRE, 12); m.add(CYL, mul(T(x, H + .62, z), S(2.3, .05, 2.3)), [.32, .22, .14], 13); m.add(GEO.cylinder(6, .32, .5), mul(T(x, H + h * .3, z), S(h * .05, h * .6, h * .05)), PAL.ecorce2, 13);
-    for (let i = 0; i < 3; i++) { const a = i * 2.1, r = i ? h * .14 : 0, sc = h * (.46 - i * .08); m.add(BOULE[i], mul(T(x + Math.cos(a) * r, H + h * .66 + i * h * .08, z + Math.sin(a) * r), S(sc, sc * .8, sc)), [[.26, .42, .16], [.3, .46, .18], [.22, .38, .14]][i], 20); }
+    for (let i = 0; i < 6; i++) { const a = i * 2.1 + x, r = i ? h * (.13 + (i % 3) * .05) : 0, sc = h * (i ? .25 + (i % 2) * .07 : .38); m.add(BOULE[i % BOULE.length], mul(T(x + Math.cos(a) * r, H + h * (i ? .58 + (i % 3) * .1 : .7), z + Math.sin(a) * r), S(sc, sc * .82, sc)), [[.26, .42, .16], [.3, .46, .18], [.22, .38, .14]][i % 3], 20); }
     for (let k = 0; k < 8; k++) { const a = k / 8 * TAU; m.add(SPH, mul(T(x + Math.cos(a) * .95, H + .7, z + Math.sin(a) * .95), S(.2, .16, .2)), DECOR.FLEURS[k % 6], 4); } COLL.push({ x, z, r: 1.35 }); };
   // centre-ville : arbres en bacs, bordures de la place, fanions
   for (const [x, z] of [[58.6, 116], [58.6, 152], [84, 132.5], [84.2, 118.9]]) arbre(x, z, 7.5);
@@ -13664,8 +13665,8 @@ VIV.ui = () => { const st = document.createElement('style'); st.textContent = '#
 // (lac et sols mouillés) et du brouillard éclairé par les lampes (uniformes du post-traitement, A.pbrComp appelé par le moteur).
 const PBR = { k: 1, lac: [LAC.x, LAC.z, 93.5] };
 globalThis.FSM_EXPO = 1;
-PBR.dedans = () => { if (SALLE.ici) return 1; for (const b of BATS) { if (!b.lu || !b.lw || b.alpha) continue; if (Math.abs(PL.x - b.x) > 30 || Math.abs(PL.z - b.z) > 30) continue; const [u, w] = batLocal(b, PL.x, PL.z); if (Math.abs(u) < b.lu / 2 - .1 && Math.abs(w) < b.lw / 2 - .1) return 1; } return 0; };
-PBR.maj = dt => { PBR.tD = (PBR.tD || 0) - dt; if (PBR.tD <= 0) { PBR.tD = .25; PBR.in = PBR.dedans(); } const nt = A.nuit ? +A.nuit() || 0 : 0, cible = PBR.in ? (nt > .4 ? 1.25 : 1.55) : 1;
+PBR.dedans = () => { if (SALLE.ici) return 2; for (const b of BATS) { if (!b.lu || !b.lw || b.alpha) continue; if (Math.abs(PL.x - b.x) > 30 || Math.abs(PL.z - b.z) > 30) continue; const [u, w] = batLocal(b, PL.x, PL.z); if (Math.abs(u) < b.lu / 2 - .1 && Math.abs(w) < b.lw / 2 - .1) return 1; } return 0; };
+PBR.maj = dt => { PBR.tD = (PBR.tD || 0) - dt; if (PBR.tD <= 0) { PBR.tD = .25; PBR.in = PBR.dedans(); } const nt = A.nuit ? +A.nuit() || 0 : 0, cible = PBR.in === 2 ? .72 : PBR.in ? (nt > .4 ? 1.2 : 1.4) : 1;// v0.39.1 : salle secrète déjà très éclairée → on baisse
   const v = cible > PBR.k ? 1.1 : 2.2; PBR.k += (cible - PBR.k) * Math.min(1, dt * v); globalThis.FSM_EXPO = PBR.k; };
 PBR.IV = new Float32Array(9); PBR.VL = new Float32Array(32); PBR.VC = new Float32Array(32);
 PBR.comp = (L, gl, o) => { const p = o.proj, v = o.view, e = o.eye, env = o.env || {}; if (!L.uProjP) return;
@@ -13674,7 +13675,7 @@ PBR.comp = (L, gl, o) => { const p = o.proj, v = o.view, e = o.eye, env = o.env 
   let n = 0; for (const l of o.lights || []) { if (n >= 8 || !l.p) continue; const d = Math.hypot(l.p[0] - e[0], l.p[1] - e[1], l.p[2] - e[2]); if (d > 70) continue; const i = Math.min(l.i || 1, 6), c = l.c || [1, 1, 1];
     PBR.VL.set([l.p[0], l.p[1], l.p[2], l.r || 6], n * 4); PBR.VC.set([c[0] * i, c[1] * i, c[2] * i, 0], n * 4); n++; }
   gl.uniform4fv(L.uVLp, PBR.VL); gl.uniform4fv(L.uVLc, PBR.VC); gl.uniform1i(L.uVLn, n);
-  const brume = A.meteoNom === 'brume' ? 1 : 0, pluie = A.meteoNom === 'pluie' ? 1 : 0; gl.uniform1f(L.uVolK, (.0028 + .004 * brume + .003 * pluie) * (env.exposure || 1) * (SALLE.ici ? .4 : 1)); };
+  const brume = A.meteoNom === 'brume' ? 1 : 0, pluie = A.meteoNom === 'pluie' ? 1 : 0; gl.uniform1f(L.uVolK, (.0028 + .004 * brume + .003 * pluie) * (env.exposure || 1) * (SALLE.ici ? 0 : 1)); };
 { const m0 = ALPHA.maj; ALPHA.maj = dt => { m0(dt); try { if (A && !A.pbrComp) A.pbrComp = PBR.comp; PBR.maj(dt); } catch (e) { if (!PBR.err) { PBR.err = 1; console.warn('[pbr]', e); } } }; }
 
 // ==== CAMP : PASSAGE VERS HDF : INSIDE (v0.37) =====
@@ -13724,6 +13725,109 @@ addEventListener('message', e => { const d = e.data; if (!d || !d.hdf || !INS.fr
 { const c0 = VILLAGE.construire; VILLAGE.construire = () => { if (VILLAGE.ok) return; c0(); try { INS.construirePioche(); INS.construireMur(); } catch (e) { console.warn('[inside]', e); } }; }
 { const c0 = charger; charger = function () { const r = c0.apply(this, arguments); const L = lire('inside') || {}; INS.pioche = !!L.pioche; INS.mur = !!L.mur; INS.actif = !!L.actif; if (INS.nP) INS.nP.visible = !INS.pioche; if (r && INS.actif) setTimeout(() => INS.lancer(true), 400); return r; }; }
 { const n0 = nouvellePartie; nouvellePartie = function () { INS.pioche = false; INS.mur = false; INS.actif = false; INS.coups = 0; ecrire('inside', null); if (INS.nP) INS.nP.visible = true; return n0.apply(this, arguments); }; }
+
+// ==== CAMP : DÉCOR MAJEUR — HERBE DENSE, ARBRES, SOL, LIEUX MARQUANTS, BOURG, PAYSAGE, FENÊTRES, LAC (v0.38) =====
+// DX.* — 1) herbe : règles de végétation ajoutées (touffes denses près du joueur, herbes hautes au bord de l'eau, galets des rives),
+//    reposées après chaque setBiome (saisons). 2) arbres : houppiers en grappes (5-6 boules), branches, bouleaux (patchs des fonctions feuillu).
+// 3) sol : galets de rive (règle 'rock'). 4) lieux : moulin à eau sur le ruisseau, chapelle sur la colline nord, belvédère au bord du lac,
+//    ruines dans la forêt ouest, kiosque à musique sur la place DELTA. 5) bourg : volets de couleur, jardinières fleuries, colombages,
+//    gouttières (crochet construireBat). 6) paysage : trois villages lointains avec clocher. 7) fenêtres : rideaux devant la lumière la nuit,
+//    silhouettes qui passent. 8) lac : île avec arbre et rochers (relief), deux barques au ponton, hangar à bateaux, roseaux tout autour.
+const DX = { sil: [] };
+DX.T = M3.translate; DX.S = M3.scale; DX.mul = M3.mul;
+DX.nd = (nom, m) => { const nd = new Node(nom); nd.pickable = false; for (const p of m.build(mk)) nd.addPart(p.mesh, null, p.color, p.mat); A.add(nd); return nd; };
+DX.hash = s => DECOR.hash(s);
+// ---------------- 8a) île (relief, avant la création du terrain) ----------------
+DX.ILE = [40, -38, 11];
+{ const r0 = relief; relief = function (N, x, z) { let h = r0(N, x, z); const [ix, iz, R] = DX.ILE, d = Math.hypot(x - ix, z - iz); if (d < R) { const k = 1 - d / R, s = k * k * (3 - 2 * k), top = .9 + 1.4 * k + .3 * Math.sin(x * .7) * k; h = h + (top - h) * s; } return h; }; }
+// ---------------- 1) herbe dense, herbes hautes, galets ----------------
+DX.REGLES = [['grass', 55, 22, .9, 1.6, .5, .4, 180, .25, 0], ['grass', 26, 34, 1.9, 2.7, .45, .15, 2.2, .45, 0], ['rock', 4, 60, .12, .32, .6, -.4, .7, .5, 0]];
+DX.vegetation = () => { const V = A.vegetation; if (!V || V._dx) return; V._dx = true; const sb = V.setBiome; V.setBiome = b => { sb(b); V.rules = V.rules.concat(DX.REGLES); V.chunks.clear(); }; V.setBiome(V.biome || 'temperate'); };
+// ---------------- 4) lieux marquants ----------------
+DX.libre = (x, z, r) => { if (Math.hypot(x - LAC.x, z - LAC.z) < LAC.r + 1 + r) return false; if (Math.abs(x - 105.3) < 6 + r) return false; if (DELTA.couloir && DELTA.couloir(x, z, r + 1)) return false; if (Math.abs(x - SENTIER.x(z)) < 4 + r) return false;
+  for (const c of COLL) if (Math.abs(c.x - x) < 12 && Math.hypot(c.x - x, c.z - z) < c.r + r) return false; for (const b of BATS) if (Math.hypot(b.x - x, b.z - z) < (b.lu ? Math.hypot(b.lu, b.lw) / 2 : 8) + r) return false; return true; };
+DX.cherche = (x, z, r, pas = 2.5, n = 40) => { for (let i = 0; i < n; i++) { const a = i * 2.4, d = i ? pas * Math.sqrt(i) : 0, px = x + Math.cos(a) * d, pz = z + Math.sin(a) * d; if (DX.libre(px, pz, r)) return [px, pz]; } return null; };
+DX.lieux = () => { const T = DX.T, S = DX.S, mul = DX.mul, CUBE = GEO.cube(), CYL = GEO.cylinder(10), PIERRE = [.62, .6, .56], BOIS = [.45, .32, .2], TUILE = [.5, .24, .17], ARD = [.28, .3, .34];
+  const repB = (m, x, z, yaw) => { const y = SOL(x, z), R = M3.rotY(yaw); return (u, v, w, su, sv, sw, c, mat = 4, Rx) => m.add(Rx ? GEO.cube() : CUBE, mul(T(x, y, z), mul(R, mul(T(u, v, w), Rx ? mul(Rx, S(su, sv, sw)) : S(su, sv, sw)))), c, mat); };
+  DX.ou = {};
+  // moulin à eau (rive ouest du ruisseau), roue qui tourne
+  for (let z = 176; z > 100 && !DX.ou.moulin; z -= 3) for (const s of [-1, 1]) { const x = NAT.ruX(z) + s * 4.6; if (DX.libre(x, z, 3.6)) { DX.ou.moulin = [x, z, s]; break; } }
+  if (DX.ou.moulin) { const [x, z, s] = DX.ou.moulin, m = GEO.merger(), B = repB(m, x, z, 0); B(0, 1.6, 0, 5, 3.2, 4.4, PIERRE, 12); B(0, 3.25, 0, 5.2, .12, 4.6, BOIS, 13); for (const k of [-1, 1]) B(0, 4.1, k * 1.15, 5.6, .12, 2.6, TUILE, 4, M3.rotX(k * .62)); B(-s * .1, 1.1, -2.21, 1, 2, .06, [.3, .2, .12], 13); B(1.4, 2.1, -2.21, .8, .8, .05, [.3, .38, .44], 3); B(-1.4, 2.1, -2.21, .8, .8, .05, [.3, .38, .44], 3); B(1.6, 4.4, .6, .5, 1.6, .5, PIERRE, 12);
+    DX.nd('moulin', m); COLL.push({ x, z, r: 2.8 }); const R = new Node('roueMoulin'); R.pickable = false; const wx = x - s * 2.85; R.pos = [wx, SOL(wx, z) + 1.6, z];
+    for (let i = 0; i < 12; i++) { const a = i / 12 * TAU; R.addPart(CUBE, mul(M3.rotX(a), mul(T(0, 1.55, 0), S(.55, .08, .42))), BOIS, 13); R.addPart(CUBE, mul(M3.rotX(a), mul(T(0, .8, 0), S(.5, 1.6, .06))), [.38, .27, .17], 13); }
+    R.addPart(CYL, mul(M3.rotZ(PI / 2), S(.4, .7, .4)), [.25, .25, .27], 7); A.add(R); DX.roue = R; }
+  // chapelle sur la colline nord (FIN.COLLINES [-30, 300])
+  DX.ou.chapelle = DX.cherche(-30, 300, 5, 2.5);
+  if (DX.ou.chapelle) { const [x, z] = DX.ou.chapelle, yaw = angleVers(43 - x, 233 - z), m = GEO.merger(), B = repB(m, x, z, yaw); B(0, 2, 0, 5, 4, 8, [.86, .83, .76], 17); for (const k of [-1, 1]) B(k * 1.45, 4.9, 0, 3.4, .14, 8.6, ARD, 4, M3.rotZ(-k * .75));
+    B(0, 4.5, 3.7, 4.6, 1.1, .3, [.86, .83, .76], 17); B(0, 5.5, -4.6, 1.8, 7, 1.8, [.84, .81, .74], 17); m.add(GEO.cylinder(4, 0, .5), mul(T(x, SOL(x, z), z), mul(M3.rotY(yaw + PI / 4), mul(T(0, 10.4, -4.6), S(2.4, 3.2, 2.4)))), ARD, 4); B(0, 12.3, -4.6, .08, .9, .08, [.75, .6, .3], 14); B(0, 12.4, -4.6, .5, .08, .08, [.75, .6, .3], 14);
+    B(0, 1.2, 4.02, 1.3, 2.4, .08, [.35, .22, .14], 13); for (const k of [-1, 1]) for (const zz of [-1.5, 1.5]) B(k * 2.52, 2.4, zz, .06, 1.6, .7, [.55, .45, .25], 3); B(0, 6.2, -3.68, .8, .8, .05, [.7, .55, .3], 3);
+    DX.nd('chapelle', m); COLL.push({ x, z, r: 4.2 }); }
+  // belvédère en bois au bord du lac
+  DX.ou.belv = DX.cherche(-14, 291, 2.6, 2);// v0.39.2 : sur la colline de la chapelle (au bord du lac il était pris dans les arbres)
+  if (DX.ou.belv) { const [x, z] = DX.ou.belv, yaw = angleVers(43 - x, 233 - z), m = GEO.merger(), B = repB(m, x, z, yaw); const y0 = SOL(x, z); for (const a of [-1, 1]) for (const b of [-1, 1]) { const q = batMonde({ x, z, yaw }, a * 1.5, b * 1.5), g = Math.min(SOL(q[0], q[1]), y0) - .4 - y0, hh = 3.6 - g; B(a * 1.5, g + hh / 2, b * 1.5, .2, hh, .2, BOIS, 13); } B(0, 3.6, 0, 3.6, .15, 3.6, [.55, .4, .25], 13);
+    for (const a of [-1, 1]) { B(a * 1.75, 4.15, 0, .08, .08, 3.6, BOIS, 13); B(0, 4.15, a * 1.75, 3.6, .08, .08, BOIS, 13); } for (let i = 0; i < 9; i++) B(-1.9 - i * .0, .2 + i * .38, -2.2 - i * .1, .9, .08, .32, BOIS, 13);
+    for (const k of [-1, 1]) B(k * .95, 6, 0, 2.3, .1, 4.2, TUILE, 4, M3.rotZ(-k * .62)); for (const a of [-1, 1]) for (const b of [-1, 1]) B(a * 1.5, 5, b * 1.5, .12, 2, .12, BOIS, 13);
+    DX.nd('belvedere', m); COLL.push({ x, z, r: 2.3 }); }
+  // ruines dans la forêt ouest
+  DX.ou.ruines = DX.cherche(-66, 205, 4, 2.5);
+  if (DX.ou.ruines) { const [x, z] = DX.ou.ruines, r = BEAU.alea(4242), m = GEO.merger(), B = repB(m, x, z, .4); const mur = (u0, w0, u1, w1, hmax) => { const L = Math.hypot(u1 - u0, w1 - w0), n = Math.ceil(L / .7); for (let i = 0; i < n; i++) { const t = (i + .5) / n, hh = hmax * (.3 + .7 * Math.abs(Math.sin(i * 1.7 + u0))); for (let j = 0; j * .45 < hh; j++) B(u0 + (u1 - u0) * t, .22 + j * .45, w0 + (w1 - w0) * t, .66, .42, .5, [.52 + r() * .1, .5 + r() * .08, .46 + r() * .06], 12); } };
+    mur(-3, -3, 3, -3, 2.8); mur(-3, -3, -3, 3, 2.2); mur(3, -3, 3, .5, 1.4); mur(-3, 3, .5, 3, 1.1); B(0, 2.6, -3, .5, 5.2, .6, [.5, .48, .44], 12); for (let i = 0; i < 10; i++) m.add(GEO.rock(4300 + i, 1, .3), mul(T(x + (r() - .5) * 7, SOL(x, z) + .1, z + (r() - .5) * 7), S(.4 + r() * .4, .3, .4 + r() * .3)), [.5, .48, .44], 12);
+    DX.nd('ruines', m); for (const [u, w] of [[0, -3], [-3, 0], [3, -1.2], [-1.2, 3]]) { const p = batMonde({ x, z, yaw: .4 }, u, w); COLL.push({ x: p[0], z: p[1], r: 1.8 }); } }
+  // kiosque à musique (place DELTA)
+  DX.ou.kiosque = (() => { for (const [x, z] of [[79.5, 141], [79.5, 132], [64.5, 124]]) if (!COLL.some(c => Math.hypot(c.x - x, c.z - z) < c.r + 3.6)) return [x, z]; return null; })();
+  if (DX.ou.kiosque) { const [x, z] = DX.ou.kiosque, H = CHANTIER.Hs, m = GEO.merger(), OCT = GEO.cylinder(8), VERT = [.2, .36, .3], FONTE = [.16, .2, .18];
+    m.add(OCT, mul(T(x, H + .35, z), S(6.4, .7, 6.4)), [.7, .67, .6], 12); m.add(OCT, mul(T(x, H + .72, z), S(6, .04, 6)), [.5, .38, .26], 13);
+    for (let i = 0; i < 8; i++) { const a = (i + .5) / 8 * TAU, px = x + Math.cos(a) * 2.8, pz = z + Math.sin(a) * 2.8; m.add(GEO.cylinder(6), mul(T(px, H + 2.2, pz), S(.12, 3, .12)), FONTE, 7); const b = (i + 1.5) / 8 * TAU; m.add(GEO.cube(), matTube([px, H + 1.25, pz], [x + Math.cos(b) * 2.8, H + 1.25, z + Math.sin(b) * 2.8], .04), FONTE, 7); }
+    m.add(GEO.cylinder(8, 0, .5), mul(T(x, H + 4.4, z), S(7, 1.8, 7)), VERT, 4); m.add(OCT, mul(T(x, H + 3.62, z), S(6.6, .14, 6.6)), [.9, .88, .8], 4); m.add(GEO.sphere(6, 4), mul(T(x, H + 5.4, z), S(.3, .3, .3)), [.75, .6, .3], 14);
+    DX.nd('kiosque', m); COLL.push({ x, z, r: 3.3 }); } };
+// ---------------- 5) bourg : volets, jardinières, colombages ; 7) rideaux ----------------
+DX.facades = (S, bat) => { if (!bat || !bat.L || !S.maison || !S.fenetres || !S.fenetres.length) return; const L = bat.L, m = GEO.merger(), CUBE = GEO.cube(), T = DX.T, Sc = DX.S, mul = DX.mul, hu = S.lu / 2, hw = S.lw / 2, h = S.h || 3.6, pl = .3, y = pl + 1.75, k = DX.hash(S.id);
+  const B = (u, v, w, su, sv, sw, c, mat = 4) => m.add(CUBE, L.M(mul(T(u, v, w), Sc(su, sv, sw))), c, mat);
+  const VOLETS = [[.25, .42, .32], [.55, .22, .18], [.3, .4, .55], [.72, .62, .35], [.85, .85, .8], [.4, .55, .45]], V = VOLETS[k % VOLETS.length], FL = [[.85, .2, .25], [.95, .55, .7], [.95, .8, .25], [.7, .3, .75]];
+  const jard = k % 2 === 0, colo = k % 3 === 0, BOISF = [.26, .18, .12];
+  const fenL = []; for (const [face, t] of S.fenetres) { const n = face === 'n' ? -1 : face === 's' ? 1 : 0, ax = face === 'e' || face === 'o', f = face === 'e' ? 1 : -1;
+    if (!ax) { const w = n * (hw + .03); for (const s of [-1, 1]) B(t + s * .93, y, w, .56, 1.36, .04, V); if (jard) { B(t, y - .84, w + n * .14, 1.3, .2, .24, BOISF, 13); for (let i = 0; i < 6; i++) m.add(GEO.sphere(5, 3), L.M(mul(T(t - .55 + i * .22, y - .68, w + n * .14), Sc(.16, .14, .14))), i % 2 ? FL[k % 4] : [.25, .45, .2], 4); } fenL.push([t, n, 0]); }
+    else { const u = f * (hu + .03); for (const s of [-1, 1]) B(u, y, t + s * .93, .04, 1.36, .56, V); if (jard) { B(u + f * .14, y - .84, t, .24, .2, 1.3, BOISF, 13); for (let i = 0; i < 6; i++) m.add(GEO.sphere(5, 3), L.M(mul(T(u + f * .14, y - .68, t - .55 + i * .22), Sc(.14, .14, .16))), i % 2 ? FL[k % 4] : [.25, .45, .2], 4); } fenL.push([t, 0, f]); } }
+  if (colo) { const e = .035; for (const n of [-1, 1]) { const w = n * (hw + e); B(0, pl + .1, w, S.lu, .14, .05, BOISF); B(0, pl + h - .08, w, S.lu, .14, .05, BOISF); for (let u = -hu + .07; u <= hu; u += S.lu / Math.max(2, Math.round(S.lu / 1.7))) { if (S.fenetres.some(([fa, t]) => (fa === (n < 0 ? 'n' : 's')) && Math.abs(t - u) < .95) || (n < 0 && Math.abs(u - (S.porteU || 0)) < 1.1)) continue; B(u, pl + h / 2, w, .14, h, .05, BOISF); } }
+    for (const f of [-1, 1]) { const u = f * (hu + e); B(u, pl + .1, 0, .05, .14, S.lw, BOISF); B(u, pl + h - .08, 0, .05, .14, S.lw, BOISF); for (const w of [-hw + .07, hw - .07]) B(u, pl + h / 2, w, .05, h, .14, BOISF); } }
+  for (const n of [-1, 1]) m.add(GEO.cylinder(6), L.M(mul(T(hu + .1, pl + h / 2, n * (hw + .1)), Sc(.08, h, .08))), [.45, .45, .47], 7);
+  const nd = new Node('facade' + S.id); nd.pickable = false; for (const p of m.build(mk)) nd.addPart(p.mesh, null, p.color, p.mat); A.add(nd);
+  // rideaux devant la lumière (dans le nœud des fenêtres allumées) + emplacements de silhouettes
+  if (bat.fen) for (const [t, n, f] of fenL) { const R = [[.62, .32, .2], [.5, .45, .3], [.55, .3, .4]][k % 3];
+    for (const s of [-1, 1]) { const M = n ? L.M(mul(T(t + s * .45, y, n * (hw - .095)), Sc(.28, 1.22, .01))) : L.M(mul(T(f * (hu - .095), y, t + s * .45), Sc(.01, 1.22, .28))); bat.fen.addPart(CUBE, M, R, 8); }
+    DX.sil.push({ bat, t, n, f, L, hu, hw, y }); } };
+// silhouettes qui passent derrière les fenêtres éclairées
+DX.silInit = () => { DX.ombres = []; for (let i = 0; i < 5; i++) { const nd = new Node('silhouette'); nd.pickable = false; nd.addPart(GEO.cube(), M3.mul(M3.translate(0, -.2, 0), M3.scale(.42, .9, .01)), [.02, .02, .02], 8); nd.addPart(GEO.cube(), M3.mul(M3.translate(0, .42, 0), M3.scale(.22, .26, .01)), [.02, .02, .02], 8); nd.visible = false; A.add(nd); DX.ombres.push({ nd, t: 0, w: null }); } };
+DX.silMaj = dt => { if (!DX.ombres) return; const nt = A.nuit ? +A.nuit() || 0 : 0; for (const o of DX.ombres) { o.t -= dt; if (o.w && o.t > 0) { const w = o.w, k = 1 - o.t / o.d, off = -.62 + 1.24 * k, M = w.n ? w.L.M(M3.translate(w.t + off, w.y, w.n * (w.hw - .1))) : w.L.M(M3.translate(w.f * (w.hu - .1), w.y, w.t + off));
+      o.nd.pos = [M[12], M[13], M[14]]; o.nd.rot[1] = (w.bat.yaw || 0) + (w.n ? 0 : PI / 2); o.nd.visible = w.bat.fen.visible; continue; }
+    o.nd.visible = false; o.w = null; if (nt < .3 || Math.random() > dt * .4) continue; const P = DX.sil.filter(s => s.bat.fen && s.bat.fen.visible && Math.hypot(s.bat.x - PL.x, s.bat.z - PL.z) < 40); if (!P.length) continue; o.w = P[(Math.random() * P.length) | 0]; o.d = o.t = 2.5 + Math.random() * 2; } };
+// ---------------- 6) villages lointains ----------------
+DX.lointain = () => { const m = GEO.merger(), CUBE = GEO.cube(), T = DX.T, S = DX.S, mul = DX.mul, r = BEAU.alea(6060);
+  for (const [cx, cz] of [[-40, -420], [430, 120], [-400, 330]]) { const y0 = SOL(cx, cz); for (let i = 0; i < 16; i++) { const a = r() * TAU, d = 6 + r() * 34, x = cx + Math.cos(a) * d, z = cz + Math.sin(a) * d, y = SOL(x, z), w = 5 + r() * 4, l = 6 + r() * 5, hh = 4 + r() * 3, yaw = r() * PI;
+      m.add(CUBE, mul(T(x, y + hh / 2, z), mul(M3.rotY(yaw), S(w, hh, l))), [.82 + r() * .1, .78 + r() * .1, .7 + r() * .08], 4); m.add(GEO.cylinder(4, 0, .5), mul(T(x, y + hh + 1.4, z), mul(M3.rotY(yaw + PI / 4), S(w * 1.2, 2.8, l * 1.2))), [.45 + r() * .1, .22, .16], 4); }
+    m.add(CUBE, mul(T(cx, y0 + 7, cz), S(4, 14, 4)), [.8, .77, .7], 4); m.add(GEO.cylinder(4, 0, .5), mul(T(cx, y0 + 18, cz), mul(M3.rotY(PI / 4), S(5, 8, 5))), [.3, .32, .36], 4); }
+  DX.nd('villagesLointains', m); };
+// ---------------- 8) lac : île, barques, hangar, roseaux ----------------
+DX.lac = () => { const T = DX.T, S = DX.S, mul = DX.mul, CUBE = GEO.cube(), BOIS = [.45, .32, .2], r = BEAU.alea(9191);
+  // île : un grand arbre, des rochers
+  { const [ix, iz] = DX.ILE, m = GEO.merger(), y = SOL(ix, iz); m.add(GEO.cylinder(6, .32, .5), mul(T(ix, y + 2.4, iz), S(.5, 4.8, .5)), PAL.ecorce2, 13); for (let i = 0; i < 6; i++) { const a = r() * TAU, rr = i ? 1.4 + r() * 1.2 : 0, sc = i ? 1.8 + r() * .6 : 2.6; m.add(GEO.rock(470 + i, 1, .25), mul(T(ix + Math.cos(a) * rr, y + 5 + r() * 1.6, iz + Math.sin(a) * rr), S(sc, sc * .8, sc)), [.24, .38, .16], 20); }
+    for (let i = 0; i < 8; i++) { const a = r() * TAU, d = 5 + r() * 4; m.add(GEO.rock(480 + i, 1, .3), mul(T(ix + Math.cos(a) * d, Math.max(SOL(ix + Math.cos(a) * d, iz + Math.sin(a) * d), -.2) + .2, iz + Math.sin(a) * d), S(.8 + r(), .6, .8 + r())), [.5, .48, .45], 12); } DX.nd('ile', m); }
+  // barques au ponton
+  DX.barques = []; for (const [x, z, yaw] of [[PONTON.x - 2.2, 84.5, .1], [PONTON.x + 2.3, 87.2, -.15]]) { const nd = new Node('barque'); nd.pickable = false; const C = [.55, .3, .2], I = [.62, .5, .35];
+    nd.addPart(CUBE, mul(T(0, .12, 0), S(.9, .08, 3)), I, 13); for (const s of [-1, 1]) nd.addPart(CUBE, mul(T(s * .5, .32, 0), mul(M3.rotZ(s * .35), S(.06, .45, 3))), C, 13); for (const s of [-1, 1]) nd.addPart(CUBE, mul(T(0, .32, s * 1.5), mul(M3.rotX(-s * .4), S(1, .45, .06))), C, 13);
+    nd.addPart(CUBE, mul(T(0, .4, .3), S(.95, .06, .3)), I, 13); nd.addPart(CUBE, mul(T(.55, .45, -.2), mul(M3.rotZ(.2), S(.05, .05, 2.2))), [.5, .38, .25], 13); nd.pos = [x, 0, z]; nd.rot[1] = yaw; A.add(nd); DX.barques.push({ nd, ph: r() * 6 }); }
+  // hangar à bateaux : retiré en v0.39.2 (mal posé sur la rive, au milieu des arbres)
+  if (false) { const a = Math.atan2(92, 22), x = Math.cos(a) * 96.5, z = Math.sin(a) * 96.5, yaw = versLac(x, z), m = GEO.merger(), y = Math.max(SOL(x, z), 0), R = M3.rotY(yaw), B = (u, v, w, su, sv, sw, c, mat = 13, Rx) => m.add(CUBE, mul(T(x, y, z), mul(R, mul(T(u, v, w), Rx ? mul(Rx, S(su, sv, sw)) : S(su, sv, sw)))), c, mat);
+    for (const u of [-2, 0, 2]) for (const w of [-1, 2, 5]) { const q = batMonde({ x, z, yaw }, u, w), g = Math.min(SOL(q[0], q[1]), y) - .6, top = y + 1.1, hh = top - g; B(u, g - y + hh / 2, w, .2, hh, .2, [.3, .24, .16]); }// v0.39 : pilotis jusqu'au fond B(0, 1.1, 2, 4.6, .12, 7, [.5, .38, .25]); for (const s of [-1, 1]) B(s * 2.25, 2.4, 2, .12, 2.6, 7, BOIS); B(0, 2.4, -1.45, 4.6, 2.6, .12, BOIS); B(0, 2.6, 5.45, 4.6, 2.2, .1, [.38, .27, .17]);
+    for (const s of [-1, 1]) B(s * 1.25, 4.2, 2, 2.9, .12, 7.6, [.35, .36, .38], 4, M3.rotZ(-s * .55)); B(0, 2, 5.5, 2.4, 1.8, .06, [.08, .08, .09], 4); DX.nd('hangar', m); COLL.push({ x, z, r: 2.6 }); }
+  // roseaux tout autour du lac
+  { const nd = new Node('roseaux2'); nd.pickable = false; A.add(nd); for (let k = 0, e = 0; k < 70 && e < 600; e++) { const a = r() * TAU, R = 93.4 + r() * 2.4, x = Math.cos(a) * R, z = Math.sin(a) * R; if (z > 60 && Math.abs(a - PI / 2) < 1.05) continue; if (SOL(x, z) > .5 || SOL(x, z) < -.6) continue; k++;
+    const hg = 1.1 + r() * .8, y = Math.max(SOL(x, z), -.05); for (let i = 0; i < 3; i++) { const yw = i * PI / 3 + r(); for (const f of [0, PI]) nd.addPart(BEAU.vert(1, hg), M3.mul(M3.translate(x, y, z), M3.rotY(yw + f)), [1, 1, 1], 30, { cast: false }); } } } };
+DX.majLac = dt => { DX.t = (DX.t || 0) + dt; for (const b of DX.barques || []) { b.nd.pos[1] = .02 + Math.sin(DX.t * 1.3 + b.ph) * .05; b.nd.rot[0] = Math.sin(DX.t * 1.1 + b.ph) * .03; b.nd.rot[2] = Math.sin(DX.t * .9 + b.ph * 2) * .04; } if (DX.roue) DX.roue.rot[0] -= dt * .9; };
+// ---------------- branchements ----------------
+{ const c0 = construireBat; construireBat = function (S) { const bat = c0(S); try { DX.facades(S, bat); } catch (e) { console.warn('[façades]', e); } return bat; }; }
+{ const m0 = ALPHA.maj; ALPHA.maj = dt => { m0(dt); if (!DX.ok) return; try { DX.majLac(dt); DX.silMaj(dt); } catch (e) { if (!DX.err) { DX.err = 1; console.warn('[décor2]', e); } } }; }
+{ const c0 = VILLAGE.construire; VILLAGE.construire = () => { if (VILLAGE.ok) return; c0(); try { DX.vegetation(); DX.lieux(); DX.lointain(); DX.lac(); DX.silInit(); DX.ok = true; } catch (e) { console.warn('[décor2]', e); } }; }
 
 // ==== CAMP : CINÉMATIQUES (randonnée d'ouverture, réveil) ======================================
 const CINE = { plans: [], t: 0, i: 0, on: false, marcheur: null, apres: null, cam: null };
@@ -13823,7 +13927,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 
 </script>
 <!--
-NOTE-INTERNE (Claude) · HDF : CAMPING v0.37 · F.S.M Game House · 3 nov. 2026
+NOTE-INTERNE (Claude) · HDF : CAMPING v0.39.2 · F.S.M Game House · 3 nov. 2026
 À lire avant de modifier ce fichier. Ne pas relire le fichier en entier : chercher les ancres « ==== CAMP : » (grep), puis ne lire que la section utile.
 
 STRUCTURE DU FICHIER
@@ -13982,6 +14086,10 @@ v0.35 — FINITIONS (FIN, src/9s_finition.js) : son des lieux (ruisseau, fontain
 v0.36 — MONDE VIVANT (VIV, src/9t_vivant.js) : orage 1 jour de pluie sur 3 (#eclair, A.addLight, VIV.tonnerre) ; arc-en-ciel mat 31 (VIV.nArc, 150 s après la pluie) ; brouillard matinal lac/ruisseau ; étoiles filantes ; reflet de lune ; étourneaux 18 h 20–20 h 35 (26 nœuds) ; fleurs (printemps/été), glace du lac, bonshommes de neige, traces de pas (48 nœuds recyclés) l'hiver ; marché du samedi 7–13 h 30 place DELTA x 62.6 (chalets de Noël l'hiver), lampions été/printemps ; 3 bancs-belvédères (SIEGES/OBJETS, sAsseoir) ; mode photo #bPhoto / touche P (body.photo, HORL.h figé). Déjà présents avant : cerfs, renard, lucioles, poissons qui sautent, chouette, ronds de pluie, feuilles au vent, fumée des cheminées.
 v0.37 — RENDU PBR COMPLET : QUALITY.ipad (auto → ipad sur MOBILE_GPU, R.quality dans autoQ, dprMax iOS 1.3) ; bump mat 30 par dérivées (main FS) ; cascadeS (recherche d'occultants, pénombre variable) ; PP_COMP pbrPost (SSR lac plan y .02 + sols mouillés via normales de profondeur, brouillard éclairé analytique 8 lampes) — uniformes posés par A.pbrComp (src/9u_pbr.js) via le crochet comp ; exposition auto globalThis.FSM_EXPO (PBR.dedans : SALLE ou intérieur de bâtiment).
 v0.37 — PASSAGE INSIDE (INS, src/9v_inside.js) : pioche plantée au camp [-6.2, 113.6] ; mur ouest de SALLE.P2 (3 coups) ; HDF : INSIDE v1.2 intégré (script#insideGz, gzip base64, patché : self.HDF_CAMPING, emplacement 'c', voix → postMessage 'tts' → VOIX.dire, ecranFin/titre → 'fin') ; iframe blob plein écran, A.stop + SON.ac.suspend ; retour : « Mauvais rêve ? » + reveilTente ; sauvegarde 'inside' {pioche, mur, actif} → reprise dans le labo.
+v0.38 — DÉCOR MAJEUR (DX, src/9w_decor2.js) : DX.REGLES (herbe dense r 22, herbes hautes rives, galets) reposées par setBiome enveloppé ; feuillus en 5-6 grappes + branches + bouleaux (patchs feuillu camp et verdure) ; DX.lieux (moulin + roue sur le ruisseau, chapelle colline nord, belvédère, ruines ouest, kiosque place DELTA ; emplacement libre DX.cherche/DX.libre, DX.ou) ; DX.facades via construireBat (volets, jardinières 1/2, colombages 1/3, gouttières, rideaux dans bat.fen) ; silhouettes DX.ombres ; DX.lointain (3 villages + clochers) ; DX.lac (île DX.ILE par relief, 2 barques, hangar, 70 roseaux).
+v0.39 — brume du matin remise comme en v0.36 (demande du studio) ; pilotis du hangar à bateaux (DX.lac) prolongés jusqu'au sol/fond (ils flottaient).
+v0.39.1 — salle secrète surexposée (exposition auto 1,55 + lampes) : PBR.dedans = 2 dans la salle → exposition .72, intérieurs 1,4 (1,2 la nuit), brouillard éclairé coupé dans la salle.
+v0.39.2 — hangar à bateaux retiré (if (false) dans DX.lac : mal posé, pris dans les arbres de la rive) ; belvédère déplacé sur la colline de la chapelle (-14, 291) ; branches des feuillus du bourg retirées (bâtons blancs en V au-dessus des houppiers).
 À FAIRE / IDÉES v1.0 : sauvegarde du visiteur en cours ; météo visible (pluie déjà possible via A.meteo) ; deux emplacements de sauvegarde ; branchement History Sens pour les dialogues libres.
 
 -->
