@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HDF : CAMPING">
 <meta name="theme-color" content="#0b0f0a">
-<title>HDF : CAMPING — v0.34</title>
+<title>HDF : CAMPING — v0.35</title>
 <style>
 :root{--lin:#f3efe6;--ambre:#f2c66d;--mousse:#8fb37a;--nuit:#0b0f0a;--verre:rgba(10,14,10,.62);--rouge:#e0665a;--bleu:#7fb6d8;
   --sans:-apple-system,BlinkMacSystemFont,"Avenir Next","Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
@@ -170,7 +170,7 @@ body.cine #cine .bande{height:11vh}
 <div id="cine"><div class="bande h"></div><div class="bande b"></div></div>
 <button id="cinePasser" hidden>Passer ›</button>
 <div id="hud" hidden>
-  <div id="titreJeu">HDF : CAMPING · v0.34</div>
+  <div id="titreJeu">HDF : CAMPING · v0.35</div>
   <div id="marqueurs"></div>
   <canvas id="boussole" width="1120" height="108"></canvas>
   <div id="heureJour"><b id="hHeure">07:00</b><span id="hJour">Jour 1 · lundi</span></div>
@@ -204,14 +204,14 @@ body.cine #cine .bande{height:11vh}
 </div>
 <div id="fin" hidden><h2 id="finTitre">Fin de partie</h2><p id="finTexte"></p><div class="stats" id="finStats"></div><div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><button class="gros" id="finRejouer">Recommencer une partie</button><button class="gros discret" id="finMenu">Menu</button></div></div>
 <div id="menu" hidden>
-  <div class="version">v0.34 · FSM-3D 2.10</div>
+  <div class="version">v0.35 · FSM-3D 2.10</div>
   <h1><small>F.S.M GAME HOUSE</small>HDF : CAMPING</h1>
   <p class="accroche">Seul au bord d'un lac de montagne. Chaque jour, quelqu'un passe. Tenez le plus longtemps possible.</p>
   <div class="ligne"><input id="prenom" maxlength="16" placeholder="Votre prénom" autocomplete="off" spellcheck="false"></div>
   <div class="ligne"><button class="gros" id="bNouvelle">Nouvelle partie</button><button class="gros discret" id="bContinuer" hidden>Continuer</button></div>
   <div class="opts"><button id="oSon" class="on">Son</button><button id="oVoix" class="on">Voix des PNJ</button><button id="oMusique" class="on">Musique</button><button id="oQualite">Qualité : auto</button><button id="oTexte">Texte : grand</button><button id="oMarq" class="on">Marqueurs de collecte</button><button id="oPerf">Performances</button></div>
   <div class="aideCtrl" id="aideCtrl">Manette PS : <b>stick gauche</b> marcher · <b>stick droit</b> regarder · <b>✕</b> action / choisir · <b>○</b> s'accroupir / partir · <b>△</b> sauter · <b>□</b> sac à dos · <b>R2</b> courir · <b>L1</b> lampe · <b>OPTIONS</b> menu.<br>Tactile : stick à gauche, glisser à droite pour regarder, boutons à droite. Clavier : ZQSD / flèches, souris (clic pour viser), Espace, C, Maj, E, Tab, F, Échap.</div>
-  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.34</div>
+  <div class="studio">F.S.M GAME HOUSE · HDF : CAMPING v0.35</div>
 </div>
 
 <script>
@@ -4992,7 +4992,7 @@ self.JOE_DATA = { animals: 'Z2xURgIAAAD8HQQAtNIBAEpTT057ImFzc2V0Ijp7InZlcnNpb24i
    ===================================================================================== */
 'use strict';
 // ==== CAMP : OUTILS ===================================================================
-const JEU = { nom: 'HDF : CAMPING', version: '0.34', cle: 'hdfc-' };
+const JEU = { nom: 'HDF : CAMPING', version: '0.35', cle: 'hdfc-' };
 const $ = id => document.getElementById(id);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, k) => a + (b - a) * k;
@@ -13355,7 +13355,7 @@ NAT.cascade = () => { const [x, z] = NAT.CASC, y = Math.max(SOL(x, z), 0), m = G
   for (let i = 0; i < 6; i++) m.add(GEO.rock(1400 + i, 1, .35), M3.mul(M3.translate(x + (i - 2.5) * 3.2, y + 3 + (i % 2) * 2, z - 1.5 - (i % 3)), M3.scale(5, 9 + (i % 3) * 2, 4)), [.46, .45, .43], 12);
   const nd = new Node('cascade'); nd.pickable = false; for (const p of m.build(mk)) nd.addPart(p.mesh, null, p.color, p.mat); A.add(nd);
   const c = document.createElement('canvas'); c.width = 128; c.height = 256; const g = c.getContext('2d'); g.clearRect(0, 0, 128, 256); for (let i = 0; i < 60; i++) { const xx = 8 + Math.random() * 112; g.strokeStyle = `rgba(${220 + Math.random() * 35 | 0},${235 + Math.random() * 20 | 0},255,1)`; g.lineWidth = 2 + Math.random() * 4; g.beginPath(); g.moveTo(xx, 0); g.lineTo(xx + (Math.random() - .5) * 6, 256); g.stroke(); }
-  const a = [], q = [[-2, 0, 0, 1], [2, 0, 1, 1], [2, 11, 1, 0], [-2, 11, 0, 0]]; for (const i of [0, 1, 2, 0, 2, 3]) a.push(q[i][0], q[i][1], 0, 0, 0, 1, q[i][2], q[i][3]); const mh = A.R.makeMesh(new Float32Array(a), { uv: true, noWeld: true }); mh.tex = A.R.texture(c, { repeat: false, srgb: false }); mh.alphaCut = .5; mh.rough = .2; mh.metal = 0;
+  const a = [], q = [[-2, 0, 0, 1], [2, 0, 1, 1], [2, 11, 1, 0], [-2, 11, 0, 0]]; for (const i of [0, 1, 2, 0, 2, 3]) a.push(q[i][0], q[i][1], 0, 0, 0, 1, q[i][2], q[i][3]); const mh = A.R.makeMesh(new Float32Array(a), { uv: true, noWeld: true }); mh.tex = A.R.texture(c, { repeat: false, srgb: false }); mh.alphaCut = .5; mh.rough = .2; mh.metal = 0; NAT.mCasc = mh;
   const ch = new Node('chute'); ch.pickable = false; ch.pos = [x, y - .2, z + 1.2]; ch.rot[1] = 0; ch.addPart(mh, null, [1, 1, 1], 30, { cast: false }); A.add(ch); };
 // ---------------- 2) ruisseau, ponts, nénuphars, canards ----------------
 NAT.ruX = z => 50.5 + 1.6 * Math.sin(z * .09) + .8 * Math.sin(z * .23 + 1);
@@ -13437,6 +13437,112 @@ NAT.perf = () => { if (DVIE.pg || typeof FSMPerfGuard === 'undefined' || !A || !
 // construction
 { const c0 = VILLAGE.construire; VILLAGE.construire = () => { if (VILLAGE.ok) return; c0(); try { NAT.murets(); NAT.cascade(); NAT.ruisseau(); NAT.nenuphars(); NAT.canards(); NAT.animaux(); NAT.saison(true); NAT.perf(); NAT.ok = true; } catch (e) { console.warn('[nature]', e); } }; }
 { const m0 = ALPHA.maj; ALPHA.maj = dt => { m0(dt); try { NAT.maj(dt); } catch (e) { if (!NAT.err) { NAT.err = 1; console.warn('[nature]', e); } } }; }
+
+// ==== CAMP : FINITIONS — SON DES LIEUX, SAISONS COMPLÈTES, EAU QUI COULE, INTÉRIEURS, CAMP, SOUS-BOIS, COLLINES, LUMIÈRES (v0.35) =====
+// FIN.* — 1) SON : boucles d'ambiance par lieu (ruisseau, fontaine, cascade, terrasses, train), mélodies (orgue du manège, accordéon de Tino),
+//    cloche de la mairie à chaque heure, chouette la nuit, pas selon le sol (pavés, terre, neige). 2) SAISONS COMPLÈTES : feuillage des arbres plantés,
+//    du camp et des buissons recoloré (automne roux, hiver gris et sapins enneigés, printemps tendre), neige sur les toits (texture des tuiles).
+// 3) OMBRES DE NUAGES : passages nuageux qui voilent le soleil. 4) EAU QUI COULE : textures du ruisseau et de la cascade animées (4 images en boucle).
+// 5) INTÉRIEURS : pêche, librairie, médecin, mairie, école, fournil. 6) CAMP : bancs en rondins, lanternes, chemin de galets jusqu'au lac.
+// 7) SOUS-BOIS : fougères, champignons, troncs couchés, souches, rochers moussus. 8) COLLINES hors des zones bâties (relief enveloppé).
+// 9) LUMIÈRES : fenêtres éclairées qui débordent sur l'extérieur, rayons du matin dans la brume, reflets des lampadaires sur le sol mouillé.
+const FIN = { t: 0, tS: 0, h0: -1, pluieH: -99 };
+// ---------------- 8) collines (avant la création du terrain) ----------------
+FIN.COLLINES = [[138, 120, 18, 7], [140, 215, 20, 8], [-82, 140, 16, 6], [-84, 235, 18, 7], [-30, 300, 26, 6], [60, 305, 26, 7]];
+{ const r0 = relief; relief = function (N, x, z) { let h = r0(N, x, z); for (const [cx, cz, R, H] of FIN.COLLINES) { const d = Math.hypot(x - cx, z - cz); if (d < R && Math.abs(x - 105.3) > 9) { const k = 1 - d / R; h += H * k * k * (3 - 2 * k); } } return h; }; }
+// ---------------- 1) son ----------------
+FIN.boucle = (type, f, q) => { const ac = SON.ac, s = ac.createBufferSource(); s.buffer = SON.bruit; s.loop = true; s.playbackRate.value = .9 + Math.random() * .2; const fl = ac.createBiquadFilter(); fl.type = type; fl.frequency.value = f; fl.Q.value = q; const g = ac.createGain(); g.gain.value = 0; s.connect(fl); fl.connect(g); g.connect(SON.amb || SON.sfx); s.start(); return { g, fl }; };
+FIN.sonInit = () => { if (FIN.S || !SON.ok || !SON.ac) return; FIN.S = { ruis: FIN.boucle('bandpass', 1700, .9), font: FIN.boucle('highpass', 2600, .5), casc: FIN.boucle('lowpass', 520, .6), ter: FIN.boucle('bandpass', 420, 2.2), train: FIN.boucle('lowpass', 140, 1.2) }; };
+FIN.vol = (b, v) => { if (b) b.g.gain.setTargetAtTime(v, SON.ac.currentTime, .35); };
+FIN.note = (f, d, type, v, t0 = 0) => { const ac = SON.ac, o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime + t0; o.type = type; o.frequency.value = f; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + d); o.connect(g); g.connect(SON.amb || SON.sfx); o.start(t); o.stop(t + d + .05); };
+FIN.AIRS = { manege: [523, 659, 784, 659, 523, 659, 784, 1046, 988, 784, 659, 587, 523, 587, 659, 523], tino: [440, 494, 523, 587, 523, 494, 440, 392, 440, 523, 494, 440, 392, 349, 392, 440] };
+FIN.joue = (air, i, v, type) => { const A0 = FIN.AIRS[air], f = A0[i % A0.length]; FIN.note(f, .32, type, v); if (i % 2 === 0) FIN.note(f / 2, .4, type === 'square' ? 'triangle' : 'sine', v * .6); };
+FIN.cloche = n => { for (let i = 0; i < n; i++) { FIN.note(392, 1.6, 'sine', .07, i * 1.4); FIN.note(784, 1.1, 'sine', .03, i * 1.4); FIN.note(523, 1.3, 'triangle', .02, i * 1.4 + .02); } };
+FIN.chouette = () => { FIN.note(380, .35, 'sine', .05); FIN.note(330, .7, 'sine', .05, .45); FIN.note(360, .25, 'sine', .03, 1.3); };
+// pas selon le sol : pavés de la place, terre des chemins, neige l'hiver
+FIN.sol = (x, z) => { if (x > 56.9 && x < 85.1 && z > 108.9 && z < 162.1) return 'pave'; for (const [x0, z0, x1, z1, l] of VERDURE.CHEMINS) { const dx = x1 - x0, dz = z1 - z0, t = clamp(((x - x0) * dx + (z - z0) * dz) / (dx * dx + dz * dz), 0, 1); if (Math.hypot(x - x0 - dx * t, z - z0 - dz * t) < l * .55) return 'terre'; } return (NAT.sk === 2) ? 'neige' : null; };
+{ const p0 = SON.pas; SON.pas = (sol = 'herbe', v = .5, course) => { if (sol === 'herbe' && SON.ok && !SALLE.ici) { const s = FIN.sol(PL.x, PL.z); if (s) { const ac = SON.ac, t = ac.currentTime, src = ac.createBufferSource(); src.buffer = SON.bruit; const fl = ac.createBiquadFilter(), g = ac.createGain();
+      if (s === 'pave') { fl.type = 'highpass'; fl.frequency.value = 1800; g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(.3 * v, t + .004); g.gain.exponentialRampToValueAtTime(.0001, t + .07); FIN.note(170, .06, 'triangle', .05 * v); }
+      else if (s === 'terre') { fl.type = 'lowpass'; fl.frequency.value = 700; g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(.32 * v, t + .01); g.gain.exponentialRampToValueAtTime(.0001, t + .13); }
+      else { fl.type = 'bandpass'; fl.frequency.value = 950; fl.Q.value = .9; g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(.35 * v, t + .03); g.gain.exponentialRampToValueAtTime(.0001, t + .24); }
+      src.connect(fl); fl.connect(g); g.connect(SON.sfx); src.start(t, Math.random() * 2); src.stop(t + .3); return; } } return p0(sol, v, course); }; }
+FIN.son = dt => { FIN.sonInit(); const S = FIN.S; if (!S) return; const pause = ETAT.pause || ETAT.dort || SALLE.ici, d = (x, z) => Math.hypot(PL.x - x, PL.z - z), k = (dist, R) => clamp(1 - dist / R, 0, 1);
+  if (pause) { for (const b of Object.values(S)) FIN.vol(b, 0); return; }
+  let dr = 999; for (let z = 92; z <= 186; z += 6) dr = Math.min(dr, d(NAT.ruX(z), z)); FIN.vol(S.ruis, .09 * Math.pow(k(dr, 22), 1.5));
+  const [fx, fz] = VILLAGE.fontaine || [0, 0]; FIN.vol(S.font, NAT.sk === 2 ? 0 : .05 * Math.pow(k(d(fx, fz), 20), 1.6));
+  FIN.vol(S.casc, .07 * Math.pow(k(d(NAT.CASC[0], NAT.CASC[1]), 210), 1.3));
+  const terr = Math.max((DELTA.restoOuvert() ? k(d(74, 154), 26) : 0), (HORL.h >= 7 && HORL.h < 23 ? k(d(-41.5, 236.3), 22) : 0)); FIN.vol(S.ter, .05 * terr * (.7 + .3 * Math.sin(SON.ac.currentTime * 1.3)));
+  const R = DELTA.TRAIN; FIN.vol(S.train, R.etat === 'arrive' || R.etat === 'part' ? .12 * clamp(R.v / 12, .2, 1) * k(d(DELTA.RAIL, R.z), 120) : 0);
+  // mélodies : manège (quand il tourne) et accordéon de Tino (quand il joue)
+  FIN.tm = (FIN.tm || 0) - dt; if (FIN.tm <= 0) { FIN.tm = .34; FIN.iM = (FIN.iM || 0) + 1; const dm = d(DELTA.MAN.x, DELTA.MAN.z); if (DELTA.MAN.v > .3 && dm < 40) FIN.joue('manege', FIN.iM, .035 * k(dm, 40), 'square');
+    const T = VIE.pnj && VIE.pnj.c_tino; if (T && T.ch && T.ch.visible) { const dt2 = d(T.ch.pos[0], T.ch.pos[2]); if (dt2 < 30) FIN.joue('tino', FIN.iM, .04 * k(dt2, 30), 'sawtooth'); } }
+  // cloche de la mairie à chaque heure ; chouette la nuit
+  const hh = Math.floor(HORL.h); if (hh !== FIN.h0) { if (FIN.h0 >= 0 && hh >= 7 && hh <= 21 && d(43.2, 233.5) < 170) FIN.cloche(hh % 12 || 12); FIN.h0 = hh; }
+  if ((HORL.h > 21.5 || HORL.h < 5) && Math.random() < dt * .02) FIN.chouette(); };
+// ---------------- 2) saisons complètes : feuillages, sapins enneigés, neige sur les toits ----------------
+FIN.HORS = /^(vie|canard|oiseau|papillon|nenuphars|nenupharsF|poisson|totem)$/;
+FIN.teinte = (c0, sk) => { const feuillu = c0[1] > .33 && c0[1] < .48 && c0[1] > c0[0] * 1.2, sapin = !feuillu && c0[1] > c0[0] && c0[1] < .34;
+  if (sk === 1 && feuillu) { const v = (c0[0] * 7 + c0[2] * 13) % 1; return v < .33 ? [.62, .34, .1] : v < .66 ? [.7, .5, .14] : [.52, .24, .1]; }
+  if (sk === 2) { if (feuillu) return [.4, .36, .31]; if (sapin) return c0.map(c => c * .55 + .4); }
+  if (sk === 3 && feuillu) return [Math.min(1, c0[0] * 1.15), Math.min(1, c0[1] * 1.15), c0[2] * .9];
+  return c0; };
+FIN.repeindre = sk => { if (!A.scene || !A.scene.root) return; A.scene.root.traverse(n => { if (FIN.HORS.test(n.name) || n.vie) return; for (const p of n.parts) { if (p.mat !== 20) continue; if (!p._c0) p._c0 = p.color.slice(); p.color = FIN.teinte(p._c0, sk); } });
+  if (!FIN.neigeTex) { const c = document.createElement('canvas'); c.width = 256; c.height = 256; const g = c.getContext('2d'); g.fillStyle = '#e9eef2'; g.fillRect(0, 0, 256, 256); for (let j = 0; j < 4; j++) { g.fillStyle = 'rgba(150,160,175,.35)'; g.fillRect(0, j * 64 + 54, 256, 6); } for (let i = 0; i < 300; i++) { g.fillStyle = `rgba(255,255,255,${Math.random() * .6})`; g.fillRect(Math.random() * 256, Math.random() * 256, 3, 3); } FIN.neigeTex = A.R.texture(c, { repeat: true, srgb: false }); }
+  for (const [ck, m] of Object.entries(BEAU.MC || {})) { if (!/tuile:/.test(ck)) continue; if (!m._t0) m._t0 = m.tex; m.tex = sk === 2 ? FIN.neigeTex : m._t0; } };
+{ const s0 = NAT.saison; NAT.saison = force => { const avant = NAT.sk; s0(force); if (NAT.sk !== FIN.sk || force) { FIN.sk = NAT.sk; try { FIN.repeindre(NAT.sk); } catch (e) { console.warn('[saisons]', e); } } }; }
+// ---------------- 3) passages nuageux ; 4) eau qui coule ----------------
+FIN.nuages = dt => { const E = F.ENVS.jour; if (!E) return; if (FIN.sun0 === undefined) FIN.sun0 = E.sunI || 4; FIN.ombre = FIN.ombre || 0; FIN.tO = (FIN.tO || 20) - dt;
+  if (FIN.tO <= 0) { FIN.tO = 25 + Math.random() * 40; if ((E.cloud || 0) > .3) FIN.cible = .55 + Math.random() * .2; } if (FIN.cible && FIN.tO < 12) FIN.cible = 0;
+  FIN.ombre += ((FIN.cible ? 1 - FIN.cible : 0) - FIN.ombre) * Math.min(1, dt * .6); E.sunI = FIN.sun0 * (1 - FIN.ombre); };
+FIN.eauTex = (src, n = 4) => { const L = []; for (let i = 0; i < n; i++) { const c = document.createElement('canvas'); c.width = src.width; c.height = src.height; const g = c.getContext('2d'), dy = Math.round(src.height * i / n); g.drawImage(src, 0, dy); g.drawImage(src, 0, dy - src.height); L.push(A.R.texture(c, { repeat: true, srgb: false })); } return L; };
+FIN.eauInit = () => { if (FIN.eau) return; FIN.eau = [];
+  const mk2 = (w, h, f) => { const c = document.createElement('canvas'); c.width = w; c.height = h; f(c.getContext('2d'), w, h); return c; };
+  if (NAT.mRu) { const src = mk2(128, 256, (g, W, H) => { for (let y = 0; y < H; y += 2) { const a = 10 + 5 * Math.sin(y * .0245 * 4), b = 10 + 5 * Math.sin(y * .0245 * 3 + 2); g.fillStyle = '#35607a'; g.fillRect(a, y, W - a - b, 2); } for (let i = 0; i < 80; i++) { g.fillStyle = `rgba(230,245,255,${.3 + Math.random() * .5})`; g.fillRect(18 + Math.random() * 92, Math.random() * H, 1 + Math.random() * 3, 5 + Math.random() * 12); } }); FIN.eau.push({ m: NAT.mRu, T: FIN.eauTex(src) }); }
+  if (NAT.mCasc) { const src = mk2(128, 256, (g, W, H) => { for (let i = 0; i < 70; i++) { const x = 8 + Math.random() * 112, y = Math.random() * H, l = 20 + Math.random() * 60; g.strokeStyle = `rgba(${225 + Math.random() * 30 | 0},${238 + Math.random() * 17 | 0},255,1)`; g.lineWidth = 2 + Math.random() * 4; g.beginPath(); g.moveTo(x, y); g.lineTo(x + (Math.random() - .5) * 4, y + l); g.stroke(); } }); FIN.eau.push({ m: NAT.mCasc, T: FIN.eauTex(src) }); } };
+FIN.eauMaj = dt => { FIN.te = (FIN.te || 0) - dt; if (FIN.te > 0) return; FIN.te = .11; FIN.ie = ((FIN.ie || 0) + 1) % 4; for (const E of FIN.eau || []) E.m.tex = E.T[(4 - FIN.ie) % 4]; };
+// ---------------- 5) intérieurs restants ----------------
+FIN.interieur = (S, bat) => { if (!bat || !bat.L || !/^(peche|librairie|medecin|mairie|ecole|fournil)$/.test(S.id)) return; const L = bat.L, m = GEO.merger(), CUBE = GEO.cube(), CYL = GEO.cylinder(10), SPH = GEO.sphere(6, 4), T = M3.translate, Sc = M3.scale, mul = M3.mul, p = .32, hu = S.lu / 2, hw = S.lw / 2, h = S.h || 3.6, R = bat.rects;
+  const B = (u, y, w, su, sy, sw, c, mat = 4) => m.add(CUBE, L.M(mul(T(u, y, w), Sc(su, sy, sw))), c, mat), CY = (u, y, w, r, hh, c, mat = 7) => m.add(CYL, L.M(mul(T(u, y, w), Sc(r * 2, hh, r * 2))), c, mat), SP = (u, y, w, s, c, mat = 8) => m.add(SPH, L.M(mul(T(u, y, w), Sc(s, s, s))), c, mat);
+  const plante = (u, w) => { CY(u, p + .3, w, .26, .6, [.62, .38, .26], 12); for (let i = 0; i < 4; i++) SP(u + Math.cos(i * 1.6) * .17, p + .88 + i * .12, w + Math.sin(i * 1.6) * .17, .34, [.22, .42, .2], 20); R.push([u - .32, u + .32, w - .32, w + .32]); };
+  const susp = (u, w) => { B(u, p + h - .4, w, .02, .8, .02, [.2, .2, .2], 7); SP(u, p + h - .85, w, .28, [1, .86, .6]); }, haut = (u, c, l = 1.1, ht = .7) => { B(u, p + 2.7, hw - .08, l, ht, .04, [.72, .58, .3], 14); B(u, p + 2.7, hw - .11, l - .12, ht - .12, .03, c, 4); };
+  plante(-hu + .8, -hw + .8); plante(hu - .8, -hw + .8); for (const u of [-hu / 2, 0, hu / 2]) susp(u, 0); B(0, p + .03, -.5, Math.min(5, S.lu - 4), .02, 2.2, [[.45, .15, .15], [.2, .3, .5], [.35, .45, .3]][DECOR.hash(S.id) % 3], 4);
+  if (S.id === 'peche') { for (let i = 0; i < 3; i++) { B(-3 + i * 2.6, p + 2.6, hw - .1, .9, .5, .05, [.42, .3, .18], 13); B(-3 + i * 2.6, p + 2.6, hw - .14, .7, .22, .04, [[.6, .65, .6], [.55, .5, .35], [.5, .6, .65]][i], 14); } }
+  if (S.id === 'librairie') { B(0, p + .4, -1.8, 1.6, .8, .9, [.42, .3, .18], 13); for (let i = 0; i < 8; i++) B(-.6 + (i % 4) * .4, p + .9 + Math.floor(i / 4) * .12, -1.8, .3, .1, .42, [[.7, .2, .2], [.2, .4, .7], [.85, .7, .2], [.3, .6, .3]][i % 4], 4); R.push([-.85, .85, -2.3, -1.3]); haut(-2.5, [.6, .5, .35]); haut(2.5, [.35, .45, .6]); }
+  if (S.id === 'medecin') { for (let i = 0; i < 3; i++) B(-hu + 1.6 + i * .5, p + .9, hw - 1.2, .04, 1.6, .5, [.88, .92, .9], 4); haut(2, [.85, .2, .2], .7, .7); B(2, p + 2.7, hw - .13, .14, .4, .02, [1, 1, 1], 4); B(2, p + 2.7, hw - .13, .4, .14, .02, [1, 1, 1], 4); }
+  if (S.id === 'mairie') { for (const s of [-1.4, 1.4]) { CY(s, p + 1.1, hw - .6, .03, 2.2, [.75, .6, .3], 14); B(s + .3, p + 1.9, hw - .6, .6, .45, .02, s < 0 ? [.15, .3, .6] : [.85, .75, .3], 4); } haut(0, [.4, .32, .3], 1.2, 1); R.push([-1.6, 1.6, hw - .8, hw - .4]); }
+  if (S.id === 'ecole') { B(-hu + .1, p + 1.9, -2, .04, 1.4, 2.4, [.95, .92, .8], 4); B(-hu + .14, p + 1.9, -2, .03, 1.2, 2.2, [.55, .7, .85], 4); CY(hu - 1.2, p + .5, hw - 1.2, .14, 1, [.4, .3, .2]); SP(hu - 1.2, p + 1.2, hw - 1.2, .42, [.3, .5, .8], 4); R.push([hu - 1.5, hu - .9, hw - 1.5, hw - .9]); }
+  if (S.id === 'fournil') { for (let i = 0; i < 4; i++) { B(hu - 1.4 + (i % 2) * .6, p + .3 + Math.floor(i / 2) * .5, -hw + 1.6, .5, .5, .4, [.92, .88, .78], 4); } R.push([hu - 1.8, hu - .6, -hw + 1.3, -hw + 1.9]); }
+  const nd = new Node('int2' + S.id); nd.pickable = false; for (const q of m.build(mk)) nd.addPart(q.mesh, null, q.color, q.mat); A.add(nd); };
+{ const c0 = construireBat; construireBat = function (S) { const bat = c0(S); try { FIN.interieur(S, bat); } catch (e) { console.warn('[intérieurs]', e); } return bat; }; }
+// ---------------- 6) camp ; 7) sous-bois ----------------
+FIN.camp = () => { const m = GEO.merger(), T = M3.translate, S = M3.scale, mul = M3.mul, CYL = GEO.cylinder(10), r = BEAU.alea(1717), [fx, fz] = LIEUX.feu;
+  for (const [a, l] of [[2.4, 2.2], [4.1, 2]]) { const x = fx + Math.cos(a) * 2.9, z = fz + Math.sin(a) * 2.9; m.add(CYL, mul(T(x, SOL(x, z) + .25, z), mul(M3.rotY(-a), mul(M3.rotZ(PI / 2), S(.48, l, .48)))), PAL.ecorce, 13); COLL.push({ x, z, r: .5 }); }
+  for (const [x, z] of [[-4.6, 104.2], [5.2, 103.6]]) { const y = SOL(x, z); m.add(GEO.cylinder(6), mul(T(x, y + .9, z), S(.08, 1.8, .08)), [.35, .25, .15], 13); m.add(GEO.cube(), mul(T(x + .2, y + 1.78, z), S(.45, .05, .05)), [.35, .25, .15], 13); m.add(GEO.cube(), mul(T(x + .4, y + 1.55, z), S(.16, .22, .16)), [.25, .25, .27], 7); m.add(GEO.sphere(6, 4), mul(T(x + .4, y + 1.55, z), S(.12, .16, .12)), [1, .8, .45], 8); COLL.push({ x, z, r: .15 }); FIN.lanternes = (FIN.lanternes || []).concat([[x + .4, y + 1.55, z]]); }
+  const [rx, rz] = LIEUX.rive; for (let i = 0; i <= 14; i++) { const t = i / 14, x = fx + (rx - fx) * t + Math.sin(t * 6) * .4, z = fz + (rz - fz) * t; for (let k = 0; k < 3; k++) { const ox = (r() - .5) * 1.4, oz = (r() - .5) * .8, y = SOL(x + ox, z + oz); if (y < .15) continue; m.add(GEO.rock(1700 + i * 3 + k, 1, .3), mul(T(x + ox, y + .02, z + oz), S(.28 + r() * .15, .06, .22 + r() * .12)), [.62 + r() * .1, .6 + r() * .08, .55 + r() * .06], 12); } }
+  const nd = new Node('campPlus'); nd.pickable = false; for (const p of m.build(mk)) nd.addPart(p.mesh, null, p.color, p.mat); A.add(nd); };
+FIN.fougere = () => { if (FIN._f) return FIN._f; const c = document.createElement('canvas'); c.width = 128; c.height = 128; const g = c.getContext('2d'); g.clearRect(0, 0, 128, 128);
+  for (let f = 0; f < 5; f++) { const a = -PI / 2 + (f - 2) * .42; g.strokeStyle = '#2f5a24'; g.lineWidth = 3; g.beginPath(); g.moveTo(64, 128); const ex = 64 + Math.cos(a) * 64, ey = 128 + Math.sin(a) * 110; g.quadraticCurveTo(64 + Math.cos(a) * 30, 128 + Math.sin(a) * 70, ex, ey); g.stroke();
+    for (let i = 1; i < 12; i++) { const t = i / 12, x = 64 + (ex - 64) * t, y = 128 + (ey - 128) * t, l = 14 * (1 - t * .7); g.strokeStyle = i % 2 ? '#3f7a30' : '#356a2a'; g.lineWidth = 4; for (const s of [-1, 1]) { g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a + s * 1.3) * l, y + Math.sin(a + s * 1.3) * l); g.stroke(); } } }
+  const a2 = [], q = [[-.6, 0, 0, 1], [.6, 0, 1, 1], [.6, 1, 1, 0], [-.6, 1, 0, 0]]; for (const i of [0, 1, 2, 0, 2, 3]) a2.push(q[i][0], q[i][1], 0, 0, 0, 1, q[i][2], q[i][3]); const m = A.R.makeMesh(new Float32Array(a2), { uv: true, noWeld: true }); m.tex = A.R.texture(c, { repeat: false, srgb: false }); m.alphaCut = .5; m.rough = .8; m.metal = 0; return (FIN._f = m); };
+FIN.sousbois = () => { const nd = new Node('fougeres'); nd.pickable = false; A.add(nd); const m = GEO.merger(), r = BEAU.alea(3131), T = M3.translate, S = M3.scale, mul = M3.mul, F2 = FIN.fougere(), pos = [];
+  for (let i = 0; i < 150; i++) { const a = r() * TAU, R = ENCLOS.r + 1 + r() * 10, x = ENCLOS.x + Math.sin(a) * R, z = ENCLOS.z + Math.cos(a) * R; if (SOL(x, z) < .4 || DELTA.couloir(x, z, 1) || (z > 110 && Math.abs(x - SENTIER.x(z)) < 3)) continue; pos.push([x, z]); }
+  for (let z = 140; z < 200; z += 3) for (const s of [-1, 1]) { const x = SENTIER.x(z) + s * (3.2 + r() * 3); if (!CHANTIER.dans(x, z, 2) && !DELTA.couloir(x, z, 1) && Math.hypot(x - DRAPEAU.x, z - DRAPEAU.z) > 3) pos.push([x, z]); }
+  pos.forEach(([x, z], i) => { const y = SOL(x, z), sc = .7 + r() * .7; if (i % 3 !== 2) { for (const k of [0, 1]) nd.addPart(F2, mul(T(x, y, z), mul(M3.rotY(k * PI / 2 + i), S(sc, sc, sc))), [1, 1, 1], 30, { cast: false }); }
+    else if (i % 9 === 2) { m.add(GEO.cylinder(8), mul(T(x, y + .25, z), S(.7, .5, .7)), PAL.ecorce, 13); m.add(GEO.cylinder(8), mul(T(x, y + .51, z), S(.64, .02, .64)), [.75, .62, .42], 13); }
+    else if (i % 9 === 5) { m.add(GEO.cylinder(8), mul(T(x, y + .25, z), mul(M3.rotY(i), mul(M3.rotZ(PI / 2), S(.45, 3.2, .45)))), PAL.ecorce2, 13); for (let k = 0; k < 4; k++) m.add(GEO.sphere(5, 3), mul(T(x + (k - 1.5) * .5, y + .48, z), S(.25, .08, .2)), [.3, .45, .2], 20); }
+    else if (i % 9 === 8) { m.add(GEO.rock(1900 + i, 1, .3), mul(T(x, y + .25, z), S(.9, .6, .8)), [.48, .47, .44], 12); m.add(GEO.sphere(6, 4), mul(T(x, y + .52, z), S(.7, .16, .6)), [.3, .48, .2], 20); }
+    else { for (let k = 0; k < 4; k++) { const ox = (r() - .5) * .6, oz = (r() - .5) * .6; m.add(GEO.cylinder(6), mul(T(x + ox, y + .07, z + oz), S(.04, .14, .04)), [.92, .9, .85], 4); m.add(GEO.sphere(6, 3), mul(T(x + ox, y + .16, z + oz), S(.16, .08, .16)), k % 2 ? [.75, .2, .15] : [.62, .45, .3], 4); } } });
+  const nb = new Node('sousbois'); nb.pickable = false; for (const p of m.build(mk)) nb.addPart(p.mesh, null, p.color, p.mat); A.add(nb); FIN.nSB = pos.length; };
+// ---------------- 9) lumières ----------------
+FIN.lumieres = dt => { if (!A.fx) return; FIN.tL = (FIN.tL || 0) - dt; if (FIN.tL > 0) return; FIN.tL = .15; const nt = A.nuit ? +A.nuit() || 0 : 0, h = HORL.h, K = (DVIE.pg && DVIE.pg.knobs && DVIE.pg.knobs.particles) || 1, H = CHANTIER.Hs;
+  if (A.meteoNom === 'pluie') FIN.pluieH = (ETAT.jour || 1) * 24 + h; const mouille = (ETAT.jour || 1) * 24 + h - FIN.pluieH < 2;
+  if (nt > .25) { let n = 0; for (const b of BATS) { if (!b.fen || !b.fen.visible || !b.S || !b.S.lum || n > 10 * K) continue; if (Math.hypot(PL.x - b.x, PL.z - b.z) > 40) continue; for (const M of b.S.lum) { if (n > 10 * K) break; n++; A.fx.emit('glow', [M[12], M[13], M[14]], [0, 0, 0], .45, 1.3, [1, .78, .45], .14); } }
+    for (const p of FIN.lanternes || []) if (Math.hypot(PL.x - p[0], PL.z - p[2]) < 50) A.fx.emit('glow', p, [0, 0, 0], .45, .8, [1, .8, .45], .4);
+    if (mouille) for (const p of VILLAGE.lampes || []) { if (Math.hypot(PL.x - p[0], PL.z - p[2]) > 35) continue; A.fx.emit('glow', [p[0] + (Math.random() - .5), H + .04, p[2] + (Math.random() - .5)], [0, 0, 0], .45, 2.2, [1, .8, .55], .22); } }
+  if (h > 6 && h < 8.3 && nt < .1 && Math.hypot(PL.x, PL.z - 100) < 90) for (let i = 0; i < 2 * K; i++) { const x = (Math.random() - .5) * 70, z = 70 + Math.random() * 40, L = Math.random(); A.fx.emit('glow', [x - L * 8, .8 + L * 14, z + L * 3], [0, 0, 0], 1.2, 2.4, [1, .9, .7], .06); } };
+// ---------------- boucle et construction ----------------
+{ const m0 = ALPHA.maj; ALPHA.maj = dt => { m0(dt); if (!FIN.ok) return; try { FIN.son(dt); FIN.nuages(dt); FIN.eauMaj(dt); FIN.lumieres(dt); } catch (e) { if (!FIN.err) { FIN.err = 1; console.warn('[finitions]', e); } } }; }
+{ const c0 = VILLAGE.construire; VILLAGE.construire = () => { if (VILLAGE.ok) return; c0(); try { FIN.camp(); FIN.sousbois(); FIN.eauInit(); FIN.sk = undefined; NAT.saison(true); FIN.ok = true; } catch (e) { console.warn('[finitions]', e); } }; }
 
 // ==== CAMP : CINÉMATIQUES (randonnée d'ouverture, réveil) ======================================
 const CINE = { plans: [], t: 0, i: 0, on: false, marcheur: null, apres: null, cam: null };
@@ -13536,7 +13642,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 
 </script>
 <!--
-NOTE-INTERNE (Claude) · HDF : CAMPING v0.34 · F.S.M Game House · 3 nov. 2026
+NOTE-INTERNE (Claude) · HDF : CAMPING v0.35 · F.S.M Game House · 3 nov. 2026
 À lire avant de modifier ce fichier. Ne pas relire le fichier en entier : chercher les ancres « ==== CAMP : » (grep), puis ne lire que la section utile.
 
 STRUCTURE DU FICHIER
@@ -13691,6 +13797,7 @@ v0.33 — BEAUTÉ DES LIEUX (src/9q_beaute.js, objet BEAU) : textures toile (pav
 
 v0.34 — NATURE ET VIE DU DÉCOR (src/9r_nature.js, objet NAT) : murets de pierre sèche (lisières BRAVO/CHARLIE), cascade rive nord (NAT.CASC) + embruns, ruisseau NAT.ruX (z 186 → lac) et 2 ponts (z 136 et 162,8), fontaine qui coule (spray), ronds de pluie, nénuphars, 5 canards (NAT.cn) ; construireBat enveloppé (NAT.bat) : boîtes aux lettres, potagers clôturés + épouvantails si la place est libre, linge, vélos, caisses/tonneaux, bancs, stores rayés ; ancrages NAT.chem (fumée), NAT.toits (14 oiseaux qui s'envolent), NAT.massifs (8 papillons) ; feuilles au vent, lucioles (été/printemps), nuages variables (ENVS.jour.cloud) ; SAISONS NAT.saison (3 jours chacune : été, automne, hiver, printemps — setBiome + V.palette, neige au lieu de pluie l'hiver). FSM PerfGuard v0.3 intégré tel quel (DVIE.pg) : renderer factice → A.renderScale, A.frame enveloppé (tick/afterRender), knobs.particles pour les effets, knobs.npc pour le nombre de PNJ ; bandeau : 5 touchers sur le titre (clé 'perf'). BEAU.mesh mis en cache (un maillage partagé = un appel de dessin).
 
+v0.35 — FINITIONS (FIN, src/9s_finition.js) : son des lieux (ruisseau, fontaine, cascade, terrasses, train, orgue du manège, accordéon de Tino, cloche de mairie horaire, chouette), pas sur pavés/terre/neige (wrap SON.pas) ; saisons complètes (recolor mat 20 via p._c0, neige sur toits BEAU 'tuile:' via m._t0) ; passages nuageux (ENVS.jour.sunI) ; eau animée (NAT.mRu, NAT.mCasc, 4 textures) ; intérieurs pêche/librairie/médecin/mairie/école/fournil (wrap construireBat) ; camp (bancs rondins, lanternes, galets jusqu'à la rive) ; sous-bois (fougères alpha, champignons, troncs, souches, rochers moussus) ; collines FIN.COLLINES (wrap relief, hors rail) ; lumières (glow fenêtres, rayons du matin, reflets lampadaires 2 h après pluie).
 À FAIRE / IDÉES v1.0 : sauvegarde du visiteur en cours ; météo visible (pluie déjà possible via A.meteo) ; deux emplacements de sauvegarde ; branchement History Sens pour les dialogues libres.
 
 -->
